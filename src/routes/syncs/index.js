@@ -1,5 +1,3 @@
-/* Copyright (c) 2020-2021 CLOUDPILOTS Software & Consulting GmbH */
-
 // router für /syncs exportiert
 
 import express from "express";
