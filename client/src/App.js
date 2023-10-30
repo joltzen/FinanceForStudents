@@ -10,6 +10,8 @@ import { SidebarProvider, SidebarContext } from "./core/sidebar";
 
 import { createTheme, ThemeProvider } from "@mui/material/styles";
 
+import { AuthProvider } from "./core/auth/auth";
+
 const theme = createTheme({
   palette: {
     primary: {
@@ -20,21 +22,23 @@ const theme = createTheme({
 });
 function App() {
   return (
-    <ThemeProvider theme={theme}>
-      <Router>
-        <SidebarProvider>
-          <Navbar></Navbar>
-        </SidebarProvider>
+    <AuthProvider>
+      <ThemeProvider theme={theme}>
+        <Router>
+          <SidebarProvider>
+            <Navbar></Navbar>
+          </SidebarProvider>
 
-        <Routes>
-          <Route path="/" element={<HomePage />} />
-          <Route path="/about" element={<AboutPage />} />
-          <Route path="/contact" element={<ContactPage />} />
-          <Route path="/signup" element={<SignUpForm />} />
-          <Route path="/login" element={<LoginPage />} />
-        </Routes>
-      </Router>
-    </ThemeProvider>
+          <Routes>
+            <Route path="/" element={<HomePage />} />
+            <Route path="/about" element={<AboutPage />} />
+            <Route path="/contact" element={<ContactPage />} />
+            <Route path="/signup" element={<SignUpForm />} />
+            <Route path="/login" element={<LoginPage />} />
+          </Routes>
+        </Router>
+      </ThemeProvider>
+    </AuthProvider>
   );
 }
 

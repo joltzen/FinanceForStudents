@@ -1,7 +1,6 @@
 import React, { useState } from "react";
 import axios from "axios";
-import { TextField, Button } from "@mui/material";
-
+import { TextField, Button, Box } from "@mui/material";
 function SignUpForm() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -25,38 +24,46 @@ function SignUpForm() {
   };
 
   return (
-    <form onSubmit={handleSignUp}>
-      <TextField
-        label="Username"
-        type="username"
-        value={username}
-        onChange={(e) => setUsername(e.target.value)}
-        required
-        fullWidth
-        margin="normal"
-      />
-      <TextField
-        label="Email"
-        type="email"
-        value={email}
-        onChange={(e) => setEmail(e.target.value)}
-        required
-        fullWidth
-        margin="normal"
-      />
-      <TextField
-        label="Password"
-        type="password"
-        value={password}
-        onChange={(e) => setPassword(e.target.value)}
-        required
-        fullWidth
-        margin="normal"
-      />
-      <Button type="submit" variant="contained" color="primary">
-        Sign Up
-      </Button>
-    </form>
+    <Box
+      sx={{
+        maxWidth: 400,
+        mx: "auto", // margin left & right
+        mt: 5, // margin top
+      }}
+    >
+      <form onSubmit={handleSignUp}>
+        <TextField
+          label="Username"
+          type="username"
+          value={username}
+          onChange={(e) => setUsername(e.target.value)}
+          required
+          fullWidth
+          margin="normal"
+        />
+        <TextField
+          label="Email"
+          type="email"
+          value={email}
+          onChange={(e) => setEmail(e.target.value)}
+          required
+          fullWidth
+          margin="normal"
+        />
+        <TextField
+          label="Password"
+          type="password"
+          value={password}
+          onChange={(e) => setPassword(e.target.value)}
+          required
+          fullWidth
+          margin="normal"
+        />
+        <Button type="submit" variant="contained" color="primary">
+          Sign Up
+        </Button>
+      </form>
+    </Box>
   );
 }
 export default SignUpForm;
