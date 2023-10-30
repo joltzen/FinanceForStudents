@@ -1,9 +1,11 @@
 import React, { useContext } from "react";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
-import HomePage from "./pages/homepage";
-import AboutPage from "./pages/about";
-import ContactPage from "./pages/contact";
+import HomePage from "./pages/Homepage/homepage";
+import AboutPage from "./pages/About/about";
+import ContactPage from "./pages/Contact/contact";
 import Navbar from "./components/navbar";
+import SignUpForm from "./pages/Signup/signup";
+import LoginPage from "./pages/Login/login";
 import { SidebarProvider, SidebarContext } from "./core/sidebar";
 
 import { createTheme, ThemeProvider } from "@mui/material/styles";
@@ -18,21 +20,21 @@ const theme = createTheme({
 });
 function App() {
   return (
-    <SidebarProvider>
-      <ThemeProvider theme={theme}>
-        <Router>
-          <SidebarProvider>
-            <Navbar></Navbar>
-          </SidebarProvider>
+    <ThemeProvider theme={theme}>
+      <Router>
+        <SidebarProvider>
+          <Navbar></Navbar>
+        </SidebarProvider>
 
-          <Routes>
-            <Route path="/" element={<HomePage />} />
-            <Route path="/about" element={<AboutPage />} />
-            <Route path="/contact" element={<ContactPage />} />
-          </Routes>
-        </Router>
-      </ThemeProvider>
-    </SidebarProvider>
+        <Routes>
+          <Route path="/" element={<HomePage />} />
+          <Route path="/about" element={<AboutPage />} />
+          <Route path="/contact" element={<ContactPage />} />
+          <Route path="/signup" element={<SignUpForm />} />
+          <Route path="/login" element={<LoginPage />} />
+        </Routes>
+      </Router>
+    </ThemeProvider>
   );
 }
 
