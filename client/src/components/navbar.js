@@ -64,6 +64,8 @@ function Navbar() {
             <StyledListItem href="/" primary="Home" />
             <StyledListItem href="/about" primary="About" />
             <StyledListItem href="/contact" primary="Contact" />
+            <StyledListItem href="/signup" primary="Signup" />
+            <StyledListItem href="/login" primary="Login" />
             <Divider />
           </div>
         </StyledDrawerContent>

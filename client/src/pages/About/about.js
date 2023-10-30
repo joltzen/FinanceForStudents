@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import axios from "axios";
 
 function AboutPage() {
-  const [response, setResponse] = useState();
+  const [response, setResponse] = useState([]);
 
   useEffect(() => {
     axios
@@ -19,11 +19,17 @@ function AboutPage() {
   return (
     <div>
       <h1>About Page</h1>
-      {response && (
+      {response.length > 0 ? (
         <div>
-          <h2>Response from the server:</h2>
-          <pre>{JSON.stringify(response, null, 2)}</pre>
+          <h2>Usernames from the server:</h2>
+          <ul>
+            {response.map((user, index) => (
+              <li key={index}>{user.username}</li>
+            ))}
+          </ul>
         </div>
+      ) : (
+        <p>No user data available.</p>
       )}
     </div>
   );
