@@ -3,18 +3,20 @@ import React, { createContext, useContext, useState } from "react";
 const AuthContext = createContext(null);
 
 export const AuthProvider = ({ children }) => {
-  const [user, setUser] = useState(null);
+  const [user, setUser] = useState(() => {
+    const savedUser = localStorage.getItem("user");
+    return savedUser ? JSON.parse(savedUser) : null;
+  });
 
   const login = (userData) => {
     setUser(userData);
     console.log(userData);
-    // Further steps like storing the user data in localStorage/sessionStorage
-    // for persistence across sessions can be added here
+    localStorage.setItem("user", JSON.stringify(userData));
   };
 
   const logout = () => {
     setUser(null);
-    // Also clear from localStorage/sessionStorage if used
+    localStorage.removeItem("user");
   };
 
   return (

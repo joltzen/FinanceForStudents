@@ -14,10 +14,16 @@ function HomePage() {
   return (
     <div>
       <h1>Home Page</h1>
-      {user && <p>Welcome, {user.username}!</p>}
-      <Button variant="contained" color="primary" onClick={handleLogout}>
-        Logout
-      </Button>
+      {user ? (
+        <>
+          <p>Welcome, {user.username}!</p>
+          <Button variant="contained" color="primary" onClick={handleLogout}>
+            Logout
+          </Button>
+        </>
+      ) : (
+        <p>Please log in.</p>
+      )}
     </div>
   );
 }

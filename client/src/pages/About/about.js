@@ -1,9 +1,9 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
-
+import { useAuth } from "../../core/auth/auth";
 function AboutPage() {
   const [response, setResponse] = useState([]);
-
+  const { user, logout } = useAuth();
   useEffect(() => {
     axios
       .get("http://localhost:3001/api/getData")
@@ -19,6 +19,7 @@ function AboutPage() {
   return (
     <div>
       <h1>About Page</h1>
+      {user && <p>Welcome, {user.username}!</p>}
       {response.length > 0 ? (
         <div>
           <h2>Usernames from the server:</h2>
