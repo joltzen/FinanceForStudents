@@ -15,7 +15,10 @@ import { AuthProvider } from "./core/auth/auth";
 const theme = createTheme({
   palette: {
     primary: {
-      main: "#000000", // Use your color
+      main: "#3A415C", // Use your color
+    },
+    background: {
+      default: "#000000", // Your desired background color
     },
     // ...you can customize other colors as well
   },
@@ -28,14 +31,17 @@ function App() {
           <SidebarProvider>
             <Navbar></Navbar>
           </SidebarProvider>
-
-          <Routes>
-            <Route path="/" element={<HomePage />} />
-            <Route path="/about" element={<AboutPage />} />
-            <Route path="/contact" element={<ContactPage />} />
-            <Route path="/signup" element={<SignUpForm />} />
-            <Route path="/login" element={<LoginPage />} />
-          </Routes>
+          <div style={{ backgroundColor: "#333740", minHeight: "100vh" }}>
+            {" "}
+            {/* Set background color here */}
+            <Routes>
+              <Route path="/" element={<HomePage />} />
+              <Route path="/about" element={<AboutPage />} />
+              <Route path="/contact" element={<ContactPage />} />
+              <Route path="/signup" element={<SignUpForm />} />
+              <Route path="/login" element={<LoginPage />} />
+            </Routes>
+          </div>
         </Router>
       </ThemeProvider>
     </AuthProvider>
