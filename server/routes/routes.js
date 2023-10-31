@@ -38,18 +38,23 @@ router.post("/signup", async (req, res) => {
 // In your routes file (e.g., routes.js)
 
 router.post("/login", async (req, res) => {
-  const { login, password } = req.body;
-
   try {
-    // Check if login is username or email
-    const user = await findUserByLogin(login); // Implement this function based on your DB schema
-
-    if (user && (await bcrypt.compare(password, user.password))) {
-      // User authenticated successfully
-      // Generate and return JWT or any other post-login logic
-      res.status(200).send("User logged in successfully");
+    const { identifier, password } = req.body;
+    // Here you'd retrieve the user from the database based on the identifier
+    // which could be either a username or an email.
+    const user = await findUserByLogin(identifier);
+    //print the user information
+    if (user) {
+      const validPassword = await bcrypt.compare(password, user.password);
+      if (validPassword) {
+        res.status(200).send(user);
+        console.log("Correct password");
+      } else {
+        // Passwords don't match
+        res.status(400).send("Invalid password");
+      }
     } else {
-      res.status(401).send("Invalid login credentials");
+      res.status(404).send("User not found");
     }
   } catch (error) {
     console.error("Login error:", error);
@@ -59,11 +64,11 @@ router.post("/login", async (req, res) => {
 
 // Helper function to find user by username or email
 const findUserByLogin = async (login) => {
-  // Replace this logic with your database query
-  // For example:
-  return db.query("SELECT * FROM users WHERE username = $1 OR email = $1", [
-    login,
-  ]);
+  const result = await db.query(
+    "SELECT * FROM users WHERE username = $1 OR email = $1",
+    [login]
+  );
+  return result.rows[0]; // Accessing the first row of the result
 };
 
 module.exports = router;
