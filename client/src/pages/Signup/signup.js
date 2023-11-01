@@ -1,13 +1,15 @@
 import React, { useState } from "react";
 import axios from "axios";
-import { TextField, Button, Box } from "@mui/material";
+import { TextField, Button, Box, Typography, Alert } from "@mui/material";
 function SignUpForm() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [username, setUsername] = useState("");
+  const [error, setError] = useState("");
 
   const handleSignUp = async (event) => {
     event.preventDefault();
+    setError("");
     try {
       // Here, add your API endpoint to post the data
       const response = await axios.post("http://localhost:3001/api/signup", {
@@ -19,6 +21,9 @@ function SignUpForm() {
       // Handle success here (e.g., redirect to login page, show message)
     } catch (error) {
       console.error("Sign up failed:", error);
+      setError(
+        error.response?.data?.message || "Failed to login. Please try again."
+      );
       // Handle error here (e.g., show error message)
     }
   };
@@ -26,11 +31,19 @@ function SignUpForm() {
   return (
     <Box
       sx={{
+        display: "flex",
+        flexDirection: "column",
+        justifyContent: "center",
+        alignItems: "center",
+        height: "100vh", // to take the full height of the viewport
         maxWidth: 400,
-        mx: "auto", // margin left & right
-        mt: 5, // margin top
+        mx: "auto",
       }}
     >
+      <Typography variant="h4" sx={{ mb: 2 }}>
+        Signup
+      </Typography>
+      {error && <Alert severity="error">{error}</Alert>}
       <form onSubmit={handleSignUp}>
         <TextField
           label="Username"
@@ -40,6 +53,29 @@ function SignUpForm() {
           required
           fullWidth
           margin="normal"
+          sx={{
+            "& label.Mui-focused": {
+              color: "white",
+            },
+            "& label": {
+              color: "white",
+            },
+            "& input": {
+              color: "#d1d1d1", // Ein leicht dunklerer Farbton für den Text in den Textfeldern
+            },
+            "& .MuiOutlinedInput-root": {
+              "& fieldset": {
+                borderColor: "#d1d1d1", // Helle Border-Farbe
+              },
+              "&:hover fieldset": {
+                borderColor: "white", // Helle Border-Farbe beim Hover
+              },
+              "&.Mui-focused fieldset": {
+                borderColor: "white",
+              },
+            },
+            backgroundColor: "#2c2f36",
+          }}
         />
         <TextField
           label="Email"
@@ -49,6 +85,29 @@ function SignUpForm() {
           required
           fullWidth
           margin="normal"
+          sx={{
+            "& label.Mui-focused": {
+              color: "white",
+            },
+            "& label": {
+              color: "white",
+            },
+            "& input": {
+              color: "#d1d1d1", // Ein leicht dunklerer Farbton für den Text in den Textfeldern
+            },
+            "& .MuiOutlinedInput-root": {
+              "& fieldset": {
+                borderColor: "#d1d1d1", // Helle Border-Farbe
+              },
+              "&:hover fieldset": {
+                borderColor: "white", // Helle Border-Farbe beim Hover
+              },
+              "&.Mui-focused fieldset": {
+                borderColor: "white",
+              },
+            },
+            backgroundColor: "#2c2f36",
+          }}
         />
         <TextField
           label="Password"
@@ -58,9 +117,44 @@ function SignUpForm() {
           required
           fullWidth
           margin="normal"
+          sx={{
+            "& label.Mui-focused": {
+              color: "white",
+            },
+            "& label": {
+              color: "white",
+            },
+            "& input": {
+              color: "#d1d1d1", // Ein leicht dunklerer Farbton für den Text in den Textfeldern
+            },
+            "& .MuiOutlinedInput-root": {
+              "& fieldset": {
+                borderColor: "#d1d1d1", // Helle Border-Farbe
+              },
+              "&:hover fieldset": {
+                borderColor: "white", // Helle Border-Farbe beim Hover
+              },
+              "&.Mui-focused fieldset": {
+                borderColor: "white",
+              },
+            },
+            backgroundColor: "#2c2f36",
+          }}
         />
-        <Button type="submit" variant="contained" color="primary">
-          Sign Up
+        <Button
+          type="submit"
+          fullWidth
+          variant="contained"
+          sx={{
+            mt: 3,
+            mb: 2,
+            backgroundColor: "#3A415C",
+            color: "white",
+            fontSize: "1.1rem", // Größerer Button-Text
+            boxShadow: "0 2px 4px rgba(0, 0, 0, 0.1)", // Leichter Schatten
+          }}
+        >
+          Signup
         </Button>
       </form>
     </Box>

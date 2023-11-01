@@ -12,7 +12,6 @@ function HomePage() {
   };
 
   return (
-    // Apply flexbox to center the content
     <div
       style={{
         display: "flex",

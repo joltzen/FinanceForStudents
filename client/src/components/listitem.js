@@ -8,12 +8,12 @@ function StyledListItem(props) {
       component="a"
       href={props.href}
       sx={{
-        backgroundColor: "white",
-        "&:hover": { backgroundColor: "lightgrey" },
+        backgroundColor: "#333740",
+        "&:hover": { backgroundColor: "#3A415C" },
       }}
     >
       <ListItemText>
-        <Typography sx={{ mx: 0.5, fontSize: "18px", width: 200 }}>
+        <Typography sx={{ mx: 0.5, fontSize: "20px", width: 200 }}>
           {props.primary}
         </Typography>
       </ListItemText>
