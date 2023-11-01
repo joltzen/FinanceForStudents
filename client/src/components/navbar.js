@@ -6,7 +6,6 @@ import {
   Drawer,
   List,
   Divider,
-  Button,
   Typography,
 } from "@mui/material";
 import MenuIcon from "@mui/icons-material/Menu";
@@ -19,6 +18,7 @@ import { Link } from "react-router-dom"; // Hier importiert
 import Menu from "@mui/material/Menu";
 import MenuItem from "@mui/material/MenuItem";
 import AccountCircle from "@mui/icons-material/AccountCircle";
+import NavButtons from "./navbuttons";
 
 const StyledAppBar = styled(AppBar)({
   zIndex: 1400,
@@ -143,12 +143,8 @@ function Navbar() {
             </div>
           ) : (
             <>
-              <Button color="inherit" href="/signup" sx={{ color: "#d8c690" }}>
-                Signup
-              </Button>
-              <Button color="inherit" href="/login" sx={{ color: "#d8c690" }}>
-                Login
-              </Button>
+              <NavButtons text="Signup" path="/signup"></NavButtons>
+              <NavButtons text="Login" path="/login"></NavButtons>
             </>
           )}
         </Toolbar>

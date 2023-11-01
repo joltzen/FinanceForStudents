@@ -1,6 +1,7 @@
 import { useAuth } from "../../core/auth/auth";
 import Button from "@mui/material/Button";
 import { useNavigate } from "react-router-dom";
+import Page from "../../components/page";
 
 function ProfilePage() {
   const { user, logout } = useAuth();
@@ -12,15 +13,7 @@ function ProfilePage() {
   };
 
   return (
-    <div
-      style={{
-        display: "flex",
-        flexDirection: "column",
-        justifyContent: "center",
-        alignItems: "center",
-        height: "100vh", // 100% of the viewport height
-      }}
-    >
+    <Page>
       <h1>Profile Page</h1>
       {user ? (
         <>
@@ -42,7 +35,7 @@ function ProfilePage() {
           </Button>
         </p>
       )}
-    </div>
+    </Page>
   );
 }
 export default ProfilePage;
