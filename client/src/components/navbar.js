@@ -28,25 +28,22 @@ const StyledAppBar = styled(AppBar)({
 const StyledDrawer = styled(Drawer)({
   zIndex: 1200,
   "& .MuiDrawer-paper": {
-    // Targeting the inner paper component of Drawer
-    backgroundColor: "#333740", // Your desired background color for the sidebar
+    backgroundColor: "#333740",
     color: "white",
-    // If you also want to change the text color
   },
 });
 
 const StyledMenuItem = styled(MenuItem)({
   zIndex: 1200,
-  fontSize: "1.4rem",
 });
 
 const StyledDrawerContent = styled("div")({
-  width: "250px",
+  width: "15vw",
   marginTop: "70px",
+
   "& .MuiDrawer-paper": {
-    // Targeting the inner paper component of Drawer
-    backgroundColor: "#333740", // Your desired background color for the sidebar
-    color: "white", // If you also want to change the text color
+    backgroundColor: "#333740",
+    color: "white",
   },
 });
 
@@ -81,29 +78,52 @@ function Navbar() {
             color="inherit"
             aria-label="menu"
             onClick={toggleDrawer}
-            sx={{ color: "#d8c690" }}
+            sx={{
+              color: "#d8c690",
+              fontSize: "20px", // you can use values like 'small', 'inherit', 'default', 'large', or even fixed sizes like '16px'
+            }}
           >
             {isPlusIcon ? (
-              <ArrowBackIosIcon sx={{ fontSize: "2rem" }} />
+              <ArrowBackIosIcon fontSize="inherit" />
             ) : (
-              <MenuIcon sx={{ fontSize: "2rem" }} />
+              <MenuIcon fontSize="inherit" />
             )}
           </IconButton>
           <div style={{ flexGrow: 1 }} />
-          <Link to="/" style={{ textDecoration: "none", color: "inherit" }}>
-            <Typography
-              variant="h6"
-              noWrap
-              sx={{
-                fontWeight: "bold",
-                fontSize: "35px",
-                color: "#cbb264",
-                fontFamily: "'Lato', sans-serif",
-              }}
+          {user ? (
+            <Link
+              to="/dashboard"
+              style={{ textDecoration: "none", color: "inherit" }}
             >
-              FinanceForStudents
-            </Typography>
-          </Link>
+              <Typography
+                variant="h1"
+                noWrap
+                sx={{
+                  fontWeight: "bold",
+                  fontSize: "25px",
+                  color: "#cbb264",
+                  fontFamily: "'Lato', sans-serif",
+                }}
+              >
+                FinanceForStudents
+              </Typography>
+            </Link>
+          ) : (
+            <Link to="/" style={{ textDecoration: "none", color: "inherit" }}>
+              <Typography
+                variant="h1"
+                noWrap
+                sx={{
+                  fontWeight: "bold",
+                  fontSize: "25px",
+                  color: "#cbb264",
+                  fontFamily: "'Lato', sans-serif",
+                }}
+              >
+                FinanceForStudents
+              </Typography>
+            </Link>
+          )}
           <div style={{ flexGrow: 1 }} />{" "}
           {user ? (
             <div>
@@ -113,9 +133,9 @@ function Navbar() {
                 aria-haspopup="true"
                 onClick={handleProfileMenuOpen}
                 color="inherit"
-                sx={{ color: "#d8c690" }}
+                sx={{ color: "#d8c690", fontSize: "20px" }}
               >
-                <AccountCircle sx={{ fontSize: "2rem" }} />
+                <AccountCircle />
               </IconButton>
               <Menu
                 anchorEl={anchorEl}
@@ -125,7 +145,6 @@ function Navbar() {
                 open={Boolean(anchorEl)}
                 onClose={handleProfileMenuClose}
                 sx={{
-                  fontSize: "1.5rem", // Increase the font size#
                   marginTop: 5,
                 }}
               >
@@ -155,16 +174,20 @@ function Navbar() {
           onClick={toggleDrawer}
           onKeyDown={toggleDrawer}
         >
+          {user ? (
+            <>
+              <StyledListItem href="/dashboard" primary="Dashboard" />
+              <StyledListItem href="/profile" primary="Profile" />
+            </>
+          ) : (
+            <></>
+          )}
           <List>
             <StyledListItem href="/" primary="Home" />
             <StyledListItem href="/about" primary="About" />
             <StyledListItem href="/contact" primary="Contact" />
+
             <Divider />
-            {user ? (
-              <StyledListItem href="/profile" primary="Profile" />
-            ) : (
-              <></>
-            )}
           </List>
         </StyledDrawerContent>
       </StyledDrawer>

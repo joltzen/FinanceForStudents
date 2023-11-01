@@ -1,17 +1,18 @@
-import React, { useContext } from "react";
+import React from "react";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
-import HomePage from "./pages/Homepage/homepage";
-import AboutPage from "./pages/About/about";
-import ContactPage from "./pages/Contact/contact";
 import Navbar from "./components/navbar";
-import SignUpForm from "./pages/Signup/signup";
-import LoginPage from "./pages/Login/login";
-import ProfilePage from "./pages/Profile/profile";
-import { SidebarProvider, SidebarContext } from "./core/sidebar";
-
+import { SidebarProvider } from "./core/sidebar";
 import { createTheme, ThemeProvider } from "@mui/material/styles";
-
 import { AuthProvider } from "./core/auth/auth";
+import {
+  Dashboard,
+  Home,
+  Login,
+  Profile,
+  Signup,
+  Contact,
+  About,
+} from "./pages";
 
 const theme = createTheme({
   components: {
@@ -68,12 +69,13 @@ function App() {
             }}
           >
             <Routes>
-              <Route path="/" element={<HomePage />} />
-              <Route path="/about" element={<AboutPage />} />
-              <Route path="/contact" element={<ContactPage />} />
-              <Route path="/signup" element={<SignUpForm />} />
-              <Route path="/login" element={<LoginPage />} />
-              <Route path="/profile" element={<ProfilePage />} />
+              <Route path="/" element={<Home />} />
+              <Route path="/about" element={<About />} />
+              <Route path="/contact" element={<Contact />} />
+              <Route path="/signup" element={<Signup />} />
+              <Route path="/login" element={<Login />} />
+              <Route path="/profile" element={<Profile />} />
+              <Route path="/dashboard" element={<Dashboard />} />
             </Routes>
           </div>
         </Router>

@@ -3,7 +3,7 @@ import Typography from "@mui/material/Typography";
 
 function Heading2(props) {
   return (
-    <Typography variant="h4" sx={{ fontWeight: "bold", marginTop: 5 }}>
+    <Typography variant="h5" sx={{ fontWeight: "bold", marginTop: 5 }}>
       {props.text}
     </Typography>
   );
