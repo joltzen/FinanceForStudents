@@ -16,6 +16,9 @@ import { styled } from "@mui/system";
 import StyledListItem from "./listitem";
 import { useAuth } from "../core/auth/auth";
 import { Link } from "react-router-dom"; // Hier importiert
+import Menu from "@mui/material/Menu";
+import MenuItem from "@mui/material/MenuItem";
+import AccountCircle from "@mui/icons-material/AccountCircle";
 
 const StyledAppBar = styled(AppBar)({
   zIndex: 1400,
@@ -32,6 +35,11 @@ const StyledDrawer = styled(Drawer)({
   },
 });
 
+const StyledMenuItem = styled(MenuItem)({
+  zIndex: 1200,
+  fontSize: "1.4rem",
+});
+
 const StyledDrawerContent = styled("div")({
   width: "250px",
   marginTop: "70px",
@@ -46,6 +54,7 @@ function Navbar() {
   const { isSidebarOpen, setSidebarOpen } = useContext(SidebarContext);
   const { user, logout } = useAuth();
   const [isPlusIcon, setIsPlusIcon] = useState(false);
+  const [anchorEl, setAnchorEl] = useState(null);
 
   const toggleDrawer = () => {
     setSidebarOpen(!isSidebarOpen);
@@ -54,6 +63,13 @@ function Navbar() {
 
   const handleLogout = () => {
     logout();
+  };
+  const handleProfileMenuOpen = (event) => {
+    setAnchorEl(event.currentTarget);
+  };
+
+  const handleProfileMenuClose = () => {
+    setAnchorEl(null);
   };
 
   return (
@@ -67,7 +83,11 @@ function Navbar() {
             onClick={toggleDrawer}
             sx={{ color: "#d8c690" }}
           >
-            {isPlusIcon ? <ArrowBackIosIcon /> : <MenuIcon />}
+            {isPlusIcon ? (
+              <ArrowBackIosIcon sx={{ fontSize: "2rem" }} />
+            ) : (
+              <MenuIcon sx={{ fontSize: "2rem" }} />
+            )}
           </IconButton>
           <div style={{ flexGrow: 1 }} />
           <Link to="/" style={{ textDecoration: "none", color: "inherit" }}>
@@ -86,13 +106,41 @@ function Navbar() {
           </Link>
           <div style={{ flexGrow: 1 }} />{" "}
           {user ? (
-            <Button
-              color="inherit"
-              onClick={handleLogout}
-              sx={{ color: "#d8c690" }}
-            >
-              Logout
-            </Button>
+            <div>
+              <IconButton
+                edge="end"
+                aria-label="account of current user"
+                aria-haspopup="true"
+                onClick={handleProfileMenuOpen}
+                color="inherit"
+                sx={{ color: "#d8c690" }}
+              >
+                <AccountCircle sx={{ fontSize: "2rem" }} />
+              </IconButton>
+              <Menu
+                anchorEl={anchorEl}
+                anchorOrigin={{ vertical: "top", horizontal: "right" }}
+                keepMounted
+                transformOrigin={{ vertical: "top", horizontal: "right" }}
+                open={Boolean(anchorEl)}
+                onClose={handleProfileMenuClose}
+                sx={{
+                  fontSize: "1.5rem", // Increase the font size#
+                  marginTop: 5,
+                }}
+              >
+                <StyledMenuItem
+                  onClick={handleProfileMenuClose}
+                  component={Link}
+                  to="/profile"
+                >
+                  {user.username}
+                </StyledMenuItem>
+                <StyledMenuItem onClick={handleLogout} component={Link} to="/">
+                  Logout
+                </StyledMenuItem>
+              </Menu>
+            </div>
           ) : (
             <>
               <Button color="inherit" href="/signup" sx={{ color: "#d8c690" }}>

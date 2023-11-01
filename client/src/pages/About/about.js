@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
 import { useAuth } from "../../core/auth/auth";
+import Page from "../../components/page";
 function AboutPage() {
   const [response, setResponse] = useState([]);
   const { user, logout } = useAuth();
@@ -17,15 +18,7 @@ function AboutPage() {
   }, []);
 
   return (
-    <div
-      style={{
-        display: "flex",
-        flexDirection: "column",
-        justifyContent: "center",
-        alignItems: "center",
-        height: "100vh", // 100% of the viewport height
-      }}
-    >
+    <Page>
       <h1>About Page</h1>
       {user && <p>Welcome, {user.username}!</p>}
       {response.length > 0 ? (
@@ -43,7 +36,7 @@ function AboutPage() {
       ) : (
         <p>No user data available.</p>
       )}
-    </div>
+    </Page>
   );
 }
 

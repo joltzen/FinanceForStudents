@@ -6,6 +6,7 @@ import ContactPage from "./pages/Contact/contact";
 import Navbar from "./components/navbar";
 import SignUpForm from "./pages/Signup/signup";
 import LoginPage from "./pages/Login/login";
+import ProfilePage from "./pages/Profile/profile";
 import { SidebarProvider, SidebarContext } from "./core/sidebar";
 
 import { createTheme, ThemeProvider } from "@mui/material/styles";
@@ -72,6 +73,7 @@ function App() {
               <Route path="/contact" element={<ContactPage />} />
               <Route path="/signup" element={<SignUpForm />} />
               <Route path="/login" element={<LoginPage />} />
+              <Route path="/profile" element={<ProfilePage />} />
             </Routes>
           </div>
         </Router>
