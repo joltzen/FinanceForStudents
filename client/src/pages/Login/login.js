@@ -41,9 +41,13 @@ function LoginPage() {
   return (
     <Box
       sx={{
+        display: "flex",
+        flexDirection: "column",
+        justifyContent: "center",
+        alignItems: "center",
+        height: "100vh", // to take the full height of the viewport
         maxWidth: 400,
-        mx: "auto", // margin left & right
-        mt: 5, // margin top
+        mx: "auto",
       }}
     >
       <Typography variant="h4" sx={{ mb: 2 }}>
@@ -62,7 +66,31 @@ function LoginPage() {
           autoFocus
           value={credentials.identifier}
           onChange={handleChange}
+          sx={{
+            "& label.Mui-focused": {
+              color: "white",
+            },
+            "& label": {
+              color: "white",
+            },
+            "& input": {
+              color: "#d1d1d1", // Ein leicht dunklerer Farbton für den Text in den Textfeldern
+            },
+            "& .MuiOutlinedInput-root": {
+              "& fieldset": {
+                borderColor: "#d1d1d1", // Helle Border-Farbe
+              },
+              "&:hover fieldset": {
+                borderColor: "white", // Helle Border-Farbe beim Hover
+              },
+              "&.Mui-focused fieldset": {
+                borderColor: "white",
+              },
+            },
+            backgroundColor: "#2c2f36",
+          }}
         />
+
         <TextField
           margin="normal"
           required
@@ -74,12 +102,42 @@ function LoginPage() {
           autoComplete="current-password"
           value={credentials.password}
           onChange={handleChange}
+          sx={{
+            "& label.Mui-focused": {
+              color: "white",
+            },
+            "& label": {
+              color: "white",
+            },
+            "& input": {
+              color: "#d1d1d1", // Ein leicht dunklerer Farbton für den Text in den Textfeldern
+            },
+            "& .MuiOutlinedInput-root": {
+              "& fieldset": {
+                borderColor: "#d1d1d1", // Helle Border-Farbe
+              },
+              "&:hover fieldset": {
+                borderColor: "white", // Helle Border-Farbe beim Hover
+              },
+              "&.Mui-focused fieldset": {
+                borderColor: "white",
+              },
+            },
+            backgroundColor: "#2c2f36",
+          }}
         />
         <Button
           type="submit"
           fullWidth
           variant="contained"
-          sx={{ mt: 3, mb: 2 }}
+          sx={{
+            mt: 3,
+            mb: 2,
+            backgroundColor: "#3A415C",
+            color: "white",
+            fontSize: "1.1rem", // Größerer Button-Text
+            boxShadow: "0 2px 4px rgba(0, 0, 0, 0.1)", // Leichter Schatten
+          }}
         >
           Login
         </Button>

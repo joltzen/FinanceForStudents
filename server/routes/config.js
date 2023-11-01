@@ -6,5 +6,4 @@ module.exports = {
     password: process.env.DB_PASSWORD || "your_password",
     port: process.env.DB_PORT || 5432,
   },
-  // Other configuration settings
 };

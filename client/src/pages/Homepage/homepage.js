@@ -12,7 +12,15 @@ function HomePage() {
   };
 
   return (
-    <div>
+    <div
+      style={{
+        display: "flex",
+        flexDirection: "column",
+        justifyContent: "center",
+        alignItems: "center",
+        height: "100vh", // 100% of the viewport height
+      }}
+    >
       <h1>Home Page</h1>
       {user ? (
         <>
@@ -22,7 +30,17 @@ function HomePage() {
           </Button>
         </>
       ) : (
-        <p>Please log in.</p>
+        <p>
+          <Button
+            variant="contained"
+            color="primary"
+            onClick={() => {
+              navigate("/login");
+            }}
+          >
+            Login
+          </Button>
+        </p>
       )}
     </div>
   );

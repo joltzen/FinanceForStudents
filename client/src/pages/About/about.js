@@ -17,7 +17,15 @@ function AboutPage() {
   }, []);
 
   return (
-    <div>
+    <div
+      style={{
+        display: "flex",
+        flexDirection: "column",
+        justifyContent: "center",
+        alignItems: "center",
+        height: "100vh", // 100% of the viewport height
+      }}
+    >
       <h1>About Page</h1>
       {user && <p>Welcome, {user.username}!</p>}
       {response.length > 0 ? (
