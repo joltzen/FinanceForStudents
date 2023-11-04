@@ -1,11 +1,14 @@
 import React, { useState } from "react";
 import axios from "axios";
 import { TextField, Button, Box, Typography, Alert } from "@mui/material";
+import { useNavigate } from "react-router";
+
 function SignUpForm() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [username, setUsername] = useState("");
   const [error, setError] = useState("");
+  const navigate = useNavigate();
 
   const handleSignUp = async (event) => {
     event.preventDefault();
@@ -18,7 +21,7 @@ function SignUpForm() {
         password,
       });
       console.log(response.data);
-      // Handle success here (e.g., redirect to login page, show message)
+      navigate("/login"); // Handle success here (e.g., redirect to login page, show message)
     } catch (error) {
       console.error("Sign up failed:", error);
       setError(

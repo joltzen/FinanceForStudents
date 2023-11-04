@@ -13,7 +13,7 @@ function StyledListItem(props) {
       }}
     >
       <ListItemText>
-        <Typography sx={{ mx: 0.5, fontSize: "20px", width: 200 }}>
+        <Typography sx={{ mx: 0.5, fontSize: "15px", width: 200 }}>
           {props.primary}
         </Typography>
       </ListItemText>

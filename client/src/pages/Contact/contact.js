@@ -1,18 +1,11 @@
 import React from "react";
+import Page from "../../components/page";
 
 function ContactPage() {
   return (
-    <div
-      style={{
-        display: "flex",
-        flexDirection: "column",
-        justifyContent: "center",
-        alignItems: "center",
-        height: "100vh", // 100% of the viewport height
-      }}
-    >
+    <Page>
       <h1>Welcome to the Contact Page!</h1>
-    </div>
+    </Page>
   );
 }
 

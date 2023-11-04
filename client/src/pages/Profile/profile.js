@@ -1,8 +1,9 @@
 import { useAuth } from "../../core/auth/auth";
 import Button from "@mui/material/Button";
 import { useNavigate } from "react-router-dom";
+import Page from "../../components/page";
 
-function HomePage() {
+function ProfilePage() {
   const { user, logout } = useAuth();
   const navigate = useNavigate();
 
@@ -12,16 +13,8 @@ function HomePage() {
   };
 
   return (
-    <div
-      style={{
-        display: "flex",
-        flexDirection: "column",
-        justifyContent: "center",
-        alignItems: "center",
-        height: "100vh", // 100% of the viewport height
-      }}
-    >
-      <h1>Home Page</h1>
+    <Page>
+      <h1>Profile Page</h1>
       {user ? (
         <>
           <p>Welcome, {user.username}!</p>
@@ -42,7 +35,7 @@ function HomePage() {
           </Button>
         </p>
       )}
-    </div>
+    </Page>
   );
 }
-export default HomePage;
+export default ProfilePage;

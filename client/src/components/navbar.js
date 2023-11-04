@@ -6,7 +6,6 @@ import {
   Drawer,
   List,
   Divider,
-  Button,
   Typography,
 } from "@mui/material";
 import MenuIcon from "@mui/icons-material/Menu";
@@ -16,6 +15,10 @@ import { styled } from "@mui/system";
 import StyledListItem from "./listitem";
 import { useAuth } from "../core/auth/auth";
 import { Link } from "react-router-dom"; // Hier importiert
+import Menu from "@mui/material/Menu";
+import MenuItem from "@mui/material/MenuItem";
+import AccountCircle from "@mui/icons-material/AccountCircle";
+import NavButtons from "./navbuttons";
 
 const StyledAppBar = styled(AppBar)({
   zIndex: 1400,
@@ -25,20 +28,22 @@ const StyledAppBar = styled(AppBar)({
 const StyledDrawer = styled(Drawer)({
   zIndex: 1200,
   "& .MuiDrawer-paper": {
-    // Targeting the inner paper component of Drawer
-    backgroundColor: "#333740", // Your desired background color for the sidebar
+    backgroundColor: "#333740",
     color: "white",
-    // If you also want to change the text color
   },
 });
 
+const StyledMenuItem = styled(MenuItem)({
+  zIndex: 1200,
+});
+
 const StyledDrawerContent = styled("div")({
-  width: "250px",
+  width: "15vw",
   marginTop: "70px",
+
   "& .MuiDrawer-paper": {
-    // Targeting the inner paper component of Drawer
-    backgroundColor: "#333740", // Your desired background color for the sidebar
-    color: "white", // If you also want to change the text color
+    backgroundColor: "#333740",
+    color: "white",
   },
 });
 
@@ -46,6 +51,7 @@ function Navbar() {
   const { isSidebarOpen, setSidebarOpen } = useContext(SidebarContext);
   const { user, logout } = useAuth();
   const [isPlusIcon, setIsPlusIcon] = useState(false);
+  const [anchorEl, setAnchorEl] = useState(null);
 
   const toggleDrawer = () => {
     setSidebarOpen(!isSidebarOpen);
@@ -54,6 +60,13 @@ function Navbar() {
 
   const handleLogout = () => {
     logout();
+  };
+  const handleProfileMenuOpen = (event) => {
+    setAnchorEl(event.currentTarget);
+  };
+
+  const handleProfileMenuClose = () => {
+    setAnchorEl(null);
   };
 
   return (
@@ -65,42 +78,92 @@ function Navbar() {
             color="inherit"
             aria-label="menu"
             onClick={toggleDrawer}
-            sx={{ color: "#d8c690" }}
+            sx={{
+              color: "#d8c690",
+              fontSize: "20px", // you can use values like 'small', 'inherit', 'default', 'large', or even fixed sizes like '16px'
+            }}
           >
-            {isPlusIcon ? <ArrowBackIosIcon /> : <MenuIcon />}
+            {isPlusIcon ? (
+              <ArrowBackIosIcon fontSize="inherit" />
+            ) : (
+              <MenuIcon fontSize="inherit" />
+            )}
           </IconButton>
           <div style={{ flexGrow: 1 }} />
-          <Link to="/" style={{ textDecoration: "none", color: "inherit" }}>
-            <Typography
-              variant="h6"
-              noWrap
-              sx={{
-                fontWeight: "bold",
-                fontSize: "35px",
-                color: "#cbb264",
-                fontFamily: "'Lato', sans-serif",
-              }}
+          {user ? (
+            <Link
+              to="/dashboard"
+              style={{ textDecoration: "none", color: "inherit" }}
             >
-              FinanceForStudents
-            </Typography>
-          </Link>
+              <Typography
+                variant="h1"
+                noWrap
+                sx={{
+                  fontWeight: "bold",
+                  fontSize: "25px",
+                  color: "#cbb264",
+                  fontFamily: "'Lato', sans-serif",
+                }}
+              >
+                FinanceForStudents
+              </Typography>
+            </Link>
+          ) : (
+            <Link to="/" style={{ textDecoration: "none", color: "inherit" }}>
+              <Typography
+                variant="h1"
+                noWrap
+                sx={{
+                  fontWeight: "bold",
+                  fontSize: "25px",
+                  color: "#cbb264",
+                  fontFamily: "'Lato', sans-serif",
+                }}
+              >
+                FinanceForStudents
+              </Typography>
+            </Link>
+          )}
           <div style={{ flexGrow: 1 }} />{" "}
           {user ? (
-            <Button
-              color="inherit"
-              onClick={handleLogout}
-              sx={{ color: "#d8c690" }}
-            >
-              Logout
-            </Button>
+            <div>
+              <IconButton
+                edge="end"
+                aria-label="account of current user"
+                aria-haspopup="true"
+                onClick={handleProfileMenuOpen}
+                color="inherit"
+                sx={{ color: "#d8c690", fontSize: "20px" }}
+              >
+                <AccountCircle />
+              </IconButton>
+              <Menu
+                anchorEl={anchorEl}
+                anchorOrigin={{ vertical: "top", horizontal: "right" }}
+                keepMounted
+                transformOrigin={{ vertical: "top", horizontal: "right" }}
+                open={Boolean(anchorEl)}
+                onClose={handleProfileMenuClose}
+                sx={{
+                  marginTop: 5,
+                }}
+              >
+                <StyledMenuItem
+                  onClick={handleProfileMenuClose}
+                  component={Link}
+                  to="/profile"
+                >
+                  {user.username}
+                </StyledMenuItem>
+                <StyledMenuItem onClick={handleLogout} component={Link} to="/">
+                  Logout
+                </StyledMenuItem>
+              </Menu>
+            </div>
           ) : (
             <>
-              <Button color="inherit" href="/signup" sx={{ color: "#d8c690" }}>
-                Signup
-              </Button>
-              <Button color="inherit" href="/login" sx={{ color: "#d8c690" }}>
-                Login
-              </Button>
+              <NavButtons text="Signup" path="/signup"></NavButtons>
+              <NavButtons text="Login" path="/login"></NavButtons>
             </>
           )}
         </Toolbar>
@@ -111,16 +174,20 @@ function Navbar() {
           onClick={toggleDrawer}
           onKeyDown={toggleDrawer}
         >
+          {user ? (
+            <>
+              <StyledListItem href="/dashboard" primary="Dashboard" />
+              <StyledListItem href="/profile" primary="Profile" />
+            </>
+          ) : (
+            <></>
+          )}
           <List>
             <StyledListItem href="/" primary="Home" />
             <StyledListItem href="/about" primary="About" />
             <StyledListItem href="/contact" primary="Contact" />
+
             <Divider />
-            {user ? (
-              <StyledListItem href="/profile" primary="Profile" />
-            ) : (
-              <></>
-            )}
           </List>
         </StyledDrawerContent>
       </StyledDrawer>

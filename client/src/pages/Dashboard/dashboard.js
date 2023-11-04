@@ -2,9 +2,10 @@ import React, { useEffect, useState } from "react";
 import axios from "axios";
 import { useAuth } from "../../core/auth/auth";
 import Page from "../../components/page";
-function AboutPage() {
+
+function DashboardPage() {
   const [response, setResponse] = useState([]);
-  const { user, logout } = useAuth();
+  const { user } = useAuth();
   useEffect(() => {
     axios
       .get("http://localhost:3001/api/getData")
@@ -19,7 +20,7 @@ function AboutPage() {
 
   return (
     <Page>
-      <h1>About Page</h1>
+      <h1>Dashboard Page</h1>
       {user && <p>Welcome, {user.username}!</p>}
       {response.length > 0 ? (
         <div>
@@ -40,4 +41,4 @@ function AboutPage() {
   );
 }
 
-export default AboutPage;
+export default DashboardPage;
