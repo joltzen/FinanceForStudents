@@ -7,6 +7,8 @@ function SignUpForm() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [username, setUsername] = useState("");
+  const [firstname, setFirstname] = useState("");
+  const [surname, setSurname] = useState("");
   const [error, setError] = useState("");
   const navigate = useNavigate();
 
@@ -19,6 +21,8 @@ function SignUpForm() {
         username,
         email,
         password,
+        firstname,
+        surname,
       });
       console.log(response.data);
       navigate("/login"); // Handle success here (e.g., redirect to login page, show message)
@@ -48,6 +52,70 @@ function SignUpForm() {
       </Typography>
       {error && <Alert severity="error">{error}</Alert>}
       <form onSubmit={handleSignUp}>
+        <TextField
+          label="Firstname"
+          type="firstname"
+          value={firstname}
+          onChange={(e) => setFirstname(e.target.value)}
+          required
+          fullWidth
+          margin="normal"
+          sx={{
+            "& label.Mui-focused": {
+              color: "white",
+            },
+            "& label": {
+              color: "white",
+            },
+            "& input": {
+              color: "#d1d1d1", // Ein leicht dunklerer Farbton für den Text in den Textfeldern
+            },
+            "& .MuiOutlinedInput-root": {
+              "& fieldset": {
+                borderColor: "#d1d1d1", // Helle Border-Farbe
+              },
+              "&:hover fieldset": {
+                borderColor: "white", // Helle Border-Farbe beim Hover
+              },
+              "&.Mui-focused fieldset": {
+                borderColor: "white",
+              },
+            },
+            backgroundColor: "#2c2f36",
+          }}
+        />
+        <TextField
+          label="Surname"
+          type="surname"
+          value={surname}
+          onChange={(e) => setSurname(e.target.value)}
+          required
+          fullWidth
+          margin="normal"
+          sx={{
+            "& label.Mui-focused": {
+              color: "white",
+            },
+            "& label": {
+              color: "white",
+            },
+            "& input": {
+              color: "#d1d1d1", // Ein leicht dunklerer Farbton für den Text in den Textfeldern
+            },
+            "& .MuiOutlinedInput-root": {
+              "& fieldset": {
+                borderColor: "#d1d1d1", // Helle Border-Farbe
+              },
+              "&:hover fieldset": {
+                borderColor: "white", // Helle Border-Farbe beim Hover
+              },
+              "&.Mui-focused fieldset": {
+                borderColor: "white",
+              },
+            },
+            backgroundColor: "#2c2f36",
+          }}
+        />
         <TextField
           label="Username"
           type="username"

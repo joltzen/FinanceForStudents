@@ -153,7 +153,7 @@ function Navbar() {
                   component={Link}
                   to="/profile"
                 >
-                  {user.username}
+                  {user.firstname} {user.surname}
                 </StyledMenuItem>
                 <StyledMenuItem onClick={handleLogout} component={Link} to="/">
                   Logout
@@ -177,7 +177,9 @@ function Navbar() {
           {user ? (
             <>
               <StyledListItem href="/dashboard" primary="Dashboard" />
-              <StyledListItem href="/profile" primary="Profile" />
+              <StyledListItem href="/finance" primary="Finanzverwaltung" />
+              <StyledListItem href="/profile" primary="Profil" />
+              <Divider />
             </>
           ) : (
             <></>

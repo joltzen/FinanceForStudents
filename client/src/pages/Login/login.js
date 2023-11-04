@@ -26,15 +26,19 @@ function LoginPage() {
     setError("");
     try {
       const response = await axiosInstance.post("/login", credentials);
-      console.log("test2", response.data);
-      login({ username: response.data.username });
+      login({
+        id: response.data.id,
+        username: response.data.username,
+        firstname: response.data.firstname,
+        surname: response.data.surname,
+      });
       console.log("Login successful:", response.data);
       navigate("/dashboard");
     } catch (err) {
       console.error("Login error:", err);
       setError(
         err.response?.data?.message || "Failed to login. Please try again."
-      ); // Displaying server-provided error message or a generic error message
+      );
     }
   };
 
