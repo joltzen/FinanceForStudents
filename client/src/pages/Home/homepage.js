@@ -18,6 +18,8 @@ function HomePage() {
           display: "flex",
           flexDirection: "column",
           alignItems: "flex-start",
+          marginLeft: "5vw",
+          marginRight: "5vw",
         }}
       >
         <Heading text={strings.homepage.welcomeMessage} />
