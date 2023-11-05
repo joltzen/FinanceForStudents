@@ -2,6 +2,7 @@ const express = require("express");
 const router = express.Router();
 const db = require("./db"); // Import the database module
 const bcrypt = require("bcrypt");
+const { map } = require("../app");
 
 router.get("/getData", (req, res) => {
   db.query("SELECT * FROM users", (err, result) => {
@@ -109,5 +110,45 @@ const findUserByLogin = async (login) => {
   );
   return result.rows[0]; // Accessing the first row of the result
 };
+
+router.get("/getCategories", async (req, res) => {
+  try {
+    const { user_id } = req.query;
+    console.log(user_id);
+    const result = await db.query(
+      "SELECT * FROM categories WHERE user_id = $1",
+      [user_id]
+    );
+    res.json(result.rows);
+  } catch (error) {
+    console.error("Error getting user transactions:", error);
+    res.status(500).json({ error: "Error fetching transactions" });
+  }
+});
+router.post("/saveCategory", async (req, res) => {
+  try {
+    const { name, user_id, color } = req.body;
+    console.log(name, user_id, color);
+    const query = `
+      INSERT INTO categories (name, user_id, color)
+      VALUES ($1, $2, $3)
+      RETURNING *;`;
+
+    const values = [name, user_id, color];
+    db.query(query, values, (err, result) => {
+      if (err) {
+        console.error("Fehler beim Einfügen der Kategorie:", err);
+        return res
+          .status(500)
+          .json({ error: "Fehler beim Einfügen der Kategorie" });
+      }
+      const insertedTransaction = result.rows[0];
+      res.status(201).json(insertedTransaction);
+    });
+  } catch (error) {
+    console.error("Fehler beim Hinzufügen der Kategorie:", error);
+    res.status(500).json({ error: "Fehler beim Hinzufügen der Kategorie" });
+  }
+});
 
 module.exports = router;

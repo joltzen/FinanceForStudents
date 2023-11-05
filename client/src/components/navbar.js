@@ -178,6 +178,7 @@ function Navbar() {
             <>
               <StyledListItem href="/dashboard" primary="Dashboard" />
               <StyledListItem href="/finance" primary="Finanzverwaltung" />
+              <StyledListItem href="/settings" primary="Settings" />
               <StyledListItem href="/profile" primary="Profil" />
               <Divider />
             </>

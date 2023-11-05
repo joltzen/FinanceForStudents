@@ -5,4 +5,5 @@ export { Signup } from "./Signup";
 export { About } from "./About";
 export { Contact } from "./Contact";
 export { Home } from "./Home";
-export { CombinedFinanceComponent } from "./Finance";
+export { Settings } from "./Settings";
+export { FinancePage } from "./Finance";

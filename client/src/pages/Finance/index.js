@@ -1,1 +1,1 @@
-export { default as CombinedFinanceComponent } from "./finance";
+export { default as FinancePage } from "./finance";

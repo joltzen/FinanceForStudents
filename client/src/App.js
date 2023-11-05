@@ -12,7 +12,8 @@ import {
   Signup,
   Contact,
   About,
-  CombinedFinanceComponent,
+  Settings,
+  FinancePage,
 } from "./pages";
 
 const theme = createTheme({
@@ -76,8 +77,9 @@ function App() {
               <Route path="/signup" element={<Signup />} />
               <Route path="/login" element={<Login />} />
               <Route path="/profile" element={<Profile />} />
-              <Route path="/finance" element={<CombinedFinanceComponent />} />
+              <Route path="/finance" element={<FinancePage />} />
               <Route path="/dashboard" element={<Dashboard />} />
+              <Route path="/settings" element={<Settings />} />
             </Routes>
           </div>
         </Router>

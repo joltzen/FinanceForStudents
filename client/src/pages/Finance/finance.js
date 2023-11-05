@@ -43,9 +43,10 @@ function FinancePage() {
   const [description, setDescription] = useState("");
   const [amount, setAmount] = useState("");
   const [transactionType, setTransactionType] = useState("Einnahme");
+  const [transactions, setTransactions] = useState([]);
 
   const [error, setError] = useState("");
-  const { user, logout } = useAuth();
+  const { user } = useAuth();
 
   const handleDateChange = (e) => {
     setDate(e.target.value);
@@ -79,7 +80,8 @@ function FinancePage() {
           user_id: user.id,
         }
       );
-      console.log(response.data);
+      setTransactions([...transactions, response.data]);
+      console.log(error);
     } catch (error) {
       console.error("Transaction failed:", error);
       setError(
@@ -90,70 +92,89 @@ function FinancePage() {
   };
 
   return (
-    <Page>
+    <div>
       <Box
         sx={{
           display: "flex",
-          flexDirection: "column",
           justifyContent: "center",
-          alignItems: "center",
-          height: "100vh", // to take the full height of the viewport
-          maxWidth: 400,
+          alignItems: "flex-start", // Align items to start of the container
+          height: "100vh",
           mx: "auto",
+          p: 2, // Padding around the whole container for some space
         }}
       >
-        <form onSubmit={handleSubmit}>
-          <FormControl fullWidth>
-            <InputLabel style={{ color: "white" }}>Transaktionstyp</InputLabel>
-            <Select
-              value={transactionType}
-              onChange={handleTransactionTypeChange}
-              label="Transaktionstyp"
-              style={{ color: "white" }}
-            >
-              <MenuItem value="Einnahme">Einnahme</MenuItem>
-              <MenuItem value="Ausgabe">Ausgabe</MenuItem>
-            </Select>
-          </FormControl>
-          <StyledTextField
-            label="Betrag"
-            type="number"
-            value={amount}
-            onChange={handleAmountChange}
-            fullWidth
-            required
-          />
-          <br />
-          <StyledTextField
-            label="Beschreibung"
-            type="text"
-            value={description}
-            onChange={handleDescriptionChange}
-            fullWidth
-            required
-          />
-          <StyledTextField
-            label="Datum"
-            type="date"
-            value={date}
-            onChange={handleDateChange}
-            fullWidth
-            required
-            InputProps={{
-              inputProps: { step: 300 },
-            }}
-            InputLabelProps={{
-              shrink: true,
-            }}
-          />
-          <br />
-          <br />
-          <Button type="submit" variant="contained" color="primary">
-            Hinzufügen
-          </Button>
-        </form>
+        <Box
+          sx={{
+            flex: 1, // Take up half the space
+            maxWidth: "33%", // Limit maximum width to 50%
+            p: 2, // Padding inside the left box
+            marginRight: "100px",
+          }}
+        >
+          <form onSubmit={handleSubmit}>
+            <FormControl fullWidth>
+              <InputLabel style={{ color: "white" }}>
+                Transaktionstyp
+              </InputLabel>
+              <Select
+                value={transactionType}
+                onChange={handleTransactionTypeChange}
+                label="Transaktionstyp"
+                style={{ color: "white" }}
+              >
+                <MenuItem value="Einnahme">Einnahme</MenuItem>
+                <MenuItem value="Ausgabe">Ausgabe</MenuItem>
+              </Select>
+            </FormControl>
+            <StyledTextField
+              label="Betrag"
+              type="number"
+              value={amount}
+              onChange={handleAmountChange}
+              fullWidth
+              required
+            />
+            <br />
+            <StyledTextField
+              label="Beschreibung"
+              type="text"
+              value={description}
+              onChange={handleDescriptionChange}
+              fullWidth
+              required
+            />
+            <StyledTextField
+              label="Datum"
+              type="date"
+              value={date}
+              onChange={handleDateChange}
+              fullWidth
+              required
+              InputProps={{
+                inputProps: { step: 300 },
+              }}
+              InputLabelProps={{
+                shrink: true,
+              }}
+            />
+            <br />
+            <br />
+            <Button type="submit" variant="contained" color="primary">
+              Hinzufügen
+            </Button>
+          </form>
+        </Box>
+        <Box
+          sx={{
+            flex: 1, // Take up the other half of the space
+            maxWidth: "66%", // Limit maximum width to 50%
+            p: 2, // Padding inside the right box
+          }}
+        >
+          <FinanceOverview transactions={transactions} />
+        </Box>
       </Box>
-    </Page>
+    </div>
   );
 }
 
