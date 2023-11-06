@@ -9,7 +9,7 @@ function ProfilePage() {
 
   const handleLogout = () => {
     logout();
-    navigate("/login"); // Redirect to login after logout
+    navigate("/login"); 
   };
 
   return (

@@ -9,9 +9,7 @@ function AboutPage() {
     axios
       .get("http://localhost:3001/api/getData")
       .then((response) => {
-        setResponse(response.data);
-        console.log("Datenbankverbindung erfolgreich getestet:", response.data);
-      })
+        setResponse(response.data);      })
       .catch((error) => {
         console.error("Fehler bei der Testanfrage:", error);
       });
