@@ -123,7 +123,6 @@ const findUserByLogin = async (login) => {
 router.get("/getCategories", async (req, res) => {
   try {
     const { user_id } = req.query;
-    console.log(user_id);
     const result = await db.query(
       "SELECT * FROM categories WHERE user_id = $1",
       [user_id]

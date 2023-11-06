@@ -68,8 +68,6 @@ function FinancePage() {
 
   const handleSubmit = async (event) => {
     event.preventDefault();
-
-    console.log(category);
     setError("");
     try {
       //Here, add your API endpoint to post the data
@@ -84,7 +82,10 @@ function FinancePage() {
           category_id: category,
         }
       );
-      setTransactions([...transactions, response.data]);
+      setTransactions((prevTransactions) => [
+        ...prevTransactions,
+        response.data.transaction,
+      ]);
       console.log(error);
     } catch (error) {
       console.error("Transaction failed:", error);
@@ -96,7 +97,7 @@ function FinancePage() {
   };
 
   useEffect(() => {
-   const fetchCategories = async () => {
+    const fetchCategories = async () => {
       try {
         const response = await axios.get(
           "http://localhost:3001/api/getCategories",
@@ -110,7 +111,7 @@ function FinancePage() {
       }
     };
 
-    fetchCategories(); 
+    fetchCategories();
   }, [user.id]); // Abhängigkeit auf user.id, um Kategorien neu zu laden, wenn sich die user.id ändert
 
   return (
@@ -144,8 +145,8 @@ function FinancePage() {
                 label="Transaktionstyp"
                 style={{ color: "white" }}
               >
-                <MenuItem value="Einnahme">Einnahme</MenuItem>
                 <MenuItem value="Ausgabe">Ausgabe</MenuItem>
+                <MenuItem value="Einnahme">Einnahme</MenuItem>
               </Select>
             </FormControl>
             <StyledTextField
@@ -217,7 +218,7 @@ function FinancePage() {
             p: 2, // Padding inside the right box
           }}
         >
-          <FinanceOverview transactions={transactions} />
+          <FinanceOverview />
         </Box>
       </Box>
     </div>

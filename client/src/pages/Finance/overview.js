@@ -102,7 +102,7 @@ function FinanceOverview() {
     };
 
     fetchCategories();
-  }, [filterMonth, filterYear]);
+  }, [filterMonth, filterYear, transactions]);
 
   return (
     <div>
