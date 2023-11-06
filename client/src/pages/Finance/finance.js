@@ -39,7 +39,7 @@ const StyledTextField = styled(TextField)({
 });
 
 function FinancePage() {
-  const [category, setCategory] = useState(""); 
+  const [category, setCategory] = useState("");
   const [date, setDate] = useState("");
   const [description, setDescription] = useState("");
   const [amount, setAmount] = useState("");
@@ -119,7 +119,6 @@ function FinancePage() {
           display: "flex",
           justifyContent: "center",
           alignItems: "flex-start",
-          height: "100vh",
           mx: "auto",
           p: 2,
         }}

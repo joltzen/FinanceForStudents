@@ -15,8 +15,10 @@ import {
   TableRow,
   Paper,
   Typography,
+  IconButton,
 } from "@mui/material";
 import StyledTableCell from "../../components/tablecell";
+import DeleteIcon from "@mui/icons-material/Delete";
 
 function FinanceOverview() {
   const [filterMonth, setFilterMonth] = useState(new Date().getMonth() + 1);
@@ -24,7 +26,7 @@ function FinanceOverview() {
   const [transactions, setTransactions] = useState([]);
   const [totalSum, setTotalSum] = useState(0);
   const [categories, setCategories] = useState([]);
-
+  const [settings, setSettings] = useState([]);
   const { user } = useAuth();
 
   const months = [
@@ -63,14 +65,24 @@ function FinanceOverview() {
           },
         }
       );
+
+      const res = await axios.get("http://localhost:3001/api/getSettings", {
+        params: {
+          month: filterMonth,
+          year: filterYear,
+          user_id: user.id,
+        },
+      });
+
       const sortedTransactions = response.data.sort((a, b) => {
         const dateA = new Date(a.transaction_date);
         const dateB = new Date(b.transaction_date);
-        return dateA - dateB; 
+        return dateA - dateB;
       });
 
       setTransactions(sortedTransactions);
-      const total = sortedTransactions.reduce((acc, transaction) => {
+      setSettings(res.data);
+      const t = sortedTransactions.reduce((acc, transaction) => {
         if (transaction.transaction_type === "Einnahme") {
           return acc + parseFloat(transaction.amount);
         } else if (transaction.transaction_type === "Ausgabe") {
@@ -78,10 +90,34 @@ function FinanceOverview() {
         }
         return acc;
       }, 0);
-
+      const total =
+        t +
+        settings.reduce((acc, setting) => {
+          if (setting.transaction_type === "Einnahme") {
+            return acc + parseFloat(setting.amount);
+          } else if (setting.transaction_type === "Ausgabe") {
+            return acc - parseFloat(setting.amount);
+          }
+          return acc;
+        }, 0);
       setTotalSum(total);
     } catch (error) {
       console.error("Error fetching transactions:", error);
+    }
+  };
+
+  const handleDeleteTransaction = async (transactionId) => {
+    try {
+      await axios.delete("http://localhost:3001/api/deleteTransaction", {
+        params: { id: transactionId },
+      });
+      setTransactions((prevTransactions) =>
+        prevTransactions.filter(
+          (transaction) => transaction.transaction_id !== transactionId
+        )
+      );
+    } catch (error) {
+      console.error("Fehler beim Löschen der Transaktion:", error);
     }
   };
 
@@ -143,6 +179,7 @@ function FinanceOverview() {
               <StyledTableCell text="Datum" />
               <StyledTableCell text="Beschreibung" />
               <StyledTableCell text="Betrag" />
+              <StyledTableCell text=" " />
             </TableRow>
           </TableHead>
           <TableBody>
@@ -158,7 +195,7 @@ function FinanceOverview() {
                     scope="row"
                     sx={{
                       border: "1px solid black",
-                      backgroundColor: categoryColor, 
+                      backgroundColor: categoryColor,
                     }}
                   >
                     {formatDate(transaction.transaction_date)}
@@ -178,7 +215,24 @@ function FinanceOverview() {
                     }}
                   >
                     {transaction.transaction_type === "Ausgabe" ? "-" : ""}
-                    {transaction.amount}€
+                    {transaction.amount} €
+                  </TableCell>
+                  <TableCell
+                    align="right"
+                    sx={{
+                      border: "1px solid black",
+                      backgroundColor: categoryColor,
+                    }}
+                    s
+                  >
+                    <IconButton
+                      onClick={() =>
+                        handleDeleteTransaction(transaction.transaction_id)
+                      }
+                      style={{ color: "black" }}
+                    >
+                      <DeleteIcon />
+                    </IconButton>
                   </TableCell>
                 </TableRow>
               );

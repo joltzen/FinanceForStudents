@@ -17,10 +17,13 @@ import {
   TableHead,
   TableRow,
   Paper,
+  IconButton,
 } from "@mui/material";
 import { styled } from "@mui/system";
 import StyledTableCell from "../../components/tablecell";
 import DialogPage from "../Settings/dialog";
+import DeleteIcon from "@mui/icons-material/Delete";
+import Page from "../../components/page";
 
 const StyledTextField = styled(TextField)({
   marginTop: "20px",
@@ -31,7 +34,7 @@ const StyledTextField = styled(TextField)({
     color: "white",
   },
   "& input": {
-    color: "#d1d1d1", 
+    color: "#d1d1d1",
   },
   "& .MuiOutlinedInput-root": {
     "& fieldset": {
@@ -49,13 +52,15 @@ const StyledTextField = styled(TextField)({
 function SettingsForm() {
   const [filterMonth, setFilterMonth] = useState(new Date().getMonth() + 1);
   const [filterYear, setFilterYear] = useState(new Date().getFullYear());
-
-  const [date, setDate] = useState("");
   const [description, setDescription] = useState("");
   const [amount, setAmount] = useState("");
   const [transactionType, setTransactionType] = useState("Einnahme");
   const [transactions, setTransactions] = useState([]);
+  const [incomeTransactions, setIncomeTransactions] = useState([]);
+  const [expenseTransactions, setExpenseTransactions] = useState([]);
+
   const { user } = useAuth();
+
   const months = [
     { value: 1, label: "Januar" },
     { value: 2, label: "Februar" },
@@ -92,29 +97,73 @@ function SettingsForm() {
     event.preventDefault();
     try {
       const response = await axios.post(
-        "http://localhost:3001/api/saveSettings",
+        "http://localhost:3001/api/addSettings",
         {
           user_id: user.id,
+          transactionType,
+          amount,
+          description,
+          month: filterMonth,
+          year: filterYear,
         }
       );
+      setTransactions((prevTransactions) => [
+        ...prevTransactions,
+        response.data.transaction,
+      ]);
     } catch (error) {
+      console.error("Settings failed:", error);
+    }
+    setTransactionType(transactionType);
+    setAmount("");
+    setDescription("");
+  };
+
+  const handleDeleteSettings = async (settingsId) => {
+    try {
+      await axios.delete("http://localhost:3001/api/deleteSettings", {
+        params: { id: settingsId },
+      });
+      setTransactions((prevTransactions) =>
+        prevTransactions.filter(
+          (transaction) => transaction.settings_id !== settingsId
+        )
+      );
+    } catch (error) {
+      console.error("Fehler beim Löschen der Settings:", error);
     }
   };
 
-  const fixkostenEinnahmen = [
-    { id: 1, description: "Gehalt", amount: 3000 },
-  ];
+  useEffect(() => {
+    const fetchSettings = async () => {
+      try {
+        const response = await axios.get(
+          "http://localhost:3001/api/getSettings",
+          {
+            params: {
+              month: filterMonth,
+              year: filterYear,
+              user_id: user.id,
+            },
+          }
+        );
+        // Filtern und setzen Sie die Transaktionen entsprechend ihrem Typ
+        setTransactions(response.data);
+        fetchSettings();
+      } catch (error) {
+        console.error("Fetching settings failed:", error);
+      }
+    };
 
-  const fixkostenAusgaben = [
-    { id: 1, description: "Miete", amount: 1000 },
-  ];
+    fetchSettings();
+  }, [user.id]);
+
   return (
-    <div>
+    <Page>
       <Box
         sx={{
           display: "flex",
           justifyContent: "space-between",
-          height: "100vh",
           mx: "auto",
           p: 2,
         }}
@@ -199,17 +248,30 @@ function SettingsForm() {
                   <TableRow>
                     <StyledTableCell text="Beschreibung" />
                     <StyledTableCell text="Betrag" />
+                    <StyledTableCell text=" " />
                   </TableRow>
                 </TableHead>
                 <TableBody>
-                  {fixkostenEinnahmen.map((item) => (
-                    <TableRow key={item.id}>
-                      <TableCell component="th" scope="row">
-                        {item.description}
-                      </TableCell>
-                      <TableCell align="right">{item.amount}</TableCell>
-                    </TableRow>
-                  ))}
+                  {transactions
+                    .filter((t) => t?.transaction_type === "Einnahme")
+                    .map((item) => (
+                      <TableRow key={item.settings_id}>
+                        <TableCell component="th" scope="row">
+                          {item.description}
+                        </TableCell>
+                        <TableCell align="right">{item.amount} €</TableCell>
+                        <TableCell align="right">
+                          <IconButton
+                            onClick={() =>
+                              handleDeleteSettings(item.settings_id)
+                            }
+                            style={{ color: "black" }}
+                          >
+                            <DeleteIcon />
+                          </IconButton>
+                        </TableCell>
+                      </TableRow>
+                    ))}
                 </TableBody>
               </Table>
             </TableContainer>
@@ -222,17 +284,30 @@ function SettingsForm() {
                   <TableRow>
                     <StyledTableCell text="Beschreibung" />
                     <StyledTableCell text="Betrag" />
+                    <StyledTableCell text="" />
                   </TableRow>
                 </TableHead>
                 <TableBody>
-                  {fixkostenAusgaben.map((item) => (
-                    <TableRow key={item.id}>
-                      <TableCell component="th" scope="row">
-                        {item.description}
-                      </TableCell>
-                      <TableCell align="right">{item.amount}</TableCell>
-                    </TableRow>
-                  ))}
+                  {transactions
+                    .filter((t) => t?.transaction_type === "Ausgabe")
+                    .map((item) => (
+                      <TableRow key={item.settings_id}>
+                        <TableCell component="th" scope="row">
+                          {item.description}
+                        </TableCell>
+                        <TableCell align="right">{item.amount} €</TableCell>
+                        <TableCell align="right">
+                          <IconButton
+                            onClick={() =>
+                              handleDeleteSettings(item.settings_id)
+                            }
+                            style={{ color: "black" }}
+                          >
+                            <DeleteIcon />
+                          </IconButton>
+                        </TableCell>
+                      </TableRow>
+                    ))}
                 </TableBody>
               </Table>
             </TableContainer>
@@ -242,7 +317,7 @@ function SettingsForm() {
           <DialogPage />
         </Box>
       </Box>
-    </div>
+    </Page>
   );
 }
 
