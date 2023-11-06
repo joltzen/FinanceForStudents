@@ -23,6 +23,7 @@ function FinanceOverview() {
   const [filterYear, setFilterYear] = useState(new Date().getFullYear());
   const [transactions, setTransactions] = useState([]);
   const [totalSum, setTotalSum] = useState(0);
+  const [categories, setCategories] = useState([]);
 
   const { user } = useAuth();
 
@@ -86,7 +87,21 @@ function FinanceOverview() {
 
   useEffect(() => {
     fetchTransactions();
-  // eslint-disable-next-line react-hooks/exhaustive-deps
+    const fetchCategories = async () => {
+      try {
+        const response = await axios.get(
+          "http://localhost:3001/api/getCategories",
+          {
+            params: { user_id: user.id },
+          }
+        );
+        setCategories(response.data);
+      } catch (error) {
+        console.error("Fehler beim Laden der Kategorien:", error);
+      }
+    };
+
+    fetchCategories();
   }, [filterMonth, filterYear]);
 
   return (
@@ -131,24 +146,44 @@ function FinanceOverview() {
             </TableRow>
           </TableHead>
           <TableBody>
-            {transactions.map((transaction) => (
-              <TableRow key={transaction.transaction_id}>
-                <TableCell
-                  component="th"
-                  scope="row"
-                  sx={{ border: "1px solid black" }}
-                >
-                  {formatDate(transaction.transaction_date)}
-                </TableCell>
-                <TableCell sx={{ border: "1px solid black" }}>
-                  {transaction.description}
-                </TableCell>
-                <TableCell sx={{ border: "1px solid black" }}>
-                  {transaction.transaction_type === "Ausgabe" ? "-" : ""}
-                  {transaction.amount}€
-                </TableCell>
-              </TableRow>
-            ))}
+            {transactions.map((transaction) => {
+              // Find the category from the categories state using the category_id
+              const category = categories.find(
+                (c) => c.id === transaction.category_id
+              );
+              const categoryColor = category ? category.color : "white";
+              return (
+                <TableRow key={transaction.transaction_id}>
+                  <TableCell
+                    component="th"
+                    scope="row"
+                    sx={{
+                      border: "1px solid black",
+                      backgroundColor: categoryColor, // Apply the background color
+                    }}
+                  >
+                    {formatDate(transaction.transaction_date)}
+                  </TableCell>
+                  <TableCell
+                    sx={{
+                      border: "1px solid black",
+                      backgroundColor: categoryColor,
+                    }}
+                  >
+                    {transaction.description}
+                  </TableCell>
+                  <TableCell
+                    sx={{
+                      border: "1px solid black",
+                      backgroundColor: categoryColor,
+                    }}
+                  >
+                    {transaction.transaction_type === "Ausgabe" ? "-" : ""}
+                    {transaction.amount}€
+                  </TableCell>
+                </TableRow>
+              );
+            })}
           </TableBody>
         </Table>
         <Box sx={{ p: 2, display: "flex", justifyContent: "flex-end" }}>

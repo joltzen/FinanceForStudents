@@ -78,14 +78,23 @@ router.get("/getUserTransactions", async (req, res) => {
 // POST-Anforderung, um eine neue Transaktion hinzuzufügen
 router.post("/addTransaction", async (req, res) => {
   try {
-    const { date, description, amount, transactionType, user_id } = req.body;
+    const { date, description, amount, transactionType, user_id, category_id } =
+      req.body;
+    console.log(category_id);
     //const user_id = 8; // TODO: Hier muss die user_id aus dem JWT-Token ausgelesen werden
     const query = `
-      INSERT INTO transactions (user_id, transaction_type, amount, description, transaction_date)
-      VALUES ($1, $2, $3, $4, $5)
+      INSERT INTO transactions (user_id, transaction_type, amount, description, transaction_date, category_id)
+      VALUES ($1, $2, $3, $4, $5, $6)
       RETURNING *;`;
 
-    const values = [user_id, transactionType, amount, description, date];
+    const values = [
+      user_id,
+      transactionType,
+      amount,
+      description,
+      date,
+      category_id,
+    ];
 
     db.query(query, values, (err, result) => {
       if (err) {
@@ -151,4 +160,33 @@ router.post("/saveCategory", async (req, res) => {
   }
 });
 
+// in Ihrer Server-Datei
+router.patch("/updateCategory", async (req, res) => {
+  try {
+    const { id, name, color } = req.body;
+    const query = `
+      UPDATE categories
+      SET name = $1, color = $2
+      WHERE id = $3
+      RETURNING *;`;
+
+    const values = [name, color, id];
+    const result = await db.query(query, values);
+    res.json(result.rows[0]);
+  } catch (error) {
+    res.status(500).json({ error: "Fehler beim Aktualisieren der Kategorie" });
+  }
+});
+
+router.delete("/deleteCategory", async (req, res) => {
+  try {
+    const { id } = req.query;
+    const query = "DELETE FROM categories WHERE id = $1 RETURNING *;";
+    const values = [id];
+    const result = await db.query(query, values);
+    res.json(result.rows[0]);
+  } catch (error) {
+    res.status(500).json({ error: "Fehler beim Löschen der Kategorie" });
+  }
+});
 module.exports = router;

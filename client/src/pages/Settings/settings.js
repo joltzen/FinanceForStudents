@@ -17,15 +17,10 @@ import {
   TableHead,
   TableRow,
   Paper,
-  Dialog,
-  DialogTitle,
-  DialogContent,
-  DialogActions,
-  DialogContentText,
 } from "@mui/material";
 import { styled } from "@mui/system";
 import StyledTableCell from "../../components/tablecell";
-import Circle from "@uiw/react-color-circle";
+import DialogPage from "../Settings/dialog";
 
 const StyledTextField = styled(TextField)({
   marginTop: "20px",
@@ -60,11 +55,6 @@ function SettingsForm() {
   const [amount, setAmount] = useState("");
   const [transactionType, setTransactionType] = useState("Einnahme");
   const [transactions, setTransactions] = useState([]);
-  const [name, setName] = useState([]);
-  const [categories, setCategories] = useState([]);
-  const [newCategory, setNewCategory] = useState("");
-  const [categoryColor, setCategoryColor] = useState("#F44E3B");
-  const [openDialog, setOpenDialog] = useState(false);
   const { user } = useAuth();
   const months = [
     { value: 1, label: "Januar" },
@@ -85,33 +75,6 @@ function SettingsForm() {
     { length: 10 },
     (_, index) => new Date().getFullYear() - index
   );
-  useEffect(() => {
-    // Asynchrone Funktion, um Kategorien abzurufen
-    const fetchCategories = async () => {
-      try {
-        const response = await axios.get(
-          "http://localhost:3001/api/getCategories",
-          {
-            params: { user_id: user.id },
-          }
-        );
-        setCategories(response.data);
-      } catch (error) {
-        console.error("Fehler beim Laden der Kategorien:", error);
-        // Hier könnten Sie Fehlermeldungen im UI anzeigen oder ähnliche Aktionen ausführen
-      }
-    };
-
-    fetchCategories();
-  }, [user.id]); // Abhängigkeiten des Effekts, in diesem Fall die user_id
-
-  // Funktion zum Hinzufügen einer neuen Kategorie
-  const addCategory = () => {
-    setCategories([...categories, { name: newCategory, color: categoryColor }]);
-    setNewCategory("");
-    setCategoryColor("#FFFFFF");
-    setOpenDialog(false);
-  };
 
   const handleDescriptionChange = (e) => {
     setDescription(e.target.value);
@@ -139,22 +102,6 @@ function SettingsForm() {
       // Weiterer Code für Erfolgsfeedback
     } catch (error) {
       // Fehlerbehandlung
-    }
-  };
-  const handleAddCategory = async (event) => {
-    try {
-      const response = await axios.post(
-        "http://localhost:3001/api/saveCategory",
-        {
-          name: newCategory,
-          user_id: user.id,
-          color: categoryColor,
-        }
-      );
-      console.log(response);
-      // Weiterer Code für Erfolgsfeedback
-    } catch (error) {
-      console.error("category failed:", error);
     }
   };
 
@@ -298,93 +245,7 @@ function SettingsForm() {
           </Box>
         </Box>
         <Box sx={{ width: "33%" }}>
-          <div>
-            <Button
-              sx={{ marginTop: 2 }}
-              onClick={() => setOpenDialog(true)}
-              variant="contained"
-              color="primary"
-            >
-              Kategorie hinzufügen
-            </Button>
-            <Dialog open={openDialog} onClose={() => setOpenDialog(false)}>
-              <DialogTitle>Neue Kategorie hinzufügen</DialogTitle>
-              <DialogContent>
-                <DialogContentText>
-                  Fügen Sie eine neue Kategorie hinzu und wählen Sie eine Farbe
-                  für sie.
-                </DialogContentText>
-                <StyledTextField
-                  autoFocus
-                  margin="dense"
-                  label="Kategoriename"
-                  type="text"
-                  fullWidth
-                  variant="outlined"
-                  value={newCategory}
-                  onChange={(e) => setNewCategory(e.target.value)}
-                />
-                <Circle
-                  style={{ marginTop: "50px" }}
-                  colors={[
-                    "#F44336",
-                    "#E91E63",
-                    "#9C27B0",
-                    "#673AB7",
-                    "#3F51B5",
-                    "#2196F3",
-                    "#03A9F4",
-                    "#00BCD4",
-                    "#009688",
-                    "#4CAF50",
-                    "#8BC34A",
-                    "#CDDC39",
-                    "#FFEB3B",
-                    "#FFC107",
-                    "#FF9800",
-                    "#FF5722",
-                    "#795548",
-                    "#607D8B",
-                  ]}
-                  color={categoryColor}
-                  onChange={(color) => {
-                    setCategoryColor(color.hex);
-                  }}
-                />
-              </DialogContent>
-              <DialogActions>
-                <Button onClick={() => setOpenDialog(false)} color="primary">
-                  Abbrechen
-                </Button>
-                <Button
-                  onClick={() => {
-                    addCategory();
-                    handleAddCategory();
-                  }}
-                  color="primary"
-                >
-                  Hinzufügen
-                </Button>
-              </DialogActions>
-            </Dialog>
-
-            {/* Liste der benutzerdefinierten Kategorien */}
-            <Typography variant="h6" sx={{ mt: 2 }}>
-              Benutzerdefinierte Kategorien
-            </Typography>
-            {categories.map((category, index) => (
-              <Paper
-                key={index}
-                style={{
-                  backgroundColor: category.color,
-                  padding: "10px",
-                  marginTop: "10px",
-                }}
-              >
-                <Typography>{category.name}</Typography>
-              </Paper>
-            ))}
-          </div>
+          <DialogPage />
         </Box>
       </Box>
     </div>

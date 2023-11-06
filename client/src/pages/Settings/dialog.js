@@ -1,104 +1,231 @@
-// // Weitere Importe
-// import {
-//   Dialog,
-//   DialogTitle,
-//   DialogContent,
-//   DialogActions,
-//   DialogContentText,
-//   ColorPicker,
-//   Button,
-//   Typography,
-//   Paper,
-//   TextField,
-// } from "@mui/material";
-// import React, { useState } from "react";
-// // ...
+// Weitere Importe
+import {
+  Dialog,
+  DialogTitle,
+  DialogContent,
+  DialogActions,
+  DialogContentText,
+  ColorPicker,
+  Button,
+  Typography,
+  Paper,
+  TextField,
+  IconButton,
+} from "@mui/material";
+import React, { useState, useEffect } from "react";
+import axios from "axios";
+import { useAuth } from "../../core/auth/auth";
+import { styled } from "@mui/system";
+import Circle from "@uiw/react-color-circle";
+import EditIcon from "@mui/icons-material/Edit";
+import DeleteIcon from "@mui/icons-material/Delete";
 
-// function DialogPage() {
-//   // ... bestehender Zustand
+function DialogPage() {
+  const [categories, setCategories] = useState([]);
+  const [newCategory, setNewCategory] = useState("");
+  const [categoryColor, setCategoryColor] = useState("#F44E3B");
+  const [openDialog, setOpenDialog] = useState(false);
+  const { user } = useAuth();
 
-//   // Zustand für Kategorien und deren Farben
-//   const [categories, setCategories] = useState([]);
-//   const [newCategory, setNewCategory] = useState("");
-//   const [categoryColor, setCategoryColor] = useState("#FFFFFF");
-//   const [openDialog, setOpenDialog] = useState(false);
+  const StyledTextField = styled(TextField)({
+    marginTop: "20px",
+    "& label.Mui-focused": {
+      color: "white",
+    },
+    "& label": {
+      color: "white",
+    },
+    "& input": {
+      color: "#d1d1d1", // Ein leicht dunklerer Farbton für den Text in den Textfeldern
+    },
+    "& .MuiOutlinedInput-root": {
+      "& fieldset": {
+        borderColor: "#d1d1d1", // Helle Border-Farbe
+      },
+      "&:hover fieldset": {
+        borderColor: "white", // Helle Border-Farbe beim Hover
+      },
+      "&.Mui-focused fieldset": {
+        borderColor: "white",
+      },
+    },
+    backgroundColor: "#2c2f36",
+  });
+  // Funktion zum Hinzufügen einer neuen Kategorie
+  const addCategory = () => {
+    setCategories([...categories, { name: newCategory, color: categoryColor }]);
+    setNewCategory("");
+    setCategoryColor("#FFFFFF");
+    setOpenDialog(false);
+  };
+  useEffect(() => {
+    // Asynchrone Funktion, um Kategorien abzurufen
+    const fetchCategories = async () => {
+      try {
+        const response = await axios.get(
+          "http://localhost:3001/api/getCategories",
+          {
+            params: { user_id: user.id },
+          }
+        );
+        setCategories(response.data);
+      } catch (error) {
+        console.error("Fehler beim Laden der Kategorien:", error);
+        // Hier könnten Sie Fehlermeldungen im UI anzeigen oder ähnliche Aktionen ausführen
+      }
+    };
 
-//   // Funktion zum Hinzufügen einer neuen Kategorie
-//   const addCategory = () => {
-//     setCategories([...categories, { name: newCategory, color: categoryColor }]);
-//     setNewCategory("");
-//     setCategoryColor("#FFFFFF");
-//     setOpenDialog(false);
-//   };
+    fetchCategories();
+  }, [user.id]); // Abhängigkeiten des Effekts, in diesem Fall die user_id
 
-//   // ...
+  const handleAddCategory = async (event) => {
+    try {
+      const response = await axios.post(
+        "http://localhost:3001/api/saveCategory",
+        {
+          name: newCategory,
+          user_id: user.id,
+          color: categoryColor,
+        }
+      );
+      console.log(response);
+      // Weiterer Code für Erfolgsfeedback
+    } catch (error) {
+      console.error("category failed:", error);
+    }
+  };
 
-//   return (
-//     <div>
-//       {/* ... bestehende Elemente */}
+  const handleUpdateCategory = async (categoryToUpdate) => {
+    try {
+      const response = await axios.patch(
+        "http://localhost:3001/api/updateCategory",
+        categoryToUpdate
+      );
+      // Nehmen wir an, response.data ist die aktualisierte Kategorie
+      const updatedCategory = response.data;
+      setCategories((prevCategories) =>
+        prevCategories.map((category) =>
+          category.id === updatedCategory.id ? updatedCategory : category
+        )
+      );
+    } catch (error) {
+      console.error("Fehler beim Aktualisieren der Kategorie:", error);
+    }
+  };
 
-//       {/* Button zum Öffnen des Dialogs */}
-//       <Button
-//         onClick={() => setOpenDialog(true)}
-//         variant="contained"
-//         color="primary"
-//       >
-//         Kategorie hinzufügen
-//       </Button>
+  // Funktion zum Löschen einer Kategorie
+  const handleDeleteCategory = async (categoryId) => {
+    try {
+      await axios.delete("http://localhost:3001/api/deleteCategory", {
+        params: { id: categoryId },
+      });
+      // Entfernen Sie die Kategorie aus dem State
+      setCategories((prevCategories) =>
+        prevCategories.filter((category) => category.id !== categoryId)
+      );
+    } catch (error) {
+      console.error("Fehler beim Löschen der Kategorie:", error);
+    }
+  };
 
-//       {/* Dialog für neue Kategorien */}
-//       <Dialog open={openDialog} onClose={() => setOpenDialog(false)}>
-//         <DialogTitle>Neue Kategorie hinzufügen</DialogTitle>
-//         <DialogContent>
-//           <DialogContentText>
-//             Fügen Sie eine neue Kategorie hinzu und wählen Sie eine Farbe für
-//             sie.
-//           </DialogContentText>
-//           <TextField
-//             autoFocus
-//             margin="dense"
-//             label="Kategoriename"
-//             type="text"
-//             fullWidth
-//             variant="outlined"
-//             value={newCategory}
-//             onChange={(e) => setNewCategory(e.target.value)}
-//           />
-//           <ColorPicker
-//             value={categoryColor}
-//             onChange={(color) => setCategoryColor(color)}
-//             fullWidth
-//             margin="dense"
-//           />
-//         </DialogContent>
-//         <DialogActions>
-//           <Button onClick={() => setOpenDialog(false)} color="primary">
-//             Abbrechen
-//           </Button>
-//           <Button onClick={addCategory} color="primary">
-//             Hinzufügen
-//           </Button>
-//         </DialogActions>
-//       </Dialog>
+  return (
+    <div>
+      <Button
+        sx={{ marginTop: 2 }}
+        onClick={() => setOpenDialog(true)}
+        variant="contained"
+        color="primary"
+      >
+        Kategorie hinzufügen
+      </Button>
+      <Dialog open={openDialog} onClose={() => setOpenDialog(false)}>
+        <DialogTitle>Neue Kategorie hinzufügen</DialogTitle>
+        <DialogContent>
+          <DialogContentText>
+            Fügen Sie eine neue Kategorie hinzu und wählen Sie eine Farbe für
+            sie.
+          </DialogContentText>
+          <StyledTextField
+            autoFocus
+            margin="dense"
+            label="Kategoriename"
+            type="text"
+            fullWidth
+            variant="outlined"
+            value={newCategory}
+            onChange={(e) => setNewCategory(e.target.value)}
+          />
+          <Circle
+            style={{ marginTop: "50px" }}
+            colors={[
+              "#F44336",
+              "#E91E63",
+              "#9C27B0",
+              "#673AB7",
+              "#3F51B5",
+              "#2196F3",
+              "#03A9F4",
+              "#00BCD4",
+              "#009688",
+              "#4CAF50",
+              "#8BC34A",
+              "#CDDC39",
+              "#FFEB3B",
+              "#FFC107",
+              "#FF9800",
+              "#FF5722",
+              "#795548",
+              "#607D8B",
+            ]}
+            color={categoryColor}
+            onChange={(color) => {
+              setCategoryColor(color.hex);
+            }}
+          />
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={() => setOpenDialog(false)} color="primary">
+            Abbrechen
+          </Button>
+          <Button
+            onClick={() => {
+              addCategory();
+              handleAddCategory();
+            }}
+            color="primary"
+          >
+            Hinzufügen
+          </Button>
+        </DialogActions>
+      </Dialog>
 
-//       {/* Liste der benutzerdefinierten Kategorien */}
-//       <Typography variant="h6" sx={{ mt: 2 }}>
-//         Benutzerdefinierte Kategorien
-//       </Typography>
-//       {categories.map((category, index) => (
-//         <Paper
-//           key={index}
-//           style={{
-//             backgroundColor: category.color,
-//             padding: "10px",
-//             marginTop: "10px",
-//           }}
-//         >
-//           <Typography>{category.name}</Typography>
-//         </Paper>
-//       ))}
-//     </div>
-//   );
-// }
+      <Typography variant="h6" sx={{ mt: 2 }}>
+        Benutzerdefinierte Kategorien
+      </Typography>
+      {categories.map((category, index) => (
+        <Paper
+          key={index}
+          sx={{
+            backgroundColor: category.color,
+            padding: "10px",
+            marginTop: "10px",
+            display: "flex", // CSS Flexbox für eine horizontale Anordnung
+            alignItems: "center", // Vertikal zentrieren der Inhalte im Flex-Container
+            justifyContent: "space-between", // Den Raum zwischen den Elementen gleichmäßig verteilen
+          }}
+        >
+          <Typography>{category.name}</Typography>
 
-// export default DialogPage;
+          <IconButton
+            onClick={() => handleDeleteCategory(category.id)}
+            style={{ color: "black" }}
+          >
+            <DeleteIcon />
+          </IconButton>
+        </Paper>
+      ))}
+    </div>
+  );
+}
+
+export default DialogPage;

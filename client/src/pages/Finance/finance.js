@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import {
   TextField,
   Button,
@@ -39,11 +39,13 @@ const StyledTextField = styled(TextField)({
 });
 
 function FinancePage() {
+  const [category, setCategory] = useState(""); // Speichern Sie die category_id statt des Namens
   const [date, setDate] = useState("");
   const [description, setDescription] = useState("");
   const [amount, setAmount] = useState("");
   const [transactionType, setTransactionType] = useState("Einnahme");
   const [transactions, setTransactions] = useState([]);
+  const [categories, setCategories] = useState([]);
 
   const [error, setError] = useState("");
   const { user } = useAuth();
@@ -67,6 +69,7 @@ function FinancePage() {
   const handleSubmit = async (event) => {
     event.preventDefault();
 
+    console.log(category);
     setError("");
     try {
       //Here, add your API endpoint to post the data
@@ -78,6 +81,7 @@ function FinancePage() {
           amount,
           transactionType,
           user_id: user.id,
+          category_id: category,
         }
       );
       setTransactions([...transactions, response.data]);
@@ -90,6 +94,24 @@ function FinancePage() {
       // Handle error here (e.g., show error message)
     }
   };
+
+  useEffect(() => {
+   const fetchCategories = async () => {
+      try {
+        const response = await axios.get(
+          "http://localhost:3001/api/getCategories",
+          {
+            params: { user_id: user.id },
+          }
+        );
+        setCategories(response.data);
+      } catch (error) {
+        console.error("Fehler beim Laden der Kategorien:", error);
+      }
+    };
+
+    fetchCategories(); 
+  }, [user.id]); // Abhängigkeit auf user.id, um Kategorien neu zu laden, wenn sich die user.id ändert
 
   return (
     <div>
@@ -162,6 +184,30 @@ function FinancePage() {
             <Button type="submit" variant="contained" color="primary">
               Hinzufügen
             </Button>
+            <InputLabel
+              sx={{ color: "white", marginTop: 2 }}
+              id="category-label"
+            >
+              Kategorie
+            </InputLabel>
+            <Select
+              labelId="category-label"
+              value={category}
+              defaultValue={categories}
+              onChange={(e) => setCategory(e.target.value)}
+              label="Kategorie"
+              style={{ color: "white", backgroundColor: category.color }}
+            >
+              {categories.map((cat) => (
+                <MenuItem
+                  key={cat.id}
+                  value={cat.id}
+                  sx={{ backgroundColor: cat.color }}
+                >
+                  {cat.name}
+                </MenuItem>
+              ))}
+            </Select>
           </form>
         </Box>
         <Box
