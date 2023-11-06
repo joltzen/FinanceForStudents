@@ -186,8 +186,22 @@ function FinanceOverview() {
             })}
           </TableBody>
         </Table>
-        <Box sx={{ p: 2, display: "flex", justifyContent: "flex-end" }}>
-          <Typography variant="h6" sx={{ fontSize: 15, textAlign: "right" }}>
+        <Box
+          sx={{
+            p: 1,
+            display: "flex",
+            justifyContent: "flex-end",
+            backgroundColor: "lightgrey",
+          }}
+        >
+          <Typography
+            variant="h6"
+            sx={{
+              fontSize: 15,
+              textAlign: "right",
+              fontWeight: "bold",
+            }}
+          >
             Gesamtsumme: {totalSum.toFixed(2)}€
           </Typography>
         </Box>
