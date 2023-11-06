@@ -16,7 +16,6 @@ function SignUpForm() {
     event.preventDefault();
     setError("");
     try {
-      // Here, add your API endpoint to post the data
       const response = await axios.post("http://localhost:3001/api/signup", {
         username,
         email,
@@ -25,13 +24,12 @@ function SignUpForm() {
         surname,
       });
       console.log(response.data);
-      navigate("/login"); // Handle success here (e.g., redirect to login page, show message)
+      navigate("/login"); 
     } catch (error) {
       console.error("Sign up failed:", error);
       setError(
         error.response?.data?.message || "Failed to login. Please try again."
       );
-      // Handle error here (e.g., show error message)
     }
   };
 
@@ -42,7 +40,7 @@ function SignUpForm() {
         flexDirection: "column",
         justifyContent: "center",
         alignItems: "center",
-        height: "100vh", // to take the full height of the viewport
+        height: "100vh", 
         maxWidth: 400,
         mx: "auto",
       }}
@@ -68,14 +66,14 @@ function SignUpForm() {
               color: "white",
             },
             "& input": {
-              color: "#d1d1d1", // Ein leicht dunklerer Farbton für den Text in den Textfeldern
+              color: "#d1d1d1",
             },
             "& .MuiOutlinedInput-root": {
               "& fieldset": {
-                borderColor: "#d1d1d1", // Helle Border-Farbe
+                borderColor: "#d1d1d1", 
               },
               "&:hover fieldset": {
-                borderColor: "white", // Helle Border-Farbe beim Hover
+                borderColor: "white", 
               },
               "&.Mui-focused fieldset": {
                 borderColor: "white",
@@ -100,14 +98,14 @@ function SignUpForm() {
               color: "white",
             },
             "& input": {
-              color: "#d1d1d1", // Ein leicht dunklerer Farbton für den Text in den Textfeldern
+              color: "#d1d1d1", 
             },
             "& .MuiOutlinedInput-root": {
               "& fieldset": {
-                borderColor: "#d1d1d1", // Helle Border-Farbe
+                borderColor: "#d1d1d1", 
               },
               "&:hover fieldset": {
-                borderColor: "white", // Helle Border-Farbe beim Hover
+                borderColor: "white", 
               },
               "&.Mui-focused fieldset": {
                 borderColor: "white",
@@ -132,14 +130,14 @@ function SignUpForm() {
               color: "white",
             },
             "& input": {
-              color: "#d1d1d1", // Ein leicht dunklerer Farbton für den Text in den Textfeldern
+              color: "#d1d1d1", 
             },
             "& .MuiOutlinedInput-root": {
               "& fieldset": {
-                borderColor: "#d1d1d1", // Helle Border-Farbe
+                borderColor: "#d1d1d1", 
               },
               "&:hover fieldset": {
-                borderColor: "white", // Helle Border-Farbe beim Hover
+                borderColor: "white", 
               },
               "&.Mui-focused fieldset": {
                 borderColor: "white",
@@ -164,14 +162,14 @@ function SignUpForm() {
               color: "white",
             },
             "& input": {
-              color: "#d1d1d1", // Ein leicht dunklerer Farbton für den Text in den Textfeldern
+              color: "#d1d1d1", 
             },
             "& .MuiOutlinedInput-root": {
               "& fieldset": {
-                borderColor: "#d1d1d1", // Helle Border-Farbe
+                borderColor: "#d1d1d1", 
               },
               "&:hover fieldset": {
-                borderColor: "white", // Helle Border-Farbe beim Hover
+                borderColor: "white", 
               },
               "&.Mui-focused fieldset": {
                 borderColor: "white",
@@ -196,14 +194,14 @@ function SignUpForm() {
               color: "white",
             },
             "& input": {
-              color: "#d1d1d1", // Ein leicht dunklerer Farbton für den Text in den Textfeldern
+              color: "#d1d1d1", 
             },
             "& .MuiOutlinedInput-root": {
               "& fieldset": {
-                borderColor: "#d1d1d1", // Helle Border-Farbe
+                borderColor: "#d1d1d1", 
               },
               "&:hover fieldset": {
-                borderColor: "white", // Helle Border-Farbe beim Hover
+                borderColor: "white", 
               },
               "&.Mui-focused fieldset": {
                 borderColor: "white",
@@ -221,8 +219,8 @@ function SignUpForm() {
             mb: 2,
             backgroundColor: "#3A415C",
             color: "white",
-            fontSize: "1.1rem", // Größerer Button-Text
-            boxShadow: "0 2px 4px rgba(0, 0, 0, 0.1)", // Leichter Schatten
+            fontSize: "1.1rem", 
+            boxShadow: "0 2px 4px rgba(0, 0, 0, 0.1)", 
           }}
         >
           Signup

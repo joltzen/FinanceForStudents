@@ -31,14 +31,14 @@ const StyledTextField = styled(TextField)({
     color: "white",
   },
   "& input": {
-    color: "#d1d1d1", // Ein leicht dunklerer Farbton für den Text in den Textfeldern
+    color: "#d1d1d1", 
   },
   "& .MuiOutlinedInput-root": {
     "& fieldset": {
-      borderColor: "#d1d1d1", // Helle Border-Farbe
+      borderColor: "#d1d1d1",
     },
     "&:hover fieldset": {
-      borderColor: "white", // Helle Border-Farbe beim Hover
+      borderColor: "white",
     },
     "&.Mui-focused fieldset": {
       borderColor: "white",
@@ -88,7 +88,6 @@ function SettingsForm() {
     setTransactionType(e.target.value);
   };
 
-  // Funktion zum Speichern der Daten
   const handleSubmit = async (event) => {
     event.preventDefault();
     try {
@@ -96,23 +95,18 @@ function SettingsForm() {
         "http://localhost:3001/api/saveSettings",
         {
           user_id: user.id,
-          // Zusätzlich Monat und Jahr übergeben
         }
       );
-      // Weiterer Code für Erfolgsfeedback
     } catch (error) {
-      // Fehlerbehandlung
     }
   };
 
   const fixkostenEinnahmen = [
     { id: 1, description: "Gehalt", amount: 3000 },
-    // ... andere Fixkosten Einnahmen
   ];
 
   const fixkostenAusgaben = [
     { id: 1, description: "Miete", amount: 1000 },
-    // ... andere Fixkosten Ausgaben
   ];
   return (
     <div>

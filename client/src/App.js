@@ -25,7 +25,7 @@ const theme = createTheme({
             color: "white",
           },
           "& label": {
-            color: "white", // Normal state
+            color: "white",
           },
           "& .MuiInput-underline:after": {
             borderBottomColor: "white",
@@ -47,12 +47,11 @@ const theme = createTheme({
   },
   palette: {
     primary: {
-      main: "#4e577b", // Use your color
+      main: "#4e577b",
     },
     background: {
-      default: "#000000", // Your desired background color
+      default: "#000000",
     },
-    // ...you can customize other colors as well
   },
 });
 function App() {

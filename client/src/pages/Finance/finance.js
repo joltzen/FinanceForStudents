@@ -22,14 +22,14 @@ const StyledTextField = styled(TextField)({
     color: "white",
   },
   "& input": {
-    color: "#d1d1d1", // Ein leicht dunklerer Farbton für den Text in den Textfeldern
+    color: "#d1d1d1",
   },
   "& .MuiOutlinedInput-root": {
     "& fieldset": {
-      borderColor: "#d1d1d1", // Helle Border-Farbe
+      borderColor: "#d1d1d1",
     },
     "&:hover fieldset": {
-      borderColor: "white", // Helle Border-Farbe beim Hover
+      borderColor: "white",
     },
     "&.Mui-focused fieldset": {
       borderColor: "white",
@@ -39,11 +39,11 @@ const StyledTextField = styled(TextField)({
 });
 
 function FinancePage() {
-  const [category, setCategory] = useState(""); // Speichern Sie die category_id statt des Namens
+  const [category, setCategory] = useState(""); 
   const [date, setDate] = useState("");
   const [description, setDescription] = useState("");
   const [amount, setAmount] = useState("");
-  const [transactionType, setTransactionType] = useState("Einnahme");
+  const [transactionType, setTransactionType] = useState("Ausgabe");
   const [transactions, setTransactions] = useState([]);
   const [categories, setCategories] = useState([]);
 
@@ -70,7 +70,6 @@ function FinancePage() {
     event.preventDefault();
     setError("");
     try {
-      //Here, add your API endpoint to post the data
       const response = await axios.post(
         "http://localhost:3001/api/addTransaction",
         {
@@ -92,7 +91,6 @@ function FinancePage() {
       setError(
         error.response?.data?.message || "Failed transaction. Please try again."
       );
-      // Handle error here (e.g., show error message)
     }
   };
 
@@ -112,7 +110,7 @@ function FinancePage() {
     };
 
     fetchCategories();
-  }, [user.id]); // Abhängigkeit auf user.id, um Kategorien neu zu laden, wenn sich die user.id ändert
+  }, [user.id]);
 
   return (
     <div>
@@ -120,17 +118,17 @@ function FinancePage() {
         sx={{
           display: "flex",
           justifyContent: "center",
-          alignItems: "flex-start", // Align items to start of the container
+          alignItems: "flex-start",
           height: "100vh",
           mx: "auto",
-          p: 2, // Padding around the whole container for some space
+          p: 2,
         }}
       >
         <Box
           sx={{
-            flex: 1, // Take up half the space
-            maxWidth: "33%", // Limit maximum width to 50%
-            p: 2, // Padding inside the left box
+            flex: 1,
+            maxWidth: "33%",
+            p: 2,
             marginRight: "100px",
           }}
         >
@@ -213,9 +211,9 @@ function FinancePage() {
         </Box>
         <Box
           sx={{
-            flex: 1, // Take up the other half of the space
-            maxWidth: "66%", // Limit maximum width to 50%
-            p: 2, // Padding inside the right box
+            flex: 1,
+            maxWidth: "66%",
+            p: 2,
           }}
         >
           <FinanceOverview />

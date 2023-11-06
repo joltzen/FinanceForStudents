@@ -1,11 +1,9 @@
-// Weitere Importe
 import {
   Dialog,
   DialogTitle,
   DialogContent,
   DialogActions,
   DialogContentText,
-  ColorPicker,
   Button,
   Typography,
   Paper,
@@ -17,7 +15,6 @@ import axios from "axios";
 import { useAuth } from "../../core/auth/auth";
 import { styled } from "@mui/system";
 import Circle from "@uiw/react-color-circle";
-import EditIcon from "@mui/icons-material/Edit";
 import DeleteIcon from "@mui/icons-material/Delete";
 
 function DialogPage() {
@@ -36,14 +33,14 @@ function DialogPage() {
       color: "white",
     },
     "& input": {
-      color: "#d1d1d1", // Ein leicht dunklerer Farbton für den Text in den Textfeldern
+      color: "#d1d1d1",
     },
     "& .MuiOutlinedInput-root": {
       "& fieldset": {
-        borderColor: "#d1d1d1", // Helle Border-Farbe
+        borderColor: "#d1d1d1",
       },
       "&:hover fieldset": {
-        borderColor: "white", // Helle Border-Farbe beim Hover
+        borderColor: "white",
       },
       "&.Mui-focused fieldset": {
         borderColor: "white",
@@ -51,15 +48,15 @@ function DialogPage() {
     },
     backgroundColor: "#2c2f36",
   });
-  // Funktion zum Hinzufügen einer neuen Kategorie
+
   const addCategory = () => {
     setCategories([...categories, { name: newCategory, color: categoryColor }]);
     setNewCategory("");
     setCategoryColor("#FFFFFF");
     setOpenDialog(false);
   };
+
   useEffect(() => {
-    // Asynchrone Funktion, um Kategorien abzurufen
     const fetchCategories = async () => {
       try {
         const response = await axios.get(
@@ -71,12 +68,11 @@ function DialogPage() {
         setCategories(response.data);
       } catch (error) {
         console.error("Fehler beim Laden der Kategorien:", error);
-        // Hier könnten Sie Fehlermeldungen im UI anzeigen oder ähnliche Aktionen ausführen
       }
     };
 
     fetchCategories();
-  }, [user.id]); // Abhängigkeiten des Effekts, in diesem Fall die user_id
+  }, [user.id]);
 
   const handleAddCategory = async (event) => {
     try {
@@ -89,7 +85,6 @@ function DialogPage() {
         }
       );
       console.log(response);
-      // Weiterer Code für Erfolgsfeedback
     } catch (error) {
       console.error("category failed:", error);
     }
@@ -101,7 +96,6 @@ function DialogPage() {
         "http://localhost:3001/api/updateCategory",
         categoryToUpdate
       );
-      // Nehmen wir an, response.data ist die aktualisierte Kategorie
       const updatedCategory = response.data;
       setCategories((prevCategories) =>
         prevCategories.map((category) =>
@@ -113,13 +107,11 @@ function DialogPage() {
     }
   };
 
-  // Funktion zum Löschen einer Kategorie
   const handleDeleteCategory = async (categoryId) => {
     try {
       await axios.delete("http://localhost:3001/api/deleteCategory", {
         params: { id: categoryId },
       });
-      // Entfernen Sie die Kategorie aus dem State
       setCategories((prevCategories) =>
         prevCategories.filter((category) => category.id !== categoryId)
       );
@@ -209,9 +201,9 @@ function DialogPage() {
             backgroundColor: category.color,
             padding: "10px",
             marginTop: "10px",
-            display: "flex", // CSS Flexbox für eine horizontale Anordnung
-            alignItems: "center", // Vertikal zentrieren der Inhalte im Flex-Container
-            justifyContent: "space-between", // Den Raum zwischen den Elementen gleichmäßig verteilen
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "space-between",
           }}
         >
           <Typography>{category.name}</Typography>

@@ -1,5 +1,3 @@
-// src/strings.js
-
 const strings = {
   homepage: {
     welcomeMessage: "Willkommen bei FinanceForStudents",
@@ -22,9 +20,7 @@ const strings = {
   buttons: {
     login: "Anmelden",
     signup: "Registrieren",
-    // ... andere Button-Labels
   },
-  // ... andere Abschnitte
 };
 
 export default strings;

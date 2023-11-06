@@ -14,7 +14,7 @@ import { SidebarContext } from "../core/sidebar";
 import { styled } from "@mui/system";
 import StyledListItem from "./listitem";
 import { useAuth } from "../core/auth/auth";
-import { Link } from "react-router-dom"; // Hier importiert
+import { Link } from "react-router-dom"; 
 import Menu from "@mui/material/Menu";
 import MenuItem from "@mui/material/MenuItem";
 import AccountCircle from "@mui/icons-material/AccountCircle";
@@ -80,7 +80,7 @@ function Navbar() {
             onClick={toggleDrawer}
             sx={{
               color: "#d8c690",
-              fontSize: "20px", // you can use values like 'small', 'inherit', 'default', 'large', or even fixed sizes like '16px'
+              fontSize: "20px",
             }}
           >
             {isPlusIcon ? (

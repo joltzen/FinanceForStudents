@@ -6,7 +6,7 @@ import Box from "@mui/material/Box";
 import Alert from "@mui/material/Alert";
 import { useAuth } from "../../core/auth/auth";
 import { useNavigate } from "react-router";
-import axiosInstance from "../../config/axios"; // Adjust the path as necessary
+import axiosInstance from "../../config/axios"; 
 
 function LoginPage() {
   const [credentials, setCredentials] = useState({

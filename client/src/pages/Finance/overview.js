@@ -19,7 +19,7 @@ import {
 import StyledTableCell from "../../components/tablecell";
 
 function FinanceOverview() {
-  const [filterMonth, setFilterMonth] = useState(new Date().getMonth() + 1); // JavaScript months are 0-indexed
+  const [filterMonth, setFilterMonth] = useState(new Date().getMonth() + 1);
   const [filterYear, setFilterYear] = useState(new Date().getFullYear());
   const [transactions, setTransactions] = useState([]);
   const [totalSum, setTotalSum] = useState(0);
@@ -45,7 +45,7 @@ function FinanceOverview() {
   const years = Array.from(
     { length: 10 },
     (_, index) => new Date().getFullYear() - index
-  ); // Die letzten 10 Jahre
+  );
   function formatDate(dateString) {
     const options = { year: "numeric", month: "2-digit", day: "2-digit" };
     return new Date(dateString).toLocaleDateString("de-DE", options);
@@ -66,7 +66,7 @@ function FinanceOverview() {
       const sortedTransactions = response.data.sort((a, b) => {
         const dateA = new Date(a.transaction_date);
         const dateB = new Date(b.transaction_date);
-        return dateA - dateB; // for ascending order use `dateA - dateB`
+        return dateA - dateB; 
       });
 
       setTransactions(sortedTransactions);
@@ -147,7 +147,6 @@ function FinanceOverview() {
           </TableHead>
           <TableBody>
             {transactions.map((transaction) => {
-              // Find the category from the categories state using the category_id
               const category = categories.find(
                 (c) => c.id === transaction.category_id
               );
@@ -159,7 +158,7 @@ function FinanceOverview() {
                     scope="row"
                     sx={{
                       border: "1px solid black",
-                      backgroundColor: categoryColor, // Apply the background color
+                      backgroundColor: categoryColor, 
                     }}
                   >
                     {formatDate(transaction.transaction_date)}
