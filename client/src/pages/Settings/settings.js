@@ -112,6 +112,7 @@ function SettingsForm() {
     } catch (error) {
       console.error("Settings failed:", error);
     }
+    fetchSettings();
     setTransactionType(transactionType);
     setAmount("");
     setDescription("");
@@ -131,27 +132,26 @@ function SettingsForm() {
       console.error("Fehler beim Löschen der Settings:", error);
     }
   };
-
+  const fetchSettings = async () => {
+    try {
+      const response = await axios.get(
+        "http://localhost:3001/api/getSettings",
+        {
+          params: {
+            month: filterMonth,
+            year: filterYear,
+            user_id: user.id,
+          },
+        }
+      );
+      setTransactions(response.data);
+    } catch (error) {
+      console.error("Fetching settings failed:", error);
+    }
+  };
   useEffect(() => {
-    const fetchSettings = async () => {
-      try {
-        const response = await axios.get(
-          "http://localhost:3001/api/getSettings",
-          {
-            params: {
-              month: filterMonth,
-              year: filterYear,
-              user_id: user.id,
-            },
-          }
-        );
-        setTransactions(response.data);
-      } catch (error) {
-        console.error("Fetching settings failed:", error);
-      }
-    };
     fetchSettings();
-  }, [filterMonth, filterYear, user.id, transactions]);
+  }, [filterMonth, filterYear, user.id]);
 
   return (
     <Page>
