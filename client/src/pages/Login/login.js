@@ -6,7 +6,7 @@ import Box from "@mui/material/Box";
 import Alert from "@mui/material/Alert";
 import { useAuth } from "../../core/auth/auth";
 import { useNavigate } from "react-router";
-import axiosInstance from "../../config/axios"; 
+import axiosInstance from "../../config/axios";
 
 function LoginPage() {
   const [credentials, setCredentials] = useState({
@@ -54,7 +54,7 @@ function LoginPage() {
         mx: "auto",
       }}
     >
-      <Typography variant="h4" sx={{ mb: 2 }}>
+      <Typography variant="h4" sx={{ mb: 2, color: "#e0e3e9" }}>
         Login
       </Typography>
       {error && <Alert severity="error">{error}</Alert>}
@@ -72,10 +72,10 @@ function LoginPage() {
           onChange={handleChange}
           sx={{
             "& label.Mui-focused": {
-              color: "white",
+              color: "#e0e3e9",
             },
             "& label": {
-              color: "white",
+              color: "#e0e3e9",
             },
             "& input": {
               color: "#d1d1d1",
@@ -85,10 +85,10 @@ function LoginPage() {
                 borderColor: "#d1d1d1",
               },
               "&:hover fieldset": {
-                borderColor: "white",
+                borderColor: "#e0e3e9",
               },
               "&.Mui-focused fieldset": {
-                borderColor: "white",
+                borderColor: "#e0e3e9",
               },
             },
             backgroundColor: "#2c2f36",
@@ -108,10 +108,10 @@ function LoginPage() {
           onChange={handleChange}
           sx={{
             "& label.Mui-focused": {
-              color: "white",
+              color: "#e0e3e9",
             },
             "& label": {
-              color: "white",
+              color: "#e0e3e9",
             },
             "& input": {
               color: "#d1d1d1",
@@ -121,10 +121,10 @@ function LoginPage() {
                 borderColor: "#d1d1d1",
               },
               "&:hover fieldset": {
-                borderColor: "white",
+                borderColor: "#e0e3e9",
               },
               "&.Mui-focused fieldset": {
-                borderColor: "white",
+                borderColor: "#e0e3e9",
               },
             },
             backgroundColor: "#2c2f36",
@@ -138,7 +138,7 @@ function LoginPage() {
             mt: 3,
             mb: 2,
             backgroundColor: "#3A415C",
-            color: "white",
+            color: "#e0e3e9",
             fontSize: "1rem",
             boxShadow: "0 2px 4px rgba(0, 0, 0, 0.1)",
           }}

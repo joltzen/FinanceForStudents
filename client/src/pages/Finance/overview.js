@@ -143,12 +143,16 @@ function FinanceOverview() {
   return (
     <div>
       <FormControl>
-        <InputLabel style={{ color: "white" }}>Monat</InputLabel>
+        <InputLabel style={{ color: "#e0e3e9" }}>Monat</InputLabel>
         <Select
           value={filterMonth}
           onChange={(e) => setFilterMonth(e.target.value)}
           label="Monat"
-          style={{ color: "white" }}
+          sx={{
+            color: "#e0e3e9",
+            backgroundColor: "#2e2e38",
+            border: "1px solid #e0e3e9",
+          }}
         >
           {months.map((month) => (
             <MenuItem key={month.value} value={month.value}>
@@ -158,12 +162,16 @@ function FinanceOverview() {
         </Select>
       </FormControl>
       <FormControl sx={{ marginLeft: 3, marginBottom: 2 }}>
-        <InputLabel style={{ color: "white" }}>Jahr</InputLabel>
+        <InputLabel style={{ color: "#e0e3e9" }}>Jahr</InputLabel>
         <Select
           value={filterYear}
           onChange={(e) => setFilterYear(e.target.value)}
-          label="Monat"
-          style={{ color: "white" }}
+          label="Jahr"
+          sx={{
+            color: "#e0e3e9",
+            backgroundColor: "#2e2e38",
+            border: "1px solid #e0e3e9",
+          }}
         >
           {years.map((year) => (
             <MenuItem key={year} value={year}>
@@ -187,7 +195,7 @@ function FinanceOverview() {
               const category = categories.find(
                 (c) => c.id === transaction.category_id
               );
-              const categoryColor = category ? category.color : "white";
+              const categoryColor = category ? category.color : "#e0e3e9";
               return (
                 <TableRow key={transaction.transaction_id}>
                   <TableCell
@@ -244,7 +252,7 @@ function FinanceOverview() {
             p: 1,
             display: "flex",
             justifyContent: "flex-end",
-            backgroundColor: "lightgrey",
+            backgroundColor: "#e0e3e9",
           }}
         >
           <Typography

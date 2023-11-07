@@ -38,7 +38,7 @@ function HomePage() {
         <Text text={strings.homepage.security}></Text>
         <Heading2 text={strings.homepage.goalheading}></Heading2>
         <Text text={strings.homepage.goal}></Text>
-        <Typography sx={{ marginTop: 30 }}></Typography>
+        <Typography sx={{ marginTop: 30, color: "#e0e3e9" }}></Typography>
       </div>
     </Page>
   );

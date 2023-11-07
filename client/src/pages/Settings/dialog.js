@@ -27,10 +27,10 @@ function DialogPage() {
   const StyledTextField = styled(TextField)({
     marginTop: "20px",
     "& label.Mui-focused": {
-      color: "white",
+      color: "#e0e3e9",
     },
     "& label": {
-      color: "white",
+      color: "#e0e3e9",
     },
     "& input": {
       color: "#d1d1d1",
@@ -40,10 +40,10 @@ function DialogPage() {
         borderColor: "#d1d1d1",
       },
       "&:hover fieldset": {
-        borderColor: "white",
+        borderColor: "#e0e3e9",
       },
       "&.Mui-focused fieldset": {
-        borderColor: "white",
+        borderColor: "#e0e3e9",
       },
     },
     backgroundColor: "#2c2f36",
@@ -166,7 +166,7 @@ function DialogPage() {
         </DialogActions>
       </Dialog>
 
-      <Typography variant="h6" sx={{ mt: 2 }}>
+      <Typography variant="h6" sx={{ mt: 2, color: "#e0e3e9" }}>
         Benutzerdefinierte Kategorien
       </Typography>
       {categories.map((category, index) => (
@@ -181,7 +181,7 @@ function DialogPage() {
             justifyContent: "space-between",
           }}
         >
-          <Typography>{category.name}</Typography>
+          <Typography sx={{ color: "#e0e3e9" }}>{category.name}</Typography>
 
           <IconButton
             onClick={() => handleDeleteCategory(category.id)}

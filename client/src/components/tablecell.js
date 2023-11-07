@@ -6,7 +6,7 @@ function StyledTableCell(props) {
     <TableCell
       sx={{
         backgroundColor: "#4e577b",
-        color: "white",
+        color: "#e0e3e9",
         fontWeight: "bold",
         borderBottom: "1px solid black",
       }}

@@ -138,7 +138,7 @@ function DashboardPage() {
           calculateCategoryTotals()["remaining"],
         ],
         backgroundColor: [
-          ...categories.map((category) => category.color || "#ffce56"), // Kategorie Farben
+          ...categories.map((category) => category.color || "#ffce56"),
           "#76ff03",
         ],
         hoverBackgroundColor: [
@@ -155,20 +155,19 @@ function DashboardPage() {
         position: "top",
         align: "start",
         labels: {
-          color: "white",
+          color: "#e0e3e9",
           font: {
             size: 12,
             family: "Arial",
           },
           boxWidth: 30,
           padding: 20,
-          usePointStyle: true,
         },
       },
       title: {
         display: true,
         text: "Ausgaben nach Kategorien",
-        color: "white",
+        color: "#e0e3e9",
         font: {
           size: 20,
           family: "Arial",
@@ -206,12 +205,15 @@ function DashboardPage() {
         }}
       >
         <FormControl sx={{ marginTop: 3 }}>
-          <InputLabel style={{ color: "white" }}>Monat</InputLabel>
+          <InputLabel style={{ color: "#e0e3e9" }}>Monat</InputLabel>
           <Select
             value={filterMonth}
             onChange={(e) => setFilterMonth(e.target.value)}
             label="Monat"
-            style={{ color: "white" }}
+            sx={{
+              color: "#e0e3e9",
+              backgroundColor: "#2e2e38",
+            }}
           >
             {months.map((month) => (
               <MenuItem key={month.value} value={month.value}>
@@ -221,12 +223,15 @@ function DashboardPage() {
           </Select>
         </FormControl>
         <FormControl sx={{ marginLeft: 3, marginTop: 3 }}>
-          <InputLabel style={{ color: "white" }}>Jahr</InputLabel>
+          <InputLabel style={{ color: "#e0e3e9" }}>Jahr</InputLabel>
           <Select
             value={filterYear}
             onChange={(e) => setFilterYear(e.target.value)}
             label="Monat"
-            style={{ color: "white" }}
+            sx={{
+              color: "#e0e3e9",
+              backgroundColor: "#2e2e38",
+            }}
           >
             {years.map((year) => (
               <MenuItem key={year} value={year}>
@@ -253,7 +258,7 @@ function DashboardPage() {
           }}
         >
           <Doughnut data={chartData} options={chartOptions} />
-          <Typography variant="subtitle1" sx={{ mt: 2, color: "white" }}>
+          <Typography variant="subtitle1" sx={{ mt: 2, color: "#e0e3e9" }}>
             <strong>Verbleibendes Budget: </strong>
             {calculateCategoryTotals()["remaining"].toFixed(2)} €
           </Typography>
