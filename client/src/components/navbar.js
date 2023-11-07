@@ -14,7 +14,7 @@ import { SidebarContext } from "../core/sidebar";
 import { styled } from "@mui/system";
 import StyledListItem from "./listitem";
 import { useAuth } from "../core/auth/auth";
-import { Link } from "react-router-dom"; 
+import { Link } from "react-router-dom";
 import Menu from "@mui/material/Menu";
 import MenuItem from "@mui/material/MenuItem";
 import AccountCircle from "@mui/icons-material/AccountCircle";
@@ -189,7 +189,6 @@ function Navbar() {
             <StyledListItem href="/" primary="Home" />
             <StyledListItem href="/about" primary="About" />
             <StyledListItem href="/contact" primary="Contact" />
-
             <Divider />
           </List>
         </StyledDrawerContent>

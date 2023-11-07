@@ -56,8 +56,6 @@ function SettingsForm() {
   const [amount, setAmount] = useState("");
   const [transactionType, setTransactionType] = useState("Einnahme");
   const [transactions, setTransactions] = useState([]);
-  const [incomeTransactions, setIncomeTransactions] = useState([]);
-  const [expenseTransactions, setExpenseTransactions] = useState([]);
 
   const { user } = useAuth();
 
@@ -147,16 +145,13 @@ function SettingsForm() {
             },
           }
         );
-        // Filtern und setzen Sie die Transaktionen entsprechend ihrem Typ
         setTransactions(response.data);
-        fetchSettings();
       } catch (error) {
         console.error("Fetching settings failed:", error);
       }
     };
-
     fetchSettings();
-  }, [user.id]);
+  }, [filterMonth, filterYear, user.id, transactions]);
 
   return (
     <Page>
@@ -253,7 +248,12 @@ function SettingsForm() {
                 </TableHead>
                 <TableBody>
                   {transactions
-                    .filter((t) => t?.transaction_type === "Einnahme")
+                    .filter(
+                      (t) =>
+                        t?.transaction_type === "Einnahme" &&
+                        t?.month === filterMonth &&
+                        t?.year === filterYear
+                    )
                     .map((item) => (
                       <TableRow key={item.settings_id}>
                         <TableCell component="th" scope="row">
@@ -289,7 +289,12 @@ function SettingsForm() {
                 </TableHead>
                 <TableBody>
                   {transactions
-                    .filter((t) => t?.transaction_type === "Ausgabe")
+                    .filter(
+                      (t) =>
+                        t?.transaction_type === "Ausgabe" &&
+                        t?.month === filterMonth &&
+                        t?.year === filterYear
+                    )
                     .map((item) => (
                       <TableRow key={item.settings_id}>
                         <TableCell component="th" scope="row">
