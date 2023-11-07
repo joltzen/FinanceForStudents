@@ -2,33 +2,263 @@ import React, { useEffect, useState } from "react";
 import axios from "axios";
 import { useAuth } from "../../core/auth/auth";
 import Page from "../../components/page";
+import {
+  FormControl,
+  Typography,
+  Box,
+  InputLabel,
+  Select,
+  MenuItem,
+} from "@mui/material";
+
+import { Doughnut } from "react-chartjs-2";
+import "chart.js/auto";
 
 function DashboardPage() {
-  const [response, setResponse] = useState([]);
   const { user } = useAuth();
-  useEffect(() => {
-    axios
-      .get("http://localhost:3001/api/getData")
-      .then((response) => {
-        setResponse(response.data);
-      })
-      .catch((error) => {
-        console.error("Fehler bei der Testanfrage:", error);
+  const [filterMonth, setFilterMonth] = useState(new Date().getMonth() + 1);
+  const [filterYear, setFilterYear] = useState(new Date().getFullYear());
+  const [transactions, setTransactions] = useState([]);
+  const [categories, setCategories] = useState([]);
+  const [settings, setSettings] = useState([]);
+
+  const months = [
+    { value: 1, label: "Januar" },
+    { value: 2, label: "Februar" },
+    { value: 3, label: "März" },
+    { value: 4, label: "April" },
+    { value: 5, label: "Mai" },
+    { value: 6, label: "Juni" },
+    { value: 7, label: "Juli" },
+    { value: 8, label: "August" },
+    { value: 9, label: "September" },
+    { value: 10, label: "Oktober" },
+    { value: 11, label: "November" },
+    { value: 12, label: "Dezember" },
+  ];
+
+  const years = Array.from(
+    { length: 10 },
+    (_, index) => new Date().getFullYear() - index
+  );
+  const calculateCategoryTotals = () => {
+    const categoryTotals = {};
+
+    transactions.forEach((transaction) => {
+      if (!categoryTotals[transaction.category_id]) {
+        categoryTotals[transaction.category_id] = 0;
+      }
+      categoryTotals[transaction.category_id] += parseFloat(transaction.amount);
+    });
+
+    const totalBudget = settings.reduce((acc, setting) => {
+      if (setting.transaction_type === "Einnahme") {
+        return acc + parseFloat(setting.amount);
+      } else if (setting.transaction_type === "Ausgabe") {
+        return acc - parseFloat(setting.amount);
+      }
+      return acc;
+    }, 0);
+
+    const usedBudget = Object.values(categoryTotals).reduce(
+      (acc, num) => acc + num,
+      0
+    );
+    categoryTotals["remaining"] = totalBudget - usedBudget;
+    return categoryTotals;
+  };
+
+  const getCategoryTotal = (categoryId) => {
+    const totals = calculateCategoryTotals();
+    return totals[categoryId] || 0;
+  };
+
+  const fetchTransactions = async () => {
+    try {
+      const response = await axios.get(
+        "http://localhost:3001/api/getUserTransactions",
+        {
+          params: {
+            month: filterMonth,
+            year: filterYear,
+            user_id: user.id,
+          },
+        }
+      );
+
+      const res = await axios.get("http://localhost:3001/api/getSettings", {
+        params: {
+          month: filterMonth,
+          year: filterYear,
+          user_id: user.id,
+        },
       });
-  }, []);
+
+      const sortedTransactions = response.data.sort((a, b) => {
+        const dateA = new Date(a.transaction_date);
+        const dateB = new Date(b.transaction_date);
+        return dateA - dateB;
+      });
+
+      setTransactions(sortedTransactions);
+      setSettings(res.data);
+    } catch (error) {
+      console.error("Error fetching transactions:", error);
+    }
+  };
+  useEffect(() => {
+    fetchTransactions();
+    const fetchCategories = async () => {
+      try {
+        const response = await axios.get(
+          "http://localhost:3001/api/getCategories",
+          {
+            params: { user_id: user.id },
+          }
+        );
+        setCategories(response.data);
+      } catch (error) {
+        console.error("Fehler beim Laden der Kategorien:", error);
+      }
+    };
+
+    fetchCategories();
+  }, [filterMonth, filterYear, user.id]);
+
+  const chartData = {
+    labels: [
+      ...categories.map((category) => category.name),
+      "Verbleibendes Budget",
+    ],
+    datasets: [
+      {
+        label: "Budgetverteilung",
+        data: [
+          ...categories.map((category) => getCategoryTotal(category.id)),
+          calculateCategoryTotals()["remaining"],
+        ],
+        backgroundColor: [
+          ...categories.map((category) => category.color || "#ffce56"), // Kategorie Farben
+          "#76ff03",
+        ],
+        hoverBackgroundColor: [
+          ...categories.map((category) => category.color || "#ffce56"),
+          "#eeeeee",
+        ],
+      },
+    ],
+  };
+
+  const chartOptions = {
+    plugins: {
+      legend: {
+        position: "top",
+        align: "start",
+        labels: {
+          color: "white",
+          font: {
+            size: 12,
+            family: "Arial",
+          },
+          boxWidth: 30,
+          padding: 20,
+          usePointStyle: true,
+        },
+      },
+      title: {
+        display: true,
+        text: "Ausgaben nach Kategorien",
+        color: "white",
+        font: {
+          size: 20,
+          family: "Arial",
+        },
+      },
+      tooltip: {
+        callbacks: {
+          label: function (tooltipItem) {
+            let label = chartData.labels[tooltipItem.dataIndex] || "";
+            if (label) {
+              label += ": ";
+            }
+            label += new Intl.NumberFormat("de-DE", {
+              style: "currency",
+              currency: "EUR",
+            }).format(tooltipItem.parsed);
+            return label;
+          },
+        },
+      },
+    },
+    maintainAspectRatio: false,
+  };
 
   return (
     <Page>
       <h1>Dashboard Page</h1>
-      {user && response.length > 0 ? (
-        <>
-          <h2>
-            Willkommen {user.firstname} {user.surname}!
-          </h2>
-        </>
-      ) : (
-        <></>
-      )}
+      <Box
+        sx={{
+          display: "flex",
+          flexDirection: "row",
+          justifyContent: "start",
+          alignItems: "center",
+          marginTop: 3,
+        }}
+      >
+        <FormControl sx={{ marginTop: 3 }}>
+          <InputLabel style={{ color: "white" }}>Monat</InputLabel>
+          <Select
+            value={filterMonth}
+            onChange={(e) => setFilterMonth(e.target.value)}
+            label="Monat"
+            style={{ color: "white" }}
+          >
+            {months.map((month) => (
+              <MenuItem key={month.value} value={month.value}>
+                {month.label}
+              </MenuItem>
+            ))}
+          </Select>
+        </FormControl>
+        <FormControl sx={{ marginLeft: 3, marginTop: 3 }}>
+          <InputLabel style={{ color: "white" }}>Jahr</InputLabel>
+          <Select
+            value={filterYear}
+            onChange={(e) => setFilterYear(e.target.value)}
+            label="Monat"
+            style={{ color: "white" }}
+          >
+            {years.map((year) => (
+              <MenuItem key={year} value={year}>
+                {year}
+              </MenuItem>
+            ))}
+          </Select>
+        </FormControl>
+      </Box>
+      <Box
+        sx={{
+          display: "flex",
+          flexDirection: "row",
+          justifyContent: "center",
+          alignItems: "center",
+        }}
+      >
+        <Box
+          sx={{
+            width: "100%",
+            height: "400px",
+            position: "relative",
+            mb: 3,
+          }}
+        >
+          <Doughnut data={chartData} options={chartOptions} />
+          <Typography variant="subtitle1" sx={{ mt: 2, color: "white" }}>
+            <strong>Verbleibendes Budget: </strong>
+            {calculateCategoryTotals()["remaining"].toFixed(2)} €
+          </Typography>
+        </Box>
+      </Box>
     </Page>
   );
 }

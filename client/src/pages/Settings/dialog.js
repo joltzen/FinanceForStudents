@@ -90,23 +90,6 @@ function DialogPage() {
     }
   };
 
-  const handleUpdateCategory = async (categoryToUpdate) => {
-    try {
-      const response = await axios.patch(
-        "http://localhost:3001/api/updateCategory",
-        categoryToUpdate
-      );
-      const updatedCategory = response.data;
-      setCategories((prevCategories) =>
-        prevCategories.map((category) =>
-          category.id === updatedCategory.id ? updatedCategory : category
-        )
-      );
-    } catch (error) {
-      console.error("Fehler beim Aktualisieren der Kategorie:", error);
-    }
-  };
-
   const handleDeleteCategory = async (categoryId) => {
     try {
       await axios.delete("http://localhost:3001/api/deleteCategory", {
