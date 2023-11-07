@@ -122,14 +122,6 @@ function DialogPage() {
 
   return (
     <div>
-      <Button
-        sx={{ marginTop: 2 }}
-        onClick={() => setOpenDialog(true)}
-        variant="contained"
-        color="primary"
-      >
-        Kategorie hinzufügen
-      </Button>
       <Dialog open={openDialog} onClose={() => setOpenDialog(false)}>
         <DialogTitle>Neue Kategorie hinzufügen</DialogTitle>
         <DialogContent>
@@ -216,6 +208,14 @@ function DialogPage() {
           </IconButton>
         </Paper>
       ))}
+      <Button
+        sx={{ marginTop: 2 }}
+        onClick={() => setOpenDialog(true)}
+        variant="contained"
+        color="primary"
+      >
+        Kategorie hinzufügen
+      </Button>
     </div>
   );
 }

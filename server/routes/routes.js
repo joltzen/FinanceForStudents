@@ -74,6 +74,18 @@ router.get("/getUserTransactions", async (req, res) => {
     res.status(500).json({ error: "Error fetching transactions" });
   }
 });
+router.delete("/deleteTransaction", async (req, res) => {
+  try {
+    const { id } = req.query;
+    const query =
+      "DELETE FROM transactions WHERE transaction_id = $1 RETURNING *;";
+    const values = [id];
+    const result = await db.query(query, values);
+    res.json(result.rows[0]);
+  } catch (error) {
+    res.status(500).json({ error: "Fehler beim Löschen der Transaction" });
+  }
+});
 
 // POST-Anforderung, um eine neue Transaktion hinzuzufügen
 router.post("/addTransaction", async (req, res) => {
@@ -188,4 +200,57 @@ router.delete("/deleteCategory", async (req, res) => {
     res.status(500).json({ error: "Fehler beim Löschen der Kategorie" });
   }
 });
+
+router.post("/addSettings", async (req, res) => {
+  try {
+    const { user_id, transactionType, amount, description, month, year } =
+      req.body;
+    const query = `
+      INSERT INTO settings (user_id, transaction_type, amount, description, month, year)
+      VALUES ($1, $2, $3, $4, $5, $6)
+      RETURNING *;`;
+
+    const values = [user_id, transactionType, amount, description, month, year];
+
+    db.query(query, values, (err, result) => {
+      if (err) {
+        console.error("Fehler beim Einfügen der Settings:", err);
+        return res
+          .status(500)
+          .json({ error: "Fehler beim Einfügen der Settings" });
+      }
+      const insertedSettings = result.rows[0];
+      res.status(201).json(insertedSettings);
+    });
+  } catch (error) {
+    console.error("Fehler beim Hinzufügen der Settings:", error);
+    res.status(500).json({ error: "Fehler beim Hinzufügen der Settings" });
+  }
+});
+
+router.get("/getSettings", async (req, res) => {
+  try {
+    const { month, year, user_id } = req.query;
+    const result = await db.query(
+      "SELECT * FROM settings WHERE month = $1 AND year= $2 AND user_id = $3",
+      [month, year, user_id]
+    );
+    res.json(result.rows);
+  } catch (error) {
+    console.error("Error getting user settings:", error);
+    res.status(500).json({ error: "Error fetching settings" });
+  }
+});
+router.delete("/deleteSettings", async (req, res) => {
+  try {
+    const { id } = req.query;
+    const query = "DELETE FROM settings WHERE settings_id = $1 RETURNING *;";
+    const values = [id];
+    const result = await db.query(query, values);
+    res.json(result.rows[0]);
+  } catch (error) {
+    res.status(500).json({ error: "Fehler beim Löschen der Settings" });
+  }
+});
+
 module.exports = router;
