@@ -163,7 +163,7 @@ function SettingsForm() {
           p: 2,
         }}
       >
-        <Box sx={{ width: "30%" }}>
+        <Box sx={{ width: "50%" }}>
           <Typography variant="h4" sx={{ mb: 4 }}>
             Fixkosten
           </Typography>
@@ -233,8 +233,11 @@ function SettingsForm() {
               Hinzufügen
             </Button>
           </form>
+          <Box sx={{ width: "100%", marginTop: 10 }}>
+            <DialogPage />
+          </Box>
         </Box>
-        <Box sx={{ width: "39%", marginLeft: 10 }}>
+        <Box sx={{ width: "50%", marginLeft: 10 }}>
           <Box sx={{ mb: 5, marginRight: 10 }}>
             <Typography variant="h6">Einnahmen</Typography>
             <TableContainer component={Paper}>
@@ -317,9 +320,6 @@ function SettingsForm() {
               </Table>
             </TableContainer>
           </Box>
-        </Box>
-        <Box sx={{ width: "30%" }}>
-          <DialogPage />
         </Box>
       </Box>
     </Page>
