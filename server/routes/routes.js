@@ -19,8 +19,6 @@ router.post("/login", async (req, res) => {
   try {
     const { identifier, password } = req.body;
     const user = await findUserByLogin(identifier);
-    console.log(user.id);
-    //print the user information
     if (user) {
       const validPassword = await bcrypt.compare(password, user.password);
       if (validPassword) {
@@ -106,7 +104,6 @@ router.post("/addTransaction", async (req, res) => {
   try {
     const { date, description, amount, transactionType, user_id, category_id } =
       req.body;
-    console.log(category_id);
     const query = `
       INSERT INTO transactions (user_id, transaction_type, amount, description, transaction_date, category_id)
       VALUES ($1, $2, $3, $4, $5, $6)
@@ -161,7 +158,6 @@ router.get("/getCategories", async (req, res) => {
 router.post("/saveCategory", async (req, res) => {
   try {
     const { name, user_id, color } = req.body;
-    console.log(name, user_id, color);
     const query = `
       INSERT INTO categories (name, user_id, color)
       VALUES ($1, $2, $3)
