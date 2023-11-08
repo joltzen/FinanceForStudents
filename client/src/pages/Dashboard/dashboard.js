@@ -78,6 +78,38 @@ function DashboardPage() {
     const totals = calculateCategoryTotals();
     return totals[categoryId] || 0;
   };
+
+  const calculateAnnualCategoryTotals = () => {
+    const categoryTotals = {};
+
+    transactions.forEach((transaction) => {
+      if (!categoryTotals[transaction.category_id]) {
+        categoryTotals[transaction.category_id] = 0;
+      }
+      categoryTotals[transaction.category_id] += parseFloat(transaction.amount);
+    });
+
+    const totalBudget = settings.reduce((acc, setting) => {
+      if (setting.transaction_type === "Einnahme") {
+        return acc + parseFloat(setting.amount);
+      } else if (setting.transaction_type === "Ausgabe") {
+        return acc - parseFloat(setting.amount);
+      }
+      return acc;
+    }, 0);
+
+    const usedBudget = Object.values(categoryTotals).reduce(
+      (acc, num) => acc + num,
+      0
+    );
+    categoryTotals["remaining"] = totalBudget - usedBudget;
+    return categoryTotals;
+  };
+
+  const getAnnualCategoryTotal = (categoryId) => {
+    const totals = calculateCategoryTotals();
+    return totals[categoryId] || 0;
+  };
   const calculateAnnualTotals = () => {
     const categoryTotals = {};
 
@@ -164,7 +196,7 @@ function DashboardPage() {
     };
 
     fetchCategories();
-  }, [filterMonth, filterYear, user.id]);
+  }, [filterMonth, filterYear, user.id, isAnnualView]);
 
   const chartData = {
     labels: [
@@ -177,7 +209,7 @@ function DashboardPage() {
         data: isAnnualView
           ? [
               ...categories.map(
-                (category) => getAnnualTotal()[category.id] || 0
+                (category) => getAnnualCategoryTotal(category.id) || 0
               ),
               calculateAnnualTotals()["remaining"],
             ]
@@ -191,12 +223,11 @@ function DashboardPage() {
         ],
         hoverBackgroundColor: [
           ...categories.map((category) => category.color || "#ffce56"),
-          "#eeeeee",
+          "#76ff03",
         ],
       },
     ],
   };
-
   const chartOptions = {
     plugins: {
       legend: {
@@ -260,7 +291,7 @@ function DashboardPage() {
                 sx={{
                   fontWeight: "bold",
                   marginTop: 3,
-                  marginBottom: 5,
+                  marginBottom: 3,
                   color: "#e0e3e9",
                 }}
               >
@@ -273,6 +304,7 @@ function DashboardPage() {
                     onChange={(e) => setIsAnnualView(e.target.checked)}
                   />
                 }
+                sx={{ marginBottom: 4, color: "#e0e3e9" }}
                 label="Jahresrückblick"
               />
               <Grid container spacing={2} style={{ marginBottom: 50 }}>
