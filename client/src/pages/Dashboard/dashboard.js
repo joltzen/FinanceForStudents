@@ -12,6 +12,8 @@ import {
   Grid,
   Card,
   CardContent,
+  FormControlLabel,
+  Switch,
 } from "@mui/material";
 
 import { Doughnut } from "react-chartjs-2";
@@ -24,6 +26,7 @@ function DashboardPage() {
   const [transactions, setTransactions] = useState([]);
   const [categories, setCategories] = useState([]);
   const [settings, setSettings] = useState([]);
+  const [isAnnualView, setIsAnnualView] = useState(false);
 
   const months = [
     { value: 1, label: "Januar" },
@@ -75,35 +78,70 @@ function DashboardPage() {
     const totals = calculateCategoryTotals();
     return totals[categoryId] || 0;
   };
+  const calculateAnnualTotals = () => {
+    const categoryTotals = {};
+
+    transactions.forEach((transaction) => {
+      if (!categoryTotals[transaction.category_id]) {
+        categoryTotals[transaction.category_id] = 0;
+      }
+      categoryTotals[transaction.category_id] += parseFloat(transaction.amount);
+    });
+
+    const totalBudget = settings.reduce((acc, setting) => {
+      if (setting.transaction_type === "Einnahme") {
+        return acc + parseFloat(setting.amount);
+      } else if (setting.transaction_type === "Ausgabe") {
+        return acc - parseFloat(setting.amount);
+      }
+      return acc;
+    }, 0);
+
+    const usedBudget = Object.values(categoryTotals).reduce(
+      (acc, num) => acc + num,
+      0
+    );
+    categoryTotals["remaining"] = totalBudget - usedBudget;
+    return categoryTotals;
+  };
+
+  const getAnnualTotal = (categoryId) => {
+    const totals = calculateAnnualTotals();
+    return totals[categoryId] || 0;
+  };
 
   const fetchTransactions = async () => {
+    const endpointTransactions = isAnnualView
+      ? "http://localhost:3001/api/getUserTransactionsAnnual"
+      : "http://localhost:3001/api/getUserTransactions";
+    const endpointSettings = isAnnualView
+      ? "http://localhost:3001/api/getSettingsAnnual"
+      : "http://localhost:3001/api/getSettings";
+    // Parameter ändern basierend auf dem gewählten Filter
+    const params = isAnnualView
+      ? { year: filterYear, user_id: user.id }
+      : { month: filterMonth, year: filterYear, user_id: user.id };
+
     try {
-      const response = await axios.get(
-        "http://localhost:3001/api/getUserTransactions",
-        {
-          params: {
-            month: filterMonth,
-            year: filterYear,
-            user_id: user.id,
-          },
-        }
-      );
-
-      const res = await axios.get("http://localhost:3001/api/getSettings", {
-        params: {
-          month: filterMonth,
-          year: filterYear,
-          user_id: user.id,
-        },
+      const response = await axios.get(endpointTransactions, {
+        params,
       });
 
-      const sortedTransactions = response.data.sort((a, b) => {
-        const dateA = new Date(a.transaction_date);
-        const dateB = new Date(b.transaction_date);
-        return dateA - dateB;
+      const res = await axios.get(endpointSettings, {
+        params,
       });
 
-      setTransactions(sortedTransactions);
+      if (!isAnnualView) {
+        const sortedTransactions = response.data.sort((a, b) => {
+          const dateA = new Date(a.transaction_date);
+          const dateB = new Date(b.transaction_date);
+          return dateA - dateB;
+        });
+
+        setTransactions(sortedTransactions);
+      } else {
+        setTransactions(response.data);
+      }
       setSettings(res.data);
     } catch (error) {
       console.error("Error fetching transactions:", error);
@@ -136,10 +174,17 @@ function DashboardPage() {
     datasets: [
       {
         label: "Budgetverteilung",
-        data: [
-          ...categories.map((category) => getCategoryTotal(category.id)),
-          calculateCategoryTotals()["remaining"],
-        ],
+        data: isAnnualView
+          ? [
+              ...categories.map(
+                (category) => getAnnualTotal()[category.id] || 0
+              ),
+              calculateAnnualTotals()["remaining"],
+            ]
+          : [
+              ...categories.map((category) => getCategoryTotal(category.id)),
+              calculateCategoryTotals()["remaining"],
+            ],
         backgroundColor: [
           ...categories.map((category) => category.color || "#ffce56"),
           "#76ff03",
@@ -210,6 +255,26 @@ function DashboardPage() {
         <Grid item xs={12} md={8} lg={6}>
           <Card sx={{ backgroundColor: "#2e2e38" }}>
             <CardContent>
+              <Typography
+                variant="h5"
+                sx={{
+                  fontWeight: "bold",
+                  marginTop: 3,
+                  marginBottom: 5,
+                  color: "#e0e3e9",
+                }}
+              >
+                Filter
+              </Typography>
+              <FormControlLabel
+                control={
+                  <Switch
+                    checked={isAnnualView}
+                    onChange={(e) => setIsAnnualView(e.target.checked)}
+                  />
+                }
+                label="Jahresrückblick"
+              />
               <Grid container spacing={2} style={{ marginBottom: 50 }}>
                 <Grid item xs={12} sm={6}>
                   <FormControl fullWidth>
@@ -262,10 +327,24 @@ function DashboardPage() {
               </Box>
             </CardContent>
             <Grid item xs={12}>
-              <Typography variant="subtitle1" sx={{ color: "#e0e3e9", mt: 2 }}>
-                <strong>Verbleibendes Budget: </strong>
-                {calculateCategoryTotals()["remaining"].toFixed(2)} €
-              </Typography>
+              {isAnnualView ? (
+                <Typography
+                  variant="subtitle1"
+                  sx={{ color: "#e0e3e9", mt: 2 }}
+                >
+                  <strong>Gesamtes Jahresbudget: </strong>
+                  {calculateAnnualTotals()["remaining"].toFixed(2)} €
+                </Typography>
+              ) : (
+                <Typography
+                  variant="subtitle1"
+                  sx={{ color: "#e0e3e9", mt: 2 }}
+                >
+                  <strong>Verbleibendes Budget: </strong>
+                  {calculateCategoryTotals()["remaining"].toFixed(2)} €
+                </Typography>
+              )}
+              ;
             </Grid>
           </Card>
         </Grid>

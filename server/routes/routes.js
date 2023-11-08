@@ -74,6 +74,19 @@ router.get("/getUserTransactions", async (req, res) => {
     res.status(500).json({ error: "Error fetching transactions" });
   }
 });
+router.get("/getUserTransactionsAnnual", async (req, res) => {
+  try {
+    const { year, user_id } = req.query;
+    const result = await db.query(
+      "SELECT * FROM transactions WHERE EXTRACT(YEAR FROM transaction_date) = $1 AND user_id = $2",
+      [year, user_id]
+    );
+    res.json(result.rows);
+  } catch (error) {
+    console.error("Error getting user transactions:", error);
+    res.status(500).json({ error: "Error fetching all transactions" });
+  }
+});
 router.delete("/deleteTransaction", async (req, res) => {
   try {
     const { id } = req.query;
@@ -93,7 +106,6 @@ router.post("/addTransaction", async (req, res) => {
     const { date, description, amount, transactionType, user_id, category_id } =
       req.body;
     console.log(category_id);
-    //const user_id = 8; // TODO: Hier muss die user_id aus dem JWT-Token ausgelesen werden
     const query = `
       INSERT INTO transactions (user_id, transaction_type, amount, description, transaction_date, category_id)
       VALUES ($1, $2, $3, $4, $5, $6)
@@ -234,6 +246,19 @@ router.get("/getSettings", async (req, res) => {
     const result = await db.query(
       "SELECT * FROM settings WHERE month = $1 AND year= $2 AND user_id = $3",
       [month, year, user_id]
+    );
+    res.json(result.rows);
+  } catch (error) {
+    console.error("Error getting user settings:", error);
+    res.status(500).json({ error: "Error fetching settings" });
+  }
+});
+router.get("/getSettingsAnnual", async (req, res) => {
+  try {
+    const { year, user_id } = req.query;
+    const result = await db.query(
+      "SELECT * FROM settings WHERE year= $1 AND user_id = $2",
+      [year, user_id]
     );
     res.json(result.rows);
   } catch (error) {
