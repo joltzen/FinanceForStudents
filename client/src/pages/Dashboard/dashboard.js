@@ -14,6 +14,7 @@ import {
   CardContent,
   FormControlLabel,
   Switch,
+  Button,
 } from "@mui/material";
 
 import { Doughnut } from "react-chartjs-2";
@@ -149,7 +150,6 @@ function DashboardPage() {
     const endpointSettings = isAnnualView
       ? "http://localhost:3001/api/getSettingsAnnual"
       : "http://localhost:3001/api/getSettings";
-    // Parameter ändern basierend auf dem gewählten Filter
     const params = isAnnualView
       ? { year: filterYear, user_id: user.id }
       : { month: filterMonth, year: filterYear, user_id: user.id };
@@ -270,6 +270,10 @@ function DashboardPage() {
     },
     maintainAspectRatio: false,
   };
+  const hasBudgetData = (totals) => {
+    return Object.values(totals).reduce((acc, value) => acc + value, 0) !== 0;
+  };
+
   return (
     <Box sx={{ flexGrow: 1, padding: 3 }}>
       <Typography variant="h4" gutterBottom>
@@ -349,35 +353,91 @@ function DashboardPage() {
                   </FormControl>
                 </Grid>
               </Grid>
-              <Box
-                sx={{
-                  height: "500px", // Höhe des Diagrammcontainers erhöht
-                  position: "relative",
-                }}
-              >
-                <Doughnut data={chartData} options={chartOptions} />
-              </Box>
-            </CardContent>
-            <Grid item xs={12}>
-              {isAnnualView ? (
-                <Typography
-                  variant="subtitle1"
-                  sx={{ color: "#e0e3e9", mt: 2 }}
+              {hasBudgetData(
+                isAnnualView
+                  ? calculateAnnualTotals()
+                  : calculateCategoryTotals()
+              ) ? (
+                <Box
+                  sx={{
+                    height: "500px",
+                    position: "relative",
+                  }}
                 >
-                  <strong>Gesamtes Jahresbudget: </strong>
-                  {calculateAnnualTotals()["remaining"].toFixed(2)} €
-                </Typography>
+                  <Doughnut data={chartData} options={chartOptions} />
+                </Box>
               ) : (
-                <Typography
-                  variant="subtitle1"
-                  sx={{ color: "#e0e3e9", mt: 2 }}
+                <Box
+                  sx={{
+                    height: "100px",
+                    display: "flex",
+                    flexDirection: "column",
+                    alignItems: "center",
+                    justifyContent: "center",
+                    position: "relative",
+                  }}
                 >
-                  <strong>Verbleibendes Budget: </strong>
-                  {calculateCategoryTotals()["remaining"].toFixed(2)} €
-                </Typography>
+                  <Typography
+                    variant="subtitle1"
+                    sx={{ color: "#e0e3e9", mb: 2, textAlign: "center" }}
+                  >
+                    Für den ausgewählten Zeitraum sind keine Budgetdaten
+                    vorhanden.
+                  </Typography>
+
+                  <Box
+                    sx={{
+                      display: "flex",
+                      flexDirection: "row",
+                      alignItems: "center",
+                      justifyContent: "center",
+                    }}
+                  >
+                    <Button
+                      type="submit"
+                      variant="contained"
+                      color="button"
+                      href="/settings"
+                      sx={{ mr: 5, color: "#e0e3e9" }}
+                    >
+                      Fixkosten verwalten
+                    </Button>
+                    <Button
+                      type="submit"
+                      variant="contained"
+                      color="button"
+                      href="/settings"
+                      sx={{ color: "#e0e3e9" }}
+                    >
+                      Ein und Ausgaben verwalten
+                    </Button>
+                  </Box>
+                </Box>
               )}
-              ;
-            </Grid>
+            </CardContent>
+            {hasBudgetData(
+              isAnnualView ? calculateAnnualTotals() : calculateCategoryTotals()
+            ) ? (
+              <Grid item xs={12}>
+                {isAnnualView ? (
+                  <Typography
+                    variant="subtitle1"
+                    sx={{ color: "#e0e3e9", mt: 2 }}
+                  >
+                    <strong>Gesamtes Jahresbudget: </strong>
+                    {calculateAnnualTotals()["remaining"].toFixed(2)} €
+                  </Typography>
+                ) : (
+                  <Typography
+                    variant="subtitle1"
+                    sx={{ color: "#e0e3e9", mt: 2 }}
+                  >
+                    <strong>Verbleibendes Budget: </strong>
+                    {calculateCategoryTotals()["remaining"].toFixed(2)} €
+                  </Typography>
+                )}
+              </Grid>
+            ) : null}
           </Card>
         </Grid>
       </Grid>
