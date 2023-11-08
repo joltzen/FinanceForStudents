@@ -49,6 +49,7 @@ const StyledTextField = styled(TextField)({
   },
   backgroundColor: "#2e2e38",
   borderRadius: "5px",
+  border: "1px solid #e0e3e9",
 });
 function SettingsForm() {
   const [filterMonth, setFilterMonth] = useState(new Date().getMonth() + 1);
@@ -178,6 +179,7 @@ function SettingsForm() {
                 sx={{
                   color: "#e0e3e9",
                   backgroundColor: "#2e2e38",
+                  border: "1px solid #e0e3e9",
                 }}
               >
                 <MenuItem value="Einnahme">Einnahme</MenuItem>
@@ -210,6 +212,7 @@ function SettingsForm() {
                 sx={{
                   color: "#e0e3e9",
                   backgroundColor: "#2e2e38",
+                  border: "1px solid #e0e3e9",
                 }}
               >
                 {months.map((month) => (
@@ -224,10 +227,11 @@ function SettingsForm() {
               <Select
                 value={filterYear}
                 onChange={(e) => setFilterYear(e.target.value)}
-                label="Monat"
+                label="Jahr"
                 sx={{
                   color: "#e0e3e9",
                   backgroundColor: "#2e2e38",
+                  border: "1px solid #e0e3e9",
                 }}
               >
                 {years.map((year) => (
@@ -239,7 +243,7 @@ function SettingsForm() {
             </FormControl>
             <br />
             <br />
-            <Button type="submit" variant="contained" color="primary">
+            <Button type="submit" variant="contained" color="button">
               Hinzufügen
             </Button>
           </form>

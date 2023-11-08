@@ -151,7 +151,7 @@ function DialogPage() {
           />
         </DialogContent>
         <DialogActions>
-          <Button onClick={() => setOpenDialog(false)} color="primary">
+          <Button onClick={() => setOpenDialog(false)} color="button">
             Abbrechen
           </Button>
           <Button
@@ -195,7 +195,7 @@ function DialogPage() {
         sx={{ marginTop: 2 }}
         onClick={() => setOpenDialog(true)}
         variant="contained"
-        color="primary"
+        color="button"
       >
         Kategorie hinzufügen
       </Button>

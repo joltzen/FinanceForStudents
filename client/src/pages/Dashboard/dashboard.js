@@ -9,6 +9,9 @@ import {
   InputLabel,
   Select,
   MenuItem,
+  Grid,
+  Card,
+  CardContent,
 } from "@mui/material";
 
 import { Doughnut } from "react-chartjs-2";
@@ -191,80 +194,83 @@ function DashboardPage() {
     },
     maintainAspectRatio: false,
   };
-
   return (
-    <Page>
-      <h1>Dashboard Page</h1>
-      <Box
-        sx={{
-          display: "flex",
-          flexDirection: "row",
-          justifyContent: "start",
-          alignItems: "center",
-          marginTop: 3,
-        }}
+    <Box sx={{ flexGrow: 1, padding: 3 }}>
+      <Typography variant="h4" gutterBottom>
+        Dashboard
+      </Typography>
+
+      <Grid
+        container
+        spacing={2}
+        justifyContent="center"
+        alignItems="center"
+        style={{ marginTop: 20 }}
       >
-        <FormControl sx={{ marginTop: 3 }}>
-          <InputLabel style={{ color: "#e0e3e9" }}>Monat</InputLabel>
-          <Select
-            value={filterMonth}
-            onChange={(e) => setFilterMonth(e.target.value)}
-            label="Monat"
-            sx={{
-              color: "#e0e3e9",
-              backgroundColor: "#2e2e38",
-            }}
-          >
-            {months.map((month) => (
-              <MenuItem key={month.value} value={month.value}>
-                {month.label}
-              </MenuItem>
-            ))}
-          </Select>
-        </FormControl>
-        <FormControl sx={{ marginLeft: 3, marginTop: 3 }}>
-          <InputLabel style={{ color: "#e0e3e9" }}>Jahr</InputLabel>
-          <Select
-            value={filterYear}
-            onChange={(e) => setFilterYear(e.target.value)}
-            label="Monat"
-            sx={{
-              color: "#e0e3e9",
-              backgroundColor: "#2e2e38",
-            }}
-          >
-            {years.map((year) => (
-              <MenuItem key={year} value={year}>
-                {year}
-              </MenuItem>
-            ))}
-          </Select>
-        </FormControl>
-      </Box>
-      <Box
-        sx={{
-          display: "flex",
-          flexDirection: "row",
-          justifyContent: "center",
-          alignItems: "center",
-        }}
-      >
-        <Box
-          sx={{
-            width: "100%",
-            height: "400px",
-            position: "relative",
-            mb: 3,
-          }}
-        >
-          <Doughnut data={chartData} options={chartOptions} />
-          <Typography variant="subtitle1" sx={{ mt: 2, color: "#e0e3e9" }}>
-            <strong>Verbleibendes Budget: </strong>
-            {calculateCategoryTotals()["remaining"].toFixed(2)} €
-          </Typography>
-        </Box>
-      </Box>
-    </Page>
+        <Grid item xs={12} md={8} lg={6}>
+          <Card sx={{ backgroundColor: "#2e2e38" }}>
+            <CardContent>
+              <Grid container spacing={2} style={{ marginBottom: 50 }}>
+                <Grid item xs={12} sm={6}>
+                  <FormControl fullWidth>
+                    <InputLabel style={{ color: "#e0e3e9" }}>Monat</InputLabel>
+                    <Select
+                      value={filterMonth}
+                      onChange={(e) => setFilterMonth(e.target.value)}
+                      label="Monat"
+                      sx={{
+                        color: "#e0e3e9",
+                        "& .MuiSvgIcon-root": { color: "#e0e3e9" },
+                      }}
+                    >
+                      {months.map((month) => (
+                        <MenuItem key={month.value} value={month.value}>
+                          {month.label}
+                        </MenuItem>
+                      ))}
+                    </Select>
+                  </FormControl>
+                </Grid>
+                <Grid item xs={12} sm={6}>
+                  <FormControl fullWidth>
+                    <InputLabel style={{ color: "#e0e3e9" }}>Jahr</InputLabel>
+                    <Select
+                      value={filterYear}
+                      onChange={(e) => setFilterYear(e.target.value)}
+                      label="Jahr"
+                      sx={{
+                        color: "#e0e3e9",
+                        "& .MuiSvgIcon-root": { color: "#e0e3e9" },
+                      }}
+                    >
+                      {years.map((year) => (
+                        <MenuItem key={year} value={year}>
+                          {year}
+                        </MenuItem>
+                      ))}
+                    </Select>
+                  </FormControl>
+                </Grid>
+              </Grid>
+              <Box
+                sx={{
+                  height: "500px", // Höhe des Diagrammcontainers erhöht
+                  position: "relative",
+                }}
+              >
+                <Doughnut data={chartData} options={chartOptions} />
+              </Box>
+            </CardContent>
+            <Grid item xs={12}>
+              <Typography variant="subtitle1" sx={{ color: "#e0e3e9", mt: 2 }}>
+                <strong>Verbleibendes Budget: </strong>
+                {calculateCategoryTotals()["remaining"].toFixed(2)} €
+              </Typography>
+            </Grid>
+          </Card>
+        </Grid>
+      </Grid>
+    </Box>
   );
 }
 

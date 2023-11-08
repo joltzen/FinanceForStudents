@@ -18,7 +18,7 @@ function ProfilePage() {
       {user ? (
         <>
           <p>Welcome, {user.username}!</p>
-          <Button variant="contained" color="primary" onClick={handleLogout}>
+          <Button variant="contained" color="button" onClick={handleLogout}>
             Logout
           </Button>
         </>
@@ -26,7 +26,7 @@ function ProfilePage() {
         <p>
           <Button
             variant="contained"
-            color="primary"
+            color="button"
             onClick={() => {
               navigate("/login");
             }}

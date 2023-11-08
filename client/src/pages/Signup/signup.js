@@ -214,10 +214,10 @@ function SignUpForm() {
           type="submit"
           fullWidth
           variant="contained"
+          color="button"
           sx={{
             mt: 3,
             mb: 2,
-            backgroundColor: "#3A415C",
             color: "#e0e3e9",
             fontSize: "1.1rem",
             boxShadow: "0 2px 4px rgba(0, 0, 0, 0.1)",
