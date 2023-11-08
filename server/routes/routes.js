@@ -78,7 +78,6 @@ router.get("/getUserTransactions", async (req, res) => {
 router.get("/getUserTransactionsAnnual", async (req, res) => {
   try {
     const { year, user_id } = req.query;
-    console.log(year, user_id);
     const result = await db.query(
       "SELECT * FROM transactions WHERE EXTRACT(YEAR FROM transaction_date) = $1 AND user_id = $2",
       [year, user_id]
@@ -185,7 +184,6 @@ router.post("/saveCategory", async (req, res) => {
   }
 });
 
-// in Ihrer Server-Datei
 router.patch("/updateCategory", async (req, res) => {
   try {
     const { id, name, color } = req.body;

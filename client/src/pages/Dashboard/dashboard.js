@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
 import { useAuth } from "../../core/auth/auth";
-import Page from "../../components/page";
 import {
   FormControl,
   Typography,
@@ -30,22 +29,22 @@ function DashboardPage() {
   const [isAnnualView, setIsAnnualView] = useState(false);
 
   const months = [
-    { value: 1, label: "Januar" },
-    { value: 2, label: "Februar" },
-    { value: 3, label: "März" },
-    { value: 4, label: "April" },
-    { value: 5, label: "Mai" },
-    { value: 6, label: "Juni" },
-    { value: 7, label: "Juli" },
-    { value: 8, label: "August" },
-    { value: 9, label: "September" },
-    { value: 10, label: "Oktober" },
-    { value: 11, label: "November" },
-    { value: 12, label: "Dezember" },
-  ];
+    "Januar",
+    "Februar",
+    "März",
+    "April",
+    "Mai",
+    "Juni",
+    "Juli",
+    "August",
+    "September",
+    "Oktober",
+    "November",
+    "Dezember",
+  ].map((label, index) => ({ value: index + 1, label }));
 
   const years = Array.from(
-    { length: 10 },
+    new Array(10),
     (_, index) => new Date().getFullYear() - index
   );
   const calculateCategoryTotals = () => {
@@ -80,33 +79,6 @@ function DashboardPage() {
     return totals[categoryId] || 0;
   };
 
-  const calculateAnnualCategoryTotals = () => {
-    const categoryTotals = {};
-
-    transactions.forEach((transaction) => {
-      if (!categoryTotals[transaction.category_id]) {
-        categoryTotals[transaction.category_id] = 0;
-      }
-      categoryTotals[transaction.category_id] += parseFloat(transaction.amount);
-    });
-
-    const totalBudget = settings.reduce((acc, setting) => {
-      if (setting.transaction_type === "Einnahme") {
-        return acc + parseFloat(setting.amount);
-      } else if (setting.transaction_type === "Ausgabe") {
-        return acc - parseFloat(setting.amount);
-      }
-      return acc;
-    }, 0);
-
-    const usedBudget = Object.values(categoryTotals).reduce(
-      (acc, num) => acc + num,
-      0
-    );
-    categoryTotals["remaining"] = totalBudget - usedBudget;
-    return categoryTotals;
-  };
-
   const getAnnualCategoryTotal = (categoryId) => {
     const totals = calculateCategoryTotals();
     return totals[categoryId] || 0;
@@ -138,11 +110,6 @@ function DashboardPage() {
     return categoryTotals;
   };
 
-  const getAnnualTotal = (categoryId) => {
-    const totals = calculateAnnualTotals();
-    return totals[categoryId] || 0;
-  };
-
   const fetchTransactions = async () => {
     const endpointTransactions = isAnnualView
       ? "http://localhost:3001/api/getUserTransactionsAnnual"
@@ -150,35 +117,24 @@ function DashboardPage() {
     const endpointSettings = isAnnualView
       ? "http://localhost:3001/api/getSettingsAnnual"
       : "http://localhost:3001/api/getSettings";
-    const params = isAnnualView
-      ? { year: filterYear, user_id: user.id }
-      : { month: filterMonth, year: filterYear, user_id: user.id };
+    const params = { year: filterYear, user_id: user.id };
+    if (!isAnnualView) {
+      params.month = filterMonth;
+    }
 
     try {
-      const response = await axios.get(endpointTransactions, {
-        params,
-      });
+      const [transactionsResponse, settingsResponse] = await Promise.all([
+        axios.get(endpointTransactions, { params }),
+        axios.get(endpointSettings, { params }),
+      ]);
 
-      const res = await axios.get(endpointSettings, {
-        params,
-      });
-
-      if (!isAnnualView) {
-        const sortedTransactions = response.data.sort((a, b) => {
-          const dateA = new Date(a.transaction_date);
-          const dateB = new Date(b.transaction_date);
-          return dateA - dateB;
-        });
-
-        setTransactions(sortedTransactions);
-      } else {
-        setTransactions(response.data);
-      }
-      setSettings(res.data);
+      setTransactions(transactionsResponse.data);
+      setSettings(settingsResponse.data);
     } catch (error) {
-      console.error("Error fetching transactions:", error);
+      console.error("Error fetching transactions and settings:", error);
     }
   };
+
   useEffect(() => {
     fetchTransactions();
     const fetchCategories = async () => {
@@ -196,7 +152,7 @@ function DashboardPage() {
     };
 
     fetchCategories();
-  }, [filterMonth, filterYear, user.id, isAnnualView]);
+  }, [filterMonth, filterYear, isAnnualView]);
 
   const chartData = {
     labels: [
