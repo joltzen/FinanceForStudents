@@ -353,4 +353,111 @@ router.delete("/delete-account", async (req, res) => {
     res.status(500).send("Error deleting account");
   }
 });
+
+async function insertSavingGoal(
+  userId,
+  monthlySaving,
+  totalAmount,
+  description,
+  startdate,
+  deadline,
+  duration
+) {
+  const query = `
+    INSERT INTO saving_goals (user_id, monthly_saving, total_amount, description, startdate,deadline, duration)
+    VALUES ($1, $2, $3, $4, $5, $6, $7)
+    RETURNING *;`;
+  const values = [
+    userId,
+    monthlySaving,
+    totalAmount,
+    description,
+    startdate,
+    deadline,
+    duration,
+  ];
+
+  try {
+    const result = await db.query(query, values);
+    return result.rows[0];
+  } catch (error) {
+    throw error;
+  }
+}
+
+router.post("/saving-goals", async (req, res) => {
+  try {
+    const {
+      userId,
+      monthly_saving,
+      total_amount,
+      description,
+      startdate,
+      deadline,
+      duration,
+    } = req.body;
+    const newSavingGoal = await insertSavingGoal(
+      userId,
+      monthly_saving,
+      total_amount,
+      description,
+      startdate,
+      deadline,
+      duration
+    );
+    res.status(201).json(newSavingGoal);
+  } catch (error) {
+    console.error("Error inserting saving goal:", error);
+    res.status(500).json({ error: "Error inserting saving goal" });
+  }
+});
+
+router.get("/get-saving-goals", async (req, res) => {
+  try {
+    const { userId } = req.query;
+    const result = await db.query(
+      "SELECT * FROM saving_goals WHERE user_id = $1",
+      [userId]
+    );
+
+    res.json(result.rows);
+  } catch (error) {
+    console.error("Error fetching saving goals:", error);
+    res.status(500).json({ error: "Error fetching saving goals" });
+  }
+});
+
+//delete saving goal
+router.delete("/delete-saving-goal", async (req, res) => {
+  try {
+    const { id } = req.query;
+    console.log(id);
+    const query = "DELETE FROM saving_goals WHERE id = $1 returning *;";
+    const values = [id];
+    const result = await db.query(query, values);
+    res.json(result.rows[0]);
+  } catch (error) {
+    res.status(500).json({ error: "Fehler beim Löschen des Sparziels" });
+  }
+});
+
+//edit saving goal
+router.patch("/update-saving-goal", async (req, res) => {
+  try {
+    const { id, monthly_saving, total_amount, description, deadline } =
+      req.body;
+    const query = `
+      UPDATE saving_goals
+      SET monthly_saving = $1, total_amount = $2, description = $3, deadline = $4
+      WHERE id = $5
+      RETURNING *;`;
+
+    const values = [monthly_saving, total_amount, description, deadline, id];
+    const result = await db.query(query, values);
+    res.json(result.rows[0]);
+  } catch (error) {
+    res.status(500).json({ error: "Fehler beim Aktualisieren des Sparziels" });
+  }
+});
+
 module.exports = router;

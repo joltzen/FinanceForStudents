@@ -8,3 +8,4 @@ export { Home } from "./Home";
 export { Settings } from "./Settings";
 export { FinancePage } from "./Finance";
 export { Reset } from "./Reset";
+export { Saving } from "./Save";
