@@ -5,7 +5,7 @@ const containerStyle = {
   flexDirection: "column",
   justifyContent: "flex-start",
   alignItems: "center",
-  backgroundColor: "#333740",
+  backgroundColor: "#3b3d49",
 };
 
 const Page = ({ children }) => {

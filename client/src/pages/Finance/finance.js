@@ -8,18 +8,17 @@ import {
   FormControl,
   InputLabel,
 } from "@mui/material";
-import Page from "../../components/page";
 import { styled } from "@mui/system";
-import axios from "axios";
+import axiosInstance from "../../config/axios";
 import { useAuth } from "../../core/auth/auth";
 import FinanceOverview from "./overview";
 const StyledTextField = styled(TextField)({
   marginTop: "20px",
   "& label.Mui-focused": {
-    color: "white",
+    color: "#e0e3e9",
   },
   "& label": {
-    color: "white",
+    color: "#e0e3e9",
   },
   "& input": {
     color: "#d1d1d1",
@@ -29,13 +28,13 @@ const StyledTextField = styled(TextField)({
       borderColor: "#d1d1d1",
     },
     "&:hover fieldset": {
-      borderColor: "white",
+      borderColor: "#e0e3e9",
     },
     "&.Mui-focused fieldset": {
-      borderColor: "white",
+      borderColor: "#e0e3e9",
     },
   },
-  backgroundColor: "#2c2f36",
+  backgroundColor: "#2e2e38",
 });
 
 function FinancePage() {
@@ -66,21 +65,23 @@ function FinancePage() {
     setTransactionType(e.target.value);
   };
 
+  const getCurrentCategoryColor = () => {
+    const currentCategory = categories.find((cat) => cat.id === category);
+    return currentCategory ? currentCategory.color : "defaultColor";
+  };
+
   const handleSubmit = async (event) => {
     event.preventDefault();
     setError("");
     try {
-      const response = await axios.post(
-        "http://localhost:3001/api/addTransaction",
-        {
-          date,
-          description,
-          amount,
-          transactionType,
-          user_id: user.id,
-          category_id: category,
-        }
-      );
+      const response = await axiosInstance.post("/addTransaction", {
+        date,
+        description,
+        amount,
+        transactionType,
+        user_id: user.id,
+        category_id: category,
+      });
       setTransactions((prevTransactions) => [
         ...prevTransactions,
         response.data.transaction,
@@ -97,13 +98,13 @@ function FinancePage() {
   useEffect(() => {
     const fetchCategories = async () => {
       try {
-        const response = await axios.get(
-          "http://localhost:3001/api/getCategories",
-          {
-            params: { user_id: user.id },
-          }
-        );
+        const response = await axiosInstance.get("/getCategories", {
+          params: { user_id: user.id },
+        });
         setCategories(response.data);
+        if (response.data.length > 0) {
+          setCategory(response.data[0].id);
+        }
       } catch (error) {
         console.error("Fehler beim Laden der Kategorien:", error);
       }
@@ -133,14 +134,18 @@ function FinancePage() {
         >
           <form onSubmit={handleSubmit}>
             <FormControl fullWidth>
-              <InputLabel style={{ color: "white" }}>
+              <InputLabel style={{ color: "#e0e3e9" }}>
                 Transaktionstyp
               </InputLabel>
               <Select
                 value={transactionType}
                 onChange={handleTransactionTypeChange}
                 label="Transaktionstyp"
-                style={{ color: "white" }}
+                sx={{
+                  color: "#e0e3e9",
+                  backgroundColor: "#2e2e38",
+                  border: "1px solid #e0e3e9",
+                }}
               >
                 <MenuItem value="Ausgabe">Ausgabe</MenuItem>
                 <MenuItem value="Einnahme">Einnahme</MenuItem>
@@ -179,11 +184,11 @@ function FinancePage() {
             />
             <br />
             <br />
-            <Button type="submit" variant="contained" color="primary">
+            <Button type="submit" variant="contained" color="button">
               Hinzufügen
             </Button>
             <InputLabel
-              sx={{ color: "white", marginTop: 2 }}
+              sx={{ color: "#e0e3e9", marginTop: 2 }}
               id="category-label"
             >
               Kategorie
@@ -191,10 +196,18 @@ function FinancePage() {
             <Select
               labelId="category-label"
               value={category}
-              defaultValue={categories}
               onChange={(e) => setCategory(e.target.value)}
               label="Kategorie"
-              style={{ color: "white", backgroundColor: category.color }}
+              sx={{
+                color: "#e0e3e9",
+                backgroundColor: getCurrentCategoryColor(),
+                "&:before": {
+                  borderColor: "black",
+                },
+                "&:after": {
+                  borderColor: "black",
+                },
+              }}
             >
               {categories.map((cat) => (
                 <MenuItem

@@ -24,7 +24,7 @@ function SignUpForm() {
         surname,
       });
       console.log(response.data);
-      navigate("/login"); 
+      navigate("/login");
     } catch (error) {
       console.error("Sign up failed:", error);
       setError(
@@ -40,12 +40,12 @@ function SignUpForm() {
         flexDirection: "column",
         justifyContent: "center",
         alignItems: "center",
-        height: "100vh", 
+        height: "100vh",
         maxWidth: 400,
         mx: "auto",
       }}
     >
-      <Typography variant="h4" sx={{ mb: 2 }}>
+      <Typography variant="h4" sx={{ mb: 2, color: "#e0e3e9" }}>
         Signup
       </Typography>
       {error && <Alert severity="error">{error}</Alert>}
@@ -60,23 +60,23 @@ function SignUpForm() {
           margin="normal"
           sx={{
             "& label.Mui-focused": {
-              color: "white",
+              color: "#e0e3e9",
             },
             "& label": {
-              color: "white",
+              color: "#e0e3e9",
             },
             "& input": {
               color: "#d1d1d1",
             },
             "& .MuiOutlinedInput-root": {
               "& fieldset": {
-                borderColor: "#d1d1d1", 
+                borderColor: "#d1d1d1",
               },
               "&:hover fieldset": {
-                borderColor: "white", 
+                borderColor: "#e0e3e9",
               },
               "&.Mui-focused fieldset": {
-                borderColor: "white",
+                borderColor: "#e0e3e9",
               },
             },
             backgroundColor: "#2c2f36",
@@ -92,23 +92,23 @@ function SignUpForm() {
           margin="normal"
           sx={{
             "& label.Mui-focused": {
-              color: "white",
+              color: "#e0e3e9",
             },
             "& label": {
-              color: "white",
+              color: "#e0e3e9",
             },
             "& input": {
-              color: "#d1d1d1", 
+              color: "#d1d1d1",
             },
             "& .MuiOutlinedInput-root": {
               "& fieldset": {
-                borderColor: "#d1d1d1", 
+                borderColor: "#d1d1d1",
               },
               "&:hover fieldset": {
-                borderColor: "white", 
+                borderColor: "#e0e3e9",
               },
               "&.Mui-focused fieldset": {
-                borderColor: "white",
+                borderColor: "#e0e3e9",
               },
             },
             backgroundColor: "#2c2f36",
@@ -124,23 +124,23 @@ function SignUpForm() {
           margin="normal"
           sx={{
             "& label.Mui-focused": {
-              color: "white",
+              color: "#e0e3e9",
             },
             "& label": {
-              color: "white",
+              color: "#e0e3e9",
             },
             "& input": {
-              color: "#d1d1d1", 
+              color: "#d1d1d1",
             },
             "& .MuiOutlinedInput-root": {
               "& fieldset": {
-                borderColor: "#d1d1d1", 
+                borderColor: "#d1d1d1",
               },
               "&:hover fieldset": {
-                borderColor: "white", 
+                borderColor: "#e0e3e9",
               },
               "&.Mui-focused fieldset": {
-                borderColor: "white",
+                borderColor: "#e0e3e9",
               },
             },
             backgroundColor: "#2c2f36",
@@ -156,23 +156,23 @@ function SignUpForm() {
           margin="normal"
           sx={{
             "& label.Mui-focused": {
-              color: "white",
+              color: "#e0e3e9",
             },
             "& label": {
-              color: "white",
+              color: "#e0e3e9",
             },
             "& input": {
-              color: "#d1d1d1", 
+              color: "#d1d1d1",
             },
             "& .MuiOutlinedInput-root": {
               "& fieldset": {
-                borderColor: "#d1d1d1", 
+                borderColor: "#d1d1d1",
               },
               "&:hover fieldset": {
-                borderColor: "white", 
+                borderColor: "#e0e3e9",
               },
               "&.Mui-focused fieldset": {
-                borderColor: "white",
+                borderColor: "#e0e3e9",
               },
             },
             backgroundColor: "#2c2f36",
@@ -188,23 +188,23 @@ function SignUpForm() {
           margin="normal"
           sx={{
             "& label.Mui-focused": {
-              color: "white",
+              color: "#e0e3e9",
             },
             "& label": {
-              color: "white",
+              color: "#e0e3e9",
             },
             "& input": {
-              color: "#d1d1d1", 
+              color: "#d1d1d1",
             },
             "& .MuiOutlinedInput-root": {
               "& fieldset": {
-                borderColor: "#d1d1d1", 
+                borderColor: "#d1d1d1",
               },
               "&:hover fieldset": {
-                borderColor: "white", 
+                borderColor: "#e0e3e9",
               },
               "&.Mui-focused fieldset": {
-                borderColor: "white",
+                borderColor: "#e0e3e9",
               },
             },
             backgroundColor: "#2c2f36",
@@ -214,13 +214,13 @@ function SignUpForm() {
           type="submit"
           fullWidth
           variant="contained"
+          color="button"
           sx={{
             mt: 3,
             mb: 2,
-            backgroundColor: "#3A415C",
-            color: "white",
-            fontSize: "1.1rem", 
-            boxShadow: "0 2px 4px rgba(0, 0, 0, 0.1)", 
+            color: "#e0e3e9",
+            fontSize: "1.1rem",
+            boxShadow: "0 2px 4px rgba(0, 0, 0, 0.1)",
           }}
         >
           Signup

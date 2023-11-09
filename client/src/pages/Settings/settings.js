@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import axios from "axios";
+import axiosInstance from "../../config/axios";
 import { useAuth } from "../../core/auth/auth";
 import {
   FormControl,
@@ -28,26 +28,28 @@ import Page from "../../components/page";
 const StyledTextField = styled(TextField)({
   marginTop: "20px",
   "& label.Mui-focused": {
-    color: "white",
+    color: "#e0e3e9",
   },
   "& label": {
-    color: "white",
+    color: "#e0e3e9",
   },
   "& input": {
-    color: "#d1d1d1",
+    color: "#e0e3e9",
   },
   "& .MuiOutlinedInput-root": {
     "& fieldset": {
-      borderColor: "#d1d1d1",
+      borderColor: "#373c47",
     },
     "&:hover fieldset": {
-      borderColor: "white",
+      borderColor: "373c47",
     },
     "&.Mui-focused fieldset": {
-      borderColor: "white",
+      borderColor: "373c47",
     },
   },
-  backgroundColor: "#2c2f36",
+  backgroundColor: "#2e2e38",
+  borderRadius: "5px",
+  border: "1px solid #e0e3e9",
 });
 function SettingsForm() {
   const [filterMonth, setFilterMonth] = useState(new Date().getMonth() + 1);
@@ -94,17 +96,14 @@ function SettingsForm() {
   const handleSubmit = async (event) => {
     event.preventDefault();
     try {
-      const response = await axios.post(
-        "http://localhost:3001/api/addSettings",
-        {
-          user_id: user.id,
-          transactionType,
-          amount,
-          description,
-          month: filterMonth,
-          year: filterYear,
-        }
-      );
+      const response = await axiosInstance.post("/addSettings", {
+        user_id: user.id,
+        transactionType,
+        amount,
+        description,
+        month: filterMonth,
+        year: filterYear,
+      });
       setTransactions((prevTransactions) => [
         ...prevTransactions,
         response.data.transaction,
@@ -120,7 +119,7 @@ function SettingsForm() {
 
   const handleDeleteSettings = async (settingsId) => {
     try {
-      await axios.delete("http://localhost:3001/api/deleteSettings", {
+      await axiosInstance.delete("/deleteSettings", {
         params: { id: settingsId },
       });
       setTransactions((prevTransactions) =>
@@ -134,16 +133,13 @@ function SettingsForm() {
   };
   const fetchSettings = async () => {
     try {
-      const response = await axios.get(
-        "http://localhost:3001/api/getSettings",
-        {
-          params: {
-            month: filterMonth,
-            year: filterYear,
-            user_id: user.id,
-          },
-        }
-      );
+      const response = await axiosInstance.get("/getSettings", {
+        params: {
+          month: filterMonth,
+          year: filterYear,
+          user_id: user.id,
+        },
+      });
       setTransactions(response.data);
     } catch (error) {
       console.error("Fetching settings failed:", error);
@@ -164,17 +160,21 @@ function SettingsForm() {
         }}
       >
         <Box sx={{ width: "50%" }}>
-          <Typography variant="h4" sx={{ mb: 4 }}>
+          <Typography variant="h4" sx={{ mb: 4, color: "#e0e3e9" }}>
             Fixkosten
           </Typography>
           <form onSubmit={handleSubmit}>
             <FormControl fullWidth>
-              <InputLabel style={{ color: "white" }}>Fixkostentyp</InputLabel>
+              <InputLabel style={{ color: "#e0e3e9" }}>Fixkostentyp</InputLabel>
               <Select
                 value={transactionType}
                 onChange={handleTransactionTypeChange}
                 label="Transaktionstyp"
-                style={{ color: "white" }}
+                sx={{
+                  color: "#e0e3e9",
+                  backgroundColor: "#2e2e38",
+                  border: "1px solid #e0e3e9",
+                }}
               >
                 <MenuItem value="Einnahme">Einnahme</MenuItem>
                 <MenuItem value="Ausgabe">Ausgabe</MenuItem>
@@ -198,12 +198,16 @@ function SettingsForm() {
               required
             />
             <FormControl sx={{ marginTop: 3 }}>
-              <InputLabel style={{ color: "white" }}>Monat</InputLabel>
+              <InputLabel style={{ color: "#e0e3e9" }}>Monat</InputLabel>
               <Select
                 value={filterMonth}
                 onChange={(e) => setFilterMonth(e.target.value)}
                 label="Monat"
-                style={{ color: "white" }}
+                sx={{
+                  color: "#e0e3e9",
+                  backgroundColor: "#2e2e38",
+                  border: "1px solid #e0e3e9",
+                }}
               >
                 {months.map((month) => (
                   <MenuItem key={month.value} value={month.value}>
@@ -213,12 +217,16 @@ function SettingsForm() {
               </Select>
             </FormControl>
             <FormControl sx={{ marginLeft: 3, marginTop: 3 }}>
-              <InputLabel style={{ color: "white" }}>Jahr</InputLabel>
+              <InputLabel style={{ color: "#e0e3e9" }}>Jahr</InputLabel>
               <Select
                 value={filterYear}
                 onChange={(e) => setFilterYear(e.target.value)}
-                label="Monat"
-                style={{ color: "white" }}
+                label="Jahr"
+                sx={{
+                  color: "#e0e3e9",
+                  backgroundColor: "#2e2e38",
+                  border: "1px solid #e0e3e9",
+                }}
               >
                 {years.map((year) => (
                   <MenuItem key={year} value={year}>
@@ -229,7 +237,7 @@ function SettingsForm() {
             </FormControl>
             <br />
             <br />
-            <Button type="submit" variant="contained" color="primary">
+            <Button type="submit" variant="contained" color="button">
               Hinzufügen
             </Button>
           </form>
@@ -239,7 +247,9 @@ function SettingsForm() {
         </Box>
         <Box sx={{ width: "50%", marginLeft: 10 }}>
           <Box sx={{ mb: 5, marginRight: 10 }}>
-            <Typography variant="h6">Einnahmen</Typography>
+            <Typography variant="h6" sx={{ color: "#e0e3e9" }}>
+              Einnahmen
+            </Typography>
             <TableContainer component={Paper}>
               <Table>
                 <TableHead>
@@ -259,11 +269,23 @@ function SettingsForm() {
                     )
                     .map((item) => (
                       <TableRow key={item.settings_id}>
-                        <TableCell component="th" scope="row">
+                        <TableCell
+                          component="th"
+                          scope="row"
+                          sx={{ backgroundColor: "#e0e3e9" }}
+                        >
                           {item.description}
                         </TableCell>
-                        <TableCell align="right">{item.amount} €</TableCell>
-                        <TableCell align="right">
+                        <TableCell
+                          align="right"
+                          sx={{ backgroundColor: "#e0e3e9" }}
+                        >
+                          {item.amount} €
+                        </TableCell>
+                        <TableCell
+                          align="right"
+                          sx={{ backgroundColor: "#e0e3e9" }}
+                        >
                           <IconButton
                             onClick={() =>
                               handleDeleteSettings(item.settings_id)
@@ -280,7 +302,9 @@ function SettingsForm() {
             </TableContainer>
           </Box>
           <Box sx={{ marginRight: 10 }}>
-            <Typography variant="h6">Ausgaben</Typography>
+            <Typography variant="h6" sx={{ color: "#e0e3e9" }}>
+              Ausgaben
+            </Typography>
             <TableContainer component={Paper}>
               <Table>
                 <TableHead>
@@ -300,11 +324,23 @@ function SettingsForm() {
                     )
                     .map((item) => (
                       <TableRow key={item.settings_id}>
-                        <TableCell component="th" scope="row">
+                        <TableCell
+                          component="th"
+                          scope="row"
+                          sx={{ backgroundColor: "#e0e3e9" }}
+                        >
                           {item.description}
                         </TableCell>
-                        <TableCell align="right">{item.amount} €</TableCell>
-                        <TableCell align="right">
+                        <TableCell
+                          align="right"
+                          sx={{ backgroundColor: "#e0e3e9" }}
+                        >
+                          {item.amount} €
+                        </TableCell>
+                        <TableCell
+                          align="right"
+                          sx={{ backgroundColor: "#e0e3e9" }}
+                        >
                           <IconButton
                             onClick={() =>
                               handleDeleteSettings(item.settings_id)

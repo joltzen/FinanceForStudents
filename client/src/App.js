@@ -14,40 +14,25 @@ import {
   About,
   Settings,
   FinancePage,
+  Reset,
 } from "./pages";
 
 const theme = createTheme({
-  components: {
-    MuiTextField: {
-      styleOverrides: {
-        root: {
-          "& label.Mui-focused": {
-            color: "white",
-          },
-          "& label": {
-            color: "white",
-          },
-          "& .MuiInput-underline:after": {
-            borderBottomColor: "white",
-          },
-          "& .MuiOutlinedInput-root": {
-            "& fieldset": {
-              borderColor: "white",
-            },
-            "&:hover fieldset": {
-              borderColor: "white",
-            },
-            "&.Mui-focused fieldset": {
-              borderColor: "white",
-            },
-          },
-        },
-      },
-    },
-  },
   palette: {
     primary: {
-      main: "#4e577b",
+      main: "#3A415C",
+    },
+    button: {
+      main: "#4E577B",
+    },
+    text: {
+      main: "#e0e3e9",
+    },
+    input: {
+      main: "#2e2e38",
+    },
+    navicons: {
+      main: "#c6aa60",
     },
     background: {
       default: "#000000",
@@ -64,8 +49,8 @@ function App() {
           </SidebarProvider>
           <div
             style={{
-              backgroundColor: "#333740",
-              color: "white",
+              backgroundColor: "#3b3d49",
+              color: "#e0e3e9",
               minHeight: "100vh",
             }}
           >
@@ -79,6 +64,7 @@ function App() {
               <Route path="/finance" element={<FinancePage />} />
               <Route path="/dashboard" element={<Dashboard />} />
               <Route path="/settings" element={<Settings />} />
+              <Route path="/password-reset" element={<Reset />} />
             </Routes>
           </div>
         </Router>

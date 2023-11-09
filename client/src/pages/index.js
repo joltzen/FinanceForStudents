@@ -7,3 +7,4 @@ export { Contact } from "./Contact";
 export { Home } from "./Home";
 export { Settings } from "./Settings";
 export { FinancePage } from "./Finance";
+export { Reset } from "./Reset";

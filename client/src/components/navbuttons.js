@@ -6,7 +6,7 @@ function NavButtons(props) {
     <Button
       color="inherit"
       href={props.path}
-      sx={{ color: "#d8c690", marginLeft: 5 }}
+      sx={{ color: "#c6aa60", marginLeft: 5 }}
     >
       {props.text}
     </Button>

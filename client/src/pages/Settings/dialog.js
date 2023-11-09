@@ -11,7 +11,7 @@ import {
   IconButton,
 } from "@mui/material";
 import React, { useState, useEffect } from "react";
-import axios from "axios";
+import axiosInstance from "../../config/axios";
 import { useAuth } from "../../core/auth/auth";
 import { styled } from "@mui/system";
 import Circle from "@uiw/react-color-circle";
@@ -27,10 +27,10 @@ function DialogPage() {
   const StyledTextField = styled(TextField)({
     marginTop: "20px",
     "& label.Mui-focused": {
-      color: "white",
+      color: "#e0e3e9",
     },
     "& label": {
-      color: "white",
+      color: "#e0e3e9",
     },
     "& input": {
       color: "#d1d1d1",
@@ -40,10 +40,10 @@ function DialogPage() {
         borderColor: "#d1d1d1",
       },
       "&:hover fieldset": {
-        borderColor: "white",
+        borderColor: "#e0e3e9",
       },
       "&.Mui-focused fieldset": {
-        borderColor: "white",
+        borderColor: "#e0e3e9",
       },
     },
     backgroundColor: "#2c2f36",
@@ -59,12 +59,9 @@ function DialogPage() {
   useEffect(() => {
     const fetchCategories = async () => {
       try {
-        const response = await axios.get(
-          "http://localhost:3001/api/getCategories",
-          {
-            params: { user_id: user.id },
-          }
-        );
+        const response = await axiosInstance.get("/getCategories", {
+          params: { user_id: user.id },
+        });
         setCategories(response.data);
       } catch (error) {
         console.error("Fehler beim Laden der Kategorien:", error);
@@ -76,40 +73,20 @@ function DialogPage() {
 
   const handleAddCategory = async (event) => {
     try {
-      const response = await axios.post(
-        "http://localhost:3001/api/saveCategory",
-        {
-          name: newCategory,
-          user_id: user.id,
-          color: categoryColor,
-        }
-      );
+      const response = await axiosInstance.post("/saveCategory", {
+        name: newCategory,
+        user_id: user.id,
+        color: categoryColor,
+      });
       console.log(response);
     } catch (error) {
       console.error("category failed:", error);
     }
   };
 
-  const handleUpdateCategory = async (categoryToUpdate) => {
-    try {
-      const response = await axios.patch(
-        "http://localhost:3001/api/updateCategory",
-        categoryToUpdate
-      );
-      const updatedCategory = response.data;
-      setCategories((prevCategories) =>
-        prevCategories.map((category) =>
-          category.id === updatedCategory.id ? updatedCategory : category
-        )
-      );
-    } catch (error) {
-      console.error("Fehler beim Aktualisieren der Kategorie:", error);
-    }
-  };
-
   const handleDeleteCategory = async (categoryId) => {
     try {
-      await axios.delete("http://localhost:3001/api/deleteCategory", {
+      await axiosInstance.delete("/deleteCategory", {
         params: { id: categoryId },
       });
       setCategories((prevCategories) =>
@@ -168,7 +145,7 @@ function DialogPage() {
           />
         </DialogContent>
         <DialogActions>
-          <Button onClick={() => setOpenDialog(false)} color="primary">
+          <Button onClick={() => setOpenDialog(false)} color="button">
             Abbrechen
           </Button>
           <Button
@@ -183,7 +160,7 @@ function DialogPage() {
         </DialogActions>
       </Dialog>
 
-      <Typography variant="h6" sx={{ mt: 2 }}>
+      <Typography variant="h6" sx={{ mt: 2, color: "#e0e3e9" }}>
         Benutzerdefinierte Kategorien
       </Typography>
       {categories.map((category, index) => (
@@ -198,7 +175,7 @@ function DialogPage() {
             justifyContent: "space-between",
           }}
         >
-          <Typography>{category.name}</Typography>
+          <Typography sx={{ color: "#e0e3e9" }}>{category.name}</Typography>
 
           <IconButton
             onClick={() => handleDeleteCategory(category.id)}
@@ -212,7 +189,7 @@ function DialogPage() {
         sx={{ marginTop: 2 }}
         onClick={() => setOpenDialog(true)}
         variant="contained"
-        color="primary"
+        color="button"
       >
         Kategorie hinzufügen
       </Button>

@@ -29,7 +29,7 @@ const StyledDrawer = styled(Drawer)({
   zIndex: 1200,
   "& .MuiDrawer-paper": {
     backgroundColor: "#333740",
-    color: "white",
+    color: "#e0e3e9",
   },
 });
 
@@ -43,7 +43,7 @@ const StyledDrawerContent = styled("div")({
 
   "& .MuiDrawer-paper": {
     backgroundColor: "#333740",
-    color: "white",
+    color: "#e0e3e9",
   },
 });
 
@@ -79,7 +79,7 @@ function Navbar() {
             aria-label="menu"
             onClick={toggleDrawer}
             sx={{
-              color: "#d8c690",
+              color: "#c6aa60",
               fontSize: "20px",
             }}
           >
@@ -101,7 +101,7 @@ function Navbar() {
                 sx={{
                   fontWeight: "bold",
                   fontSize: "25px",
-                  color: "#cbb264",
+                  color: "#c6aa60",
                   fontFamily: "'Lato', sans-serif",
                 }}
               >
@@ -116,7 +116,7 @@ function Navbar() {
                 sx={{
                   fontWeight: "bold",
                   fontSize: "25px",
-                  color: "#cbb264",
+                  color: "#c6aa60",
                   fontFamily: "'Lato', sans-serif",
                 }}
               >
@@ -133,7 +133,7 @@ function Navbar() {
                 aria-haspopup="true"
                 onClick={handleProfileMenuOpen}
                 color="inherit"
-                sx={{ color: "#d8c690", fontSize: "20px" }}
+                sx={{ color: "#c6aa60", fontSize: "20px" }}
               >
                 <AccountCircle />
               </IconButton>
