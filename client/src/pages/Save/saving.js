@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from "react";
 import axiosInstance from "../../config/axios";
 import { useAuth } from "../../core/auth/auth";
-import Page from "../../components/page";
 import {
   Card,
   CardContent,
@@ -16,16 +15,39 @@ import {
   DialogTitle,
   Button,
   Box,
-  CardActions,
   Grid,
   Alert,
-  AlertTitle,
   Collapse,
 } from "@mui/material";
-import EditIcon from "@mui/icons-material/Edit";
 import DeleteIcon from "@mui/icons-material/Delete";
 import CloseIcon from "@mui/icons-material/Close";
 import { styled } from "@mui/system";
+import AddCircleOutlineIcon from "@mui/icons-material/AddCircleOutline";
+
+// Styled Components
+const StyledCard = styled(Card)(({ theme }) => ({
+  marginBottom: theme.spacing(2),
+  backgroundColor: "#262b3d",
+  color: "#be9e44",
+  boxShadow: theme.shadows[6],
+  "&:hover": {
+    boxShadow: theme.shadows[19],
+  },
+}));
+
+const AddButton = styled(Button)(({ theme }) => ({
+  color: theme.palette.getContrastText(theme.palette.primary.main),
+  backgroundColor: theme.palette.primary.main,
+  "&:hover": {
+    backgroundColor: theme.palette.primary.dark,
+  },
+  position: "fixed",
+  bottom: theme.spacing(3),
+  right: theme.spacing(3),
+  [theme.breakpoints.up("sm")]: {
+    right: theme.spacing(10),
+  },
+}));
 
 const StyledTextField = styled(TextField)({
   marginTop: "20px",
@@ -192,14 +214,13 @@ function SavingPage() {
       >
         <Grid item xs={12} md={8} lg={6}>
           <Typography variant="h3">Sparziele</Typography>
-          <Button
-            color="button"
+          <AddButton
             variant="contained"
             onClick={handleClickOpen}
-            sx={{ my: 2 }}
+            startIcon={<AddCircleOutlineIcon />}
           >
             Sparziel hinzufügen
-          </Button>
+          </AddButton>
           <Dialog open={open} onClose={handleClose}>
             <DialogTitle sx={{ backgroundColor: "#262b3d", color: "#e0e3e9" }}>
               Sparziel setzen
@@ -313,20 +334,12 @@ function SavingPage() {
           </Dialog>
           <Box sx={{ my: 2 }}>
             {goals.map((goal, index) => (
-              <Card
-                key={index}
-                sx={{
-                  my: 1,
-                  bgcolor: "#1e212b",
-                  color: "#e0e3e9",
-                  padding: "16px",
-                }}
-              >
+              <StyledCard key={goal.id}>
                 <CardContent>
-                  <Grid container spacing={2} alignItems="center">
-                    <Grid item xs={12} sm={8}>
-                      <Typography variant="h5" component="div" gutterBottom>
-                        {goal.description}
+                  <Grid container spacing={2}>
+                    <Grid item xs={12} md={8}>
+                      <Typography variant="h5" component="div" sx={{ mb: 2 }}>
+                        <strong>{goal.description}</strong>
                       </Typography>
                       <Typography
                         variant="body2"
@@ -334,7 +347,8 @@ function SavingPage() {
                         color="#d1d1d1"
                         gutterBottom
                       >
-                        Monatliches Sparen: {goal.monthly_saving} €
+                        <strong>Monatliches Sparen: </strong>{" "}
+                        {goal.monthly_saving} €
                       </Typography>
                       <Typography
                         variant="body2"
@@ -342,18 +356,18 @@ function SavingPage() {
                         color="#d1d1d1"
                         gutterBottom
                       >
-                        Gesamtbetrag: {goal.total_amount} €
+                        <strong>Gesamtbetrag:</strong> {goal.total_amount} €
                       </Typography>
                       <div>
                         <Chip
-                          sx={{ color: "#e0e3e9", mr: 1 }}
-                          label={`Startdatum: ${new Date(
+                          sx={{ color: "#e0e3e9", mr: 1, mb: 2 }}
+                          label={`vom: ${new Date(
                             goal.startdate
                           ).toLocaleDateString()}`}
                         />
                         <Chip
-                          sx={{ color: "#e0e3e9" }}
-                          label={`Deadline: ${
+                          sx={{ color: "#e0e3e9", mb: 2 }}
+                          label={`bis: ${
                             goal.deadline
                               ? new Date(goal.deadline).toLocaleDateString()
                               : "Keine"
@@ -365,19 +379,21 @@ function SavingPage() {
                         component="div"
                         color="#d1d1d1"
                       >
-                        Dauer: {goal.duration} Monate
+                        <strong>Dauer:</strong> {goal.duration} Monate
                       </Typography>
+                      {/* Weitere Informationen und Stile */}
                     </Grid>
-                    <Grid item xs={12} sm={4}>
-                      <Tooltip title="Löschen">
-                        <IconButton onClick={() => handleDelete(goal.id)}>
-                          <DeleteIcon sx={{ color: "#e0e3e9" }} />
-                        </IconButton>
-                      </Tooltip>
+                    <Grid item xs={12} md={4}>
+                      <IconButton
+                        onClick={() => handleDelete(goal.id)}
+                        sx={{ color: "#e0e3e9", ml: 16 }}
+                      >
+                        <DeleteIcon />
+                      </IconButton>
                     </Grid>
                   </Grid>
                 </CardContent>
-              </Card>
+              </StyledCard>
             ))}
           </Box>
         </Grid>
