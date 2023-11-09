@@ -7,7 +7,6 @@ import {
   Typography,
   Chip,
   IconButton,
-  Tooltip,
   TextField,
   Dialog,
   DialogActions,
@@ -31,7 +30,7 @@ const StyledCard = styled(Card)(({ theme }) => ({
   color: "#be9e44",
   boxShadow: theme.shadows[6],
   "&:hover": {
-    boxShadow: theme.shadows[19],
+    boxShadow: theme.shadows[10],
   },
 }));
 
@@ -334,7 +333,7 @@ function SavingPage() {
           </Dialog>
           <Box sx={{ my: 2 }}>
             {goals.map((goal, index) => (
-              <StyledCard key={goal.id}>
+              <StyledCard key={goal.id} sx={{ position: "relative" }}>
                 <CardContent>
                   <Grid container spacing={2}>
                     <Grid item xs={12} md={8}>
@@ -381,12 +380,16 @@ function SavingPage() {
                       >
                         <strong>Dauer:</strong> {goal.duration} Monate
                       </Typography>
-                      {/* Weitere Informationen und Stile */}
                     </Grid>
                     <Grid item xs={12} md={4}>
                       <IconButton
                         onClick={() => handleDelete(goal.id)}
-                        sx={{ color: "#e0e3e9", ml: 16 }}
+                        sx={{
+                          position: "absolute",
+                          top: 8,
+                          right: 8,
+                          color: "#e0e3e9",
+                        }}
                       >
                         <DeleteIcon />
                       </IconButton>
