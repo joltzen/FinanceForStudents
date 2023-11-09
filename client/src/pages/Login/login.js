@@ -7,6 +7,7 @@ import Alert from "@mui/material/Alert";
 import { useAuth } from "../../core/auth/auth";
 import { useNavigate } from "react-router";
 import axiosInstance from "../../config/axios";
+import { Link } from "@mui/material";
 
 function LoginPage() {
   const [credentials, setCredentials] = useState({
@@ -94,7 +95,6 @@ function LoginPage() {
             backgroundColor: "#2c2f36",
           }}
         />
-
         <TextField
           margin="normal"
           required
@@ -130,6 +130,9 @@ function LoginPage() {
             backgroundColor: "#2c2f36",
           }}
         />
+        <Link href="/password-reset" underline="hover" sx={{ color: "white" }}>
+          {"Passwort vergessen?"}
+        </Link>
         <Button
           type="submit"
           fullWidth

@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import axios from "axios";
+import axiosInstance from "../../config/axios";
 import { useAuth } from "../../core/auth/auth";
 import {
   FormControl,
@@ -55,18 +55,15 @@ function FinanceOverview() {
 
   const fetchTransactions = async () => {
     try {
-      const response = await axios.get(
-        "http://localhost:3001/api/getUserTransactions",
-        {
-          params: {
-            month: filterMonth,
-            year: filterYear,
-            user_id: user.id,
-          },
-        }
-      );
+      const response = await axiosInstance.get("/getUserTransactions", {
+        params: {
+          month: filterMonth,
+          year: filterYear,
+          user_id: user.id,
+        },
+      });
 
-      const res = await axios.get("http://localhost:3001/api/getSettings", {
+      const res = await axiosInstance.get("/getSettings", {
         params: {
           month: filterMonth,
           year: filterYear,
@@ -108,7 +105,7 @@ function FinanceOverview() {
 
   const handleDeleteTransaction = async (transactionId) => {
     try {
-      await axios.delete("http://localhost:3001/api/deleteTransaction", {
+      await axiosInstance.delete("/deleteTransaction", {
         params: { id: transactionId },
       });
       setTransactions((prevTransactions) =>
@@ -125,12 +122,9 @@ function FinanceOverview() {
     fetchTransactions();
     const fetchCategories = async () => {
       try {
-        const response = await axios.get(
-          "http://localhost:3001/api/getCategories",
-          {
-            params: { user_id: user.id },
-          }
-        );
+        const response = await axiosInstance.get("/getCategories", {
+          params: { user_id: user.id },
+        });
         setCategories(response.data);
       } catch (error) {
         console.error("Fehler beim Laden der Kategorien:", error);

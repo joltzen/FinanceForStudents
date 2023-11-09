@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import axios from "axios";
+import axiosInstance from "../../config/axios";
 import { useAuth } from "../../core/auth/auth";
 import {
   FormControl,
@@ -96,17 +96,14 @@ function SettingsForm() {
   const handleSubmit = async (event) => {
     event.preventDefault();
     try {
-      const response = await axios.post(
-        "http://localhost:3001/api/addSettings",
-        {
-          user_id: user.id,
-          transactionType,
-          amount,
-          description,
-          month: filterMonth,
-          year: filterYear,
-        }
-      );
+      const response = await axiosInstance.post("/addSettings", {
+        user_id: user.id,
+        transactionType,
+        amount,
+        description,
+        month: filterMonth,
+        year: filterYear,
+      });
       setTransactions((prevTransactions) => [
         ...prevTransactions,
         response.data.transaction,
@@ -122,7 +119,7 @@ function SettingsForm() {
 
   const handleDeleteSettings = async (settingsId) => {
     try {
-      await axios.delete("http://localhost:3001/api/deleteSettings", {
+      await axiosInstance.delete("/deleteSettings", {
         params: { id: settingsId },
       });
       setTransactions((prevTransactions) =>
@@ -136,16 +133,13 @@ function SettingsForm() {
   };
   const fetchSettings = async () => {
     try {
-      const response = await axios.get(
-        "http://localhost:3001/api/getSettings",
-        {
-          params: {
-            month: filterMonth,
-            year: filterYear,
-            user_id: user.id,
-          },
-        }
-      );
+      const response = await axiosInstance.get("/getSettings", {
+        params: {
+          month: filterMonth,
+          year: filterYear,
+          user_id: user.id,
+        },
+      });
       setTransactions(response.data);
     } catch (error) {
       console.error("Fetching settings failed:", error);

@@ -3,6 +3,8 @@ const router = express.Router();
 const db = require("./db"); // Import the database module
 const bcrypt = require("bcrypt");
 const { map } = require("../app");
+const { v4: uuidv4 } = require("uuid");
+const nodemailer = require("nodemailer");
 
 router.get("/getData", (req, res) => {
   db.query("SELECT * FROM users", (err, result) => {
@@ -23,7 +25,6 @@ router.post("/login", async (req, res) => {
       const validPassword = await bcrypt.compare(password, user.password);
       if (validPassword) {
         res.status(200).send(user);
-        console.log("Correct password");
       } else {
         // Passwords don't match
         res.status(400).send("Invalid password");
@@ -274,4 +275,82 @@ router.delete("/deleteSettings", async (req, res) => {
   }
 });
 
+router.post("/password-reset-request", async (req, res) => {
+  const { email } = req.body;
+  // Überprüfe, ob die E-Mail in der Datenbank existiert
+  // Generiere Token und speichere es mit einem Ablaufdatum in der Datenbank
+  const passwordResetToken = uuidv4();
+  // Speichere das Token in deiner Datenbank zusammen mit dem Ablaufdatum
+  // ...
+
+  // Konfiguriere nodemailer mit deinen E-Mail-Einstellungen
+  const transporter = nodemailer.createTransport({
+    // ... E-Mail-Service-Konfiguration ...
+  });
+
+  const mailOptions = {
+    from: "financeforstudents@noreply.com",
+    to: email,
+    subject: "Password Reset",
+    text: `Please use the following link to reset your password: http://localhost:3000/password/${passwordResetToken}`,
+  };
+
+  try {
+    // Sende die E-Mail
+    await transporter.sendMail(mailOptions);
+    res.send("Password reset link sent.");
+  } catch (error) {
+    res.status(500).send("Error sending password reset email.");
+  }
+});
+
+router.post("/reset-password", async (req, res) => {
+  const { token, newPassword } = req.body;
+
+  try {
+    // Überprüfe das Token und hole die Benutzer-ID
+    const user = await db.query(
+      "SELECT user_id FROM password_reset WHERE token = $1",
+      [token]
+    );
+
+    // Token nicht gefunden oder abgelaufen
+    if (user.rows.length === 0) {
+      return res.status(400).send("Invalid or expired password reset token");
+    }
+
+    const userId = user.rows[0].user_id;
+    const hashedPassword = await bcrypt.hash(newPassword, 10);
+
+    // Update das Passwort in der Datenbank
+    await db.query("UPDATE users SET password = $1 WHERE id = $2", [
+      hashedPassword,
+      userId,
+    ]);
+
+    // Lösche das Token aus der Datenbank, da es nicht mehr benötigt wird
+    await db.query("DELETE FROM password_reset WHERE token = $1", [token]);
+
+    res.send("Password has been successfully reset");
+  } catch (error) {
+    console.error("Error resetting password:", error);
+    res.status(500).send("Error resetting password");
+  }
+});
+
+router.delete("/delete-account", async (req, res) => {
+  const { userId } = req.body; // Oder holen Sie die Benutzer-ID aus dem Authentifizierungstoken
+
+  try {
+    // Lösche alle Benutzerdaten, hier nur als Beispiel für die users-Tabelle
+    await db.query("DELETE FROM users WHERE id = $1", [userId]);
+
+    // Hier sollten Sie alle anderen Daten löschen, die mit dem Benutzer verbunden sind
+
+    res.send("Account has been successfully deleted");
+  } catch (error) {
+    console.error("Error deleting account:", error);
+    res.status(500).send("Error deleting account");
+  }
+});
 module.exports = router;

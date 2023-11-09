@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import axios from "axios";
+import axiosInstance from "../../config/axios";
 import { useAuth } from "../../core/auth/auth";
 import {
   FormControl,
@@ -127,11 +127,11 @@ function DashboardPage() {
 
   const fetchTransactions = async () => {
     const endpointTransactions = isAnnualView
-      ? "http://localhost:3001/api/getUserTransactionsAnnual"
-      : "http://localhost:3001/api/getUserTransactions";
+      ? "/getUserTransactionsAnnual"
+      : "/getUserTransactions";
     const endpointSettings = isAnnualView
-      ? "http://localhost:3001/api/getSettingsAnnual"
-      : "http://localhost:3001/api/getSettings";
+      ? "/getSettingsAnnual"
+      : "/getSettings";
     const params = { year: filterYear, user_id: user.id };
     if (!isAnnualView) {
       params.month = filterMonth;
@@ -139,8 +139,8 @@ function DashboardPage() {
 
     try {
       const [transactionsResponse, settingsResponse] = await Promise.all([
-        axios.get(endpointTransactions, { params }),
-        axios.get(endpointSettings, { params }),
+        axiosInstance.get(endpointTransactions, { params }),
+        axiosInstance.get(endpointSettings, { params }),
       ]);
 
       setTransactions(transactionsResponse.data);
@@ -154,12 +154,9 @@ function DashboardPage() {
     fetchTransactions();
     const fetchCategories = async () => {
       try {
-        const response = await axios.get(
-          "http://localhost:3001/api/getCategories",
-          {
-            params: { user_id: user.id },
-          }
-        );
+        const response = await axiosInstance.get("/getCategories", {
+          params: { user_id: user.id },
+        });
         setCategories(response.data);
       } catch (error) {
         console.error("Fehler beim Laden der Kategorien:", error);
@@ -170,35 +167,36 @@ function DashboardPage() {
   }, [filterMonth, filterYear, isAnnualView]);
 
   const chartData = {
-    labels: [
-      ...categories.map((category) => category.name),
-      "Verbleibendes Budget",
-    ],
+    labels: categories.map((category) => category.name),
     datasets: [
       {
         label: "Budgetverteilung",
         data: isAnnualView
-          ? [
-              ...categories.map(
-                (category) => getAnnualCategoryTotal(category.id) || 0
-              ),
-              calculateAnnualTotals()["remaining"],
-            ]
-          : [
-              ...categories.map((category) => getCategoryTotal(category.id)),
-              calculateCategoryTotals()["remaining"],
-            ],
-        backgroundColor: [
-          ...categories.map((category) => category.color || "#ffce56"),
-          "#76ff03",
-        ],
-        hoverBackgroundColor: [
-          ...categories.map((category) => category.color || "#ffce56"),
-          "#76ff03",
-        ],
+          ? categories.map(
+              (category) => getAnnualCategoryTotal(category.id) || 0
+            )
+          : categories.map((category) => getCategoryTotal(category.id)),
+        backgroundColor: categories.map(
+          (category) => category.color || "#ffce56"
+        ),
+        hoverBackgroundColor: categories.map(
+          (category) => category.color || "#ffce56"
+        ),
       },
     ],
   };
+
+  const remainingBudget = isAnnualView
+    ? calculateAnnualTotals()["remaining"]
+    : calculateCategoryTotals()["remaining"];
+
+  if (remainingBudget > 0) {
+    chartData.labels.push("Verbleibendes Budget");
+    chartData.datasets[0].data.push(remainingBudget);
+    chartData.datasets[0].backgroundColor.push("#76ff03");
+    chartData.datasets[0].hoverBackgroundColor.push("#76ff03");
+  }
+
   const chartOptions = {
     plugins: {
       legend: {
@@ -241,16 +239,12 @@ function DashboardPage() {
     },
     maintainAspectRatio: false,
   };
-  const hasBudgetData = (totals) => {
-    return Object.values(totals).reduce((acc, value) => acc + value, 0) !== 0;
+  const hasBudgetData = () => {
+    return transactions.length > 0 || settings.length > 0;
   };
 
   return (
     <Box sx={{ flexGrow: 1, padding: 3 }}>
-      <Typography variant="h4" gutterBottom>
-        Dashboard
-      </Typography>
-
       <Grid
         container
         spacing={2}
@@ -270,41 +264,54 @@ function DashboardPage() {
                   color: "#e0e3e9",
                 }}
               >
-                Filter
+                Dashboard
               </Typography>
-              <FormControlLabel
-                control={
-                  <CustomSwitch
-                    checked={isAnnualView}
-                    onChange={(e) => setIsAnnualView(e.target.checked)}
+              <Grid
+                container
+                spacing={2}
+                style={{ marginBottom: 20 }}
+                alignItems="center"
+              >
+                <Grid item xs={12} sm={4}>
+                  <FormControlLabel
+                    control={
+                      <CustomSwitch
+                        checked={isAnnualView}
+                        onChange={(e) => setIsAnnualView(e.target.checked)}
+                      />
+                    }
+                    sx={{ color: "#e0e3e9" }}
+                    label="Jahresrückblick"
                   />
-                }
-                sx={{ marginBottom: 4, color: "#e0e3e9" }}
-                label="Jahresrückblick"
-              />
-              <Grid container spacing={2} style={{ marginBottom: 50 }}>
-                <Grid item xs={12} sm={6}>
-                  <FormControl fullWidth>
-                    <InputLabel style={{ color: "#e0e3e9" }}>Monat</InputLabel>
-                    <Select
-                      value={filterMonth}
-                      onChange={(e) => setFilterMonth(e.target.value)}
-                      label="Monat"
-                      sx={{
-                        color: "#e0e3e9",
-                        "& .MuiSvgIcon-root": { color: "#e0e3e9" },
-                      }}
-                    >
-                      {months.map((month) => (
-                        <MenuItem key={month.value} value={month.value}>
-                          {month.label}
-                        </MenuItem>
-                      ))}
-                    </Select>
-                  </FormControl>
                 </Grid>
-                <Grid item xs={12} sm={6}>
-                  <FormControl fullWidth>
+                {!isAnnualView && (
+                  <Grid item xs={12} sm={4}>
+                    <FormControl fullWidth margin="none">
+                      <InputLabel style={{ color: "#e0e3e9" }}>
+                        Monat
+                      </InputLabel>
+                      <Select
+                        value={filterMonth}
+                        onChange={(e) => setFilterMonth(e.target.value)}
+                        label="Monat"
+                        sx={{
+                          color: "#e0e3e9",
+                          backgroundColor: "#333540",
+                          border: "1px solid #e0e3e9",
+                          "& .MuiSvgIcon-root": { color: "#e0e3e9" },
+                        }}
+                      >
+                        {months.map((month) => (
+                          <MenuItem key={month.value} value={month.value}>
+                            {month.label}
+                          </MenuItem>
+                        ))}
+                      </Select>
+                    </FormControl>
+                  </Grid>
+                )}
+                <Grid item xs={12} sm={4}>
+                  <FormControl fullWidth margin="none">
                     <InputLabel style={{ color: "#e0e3e9" }}>Jahr</InputLabel>
                     <Select
                       value={filterYear}
@@ -312,6 +319,8 @@ function DashboardPage() {
                       label="Jahr"
                       sx={{
                         color: "#e0e3e9",
+                        backgroundColor: "#333540",
+                        border: "1px solid #e0e3e9",
                         "& .MuiSvgIcon-root": { color: "#e0e3e9" },
                       }}
                     >
@@ -324,11 +333,8 @@ function DashboardPage() {
                   </FormControl>
                 </Grid>
               </Grid>
-              {hasBudgetData(
-                isAnnualView
-                  ? calculateAnnualTotals()
-                  : calculateCategoryTotals()
-              ) ? (
+
+              {hasBudgetData() && (
                 <Box
                   sx={{
                     height: "500px",
@@ -337,7 +343,8 @@ function DashboardPage() {
                 >
                   <Doughnut data={chartData} options={chartOptions} />
                 </Box>
-              ) : (
+              )}
+              {!hasBudgetData() && (
                 <Box
                   sx={{
                     height: "100px",

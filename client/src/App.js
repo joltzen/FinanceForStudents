@@ -14,6 +14,7 @@ import {
   About,
   Settings,
   FinancePage,
+  Reset,
 } from "./pages";
 
 const theme = createTheme({
@@ -63,6 +64,7 @@ function App() {
               <Route path="/finance" element={<FinancePage />} />
               <Route path="/dashboard" element={<Dashboard />} />
               <Route path="/settings" element={<Settings />} />
+              <Route path="/password-reset" element={<Reset />} />
             </Routes>
           </div>
         </Router>

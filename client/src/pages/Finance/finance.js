@@ -8,9 +8,8 @@ import {
   FormControl,
   InputLabel,
 } from "@mui/material";
-import Page from "../../components/page";
 import { styled } from "@mui/system";
-import axios from "axios";
+import axiosInstance from "../../config/axios";
 import { useAuth } from "../../core/auth/auth";
 import FinanceOverview from "./overview";
 const StyledTextField = styled(TextField)({
@@ -68,24 +67,21 @@ function FinancePage() {
 
   const getCurrentCategoryColor = () => {
     const currentCategory = categories.find((cat) => cat.id === category);
-    return currentCategory ? currentCategory.color : "defaultColor"; // Ersetzen Sie 'defaultColor' durch eine tatsächliche Farbe, die Sie als Standard verwenden möchten
+    return currentCategory ? currentCategory.color : "defaultColor";
   };
 
   const handleSubmit = async (event) => {
     event.preventDefault();
     setError("");
     try {
-      const response = await axios.post(
-        "http://localhost:3001/api/addTransaction",
-        {
-          date,
-          description,
-          amount,
-          transactionType,
-          user_id: user.id,
-          category_id: category,
-        }
-      );
+      const response = await axiosInstance.post("/addTransaction", {
+        date,
+        description,
+        amount,
+        transactionType,
+        user_id: user.id,
+        category_id: category,
+      });
       setTransactions((prevTransactions) => [
         ...prevTransactions,
         response.data.transaction,
@@ -102,12 +98,9 @@ function FinancePage() {
   useEffect(() => {
     const fetchCategories = async () => {
       try {
-        const response = await axios.get(
-          "http://localhost:3001/api/getCategories",
-          {
-            params: { user_id: user.id },
-          }
-        );
+        const response = await axiosInstance.get("/getCategories", {
+          params: { user_id: user.id },
+        });
         setCategories(response.data);
         if (response.data.length > 0) {
           setCategory(response.data[0].id);
@@ -207,9 +200,8 @@ function FinancePage() {
               label="Kategorie"
               sx={{
                 color: "#e0e3e9",
-                backgroundColor: getCurrentCategoryColor(), // Setzt die Hintergrundfarbe basierend auf der ausgewählten Kategorie
+                backgroundColor: getCurrentCategoryColor(),
                 "&:before": {
-                  // Möglicherweise müssen Sie diese Pseudo-Klassen anpassen, um das Aussehen im Fokus zu ändern
                   borderColor: "black",
                 },
                 "&:after": {
