@@ -133,13 +133,12 @@ function SavingPage() {
         startDate.getMonth() + (parseInt(updatedGoal.duration, 10) || 0)
       );
 
-      // Calculate the duration based on the new deadline
       const diffTime = Math.abs(enteredDeadline - startDate);
-      const diffMonths = Math.ceil(diffTime / (1000 * 60 * 60 * 24 * 30)); // Approximate month difference
+      const diffMonths = Math.ceil(diffTime / (1000 * 60 * 60 * 24 * 30)); 
 
       if (diffMonths <= (parseInt(updatedGoal.duration, 10) || 0)) {
         setAlertDuration(true);
-        return; // Prevent state update if the duration differs
+        return; 
       }
     }
     setSavingGoal(updatedGoal);
