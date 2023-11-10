@@ -96,13 +96,26 @@ function DialogPage() {
       console.error("Fehler beim Löschen der Kategorie:", error);
     }
   };
+  function isColorDark(color) {
+    const rgb = parseInt(color.substring(1), 16);
+    const r = (rgb >> 16) & 0xff;
+    const g = (rgb >> 8) & 0xff;
+    const b = (rgb >> 0) & 0xff;
+
+    const brightness = (r * 299 + g * 587 + b * 114) / 1000;
+    return brightness < 128;
+  }
 
   return (
     <div>
       <Dialog open={openDialog} onClose={() => setOpenDialog(false)}>
-        <DialogTitle>Neue Kategorie hinzufügen</DialogTitle>
-        <DialogContent>
-          <DialogContentText>
+        <DialogTitle sx={{ backgroundColor: "#262b3d", color: "#e0e3e9" }}>
+          Neue Kategorie hinzufügen
+        </DialogTitle>
+        <DialogContent sx={{ backgroundColor: "#262b3d", color: "#e0e3e9" }}>
+          <DialogContentText
+            sx={{ backgroundColor: "#262b3d", color: "#e0e3e9" }}
+          >
             Fügen Sie eine neue Kategorie hinzu und wählen Sie eine Farbe für
             sie.
           </DialogContentText>
@@ -144,8 +157,11 @@ function DialogPage() {
             }}
           />
         </DialogContent>
-        <DialogActions>
-          <Button onClick={() => setOpenDialog(false)} color="button">
+        <DialogActions sx={{ backgroundColor: "#262b3d", color: "#e0e3e9" }}>
+          <Button
+            onClick={() => setOpenDialog(false)}
+            sx={{ backgroundColor: "#262b3d", color: "#e0e3e9" }}
+          >
             Abbrechen
           </Button>
           <Button
@@ -153,7 +169,7 @@ function DialogPage() {
               addCategory();
               handleAddCategory();
             }}
-            color="primary"
+            sx={{ backgroundColor: "#262b3d", color: "#e0e3e9" }}
           >
             Hinzufügen
           </Button>
@@ -175,7 +191,13 @@ function DialogPage() {
             justifyContent: "space-between",
           }}
         >
-          <Typography sx={{ color: "#e0e3e9" }}>{category.name}</Typography>
+          <Typography
+            sx={{
+              color: isColorDark(category.color) ? "#e0e3e9" : "black",
+            }}
+          >
+            {category.name}
+          </Typography>
 
           <IconButton
             onClick={() => handleDeleteCategory(category.id)}
