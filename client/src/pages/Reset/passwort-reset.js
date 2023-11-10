@@ -1,4 +1,3 @@
-// PasswortResetPage.js
 
 import React, { useState } from "react";
 import { Box, Typography, TextField, Button } from "@mui/material";
@@ -40,7 +39,6 @@ function PasswordResetPage() {
       {message && <Alert severity="success">{message}</Alert>}
       <Box component="form" onSubmit={handleSubmit} noValidate sx={{ mt: 1 }}>
         <TextField
-          // ... Ähnliche Stilisierung wie die Login TextFields
           label="E-Mail-Adresse"
           name="email"
           type="email"

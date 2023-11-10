@@ -23,7 +23,6 @@ import CloseIcon from "@mui/icons-material/Close";
 import { styled } from "@mui/system";
 import AddCircleOutlineIcon from "@mui/icons-material/AddCircleOutline";
 
-// Styled Components
 const StyledCard = styled(Card)(({ theme }) => ({
   marginBottom: theme.spacing(2),
   backgroundColor: "#262b3d",
@@ -94,7 +93,6 @@ function SavingPage() {
     const { name, value } = e.target;
     let updatedGoal = { ...savingGoal, [name]: value };
 
-    // When either monthly saving or total amount changes, recalculate the duration
     if (name === "monthly_saving" || name === "total_amount") {
       const monthlySaving = parseFloat(updatedGoal.monthly_saving) || 0;
       const totalAmount = parseFloat(updatedGoal.total_amount) || 0;
@@ -113,7 +111,6 @@ function SavingPage() {
       }
     }
 
-    // When either start date or duration changes, recalculate the deadline
     if (name === "startdate" || name === "duration") {
       const startDate = updatedGoal.startdate
         ? new Date(updatedGoal.startdate)

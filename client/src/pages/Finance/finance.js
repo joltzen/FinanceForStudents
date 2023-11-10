@@ -10,7 +10,6 @@ import {
   Card,
   Grid,
   Typography,
-  CardContent,
   Dialog,
   DialogActions,
   DialogContent,
@@ -21,7 +20,6 @@ import { styled } from "@mui/system";
 import axiosInstance from "../../config/axios";
 import { useAuth } from "../../core/auth/auth";
 import FinanceOverview from "./overview";
-import Page from "../../components/page";
 
 const StyledTextField = styled(TextField)({
   marginTop: "20px",
@@ -48,15 +46,6 @@ const StyledTextField = styled(TextField)({
   backgroundColor: "#2e2e38",
 });
 
-const StyledCard = styled(Card)(({ theme }) => ({
-  marginBottom: theme.spacing(2),
-  backgroundColor: "#262b3d",
-  color: "#be9e44",
-  boxShadow: theme.shadows[6],
-  "&:hover": {
-    boxShadow: theme.shadows[10],
-  },
-}));
 const AddButton = styled(Button)(({ theme }) => ({
   color: theme.palette.getContrastText(theme.palette.primary.main),
   backgroundColor: theme.palette.primary.main,
@@ -71,8 +60,10 @@ const AddButton = styled(Button)(({ theme }) => ({
   },
 }));
 function FinancePage() {
+  const today = new Date().toISOString().split("T")[0];
+
   const [category, setCategory] = useState("");
-  const [date, setDate] = useState("");
+  const [date, setDate] = useState(today);
   const [description, setDescription] = useState("");
   const [amount, setAmount] = useState("");
   const [transactionType, setTransactionType] = useState("Ausgabe");
@@ -124,10 +115,16 @@ function FinancePage() {
         user_id: user.id,
         category_id: category,
       });
-      setTransactions((prevTransactions) => [
-        ...prevTransactions,
+      setTransactions((transactions) => [
+        ...transactions,
         response.data.transaction,
       ]);
+      setAmount("");
+      setDescription("");
+      setDate(today);
+      setTransactionType("Ausgabe");
+      setCategory(categories[0].id);
+
       console.log(error);
     } catch (error) {
       console.error("Transaction failed:", error);
@@ -213,18 +210,13 @@ function FinancePage() {
                   required
                 />
                 <StyledTextField
+                  fullWidth
                   label="Datum"
+                  name="date"
                   type="date"
+                  InputLabelProps={{ shrink: true }}
                   value={date}
                   onChange={handleDateChange}
-                  fullWidth
-                  required
-                  InputProps={{
-                    inputProps: { step: 300 },
-                  }}
-                  InputLabelProps={{
-                    shrink: true,
-                  }}
                 />
                 <InputLabel
                   sx={{ color: "#e0e3e9", mt: 2 }}
@@ -270,7 +262,7 @@ function FinancePage() {
                 Abbrechen
               </Button>
               <Button
-                onClick={handleSubmit} // Replace this with form's submit if it's not directly linked
+                onClick={handleSubmit}
                 color="primary"
                 sx={{ color: "#e0e3e9" }}
               >
