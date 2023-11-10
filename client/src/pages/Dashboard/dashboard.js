@@ -42,6 +42,8 @@ function DashboardPage() {
   const [categories, setCategories] = useState([]);
   const [settings, setSettings] = useState([]);
   const [isAnnualView, setIsAnnualView] = useState(false);
+  const [savingsGoals, setSavingsGoals] = useState([]);
+  const [totalSavingGoals, setTotalSavingGoals] = useState(0);
 
   const months = [
     "Januar",
@@ -62,6 +64,29 @@ function DashboardPage() {
     new Array(10),
     (_, index) => new Date().getFullYear() - index
   );
+
+  function calculateSavingGoalsTotal() {
+    let totalSavings = 0;
+
+    savingsGoals.forEach((goal) => {
+      const startMonth = new Date(goal.startdate).getMonth() + 1;
+      const startYear = new Date(goal.startdate).getFullYear();
+      const endMonth = new Date(goal.deadline).getMonth() + 1;
+      const endYear = new Date(goal.deadline).getFullYear();
+
+      if (
+        (filterYear > startYear ||
+          (filterYear === startYear && filterMonth >= startMonth)) &&
+        (filterYear < endYear ||
+          (filterYear === endYear && filterMonth <= endMonth))
+      ) {
+        totalSavings += parseFloat(goal.monthly_saving);
+      }
+    });
+
+    return totalSavings;
+  }
+
   const calculateCategoryTotals = () => {
     const categoryTotals = {};
 
@@ -85,7 +110,7 @@ function DashboardPage() {
       (acc, num) => acc + num,
       0
     );
-    categoryTotals["remaining"] = totalBudget - usedBudget;
+    categoryTotals["remaining"] = totalBudget - usedBudget - totalSavingGoals;
     return categoryTotals;
   };
 
@@ -98,6 +123,7 @@ function DashboardPage() {
     const totals = calculateCategoryTotals();
     return totals[categoryId] || 0;
   };
+
   const calculateAnnualTotals = () => {
     const categoryTotals = {};
 
@@ -164,7 +190,25 @@ function DashboardPage() {
     };
 
     fetchCategories();
+    fetchCategories();
+    const fetchGoals = async () => {
+      try {
+        const response = await axiosInstance.get("/get-saving-goals", {
+          params: { userId: user.id },
+        });
+        setSavingsGoals(response.data);
+      } catch (error) {
+        console.error("Fehler beim Abrufen der Sparziele", error);
+      }
+    };
+
+    fetchGoals();
   }, [filterMonth, filterYear, isAnnualView]);
+
+  useEffect(() => {
+    const totalSavings = calculateSavingGoalsTotal();
+    setTotalSavingGoals(totalSavings);
+  }, [savingsGoals, filterMonth, filterYear]);
 
   const chartData = {
     labels: categories.map((category) => category.name),
@@ -195,6 +239,13 @@ function DashboardPage() {
     chartData.datasets[0].data.push(remainingBudget);
     chartData.datasets[0].backgroundColor.push("#76ff03");
     chartData.datasets[0].hoverBackgroundColor.push("#76ff03");
+  }
+
+  if (totalSavingGoals > 0) {
+    chartData.labels.push("Sparen");
+    chartData.datasets[0].data.push(totalSavingGoals);
+    chartData.datasets[0].backgroundColor.push("#4E8F94");
+    chartData.datasets[0].hoverBackgroundColor.push("#4E8F94");
   }
 
   const chartOptions = {
@@ -240,7 +291,9 @@ function DashboardPage() {
     maintainAspectRatio: false,
   };
   const hasBudgetData = () => {
-    return transactions.length > 0 || settings.length > 0;
+    return (
+      transactions.length > 0 || settings.length > 0 || savingsGoals.length > 0
+    );
   };
 
   return (
