@@ -134,11 +134,11 @@ function SavingPage() {
       );
 
       const diffTime = Math.abs(enteredDeadline - startDate);
-      const diffMonths = Math.ceil(diffTime / (1000 * 60 * 60 * 24 * 30)); 
+      const diffMonths = Math.ceil(diffTime / (1000 * 60 * 60 * 24 * 30));
 
       if (diffMonths <= (parseInt(updatedGoal.duration, 10) || 0)) {
         setAlertDuration(true);
-        return; 
+        return;
       }
     }
     setSavingGoal(updatedGoal);
@@ -195,7 +195,6 @@ function SavingPage() {
         setGoals(response.data);
       } catch (error) {
         console.error("Fehler beim Abrufen der Sparziele", error);
-        alert("Fehler beim Abrufen der Sparziele");
       }
     };
 

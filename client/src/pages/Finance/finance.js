@@ -68,7 +68,7 @@ function FinancePage() {
   const [transactionType, setTransactionType] = useState("Ausgabe");
   const [transactions, setTransactions] = useState([]);
   const [categories, setCategories] = useState([]);
-
+ 
   const [error, setError] = useState("");
   const { user } = useAuth();
 

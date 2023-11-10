@@ -421,6 +421,7 @@ router.get("/get-saving-goals", async (req, res) => {
     );
 
     res.json(result.rows);
+    console.log(result.rows);
   } catch (error) {
     console.error("Error fetching saving goals:", error);
     res.status(500).json({ error: "Error fetching saving goals" });

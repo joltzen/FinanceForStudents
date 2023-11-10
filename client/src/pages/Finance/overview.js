@@ -21,14 +21,17 @@ import StyledTableCell from "../../components/tablecell";
 import DeleteIcon from "@mui/icons-material/Delete";
 
 function FinanceOverview() {
+  const today = new Date().toISOString().split("T")[0];
+
   const [filterMonth, setFilterMonth] = useState(new Date().getMonth() + 1);
   const [filterYear, setFilterYear] = useState(new Date().getFullYear());
   const [transactions, setTransactions] = useState([]);
   const [totalSum, setTotalSum] = useState(0);
+  const [savingSum, setSavingSum] = useState(0);
   const [categories, setCategories] = useState([]);
   const [settings, setSettings] = useState([]);
   const { user } = useAuth();
-
+  const [savingGoal, setSavingGoal] = useState([]);
   const months = [
     { value: 1, label: "Januar" },
     { value: 2, label: "Februar" },
@@ -102,7 +105,28 @@ function FinanceOverview() {
       console.error("Error fetching transactions:", error);
     }
   };
+  function calculateAdjustedTotalSum() {
+    let adjustedTotal = totalSum;
 
+    savingGoal.forEach((goal) => {
+      const startMonth = new Date(goal.startdate).getMonth() + 1;
+      const startYear = new Date(goal.startdate).getFullYear();
+      const deadlineMonth = new Date(goal.deadline).getMonth() + 1;
+      const deadlineYear = new Date(goal.deadline).getFullYear();
+
+      const isWithinRange =
+        (filterYear > startYear ||
+          (filterYear === startYear && filterMonth >= startMonth)) &&
+        (filterYear < deadlineYear ||
+          (filterYear === deadlineYear && filterMonth <= deadlineMonth));
+
+      if (isWithinRange) {
+        adjustedTotal -= goal.monthly_saving;
+      }
+    });
+
+    setSavingSum(adjustedTotal);
+  }
   const handleDeleteTransaction = async (transactionId) => {
     try {
       await axiosInstance.delete("/deleteTransaction", {
@@ -132,7 +156,20 @@ function FinanceOverview() {
     };
 
     fetchCategories();
-  }, [filterMonth, filterYear, transactions]);
+    const fetchGoals = async () => {
+      try {
+        const response = await axiosInstance.get("/get-saving-goals", {
+          params: { userId: user.id },
+        });
+        setSavingGoal(response.data);
+      } catch (error) {
+        console.error("Fehler beim Abrufen der Sparziele", error);
+      }
+    };
+
+    fetchGoals();
+    calculateAdjustedTotalSum();
+  }, [filterMonth, filterYear, totalSum]);
 
   return (
     <div>
@@ -257,7 +294,7 @@ function FinanceOverview() {
               fontWeight: "bold",
             }}
           >
-            Gesamtsumme: {totalSum.toFixed(2)}€
+            Gesamtsumme: {savingSum.toFixed(2)}€
           </Typography>
         </Box>
       </TableContainer>
