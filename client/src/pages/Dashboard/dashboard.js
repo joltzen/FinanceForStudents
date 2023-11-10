@@ -86,6 +86,33 @@ function DashboardPage() {
 
     return totalSavings;
   }
+  function calculateAnnualSavingGoalsTotal() {
+    let totalSavings = 0;
+
+    savingsGoals.forEach((goal) => {
+      const goalStart = new Date(goal.startdate);
+      const goalEnd = goal.deadline
+        ? new Date(goal.deadline)
+        : new Date(goalStart.getFullYear() + 1, 0, 1); // Assuming deadline is the end of the year if not specified
+
+      // Adjust start and end dates if they fall outside the filter year
+      const startMonth =
+        goalStart.getFullYear() === filterYear ? goalStart.getMonth() + 1 : 1;
+      const endMonth =
+        goalEnd.getFullYear() === filterYear ? goalEnd.getMonth() + 1 : 12;
+
+      // Calculate savings only if the goal is within the filter year
+      if (
+        filterYear >= goalStart.getFullYear() &&
+        filterYear <= goalEnd.getFullYear()
+      ) {
+        const monthsInYear = endMonth - startMonth + 1;
+        totalSavings += parseFloat(goal.monthly_saving) * monthsInYear;
+      }
+    });
+
+    return totalSavings;
+  }
 
   const calculateCategoryTotals = () => {
     const categoryTotals = {};
@@ -147,7 +174,7 @@ function DashboardPage() {
       (acc, num) => acc + num,
       0
     );
-    categoryTotals["remaining"] = totalBudget - usedBudget;
+    categoryTotals["remaining"] = totalBudget - usedBudget - totalSavingGoals;
     return categoryTotals;
   };
 
@@ -206,7 +233,12 @@ function DashboardPage() {
   }, [filterMonth, filterYear, isAnnualView]);
 
   useEffect(() => {
-    const totalSavings = calculateSavingGoalsTotal();
+    var totalSavings = 0;
+    if (isAnnualView) {
+      totalSavings = calculateAnnualSavingGoalsTotal();
+    } else {
+      totalSavings = calculateSavingGoalsTotal();
+    }
     setTotalSavingGoals(totalSavings);
   }, [savingsGoals, filterMonth, filterYear]);
 
@@ -244,8 +276,8 @@ function DashboardPage() {
   if (totalSavingGoals > 0) {
     chartData.labels.push("Sparen");
     chartData.datasets[0].data.push(totalSavingGoals);
-    chartData.datasets[0].backgroundColor.push("#4E8F94");
-    chartData.datasets[0].hoverBackgroundColor.push("#4E8F94");
+    chartData.datasets[0].backgroundColor.push("indigo");
+    chartData.datasets[0].hoverBackgroundColor.push("indigo");
   }
 
   const chartOptions = {
