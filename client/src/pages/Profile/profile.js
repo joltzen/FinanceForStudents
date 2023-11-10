@@ -21,7 +21,6 @@ function ProfilePage() {
   };
 
   const handleChangePassword = () => {
-    // Implementiere updatePassword in deinem Auth Service
     updatePassword(password);
     setOpen(false);
   };
@@ -32,7 +31,7 @@ function ProfilePage() {
         "Are you sure you want to delete your account? This action cannot be undone."
       )
     ) {
-      return; // Frühzeitige Rückkehr, wenn der Benutzer nicht bestätigt
+      return; 
     }
 
     try {

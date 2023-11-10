@@ -7,6 +7,7 @@ import {
   List,
   Divider,
   Typography,
+  ListItem,
 } from "@mui/material";
 import MenuIcon from "@mui/icons-material/Menu";
 import ArrowBackIosIcon from "@mui/icons-material/ArrowBackIos";
@@ -19,7 +20,14 @@ import Menu from "@mui/material/Menu";
 import MenuItem from "@mui/material/MenuItem";
 import AccountCircle from "@mui/icons-material/AccountCircle";
 import NavButtons from "./navbuttons";
-
+import HomeIcon from "@mui/icons-material/Home";
+import BarChartIcon from "@mui/icons-material/BarChart";
+import AccountBalanceWalletIcon from "@mui/icons-material/AccountBalanceWallet";
+import AttachMoneyIcon from "@mui/icons-material/AttachMoney";
+import PersonIcon from "@mui/icons-material/Person";
+import InfoIcon from "@mui/icons-material/Info";
+import MailIcon from "@mui/icons-material/Mail";
+import SavingsIcon from "@mui/icons-material/Savings";
 const StyledAppBar = styled(AppBar)({
   zIndex: 1400,
   position: "relative",
@@ -38,7 +46,7 @@ const StyledMenuItem = styled(MenuItem)({
 });
 
 const StyledDrawerContent = styled("div")({
-  width: "15vw",
+  width: "13vw",
   marginTop: "70px",
 
   "& .MuiDrawer-paper": {
@@ -176,19 +184,53 @@ function Navbar() {
         >
           {user ? (
             <>
-              <StyledListItem href="/dashboard" primary="Dashboard" />
-              <StyledListItem href="/finance" primary="Finanzverwaltung" />
-              <StyledListItem href="/settings" primary="Settings" />
-              <StyledListItem href="/profile" primary="Profil" />
-              <Divider />
+              <StyledListItem
+                href="/dashboard"
+                primary="Dashboard"
+                icon={<BarChartIcon />}
+              />
+              <StyledListItem
+                href="/finance"
+                primary="Finanzverwaltung"
+                icon={<AccountBalanceWalletIcon />}
+              />
+              <StyledListItem
+                href="/settings"
+                primary="Fixkosten"
+                icon={<AttachMoneyIcon />}
+              />
+              <StyledListItem
+                href="/saving"
+                primary="Sparziele"
+                icon={<SavingsIcon />}
+              />
+              <StyledListItem
+                href="/profile"
+                primary="Profil"
+                icon={<PersonIcon />}
+              />
+              <Divider
+                sx={{
+                  mt: 1,
+                  backgroundColor: "#be9e44",
+                }}
+              />
             </>
           ) : (
             <></>
           )}
           <List>
-            <StyledListItem href="/" primary="Home" />
-            <StyledListItem href="/about" primary="About" />
-            <StyledListItem href="/contact" primary="Contact" />
+            <StyledListItem
+              href="/"
+              primary="Home"
+              icon={<HomeIcon />} // Add the HomeIcon here
+            />
+            <StyledListItem href="/about" primary="About" icon={<InfoIcon />} />
+            <StyledListItem
+              href="/contact"
+              primary="Contact"
+              icon={<MailIcon />}
+            />
             <Divider />
           </List>
         </StyledDrawerContent>

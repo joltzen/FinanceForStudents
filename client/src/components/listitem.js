@@ -1,5 +1,11 @@
 import React from "react";
-import { ListItem, ListItemText, Typography } from "@mui/material";
+import {
+  Divider,
+  ListItem,
+  ListItemIcon,
+  ListItemText,
+  Typography,
+} from "@mui/material";
 
 function StyledListItem(props) {
   return (
@@ -12,6 +18,9 @@ function StyledListItem(props) {
         "&:hover": { backgroundColor: "#3A415C" },
       }}
     >
+      {props.icon && (
+        <ListItemIcon sx={{ color: "white" }}>{props.icon}</ListItemIcon>
+      )}
       <ListItemText>
         <Typography
           sx={{ mx: 0.5, fontSize: "15px", width: 200, color: "#e0e3e9" }}

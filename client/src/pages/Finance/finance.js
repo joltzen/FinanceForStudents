@@ -7,11 +7,20 @@ import {
   MenuItem,
   FormControl,
   InputLabel,
+  Card,
+  Grid,
+  Typography,
+  Dialog,
+  DialogActions,
+  DialogContent,
+  DialogTitle,
 } from "@mui/material";
+import AddCircleOutlineIcon from "@mui/icons-material/AddCircleOutline";
 import { styled } from "@mui/system";
 import axiosInstance from "../../config/axios";
 import { useAuth } from "../../core/auth/auth";
 import FinanceOverview from "./overview";
+
 const StyledTextField = styled(TextField)({
   marginTop: "20px",
   "& label.Mui-focused": {
@@ -37,9 +46,24 @@ const StyledTextField = styled(TextField)({
   backgroundColor: "#2e2e38",
 });
 
+const AddButton = styled(Button)(({ theme }) => ({
+  color: theme.palette.getContrastText(theme.palette.primary.main),
+  backgroundColor: theme.palette.primary.main,
+  "&:hover": {
+    backgroundColor: theme.palette.primary.dark,
+  },
+  position: "fixed",
+  bottom: theme.spacing(3),
+  right: theme.spacing(3),
+  [theme.breakpoints.up("sm")]: {
+    right: theme.spacing(10),
+  },
+}));
 function FinancePage() {
+  const today = new Date().toISOString().split("T")[0];
+
   const [category, setCategory] = useState("");
-  const [date, setDate] = useState("");
+  const [date, setDate] = useState(today);
   const [description, setDescription] = useState("");
   const [amount, setAmount] = useState("");
   const [transactionType, setTransactionType] = useState("Ausgabe");
@@ -49,6 +73,15 @@ function FinancePage() {
   const [error, setError] = useState("");
   const { user } = useAuth();
 
+  const [openDialog, setOpenDialog] = useState(false);
+
+  const handleOpenDialog = () => {
+    setOpenDialog(true);
+  };
+
+  const handleCloseDialog = () => {
+    setOpenDialog(false);
+  };
   const handleDateChange = (e) => {
     setDate(e.target.value);
   };
@@ -82,10 +115,16 @@ function FinancePage() {
         user_id: user.id,
         category_id: category,
       });
-      setTransactions((prevTransactions) => [
-        ...prevTransactions,
+      setTransactions((transactions) => [
+        ...transactions,
         response.data.transaction,
       ]);
+      setAmount("");
+      setDescription("");
+      setDate(today);
+      setTransactionType("Ausgabe");
+      setCategory(categories[0].id);
+
       console.log(error);
     } catch (error) {
       console.error("Transaction failed:", error);
@@ -114,124 +153,131 @@ function FinancePage() {
   }, [user.id]);
 
   return (
-    <div>
-      <Box
-        sx={{
-          display: "flex",
-          justifyContent: "center",
-          alignItems: "flex-start",
-          mx: "auto",
-          p: 2,
-        }}
+    <Box sx={{ flexGrow: 1, padding: 3 }}>
+      <Grid
+        container
+        spacing={2}
+        justifyContent="center"
+        alignItems="center"
+        style={{ marginTop: 20 }}
       >
-        <Box
-          sx={{
-            flex: 1,
-            maxWidth: "33%",
-            p: 2,
-            marginRight: "100px",
-          }}
-        >
-          <form onSubmit={handleSubmit}>
-            <FormControl fullWidth>
-              <InputLabel style={{ color: "#e0e3e9" }}>
-                Transaktionstyp
-              </InputLabel>
-              <Select
-                value={transactionType}
-                onChange={handleTransactionTypeChange}
-                label="Transaktionstyp"
-                sx={{
-                  color: "#e0e3e9",
-                  backgroundColor: "#2e2e38",
-                  border: "1px solid #e0e3e9",
-                }}
-              >
-                <MenuItem value="Ausgabe">Ausgabe</MenuItem>
-                <MenuItem value="Einnahme">Einnahme</MenuItem>
-              </Select>
-            </FormControl>
-            <StyledTextField
-              label="Betrag"
-              type="number"
-              value={amount}
-              onChange={handleAmountChange}
-              fullWidth
-              required
-            />
-            <br />
-            <StyledTextField
-              label="Beschreibung"
-              type="text"
-              value={description}
-              onChange={handleDescriptionChange}
-              fullWidth
-              required
-            />
-            <StyledTextField
-              label="Datum"
-              type="date"
-              value={date}
-              onChange={handleDateChange}
-              fullWidth
-              required
-              InputProps={{
-                inputProps: { step: 300 },
-              }}
-              InputLabelProps={{
-                shrink: true,
-              }}
-            />
-            <br />
-            <br />
-            <Button type="submit" variant="contained" color="button">
-              Hinzufügen
-            </Button>
-            <InputLabel
-              sx={{ color: "#e0e3e9", marginTop: 2 }}
-              id="category-label"
-            >
-              Kategorie
-            </InputLabel>
-            <Select
-              labelId="category-label"
-              value={category}
-              onChange={(e) => setCategory(e.target.value)}
-              label="Kategorie"
-              sx={{
-                color: "#e0e3e9",
-                backgroundColor: getCurrentCategoryColor(),
-                "&:before": {
-                  borderColor: "black",
-                },
-                "&:after": {
-                  borderColor: "black",
-                },
-              }}
-            >
-              {categories.map((cat) => (
-                <MenuItem
-                  key={cat.id}
-                  value={cat.id}
-                  sx={{ backgroundColor: cat.color }}
+        <Grid item xs={12} md={8} lg={6}>
+          <AddButton
+            variant="contained"
+            startIcon={<AddCircleOutlineIcon />}
+            onClick={handleOpenDialog}
+          >
+            Transaktion hinzufügen
+          </AddButton>
+          <Dialog open={openDialog} onClose={handleCloseDialog}>
+            <DialogTitle sx={{ backgroundColor: "#262b3d", color: "#e0e3e9" }}>
+              Neue Transaktion
+            </DialogTitle>
+            <DialogContent sx={{ backgroundColor: "#262b3d" }}>
+              <form onSubmit={handleSubmit}>
+                <FormControl fullWidth>
+                  <InputLabel style={{ color: "#e0e3e9" }}>
+                    Transaktionstyp
+                  </InputLabel>
+                  <Select
+                    value={transactionType}
+                    onChange={handleTransactionTypeChange}
+                    label="Transaktionstyp"
+                    sx={{
+                      color: "#e0e3e9",
+                      backgroundColor: "#2e2e38",
+                      border: "1px solid #e0e3e9",
+                    }}
+                  >
+                    <MenuItem value="Ausgabe">Ausgabe</MenuItem>
+                    <MenuItem value="Einnahme">Einnahme</MenuItem>
+                  </Select>
+                </FormControl>
+                <StyledTextField
+                  label="Betrag"
+                  type="number"
+                  value={amount}
+                  onChange={handleAmountChange}
+                  fullWidth
+                  required
+                />
+                <StyledTextField
+                  label="Beschreibung"
+                  type="text"
+                  value={description}
+                  onChange={handleDescriptionChange}
+                  fullWidth
+                  required
+                />
+                <StyledTextField
+                  fullWidth
+                  label="Datum"
+                  name="date"
+                  type="date"
+                  InputLabelProps={{ shrink: true }}
+                  value={date}
+                  onChange={handleDateChange}
+                />
+                <InputLabel
+                  sx={{ color: "#e0e3e9", mt: 2 }}
+                  id="category-label"
                 >
-                  {cat.name}
-                </MenuItem>
-              ))}
-            </Select>
-          </form>
-        </Box>
-        <Box
-          sx={{
-            flex: 1,
-            maxWidth: "66%",
-            p: 2,
-          }}
-        >
+                  Kategorie
+                </InputLabel>
+                <Select
+                  fullWidth
+                  labelId="category-label"
+                  value={category}
+                  onChange={(e) => setCategory(e.target.value)}
+                  label="Kategorie"
+                  sx={{
+                    color: "#e0e3e9",
+                    backgroundColor: getCurrentCategoryColor(),
+                    "&:before": {
+                      borderColor: "black",
+                    },
+                    "&:after": {
+                      borderColor: "black",
+                    },
+                  }}
+                >
+                  {categories.map((cat) => (
+                    <MenuItem
+                      key={cat.id}
+                      value={cat.id}
+                      sx={{ backgroundColor: cat.color }}
+                    >
+                      {cat.name}
+                    </MenuItem>
+                  ))}
+                </Select>
+              </form>
+            </DialogContent>
+            <DialogActions sx={{ backgroundColor: "#262b3d" }}>
+              <Button
+                onClick={handleCloseDialog}
+                color="primary"
+                sx={{ color: "#e0e3e9" }}
+              >
+                Abbrechen
+              </Button>
+              <Button
+                onClick={handleSubmit}
+                color="primary"
+                sx={{ color: "#e0e3e9" }}
+              >
+                Speichern
+              </Button>
+            </DialogActions>
+          </Dialog>
+
+          <Typography variant="h6" color="#e0e3e9" sx={{ mb: 2 }}>
+            Transaktionen Übersicht
+          </Typography>
           <FinanceOverview />
-        </Box>
-      </Box>
-    </div>
+        </Grid>
+      </Grid>
+    </Box>
   );
 }
 
