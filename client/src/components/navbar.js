@@ -223,7 +223,7 @@ function Navbar() {
             <StyledListItem
               href="/"
               primary="Home"
-              icon={<HomeIcon />} // Add the HomeIcon here
+              icon={<HomeIcon />}
             />
             <StyledListItem href="/about" primary="About" icon={<InfoIcon />} />
             <StyledListItem

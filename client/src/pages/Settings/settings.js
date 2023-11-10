@@ -423,7 +423,7 @@ function TransactionSection({
                     backgroundColor: "#e0e3e9",
                   },
                   "&:nth-of-type(even)": {
-                    backgroundColor: "#D2D5DC", // Slightly darker for even rows
+                    backgroundColor: "#D2D5DC",
                   },
                   borderRight: "1px solid",
                 }}
