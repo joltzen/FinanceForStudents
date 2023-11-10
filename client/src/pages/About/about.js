@@ -19,22 +19,6 @@ function AboutPage() {
   return (
     <Page>
       <h1>About Page</h1>
-      {user && <p>Welcome, {user.username}!</p>}
-      {response.length > 0 ? (
-        <div>
-          <h2>Usernames from the server:</h2>
-          <ul>
-            {response.map((user, index) => (
-              <>
-                <li key={index}>{user.username}</li>
-                <li key={index + 1}>{user.password}</li>
-              </>
-            ))}
-          </ul>
-        </div>
-      ) : (
-        <p>No user data available.</p>
-      )}
     </Page>
   );
 }

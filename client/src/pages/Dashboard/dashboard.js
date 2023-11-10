@@ -253,7 +253,7 @@ function DashboardPage() {
         style={{ marginTop: 20 }}
       >
         <Grid item xs={12} md={8} lg={6}>
-          <Card sx={{ backgroundColor: "#2e2e38" }}>
+          <Card sx={{ backgroundColor: "#262b3d" }}>
             <CardContent>
               <Typography
                 variant="h5"
