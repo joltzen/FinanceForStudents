@@ -88,6 +88,7 @@ function SavingPage() {
   });
 
   const [alter, setAlert] = useState(false);
+  const [alterDuration, setAlertDuration] = useState(false);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -124,9 +125,26 @@ function SavingPage() {
         };
       }
     }
+    if (name === "deadline") {
+      const enteredDeadline = new Date(value);
+      const startDate = new Date(updatedGoal.startdate);
+      const calculatedDeadline = new Date(startDate);
+      calculatedDeadline.setMonth(
+        startDate.getMonth() + (parseInt(updatedGoal.duration, 10) || 0)
+      );
 
+      // Calculate the duration based on the new deadline
+      const diffTime = Math.abs(enteredDeadline - startDate);
+      const diffMonths = Math.ceil(diffTime / (1000 * 60 * 60 * 24 * 30)); // Approximate month difference
+
+      if (diffMonths <= (parseInt(updatedGoal.duration, 10) || 0)) {
+        setAlertDuration(true);
+        return; // Prevent state update if the duration differs
+      }
+    }
     setSavingGoal(updatedGoal);
   };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     const userId = user.id;
@@ -245,6 +263,37 @@ function SavingPage() {
                         >
                           <strong>
                             Das Enddatum muss nach dem Startdatum liegen!
+                          </strong>
+                        </Alert>
+                      </Collapse>
+                    </Box>
+                  </>
+                )}
+                {alterDuration && (
+                  <>
+                    <Box sx={{ width: "100%" }}>
+                      <Collapse in={open}>
+                        <Alert
+                          severity="error"
+                          variant="filled"
+                          action={
+                            <IconButton
+                              aria-label="close"
+                              color="inherit"
+                              size="small"
+                              onClick={() => {
+                                setAlertDuration(false);
+                              }}
+                            >
+                              <CloseIcon fontSize="inherit" />
+                            </IconButton>
+                          }
+                          sx={{ mb: 2 }}
+                        >
+                          <strong>
+                            Das manuell festgelegte Enddatum führt zu einer
+                            anderen Dauer als berechnet. Bitte passen Sie Ihr
+                            monatliches Sparen entsprechend an.
                           </strong>
                         </Alert>
                       </Collapse>
