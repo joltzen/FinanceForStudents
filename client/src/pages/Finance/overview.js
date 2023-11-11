@@ -202,7 +202,7 @@ function FinanceOverview() {
 
     fetchGoals();
     calculateAdjustedTotalSum();
-  }, [filterMonth, filterYear, totalSum]);
+  }, [filterMonth, filterYear, totalSum, user.id, savingGoal]);
 
   const [editTransaction, setEditTransaction] = useState(null);
 
@@ -374,9 +374,18 @@ function EditTransactionDialog({ transaction, onClose, onSave }) {
   });
 
   const handleInputChange = (e) => {
+    const { name, value } = e.target;
     setEditedTransaction({
       ...editedTransaction,
-      [e.target.name]: e.target.value,
+      [name]: value,
+    });
+  };
+
+  // Updated handler specifically for the Select component
+  const handleSelectChange = (event) => {
+    setEditedTransaction({
+      ...editedTransaction,
+      transaction_type: event.target.value,
     });
   };
 
@@ -384,29 +393,76 @@ function EditTransactionDialog({ transaction, onClose, onSave }) {
     onSave(editedTransaction);
     onClose();
   };
+  function formatDate(dateString) {
+    const date = new Date(dateString);
+    let month = "" + (date.getMonth() + 1);
+    let day = "" + date.getDate();
+    const year = date.getFullYear();
 
+    if (month.length < 2) {
+      month = "0" + month;
+    }
+    if (day.length < 2) {
+      day = "0" + day;
+    }
+
+    return [year, month, day].join("-");
+  }
   return (
     <Dialog open={!!transaction} onClose={onClose}>
-      <DialogTitle>Edit Transaction</DialogTitle>
-      <DialogContent>
+      <DialogTitle sx={{ backgroundColor: "#262b3d", color: "#e0e3e9" }}>
+        Bearbeiten
+      </DialogTitle>
+      <DialogContent sx={{ backgroundColor: "#262b3d" }}>
+        <FormControl fullWidth>
+          <InputLabel style={{ color: "#e0e3e9" }}>Transaktionstyp</InputLabel>
+          <Select
+            value={editedTransaction.transaction_type}
+            onChange={handleSelectChange}
+            label="Transaktionstyp"
+            sx={{
+              color: "#e0e3e9",
+              backgroundColor: "#2e2e38",
+              border: "1px solid #e0e3e9",
+            }}
+          >
+            <MenuItem value="Ausgabe">Ausgabe</MenuItem>
+            <MenuItem value="Einnahme">Einnahme</MenuItem>
+          </Select>
+        </FormControl>
         <StyledTextField
-          label="Amount"
-          type="number"
-          name="amount"
-          value={editedTransaction.amount}
-          onChange={handleInputChange}
-        />
-        <StyledTextField
-          label="Description"
+          label="Beschreibung"
           type="text"
           name="description"
           value={editedTransaction.description}
           onChange={handleInputChange}
+          fullWidth
+        />
+        <StyledTextField
+          label="Betrag"
+          type="number"
+          name="amount"
+          value={editedTransaction.amount}
+          onChange={handleInputChange}
+          fullWidth
+        />
+        <StyledTextField
+          fullWidth
+          label="Datum"
+          name="transaction_date"
+          type="date"
+          InputLabelProps={{ shrink: true }}
+          value={formatDate(editedTransaction.transaction_date)}
+          onChange={handleInputChange}
         />
       </DialogContent>
-      <DialogActions>
-        <Button onClick={onClose}>Cancel</Button>
-        <Button onClick={handleSave}>Save</Button>
+      <DialogActions sx={{ backgroundColor: "#262b3d" }}>
+        <Button onClick={onClose} color="primary" sx={{ color: "#e0e3e9" }}>
+          Abbrechen
+        </Button>
+        <Button onClick={handleSave} color="primary" sx={{ color: "#e0e3e9" }}>
+          Speichern
+        </Button>
       </DialogActions>
     </Dialog>
   );
