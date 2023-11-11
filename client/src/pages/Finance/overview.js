@@ -16,9 +16,42 @@ import {
   Paper,
   Typography,
   IconButton,
+  Dialog,
+  DialogTitle,
+  DialogContent,
+  TextField,
+  DialogActions,
+  Button,
 } from "@mui/material";
 import StyledTableCell from "../../components/tablecell";
 import DeleteIcon from "@mui/icons-material/Delete";
+import EditIcon from "@mui/icons-material/Edit";
+import { styled } from "@mui/system";
+
+const StyledTextField = styled(TextField)({
+  marginTop: "20px",
+  "& label.Mui-focused": {
+    color: "#e0e3e9",
+  },
+  "& label": {
+    color: "#e0e3e9",
+  },
+  "& input": {
+    color: "#d1d1d1",
+  },
+  "& .MuiOutlinedInput-root": {
+    "& fieldset": {
+      borderColor: "#d1d1d1",
+    },
+    "&:hover fieldset": {
+      borderColor: "#e0e3e9",
+    },
+    "&.Mui-focused fieldset": {
+      borderColor: "#e0e3e9",
+    },
+  },
+  backgroundColor: "#2e2e38",
+});
 
 function FinanceOverview() {
   const today = new Date().toISOString().split("T")[0];
@@ -33,19 +66,19 @@ function FinanceOverview() {
   const { user } = useAuth();
   const [savingGoal, setSavingGoal] = useState([]);
   const months = [
-    { value: 1, label: "Januar" },
-    { value: 2, label: "Februar" },
-    { value: 3, label: "März" },
-    { value: 4, label: "April" },
-    { value: 5, label: "Mai" },
-    { value: 6, label: "Juni" },
-    { value: 7, label: "Juli" },
-    { value: 8, label: "August" },
-    { value: 9, label: "September" },
-    { value: 10, label: "Oktober" },
-    { value: 11, label: "November" },
-    { value: 12, label: "Dezember" },
-  ];
+    "Januar",
+    "Februar",
+    "März",
+    "April",
+    "Mai",
+    "Juni",
+    "Juli",
+    "August",
+    "September",
+    "Oktober",
+    "November",
+    "Dezember",
+  ].map((label, index) => ({ value: index + 1, label }));
 
   const years = Array.from(
     { length: 10 },
@@ -171,6 +204,28 @@ function FinanceOverview() {
     calculateAdjustedTotalSum();
   }, [filterMonth, filterYear, totalSum]);
 
+  const [editTransaction, setEditTransaction] = useState(null);
+
+  // Existing useEffect and other functions...
+
+  const handleEditTransaction = async (transaction) => {
+    // Implement the logic to update the transaction
+    try {
+      const response = await axiosInstance.patch(
+        "/updateTransaction",
+        transaction
+      );
+      // Handle the response
+      fetchTransactions();
+    } catch (error) {
+      console.error("Error updating transaction:", error);
+    }
+  };
+
+  const handleEditButtonClick = (transaction) => {
+    setEditTransaction(transaction);
+  };
+
   return (
     <div>
       <FormControl>
@@ -262,8 +317,12 @@ function FinanceOverview() {
                       border: "1px solid black",
                       backgroundColor: categoryColor,
                     }}
-                    s
                   >
+                    <IconButton
+                      onClick={() => handleEditButtonClick(transaction)}
+                    >
+                      <EditIcon />
+                    </IconButton>
                     <IconButton
                       onClick={() =>
                         handleDeleteTransaction(transaction.transaction_id)
@@ -298,7 +357,58 @@ function FinanceOverview() {
           </Typography>
         </Box>
       </TableContainer>
+      {editTransaction && (
+        <EditTransactionDialog
+          transaction={editTransaction}
+          onClose={() => setEditTransaction(null)}
+          onSave={handleEditTransaction}
+        />
+      )}
     </div>
+  );
+}
+
+function EditTransactionDialog({ transaction, onClose, onSave }) {
+  const [editedTransaction, setEditedTransaction] = useState({
+    ...transaction,
+  });
+
+  const handleInputChange = (e) => {
+    setEditedTransaction({
+      ...editedTransaction,
+      [e.target.name]: e.target.value,
+    });
+  };
+
+  const handleSave = () => {
+    onSave(editedTransaction);
+    onClose();
+  };
+
+  return (
+    <Dialog open={!!transaction} onClose={onClose}>
+      <DialogTitle>Edit Transaction</DialogTitle>
+      <DialogContent>
+        <StyledTextField
+          label="Amount"
+          type="number"
+          name="amount"
+          value={editedTransaction.amount}
+          onChange={handleInputChange}
+        />
+        <StyledTextField
+          label="Description"
+          type="text"
+          name="description"
+          value={editedTransaction.description}
+          onChange={handleInputChange}
+        />
+      </DialogContent>
+      <DialogActions>
+        <Button onClick={onClose}>Cancel</Button>
+        <Button onClick={handleSave}>Save</Button>
+      </DialogActions>
+    </Dialog>
   );
 }
 
