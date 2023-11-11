@@ -78,7 +78,6 @@ function DialogPage() {
         user_id: user.id,
         color: categoryColor,
       });
-      console.log(response);
     } catch (error) {
       console.error("category failed:", error);
     }

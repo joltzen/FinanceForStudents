@@ -164,7 +164,6 @@ function SavingPage() {
         "/saving-goals",
         savingGoalData
       );
-      console.log(response.data);
       setSavingGoal({
         monthly_saving: "",
         total_amount: "",
@@ -207,7 +206,6 @@ function SavingPage() {
       const response = await axiosInstance.delete("/delete-saving-goal", {
         params: { id: goalId },
       });
-      console.log(response.data);
       if (response.data) {
         setGoals(goals.filter((goal) => goal.id !== goalId));
       }

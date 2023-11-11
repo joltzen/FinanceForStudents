@@ -23,7 +23,6 @@ function SignUpForm() {
         firstname,
         surname,
       });
-      console.log(response.data);
       navigate("/login");
     } catch (error) {
       console.error("Sign up failed:", error);

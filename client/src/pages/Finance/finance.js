@@ -68,7 +68,7 @@ function FinancePage() {
   const [transactionType, setTransactionType] = useState("Ausgabe");
   const [transactions, setTransactions] = useState([]);
   const [categories, setCategories] = useState([]);
- 
+
   const [error, setError] = useState("");
   const { user } = useAuth();
 
@@ -120,11 +120,9 @@ function FinancePage() {
       ]);
       setAmount("");
       setDescription("");
-      setDate(today);
+      setDate(date);
       setTransactionType("Ausgabe");
-      setCategory(categories[0].id);
-
-      console.log(error);
+      setCategory(category);
     } catch (error) {
       console.error("Transaction failed:", error);
       setError(
@@ -193,18 +191,18 @@ function FinancePage() {
                   </Select>
                 </FormControl>
                 <StyledTextField
-                  label="Betrag"
-                  type="number"
-                  value={amount}
-                  onChange={handleAmountChange}
-                  fullWidth
-                  required
-                />
-                <StyledTextField
                   label="Beschreibung"
                   type="text"
                   value={description}
                   onChange={handleDescriptionChange}
+                  fullWidth
+                  required
+                />
+                <StyledTextField
+                  label="Betrag"
+                  type="number"
+                  value={amount}
+                  onChange={handleAmountChange}
                   fullWidth
                   required
                 />

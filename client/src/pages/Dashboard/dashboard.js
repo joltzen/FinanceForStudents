@@ -276,8 +276,8 @@ function DashboardPage() {
   if (totalSavingGoals > 0) {
     chartData.labels.push("Sparen");
     chartData.datasets[0].data.push(totalSavingGoals);
-    chartData.datasets[0].backgroundColor.push("indigo");
-    chartData.datasets[0].hoverBackgroundColor.push("indigo");
+    chartData.datasets[0].backgroundColor.push("#4dd0e1");
+    chartData.datasets[0].hoverBackgroundColor.push("#4dd0e1");
   }
 
   const chartOptions = {

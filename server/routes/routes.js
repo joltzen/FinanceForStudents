@@ -421,7 +421,6 @@ router.get("/get-saving-goals", async (req, res) => {
     );
 
     res.json(result.rows);
-    console.log(result.rows);
   } catch (error) {
     console.error("Error fetching saving goals:", error);
     res.status(500).json({ error: "Error fetching saving goals" });
@@ -461,4 +460,34 @@ router.patch("/update-saving-goal", async (req, res) => {
   }
 });
 
+router.patch("/updateTransaction", async (req, res) => {
+  try {
+    const {
+      transaction_id,
+      newAmount,
+      newDescription,
+      newDate,
+      newCategoryId,
+    } = req.body;
+
+    const query = `
+      UPDATE transactions
+      SET amount = $1, description = $2, transaction_date = $3, category_id = $4
+      WHERE transaction_id = $5
+      RETURNING *;`;
+
+    const values = [
+      newAmount,
+      newDescription,
+      newDate,
+      newCategoryId,
+      transaction_id,
+    ];
+    const result = await db.query(query, values);
+    res.json(result.rows[0]);
+  } catch (error) {
+    console.error("Error updating transaction:", error);
+    res.status(500).json({ error: "Error updating transaction" });
+  }
+});
 module.exports = router;

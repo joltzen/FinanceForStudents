@@ -86,19 +86,19 @@ function SettingsForm() {
   const { user } = useAuth();
 
   const months = [
-    { value: 1, label: "Januar" },
-    { value: 2, label: "Februar" },
-    { value: 3, label: "März" },
-    { value: 4, label: "April" },
-    { value: 5, label: "Mai" },
-    { value: 6, label: "Juni" },
-    { value: 7, label: "Juli" },
-    { value: 8, label: "August" },
-    { value: 9, label: "September" },
-    { value: 10, label: "Oktober" },
-    { value: 11, label: "November" },
-    { value: 12, label: "Dezember" },
-  ];
+    "Januar",
+    "Februar",
+    "März",
+    "April",
+    "Mai",
+    "Juni",
+    "Juli",
+    "August",
+    "September",
+    "Oktober",
+    "November",
+    "Dezember",
+  ].map((label, index) => ({ value: index + 1, label }));
 
   const years = Array.from(
     { length: 10 },
@@ -220,19 +220,19 @@ function SettingsForm() {
                 </Select>
               </FormControl>
               <StyledTextField
-                label="Betrag"
-                type="number"
-                value={amount}
-                onChange={handleAmountChange}
+                label="Beschreibung"
+                type="text"
+                value={description}
+                onChange={handleDescriptionChange}
                 fullWidth
                 required
               />
               <br />
               <StyledTextField
-                label="Beschreibung"
-                type="text"
-                value={description}
-                onChange={handleDescriptionChange}
+                label="Betrag"
+                type="number"
+                value={amount}
+                onChange={handleAmountChange}
                 fullWidth
                 required
               />
