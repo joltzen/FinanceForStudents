@@ -16,6 +16,7 @@ import NoDataAlert from "./noalert";
 import { useFetchData } from "../../hooks/useFetchData";
 import { useCalculations } from "../../hooks/useCalculations";
 import BudgetSummary from "./summary";
+import { months, years } from "../../config/constants";
 
 function DashboardPage() {
   const { user } = useAuth();
@@ -43,26 +44,6 @@ function DashboardPage() {
     filterYear,
     totalSavingGoals,
     isAnnualView
-  );
-
-  const months = [
-    "Januar",
-    "Februar",
-    "März",
-    "April",
-    "Mai",
-    "Juni",
-    "Juli",
-    "August",
-    "September",
-    "Oktober",
-    "November",
-    "Dezember",
-  ].map((label, index) => ({ value: index + 1, label }));
-
-  const years = Array.from(
-    new Array(10),
-    (_, index) => new Date().getFullYear() - index
   );
 
   useEffect(() => {

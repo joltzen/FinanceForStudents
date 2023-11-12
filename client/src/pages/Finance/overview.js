@@ -19,20 +19,17 @@ import {
   Dialog,
   DialogTitle,
   DialogContent,
-  TextField,
   DialogActions,
   Button,
 } from "@mui/material";
 import StyledTableCell from "../../components/tablecell";
 import DeleteIcon from "@mui/icons-material/Delete";
 import EditIcon from "@mui/icons-material/Edit";
-import { styled } from "@mui/system";
 import TextComp from "../../components/TextComp";
 import SelectComp from "../../components/SelectComp";
+import { months, years } from "../../config/constants";
 
 function FinanceOverview() {
-  const today = new Date().toISOString().split("T")[0];
-
   const [filterMonth, setFilterMonth] = useState(new Date().getMonth() + 1);
   const [filterYear, setFilterYear] = useState(new Date().getFullYear());
   const [transactions, setTransactions] = useState([]);
@@ -42,25 +39,7 @@ function FinanceOverview() {
   const [settings, setSettings] = useState([]);
   const { user } = useAuth();
   const [savingGoal, setSavingGoal] = useState([]);
-  const months = [
-    "Januar",
-    "Februar",
-    "März",
-    "April",
-    "Mai",
-    "Juni",
-    "Juli",
-    "August",
-    "September",
-    "Oktober",
-    "November",
-    "Dezember",
-  ].map((label, index) => ({ value: index + 1, label }));
-
-  const years = Array.from(
-    { length: 10 },
-    (_, index) => new Date().getFullYear() - index
-  );
+  
   function formatDate(dateString) {
     const options = { year: "numeric", month: "2-digit", day: "2-digit" };
     return new Date(dateString).toLocaleDateString("de-DE", options);
@@ -183,16 +162,9 @@ function FinanceOverview() {
 
   const [editTransaction, setEditTransaction] = useState(null);
 
-  // Existing useEffect and other functions...
-
   const handleEditTransaction = async (transaction) => {
-    // Implement the logic to update the transaction
     try {
-      const response = await axiosInstance.patch(
-        "/updateTransaction",
-        transaction
-      );
-      // Handle the response
+      await axiosInstance.patch("/updateTransaction", transaction);
       fetchTransactions();
     } catch (error) {
       console.error("Error updating transaction:", error);

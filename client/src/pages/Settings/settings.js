@@ -23,6 +23,7 @@ import TextComp from "../../components/TextComp";
 import SelectComp from "../../components/SelectComp";
 import TransactionSection from "./transactionselect";
 import AddButton from "../../components/AddButtonComp";
+import { months, years } from "../../config/constants";
 
 function SettingsForm() {
   const [filterMonth, setFilterMonth] = useState(new Date().getMonth() + 1);
@@ -35,36 +36,12 @@ function SettingsForm() {
   const [selectedTab, setSelectedTab] = useState(0);
   const { user } = useAuth();
 
-  const months = [
-    "Januar",
-    "Februar",
-    "März",
-    "April",
-    "Mai",
-    "Juni",
-    "Juli",
-    "August",
-    "September",
-    "Oktober",
-    "November",
-    "Dezember",
-  ].map((label, index) => ({ value: index + 1, label }));
-
-  const years = Array.from(
-    { length: 10 },
-    (_, index) => new Date().getFullYear() - index
-  );
-
   const handleTabChange = (event, newValue) => {
     setSelectedTab(newValue);
   };
 
-  const handleOpenDialog = () => {
-    setOpenDialog(true);
-  };
-
-  const handleCloseDialog = () => {
-    setOpenDialog(false);
+  const handleDialog = () => {
+    setOpenDialog(!openDialog);
   };
 
   const handleDescriptionChange = (e) => {
@@ -141,11 +118,11 @@ function SettingsForm() {
         <AddButton
           variant="contained"
           startIcon={<AddCircleOutline />}
-          onClick={handleOpenDialog}
+          onClick={handleDialog}
         >
           Transaktion hinzufügen
         </AddButton>
-        <Dialog open={openDialog} onClose={handleCloseDialog}>
+        <Dialog open={openDialog} onClose={handleDialog}>
           <DialogTitle sx={{ backgroundColor: "#262b3d", color: "#e0e3e9" }}>
             Neue Transaktion
           </DialogTitle>
@@ -213,7 +190,7 @@ function SettingsForm() {
           </DialogContent>
           <DialogActions sx={{ backgroundColor: "#262b3d" }}>
             <Button
-              onClick={handleCloseDialog}
+              onClick={handleDialog}
               color="primary"
               sx={{ color: "#e0e3e9" }}
             >
