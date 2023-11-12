@@ -1,11 +1,6 @@
 import { useState } from "react";
 import { useAuth } from "../../core/auth/auth";
 import Button from "@mui/material/Button";
-import TextField from "@mui/material/TextField";
-import Dialog from "@mui/material/Dialog";
-import DialogActions from "@mui/material/DialogActions";
-import DialogContent from "@mui/material/DialogContent";
-import DialogTitle from "@mui/material/DialogTitle";
 import { useNavigate } from "react-router-dom";
 import Page from "../../components/page";
 import axiosInstance from "../../config/axios";
@@ -14,19 +9,13 @@ import { Typography, Avatar, Box, Grid } from "@mui/material";
 import { deepPurple } from "@mui/material/colors";
 
 function ProfilePage() {
-  const { user, logout, updatePassword, deleteAccount } = useAuth();
+  const { user, logout } = useAuth();
   const navigate = useNavigate();
   const [open, setOpen] = useState(false);
-  const [password, setPassword] = useState("");
 
   const handleLogout = () => {
     logout();
     navigate("/login");
-  };
-
-  const handleChangePassword = () => {
-    updatePassword(password);
-    setOpen(false);
   };
 
   const handleDeleteAccount = async () => {
@@ -51,12 +40,8 @@ function ProfilePage() {
     }
   };
 
-  const handleClickOpen = () => {
-    setOpen(true);
-  };
-
-  const handleClose = () => {
-    setOpen(false);
+  const handleOpen = () => {
+    setOpen(!open);
   };
 
   return (
@@ -102,7 +87,7 @@ function ProfilePage() {
             Logout
           </Button>
           <Button
-            onClick={handleClickOpen}
+            onClick={handleOpen}
             fullWidth
             variant="contained"
             sx={{ mt: 2 }}

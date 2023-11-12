@@ -1,13 +1,8 @@
-
 import React, { useState } from "react";
 import { Box, Typography, TextField, Button } from "@mui/material";
-import Alert from "@mui/material/Alert";
 import axiosInstance from "../../config/axios";
-import Page from "../../components/page";
 function PasswordResetPage() {
   const [email, setEmail] = useState("");
-  const [message, setMessage] = useState("");
-  const [error, setError] = useState("");
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -35,8 +30,6 @@ function PasswordResetPage() {
       <Typography variant="h4" sx={{ mb: 2 }}>
         Passwort zurücksetzen
       </Typography>
-      {error && <Alert severity="error">{error}</Alert>}
-      {message && <Alert severity="success">{message}</Alert>}
       <Box component="form" onSubmit={handleSubmit} noValidate sx={{ mt: 1 }}>
         <TextField
           label="E-Mail-Adresse"

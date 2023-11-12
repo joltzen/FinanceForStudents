@@ -62,6 +62,7 @@ function FinanceOverview() {
     return new Date(dateString).toLocaleDateString("de-DE", options);
   }
 
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   const fetchTransactions = useCallback(async () => {
     try {
       const response = await axiosInstance.get("/getTransactions", {
@@ -111,6 +112,7 @@ function FinanceOverview() {
       console.error("Error fetching transactions:", error);
     }
   });
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   function calculateAdjustedTotalSum() {
     let adjustedTotal = totalSum;
 
@@ -187,16 +189,9 @@ function FinanceOverview() {
 
   const [editTransaction, setEditTransaction] = useState(null);
 
-  // Existing useEffect and other functions...
-
   const handleEditTransaction = async (transaction) => {
-    // Implement the logic to update the transaction
     try {
-      const response = await axiosInstance.patch(
-        "/updateTransaction",
-        transaction
-      );
-      // Handle the response
+      await axiosInstance.patch("/updateTransaction", transaction);
       fetchTransactions();
     } catch (error) {
       console.error("Error updating transaction:", error);

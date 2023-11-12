@@ -1,3 +1,4 @@
+/* eslint-disable no-unused-vars */
 import React, { useState, useEffect } from "react";
 import {
   Button,
@@ -88,8 +89,8 @@ function FinancePage() {
         user_id: user.id,
         category_id: category,
       });
-      setTransactions((transactions) => [
-        ...transactions,
+      setTransactions((prevTransactions) => [
+        ...prevTransactions,
         response.data.transaction,
       ]);
       setAmount("");
