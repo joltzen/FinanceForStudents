@@ -19,24 +19,20 @@ import {
   Dialog,
   DialogTitle,
   DialogContent,
+  TextField,
   DialogActions,
   Button,
 } from "@mui/material";
 import StyledTableCell from "../../components/tablecell";
 import DeleteIcon from "@mui/icons-material/Delete";
 import EditIcon from "@mui/icons-material/Edit";
+import { styled } from "@mui/system";
 import TextComp from "../../components/TextComp";
 import SelectComp from "../../components/SelectComp";
-import { months, years } from "../../config/constants";
-import useTransactions from "../../hooks/useTransactions";
-import {
-  getCategories,
-  getSavingGoals,
-  getSettings,
-  getTransactions,
-} from "../../hooks/getData";
 
 function FinanceOverview() {
+  const today = new Date().toISOString().split("T")[0];
+
   const [filterMonth, setFilterMonth] = useState(new Date().getMonth() + 1);
   const [filterYear, setFilterYear] = useState(new Date().getFullYear());
   const [transactions, setTransactions] = useState([]);
@@ -46,8 +42,25 @@ function FinanceOverview() {
   const [settings, setSettings] = useState([]);
   const { user } = useAuth();
   const [savingGoal, setSavingGoal] = useState([]);
-  const { handleDeleteTransaction } = useTransactions(setTransactions);
+  const months = [
+    "Januar",
+    "Februar",
+    "März",
+    "April",
+    "Mai",
+    "Juni",
+    "Juli",
+    "August",
+    "September",
+    "Oktober",
+    "November",
+    "Dezember",
+  ].map((label, index) => ({ value: index + 1, label }));
 
+  const years = Array.from(
+    { length: 10 },
+    (_, index) => new Date().getFullYear() - index
+  );
   function formatDate(dateString) {
     const options = { year: "numeric", month: "2-digit", day: "2-digit" };
     return new Date(dateString).toLocaleDateString("de-DE", options);
@@ -55,8 +68,21 @@ function FinanceOverview() {
 
   const fetchTransactions = async () => {
     try {
-      const response = await getTransactions(filterMonth, filterYear, user.id);
-      const res = await getSettings(filterMonth, filterYear, user.id);
+      const response = await axiosInstance.get("/getUserTransactions", {
+        params: {
+          month: filterMonth,
+          year: filterYear,
+          user_id: user.id,
+        },
+      });
+
+      const res = await axiosInstance.get("/getSettings", {
+        params: {
+          month: filterMonth,
+          year: filterYear,
+          user_id: user.id,
+        },
+      });
 
       const sortedTransactions = response.data.sort((a, b) => {
         const dateA = new Date(a.transaction_date);
@@ -111,12 +137,28 @@ function FinanceOverview() {
 
     setSavingSum(adjustedTotal);
   }
+  const handleDeleteTransaction = async (transactionId) => {
+    try {
+      await axiosInstance.delete("/deleteTransaction", {
+        params: { id: transactionId },
+      });
+      setTransactions((prevTransactions) =>
+        prevTransactions.filter(
+          (transaction) => transaction.transaction_id !== transactionId
+        )
+      );
+    } catch (error) {
+      console.error("Fehler beim Löschen der Transaktion:", error);
+    }
+  };
 
   useEffect(() => {
     fetchTransactions();
     const fetchCategories = async () => {
       try {
-        const response = await getCategories(user.id);
+        const response = await axiosInstance.get("/getCategories", {
+          params: { user_id: user.id },
+        });
         setCategories(response.data);
       } catch (error) {
         console.error("Fehler beim Laden der Kategorien:", error);
@@ -126,7 +168,9 @@ function FinanceOverview() {
     fetchCategories();
     const fetchGoals = async () => {
       try {
-        const response = await getSavingGoals(user.id);
+        const response = await axiosInstance.get("/get-saving-goals", {
+          params: { userId: user.id },
+        });
         setSavingGoal(response.data);
       } catch (error) {
         console.error("Fehler beim Abrufen der Sparziele", error);
@@ -139,9 +183,16 @@ function FinanceOverview() {
 
   const [editTransaction, setEditTransaction] = useState(null);
 
+  // Existing useEffect and other functions...
+
   const handleEditTransaction = async (transaction) => {
+    // Implement the logic to update the transaction
     try {
-      await axiosInstance.patch("/updateTransaction", transaction);
+      const response = await axiosInstance.patch(
+        "/updateTransaction",
+        transaction
+      );
+      // Handle the response
       fetchTransactions();
     } catch (error) {
       console.error("Error updating transaction:", error);
@@ -160,6 +211,11 @@ function FinanceOverview() {
           value={filterMonth}
           onChange={(e) => setFilterMonth(e.target.value)}
           label="Monat"
+          sx={{
+            color: "#e0e3e9",
+            backgroundColor: "#2e2e38",
+            border: "1px solid #e0e3e9",
+          }}
         >
           {months.map((month) => (
             <MenuItem key={month.value} value={month.value}>
@@ -174,6 +230,11 @@ function FinanceOverview() {
           value={filterYear}
           onChange={(e) => setFilterYear(e.target.value)}
           label="Jahr"
+          sx={{
+            color: "#e0e3e9",
+            backgroundColor: "#2e2e38",
+            border: "1px solid #e0e3e9",
+          }}
         >
           {years.map((year) => (
             <MenuItem key={year} value={year}>

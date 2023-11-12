@@ -2,12 +2,10 @@ import React, { useState, useEffect } from "react";
 import axiosInstance from "../../config/axios";
 import { useAuth } from "../../core/auth/auth";
 import {
-  Card,
   CardContent,
   Typography,
   Chip,
   IconButton,
-  TextField,
   Dialog,
   DialogActions,
   DialogContent,
@@ -113,10 +111,7 @@ function SavingPage() {
     };
 
     try {
-      const response = await axiosInstance.post(
-        "/saving-goals",
-        savingGoalData
-      );
+      await axiosInstance.post("/saving-goals", savingGoalData);
       setSavingGoal({
         monthly_saving: "",
         total_amount: "",

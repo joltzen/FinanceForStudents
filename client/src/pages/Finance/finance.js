@@ -14,14 +14,26 @@ import {
   DialogTitle,
 } from "@mui/material";
 import AddCircleOutlineIcon from "@mui/icons-material/AddCircleOutline";
-import AddButton from "../../components/AddButtonComp";
+import { styled } from "@mui/system";
 import axiosInstance from "../../config/axios";
 import { useAuth } from "../../core/auth/auth";
 import FinanceOverview from "./overview";
 import TextComp from "../../components/TextComp";
 import SelectComp from "../../components/SelectComp";
-import { getCategories } from "../../hooks/getData";
 
+const AddButton = styled(Button)(({ theme }) => ({
+  color: theme.palette.getContrastText(theme.palette.primary.main),
+  backgroundColor: theme.palette.primary.main,
+  "&:hover": {
+    backgroundColor: theme.palette.primary.dark,
+  },
+  position: "fixed",
+  bottom: theme.spacing(3),
+  right: theme.spacing(3),
+  [theme.breakpoints.up("sm")]: {
+    right: theme.spacing(10),
+  },
+}));
 function FinancePage() {
   const today = new Date().toISOString().split("T")[0];
 
@@ -98,7 +110,9 @@ function FinancePage() {
   useEffect(() => {
     const fetchCategories = async () => {
       try {
-        const response = await getCategories(user.id);
+        const response = await axiosInstance.get("/getCategories", {
+          params: { user_id: user.id },
+        });
         setCategories(response.data);
         if (response.data.length > 0) {
           setCategory(response.data[0].id);
