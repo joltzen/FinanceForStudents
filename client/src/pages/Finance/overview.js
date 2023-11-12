@@ -27,31 +27,7 @@ import StyledTableCell from "../../components/tablecell";
 import DeleteIcon from "@mui/icons-material/Delete";
 import EditIcon from "@mui/icons-material/Edit";
 import { styled } from "@mui/system";
-
-const StyledTextField = styled(TextField)({
-  marginTop: "20px",
-  "& label.Mui-focused": {
-    color: "#e0e3e9",
-  },
-  "& label": {
-    color: "#e0e3e9",
-  },
-  "& input": {
-    color: "#d1d1d1",
-  },
-  "& .MuiOutlinedInput-root": {
-    "& fieldset": {
-      borderColor: "#d1d1d1",
-    },
-    "&:hover fieldset": {
-      borderColor: "#e0e3e9",
-    },
-    "&.Mui-focused fieldset": {
-      borderColor: "#e0e3e9",
-    },
-  },
-  backgroundColor: "#2e2e38",
-});
+import TextComp from "../../components/TextComp";
 
 function FinanceOverview() {
   const today = new Date().toISOString().split("T")[0];
@@ -430,7 +406,7 @@ function EditTransactionDialog({ transaction, onClose, onSave }) {
             <MenuItem value="Einnahme">Einnahme</MenuItem>
           </Select>
         </FormControl>
-        <StyledTextField
+        <TextComp
           label="Beschreibung"
           type="text"
           name="description"
@@ -438,7 +414,7 @@ function EditTransactionDialog({ transaction, onClose, onSave }) {
           onChange={handleInputChange}
           fullWidth
         />
-        <StyledTextField
+        <TextComp
           label="Betrag"
           type="number"
           name="amount"
@@ -446,7 +422,7 @@ function EditTransactionDialog({ transaction, onClose, onSave }) {
           onChange={handleInputChange}
           fullWidth
         />
-        <StyledTextField
+        <TextComp
           fullWidth
           label="Datum"
           name="transaction_date"

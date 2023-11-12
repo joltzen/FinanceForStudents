@@ -32,34 +32,7 @@ import DialogPage from "../Settings/dialog";
 import DeleteIcon from "@mui/icons-material/Delete";
 import Page from "../../components/page";
 import AddCircleOutline from "@mui/icons-material/AddCircleOutline";
-
-const StyledTextField = styled(TextField)({
-  marginTop: "20px",
-  "& label.Mui-focused": {
-    color: "#e0e3e9",
-  },
-  "& label": {
-    color: "#e0e3e9",
-  },
-  "& input": {
-    color: "#e0e3e9",
-  },
-  "& .MuiOutlinedInput-root": {
-    "& fieldset": {
-      borderColor: "#373c47",
-    },
-    "&:hover fieldset": {
-      borderColor: "373c47",
-    },
-    "&.Mui-focused fieldset": {
-      borderColor: "373c47",
-    },
-  },
-  backgroundColor: "#2e2e38",
-  borderRadius: "5px",
-  border: "1px solid #e0e3e9",
-});
-
+import TextComp from "../../components/TextComp";
 const AddButton = styled(Button)(({ theme }) => ({
   color: theme.palette.getContrastText(theme.palette.primary.main),
   backgroundColor: theme.palette.primary.main,
@@ -219,7 +192,7 @@ function SettingsForm() {
                   <MenuItem value="Ausgabe">Ausgabe</MenuItem>
                 </Select>
               </FormControl>
-              <StyledTextField
+              <TextComp
                 label="Beschreibung"
                 type="text"
                 value={description}
@@ -228,7 +201,7 @@ function SettingsForm() {
                 required
               />
               <br />
-              <StyledTextField
+              <TextComp
                 label="Betrag"
                 type="number"
                 value={amount}

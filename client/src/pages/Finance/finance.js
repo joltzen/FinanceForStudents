@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from "react";
 import {
-  TextField,
   Button,
   Box,
   Select,
@@ -19,31 +18,8 @@ import { styled } from "@mui/system";
 import axiosInstance from "../../config/axios";
 import { useAuth } from "../../core/auth/auth";
 import FinanceOverview from "./overview";
+import TextComp from "../../components/TextComp";
 
-const StyledTextField = styled(TextField)({
-  marginTop: "20px",
-  "& label.Mui-focused": {
-    color: "#e0e3e9",
-  },
-  "& label": {
-    color: "#e0e3e9",
-  },
-  "& input": {
-    color: "#d1d1d1",
-  },
-  "& .MuiOutlinedInput-root": {
-    "& fieldset": {
-      borderColor: "#d1d1d1",
-    },
-    "&:hover fieldset": {
-      borderColor: "#e0e3e9",
-    },
-    "&.Mui-focused fieldset": {
-      borderColor: "#e0e3e9",
-    },
-  },
-  backgroundColor: "#2e2e38",
-});
 
 const AddButton = styled(Button)(({ theme }) => ({
   color: theme.palette.getContrastText(theme.palette.primary.main),
@@ -190,7 +166,7 @@ function FinancePage() {
                     <MenuItem value="Einnahme">Einnahme</MenuItem>
                   </Select>
                 </FormControl>
-                <StyledTextField
+                <TextComp
                   label="Beschreibung"
                   type="text"
                   value={description}
@@ -198,7 +174,7 @@ function FinancePage() {
                   fullWidth
                   required
                 />
-                <StyledTextField
+                <TextComp
                   label="Betrag"
                   type="number"
                   value={amount}
@@ -206,7 +182,7 @@ function FinancePage() {
                   fullWidth
                   required
                 />
-                <StyledTextField
+                <TextComp
                   fullWidth
                   label="Datum"
                   name="date"

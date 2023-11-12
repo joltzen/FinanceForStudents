@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import axios from "axios";
 import { TextField, Button, Box, Typography, Alert } from "@mui/material";
 import { useNavigate } from "react-router";
+import TextComp from "../../components/TextComp";
 
 function SignUpForm() {
   const [email, setEmail] = useState("");
@@ -16,7 +17,7 @@ function SignUpForm() {
     event.preventDefault();
     setError("");
     try {
-      const response = await axios.post("http://localhost:3001/api/signup", {
+      await axios.post("http://localhost:3001/api/signup", {
         username,
         email,
         password,
@@ -49,7 +50,7 @@ function SignUpForm() {
       </Typography>
       {error && <Alert severity="error">{error}</Alert>}
       <form onSubmit={handleSignUp}>
-        <TextField
+        <TextComp
           label="Firstname"
           type="firstname"
           value={firstname}
@@ -57,31 +58,8 @@ function SignUpForm() {
           required
           fullWidth
           margin="normal"
-          sx={{
-            "& label.Mui-focused": {
-              color: "#e0e3e9",
-            },
-            "& label": {
-              color: "#e0e3e9",
-            },
-            "& input": {
-              color: "#d1d1d1",
-            },
-            "& .MuiOutlinedInput-root": {
-              "& fieldset": {
-                borderColor: "#d1d1d1",
-              },
-              "&:hover fieldset": {
-                borderColor: "#e0e3e9",
-              },
-              "&.Mui-focused fieldset": {
-                borderColor: "#e0e3e9",
-              },
-            },
-            backgroundColor: "#2c2f36",
-          }}
         />
-        <TextField
+        <TextComp
           label="Surname"
           type="surname"
           value={surname}
@@ -89,31 +67,8 @@ function SignUpForm() {
           required
           fullWidth
           margin="normal"
-          sx={{
-            "& label.Mui-focused": {
-              color: "#e0e3e9",
-            },
-            "& label": {
-              color: "#e0e3e9",
-            },
-            "& input": {
-              color: "#d1d1d1",
-            },
-            "& .MuiOutlinedInput-root": {
-              "& fieldset": {
-                borderColor: "#d1d1d1",
-              },
-              "&:hover fieldset": {
-                borderColor: "#e0e3e9",
-              },
-              "&.Mui-focused fieldset": {
-                borderColor: "#e0e3e9",
-              },
-            },
-            backgroundColor: "#2c2f36",
-          }}
         />
-        <TextField
+        <TextComp
           label="Username"
           type="username"
           value={username}
@@ -121,31 +76,8 @@ function SignUpForm() {
           required
           fullWidth
           margin="normal"
-          sx={{
-            "& label.Mui-focused": {
-              color: "#e0e3e9",
-            },
-            "& label": {
-              color: "#e0e3e9",
-            },
-            "& input": {
-              color: "#d1d1d1",
-            },
-            "& .MuiOutlinedInput-root": {
-              "& fieldset": {
-                borderColor: "#d1d1d1",
-              },
-              "&:hover fieldset": {
-                borderColor: "#e0e3e9",
-              },
-              "&.Mui-focused fieldset": {
-                borderColor: "#e0e3e9",
-              },
-            },
-            backgroundColor: "#2c2f36",
-          }}
         />
-        <TextField
+        <TextComp
           label="Email"
           type="email"
           value={email}
@@ -153,31 +85,8 @@ function SignUpForm() {
           required
           fullWidth
           margin="normal"
-          sx={{
-            "& label.Mui-focused": {
-              color: "#e0e3e9",
-            },
-            "& label": {
-              color: "#e0e3e9",
-            },
-            "& input": {
-              color: "#d1d1d1",
-            },
-            "& .MuiOutlinedInput-root": {
-              "& fieldset": {
-                borderColor: "#d1d1d1",
-              },
-              "&:hover fieldset": {
-                borderColor: "#e0e3e9",
-              },
-              "&.Mui-focused fieldset": {
-                borderColor: "#e0e3e9",
-              },
-            },
-            backgroundColor: "#2c2f36",
-          }}
         />
-        <TextField
+        <TextComp
           label="Password"
           type="password"
           value={password}
@@ -185,29 +94,6 @@ function SignUpForm() {
           required
           fullWidth
           margin="normal"
-          sx={{
-            "& label.Mui-focused": {
-              color: "#e0e3e9",
-            },
-            "& label": {
-              color: "#e0e3e9",
-            },
-            "& input": {
-              color: "#d1d1d1",
-            },
-            "& .MuiOutlinedInput-root": {
-              "& fieldset": {
-                borderColor: "#d1d1d1",
-              },
-              "&:hover fieldset": {
-                borderColor: "#e0e3e9",
-              },
-              "&.Mui-focused fieldset": {
-                borderColor: "#e0e3e9",
-              },
-            },
-            backgroundColor: "#2c2f36",
-          }}
         />
         <Button
           type="submit"

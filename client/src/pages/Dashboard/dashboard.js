@@ -12,27 +12,11 @@ import {
   Card,
   CardContent,
   FormControlLabel,
-  Switch,
   Button,
 } from "@mui/material";
-import { styled } from "@mui/system";
 import { Doughnut } from "react-chartjs-2";
 import "chart.js/auto";
-
-const CustomSwitch = styled(Switch)(({ theme }) => ({
-  "& .MuiSwitch-switchBase": {
-    color: "grey",
-    "&.Mui-checked": {
-      color: "#be9e44",
-    },
-    "&.Mui-checked + .MuiSwitch-track": {
-      backgroundColor: "#be9e44",
-    },
-  },
-  "& .MuiSwitch-track": {
-    backgroundColor: "grey",
-  },
-}));
+import SwitchComp from "../../components/SwitchComp";
 
 function DashboardPage() {
   const { user } = useAuth();
@@ -360,7 +344,7 @@ function DashboardPage() {
                 <Grid item xs={12} sm={4}>
                   <FormControlLabel
                     control={
-                      <CustomSwitch
+                      <SwitchComp
                         checked={isAnnualView}
                         onChange={(e) => setIsAnnualView(e.target.checked)}
                       />

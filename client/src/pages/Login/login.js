@@ -8,6 +8,7 @@ import { useAuth } from "../../core/auth/auth";
 import { useNavigate } from "react-router";
 import axiosInstance from "../../config/axios";
 import { Link } from "@mui/material";
+import TextComp from "../../components/TextComp";
 
 function LoginPage() {
   const [credentials, setCredentials] = useState({
@@ -60,7 +61,7 @@ function LoginPage() {
       </Typography>
       {error && <Alert severity="error">{error}</Alert>}
       <Box component="form" onSubmit={handleSubmit} noValidate sx={{ mt: 1 }}>
-        <TextField
+        <TextComp
           margin="normal"
           required
           fullWidth
@@ -71,31 +72,8 @@ function LoginPage() {
           autoFocus
           value={credentials.identifier}
           onChange={handleChange}
-          sx={{
-            "& label.Mui-focused": {
-              color: "#e0e3e9",
-            },
-            "& label": {
-              color: "#e0e3e9",
-            },
-            "& input": {
-              color: "#d1d1d1",
-            },
-            "& .MuiOutlinedInput-root": {
-              "& fieldset": {
-                borderColor: "#d1d1d1",
-              },
-              "&:hover fieldset": {
-                borderColor: "#e0e3e9",
-              },
-              "&.Mui-focused fieldset": {
-                borderColor: "#e0e3e9",
-              },
-            },
-            backgroundColor: "#2c2f36",
-          }}
         />
-        <TextField
+        <TextComp
           margin="normal"
           required
           fullWidth
@@ -106,29 +84,6 @@ function LoginPage() {
           autoComplete="current-password"
           value={credentials.password}
           onChange={handleChange}
-          sx={{
-            "& label.Mui-focused": {
-              color: "#e0e3e9",
-            },
-            "& label": {
-              color: "#e0e3e9",
-            },
-            "& input": {
-              color: "#d1d1d1",
-            },
-            "& .MuiOutlinedInput-root": {
-              "& fieldset": {
-                borderColor: "#d1d1d1",
-              },
-              "&:hover fieldset": {
-                borderColor: "#e0e3e9",
-              },
-              "&.Mui-focused fieldset": {
-                borderColor: "#e0e3e9",
-              },
-            },
-            backgroundColor: "#2c2f36",
-          }}
         />
         <Link href="/password-reset" underline="hover" sx={{ color: "white" }}>
           {"Passwort vergessen?"}

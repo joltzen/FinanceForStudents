@@ -7,47 +7,20 @@ import {
   Button,
   Typography,
   Paper,
-  TextField,
   IconButton,
 } from "@mui/material";
 import React, { useState, useEffect } from "react";
 import axiosInstance from "../../config/axios";
 import { useAuth } from "../../core/auth/auth";
-import { styled } from "@mui/system";
 import Circle from "@uiw/react-color-circle";
 import DeleteIcon from "@mui/icons-material/Delete";
-
+import TextComp from "../../components/TextComp";
 function DialogPage() {
   const [categories, setCategories] = useState([]);
   const [newCategory, setNewCategory] = useState("");
   const [categoryColor, setCategoryColor] = useState("#F44E3B");
   const [openDialog, setOpenDialog] = useState(false);
   const { user } = useAuth();
-
-  const StyledTextField = styled(TextField)({
-    marginTop: "20px",
-    "& label.Mui-focused": {
-      color: "#e0e3e9",
-    },
-    "& label": {
-      color: "#e0e3e9",
-    },
-    "& input": {
-      color: "#d1d1d1",
-    },
-    "& .MuiOutlinedInput-root": {
-      "& fieldset": {
-        borderColor: "#d1d1d1",
-      },
-      "&:hover fieldset": {
-        borderColor: "#e0e3e9",
-      },
-      "&.Mui-focused fieldset": {
-        borderColor: "#e0e3e9",
-      },
-    },
-    backgroundColor: "#2c2f36",
-  });
 
   const addCategory = () => {
     setCategories([...categories, { name: newCategory, color: categoryColor }]);
@@ -118,7 +91,7 @@ function DialogPage() {
             Fügen Sie eine neue Kategorie hinzu und wählen Sie eine Farbe für
             sie.
           </DialogContentText>
-          <StyledTextField
+          <TextComp
             autoFocus
             margin="dense"
             label="Kategoriename"

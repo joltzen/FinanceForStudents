@@ -22,7 +22,7 @@ import DeleteIcon from "@mui/icons-material/Delete";
 import CloseIcon from "@mui/icons-material/Close";
 import { styled } from "@mui/system";
 import AddCircleOutlineIcon from "@mui/icons-material/AddCircleOutline";
-
+import TextComp from "../../components/TextComp";
 const StyledCard = styled(Card)(({ theme }) => ({
   marginBottom: theme.spacing(2),
   backgroundColor: "#262b3d",
@@ -47,30 +47,6 @@ const AddButton = styled(Button)(({ theme }) => ({
   },
 }));
 
-const StyledTextField = styled(TextField)({
-  marginTop: "20px",
-  "& label.Mui-focused": {
-    color: "#e0e3e9",
-  },
-  "& label": {
-    color: "#e0e3e9",
-  },
-  "& input": {
-    color: "#d1d1d1",
-  },
-  "& .MuiOutlinedInput-root": {
-    "& fieldset": {
-      borderColor: "#d1d1d1",
-    },
-    "&:hover fieldset": {
-      borderColor: "#e0e3e9",
-    },
-    "&.Mui-focused fieldset": {
-      borderColor: "#e0e3e9",
-    },
-  },
-  backgroundColor: "#2e2e38",
-});
 
 function SavingPage() {
   const today = new Date().toISOString().split("T")[0];
@@ -296,7 +272,7 @@ function SavingPage() {
                     </Box>
                   </>
                 )}
-                <StyledTextField
+                <TextComp
                   required
                   fullWidth
                   label="Monatliches Sparen"
@@ -304,7 +280,7 @@ function SavingPage() {
                   value={savingGoal.monthly_saving}
                   onChange={handleChange}
                 />
-                <StyledTextField
+                <TextComp
                   required
                   fullWidth
                   label="Gesamtbetrag"
@@ -312,7 +288,7 @@ function SavingPage() {
                   value={savingGoal.total_amount}
                   onChange={handleChange}
                 />
-                <StyledTextField
+                <TextComp
                   required
                   fullWidth
                   label="Beschreibung"
@@ -320,7 +296,7 @@ function SavingPage() {
                   value={savingGoal.description}
                   onChange={handleChange}
                 />
-                <StyledTextField
+                <TextComp
                   fullWidth
                   label="Startdate (optional)"
                   name="startdate"
@@ -329,7 +305,7 @@ function SavingPage() {
                   value={savingGoal.startdate}
                   onChange={handleChange}
                 />
-                <StyledTextField
+                <TextComp
                   fullWidth
                   label="Deadline (optional)"
                   name="deadline"
@@ -338,7 +314,7 @@ function SavingPage() {
                   value={savingGoal.deadline}
                   onChange={handleChange}
                 />
-                <StyledTextField
+                <TextComp
                   required
                   fullWidth
                   label="Dauer in Monaten"
