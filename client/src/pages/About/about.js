@@ -7,7 +7,7 @@ function AboutPage() {
   const { user, logout } = useAuth();
   useEffect(() => {
     axiosInstance
-      .get("/getData")
+      .get("/getUserData")
       .then((response) => {
         setResponse(response.data);
       })

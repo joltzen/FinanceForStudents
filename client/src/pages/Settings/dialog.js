@@ -15,7 +15,6 @@ import { useAuth } from "../../core/auth/auth";
 import Circle from "@uiw/react-color-circle";
 import DeleteIcon from "@mui/icons-material/Delete";
 import TextComp from "../../components/TextComp";
-import { getCategories } from "../../hooks/getData";
 function DialogPage() {
   const [categories, setCategories] = useState([]);
   const [newCategory, setNewCategory] = useState("");
@@ -47,7 +46,7 @@ function DialogPage() {
 
   const handleAddCategory = async (event) => {
     try {
-      const response = await axiosInstance.post("/saveCategory", {
+      await axiosInstance.post("/saveCategory", {
         name: newCategory,
         user_id: user.id,
         color: categoryColor,

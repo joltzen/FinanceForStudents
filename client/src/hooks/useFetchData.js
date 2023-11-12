@@ -11,8 +11,8 @@ export const useFetchData = (user, isAnnualView, filterMonth, filterYear) => {
   useEffect(() => {
     const fetchTransactionsAndSettings = async () => {
       const endpointTransactions = isAnnualView
-        ? "/getUserTransactionsAnnual"
-        : "/getUserTransactions";
+        ? "/getTransactionsAnnual"
+        : "/getTransactions";
       const endpointSettings = isAnnualView
         ? "/getSettingsAnnual"
         : "/getSettings";

@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import axiosInstance from "../../config/axios";
 import { useAuth } from "../../core/auth/auth";
 import {
@@ -19,20 +19,16 @@ import {
   Dialog,
   DialogTitle,
   DialogContent,
-  TextField,
   DialogActions,
   Button,
 } from "@mui/material";
 import StyledTableCell from "../../components/tablecell";
 import DeleteIcon from "@mui/icons-material/Delete";
 import EditIcon from "@mui/icons-material/Edit";
-import { styled } from "@mui/system";
 import TextComp from "../../components/TextComp";
 import SelectComp from "../../components/SelectComp";
 
 function FinanceOverview() {
-  const today = new Date().toISOString().split("T")[0];
-
   const [filterMonth, setFilterMonth] = useState(new Date().getMonth() + 1);
   const [filterYear, setFilterYear] = useState(new Date().getFullYear());
   const [transactions, setTransactions] = useState([]);
@@ -66,9 +62,9 @@ function FinanceOverview() {
     return new Date(dateString).toLocaleDateString("de-DE", options);
   }
 
-  const fetchTransactions = async () => {
+  const fetchTransactions = useCallback(async () => {
     try {
-      const response = await axiosInstance.get("/getUserTransactions", {
+      const response = await axiosInstance.get("/getTransactions", {
         params: {
           month: filterMonth,
           year: filterYear,
@@ -114,7 +110,7 @@ function FinanceOverview() {
     } catch (error) {
       console.error("Error fetching transactions:", error);
     }
-  };
+  });
   function calculateAdjustedTotalSum() {
     let adjustedTotal = totalSum;
 
@@ -179,7 +175,15 @@ function FinanceOverview() {
 
     fetchGoals();
     calculateAdjustedTotalSum();
-  }, [filterMonth, filterYear, totalSum, user.id, savingGoal]);
+  }, [
+    filterMonth,
+    filterYear,
+    totalSum,
+    user.id,
+    savingGoal,
+    calculateAdjustedTotalSum,
+    fetchTransactions,
+  ]);
 
   const [editTransaction, setEditTransaction] = useState(null);
 

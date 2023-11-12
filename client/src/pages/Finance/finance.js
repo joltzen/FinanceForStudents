@@ -45,7 +45,6 @@ function FinancePage() {
   const [transactions, setTransactions] = useState([]);
   const [categories, setCategories] = useState([]);
 
-  const [error, setError] = useState("");
   const { user } = useAuth();
 
   const [openDialog, setOpenDialog] = useState(false);
@@ -80,7 +79,6 @@ function FinancePage() {
 
   const handleSubmit = async (event) => {
     event.preventDefault();
-    setError("");
     try {
       const response = await axiosInstance.post("/addTransaction", {
         date,
@@ -101,9 +99,6 @@ function FinancePage() {
       setCategory(category);
     } catch (error) {
       console.error("Transaction failed:", error);
-      setError(
-        error.response?.data?.message || "Failed transaction. Please try again."
-      );
     }
   };
 
