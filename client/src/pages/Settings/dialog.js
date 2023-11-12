@@ -33,7 +33,9 @@ function DialogPage() {
   useEffect(() => {
     const fetchCategories = async () => {
       try {
-        const response = await getCategories(user.id);
+        const response = await axiosInstance.get("/getCategories", {
+          params: { user_id: user.id },
+        });
         setCategories(response.data);
       } catch (error) {
         console.error("Fehler beim Laden der Kategorien:", error);
@@ -150,7 +152,7 @@ function DialogPage() {
       <Typography variant="h6" sx={{ mt: 2, color: "#e0e3e9" }}>
         Benutzerdefinierte Kategorien
       </Typography>
-      {categories.map((category, index) => (
+      {categories?.map((category, index) => (
         <Paper
           key={index}
           sx={{
