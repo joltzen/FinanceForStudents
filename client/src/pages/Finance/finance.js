@@ -20,6 +20,7 @@ import { useAuth } from "../../core/auth/auth";
 import FinanceOverview from "./overview";
 import TextComp from "../../components/TextComp";
 import SelectComp from "../../components/SelectComp";
+import { getCategories } from "../../hooks/getData";
 
 function FinancePage() {
   const today = new Date().toISOString().split("T")[0];
@@ -97,9 +98,7 @@ function FinancePage() {
   useEffect(() => {
     const fetchCategories = async () => {
       try {
-        const response = await axiosInstance.get("/getCategories", {
-          params: { user_id: user.id },
-        });
+        const response = await getCategories(user.id);
         setCategories(response.data);
         if (response.data.length > 0) {
           setCategory(response.data[0].id);

@@ -24,6 +24,7 @@ import { styled } from "@mui/system";
 import AddCircleOutlineIcon from "@mui/icons-material/AddCircleOutline";
 import TextComp from "../../components/TextComp";
 import AddButton from "../../components/AddButtonComp";
+
 const StyledCard = styled(Card)(({ theme }) => ({
   marginBottom: theme.spacing(2),
   backgroundColor: "#262b3d",
@@ -139,12 +140,8 @@ function SavingPage() {
       console.error("Fehler beim Speichern des Sparziels", error);
     }
   };
-  const handleClickOpen = () => {
-    setOpen(true);
-  };
-
-  const handleClose = () => {
-    setOpen(false);
+  const handleOpen = () => {
+    setOpen(!open);
   };
 
   useEffect(() => {
@@ -188,12 +185,12 @@ function SavingPage() {
           <Typography variant="h3">Sparziele</Typography>
           <AddButton
             variant="contained"
-            onClick={handleClickOpen}
+            onClick={handleOpen}
             startIcon={<AddCircleOutlineIcon />}
           >
             Sparziel hinzufügen
           </AddButton>
-          <Dialog open={open} onClose={handleClose}>
+          <Dialog open={open} onClose={handleOpen}>
             <DialogTitle sx={{ backgroundColor: "#262b3d", color: "#e0e3e9" }}>
               Sparziel setzen
             </DialogTitle>
@@ -320,7 +317,7 @@ function SavingPage() {
             </DialogContent>
             <DialogActions sx={{ backgroundColor: "#262b3d" }}>
               <Button
-                onClick={handleClose}
+                onClick={handleOpen}
                 color="primary"
                 sx={{ color: "#e0e3e9" }}
               >
