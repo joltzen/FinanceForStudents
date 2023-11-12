@@ -22,6 +22,7 @@ import AddCircleOutlineIcon from "@mui/icons-material/AddCircleOutline";
 import TextComp from "../../components/TextComp";
 import AddButton from "../../components/AddButtonComp";
 import CardComp from "../../components/CardComp";
+import LinearProgressComp from "../../components/LinearProgressComp";
 
 function SavingPage() {
   const today = new Date().toISOString().split("T")[0];
@@ -157,6 +158,20 @@ function SavingPage() {
       console.error("Fehler beim Löschen des Sparziels", error);
     }
   };
+  function calculateSavingsProgress(goal) {
+    const today = new Date();
+    const startdate = new Date(goal.startdate);
+    const diffTime = Math.abs(today - startdate);
+    const diffMonths = Math.ceil(diffTime / (1000 * 60 * 60 * 24 * 30)); // -1 to exclude the last month
+
+    const totalSavedSoFar = diffMonths * parseFloat(goal.monthly_saving);
+    const totalGoalAmount = parseFloat(goal.total_amount);
+
+    const progressPercentage = (totalSavedSoFar / totalGoalAmount) * 100;
+
+    return Math.min(progressPercentage, 100); // Ensure it doesn't exceed 100%
+  }
+
   return (
     <Box sx={{ flexGrow: 1, padding: 3 }}>
       <Grid
@@ -381,6 +396,23 @@ function SavingPage() {
                       </IconButton>
                     </Grid>
                   </Grid>
+                  <Typography
+                    variant="body2"
+                    component="div"
+                    color="#e0e3e9"
+                    sx={{ mt: 1 }}
+                  >
+                    <strong>Ersparnisfortschritt:</strong>
+                  </Typography>
+                  <Box sx={{ width: "100%", mr: 1 }}>
+                    <LinearProgressComp
+                      variant="determinate"
+                      value={calculateSavingsProgress(goal)}
+                    />
+                  </Box>
+                  <Typography variant="body2" sx={{ color: "#e0e3e9" }}>
+                    {`${calculateSavingsProgress(goal).toFixed(2)}%`}
+                  </Typography>
                 </CardContent>
               </CardComp>
             ))}

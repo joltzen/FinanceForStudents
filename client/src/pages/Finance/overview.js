@@ -124,7 +124,7 @@ function FinanceOverview() {
         (filterYear > startYear ||
           (filterYear === startYear && filterMonth >= startMonth)) &&
         (filterYear < deadlineYear ||
-          (filterYear === deadlineYear && filterMonth <= deadlineMonth));
+          (filterYear === deadlineYear && filterMonth < deadlineMonth));
 
       if (isWithinRange) {
         adjustedTotal -= goal.monthly_saving;

@@ -27,6 +27,7 @@ export const useFetchData = (user, isAnnualView, filterMonth, filterYear) => {
           axiosInstance.get(endpointSettings, { params }),
         ]);
 
+        
         setTransactions(transactionsResponse.data);
         setSettings(settingsResponse.data);
       } catch (error) {

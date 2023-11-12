@@ -14,22 +14,22 @@ export const useCalculations = (
     savingsGoals.forEach((goal) => {
       const startMonth = new Date(goal.startdate).getMonth() + 1;
       const startYear = new Date(goal.startdate).getFullYear();
-      const endMonth = new Date(goal.deadline).getMonth() + 1;
-      const endYear = new Date(goal.deadline).getFullYear();
+      const deadlineMonth = new Date(goal.deadline).getMonth() + 1;
+      const deadlineYear = new Date(goal.deadline).getFullYear();
 
-      if (
+      const isWithinRange =
         (filterYear > startYear ||
           (filterYear === startYear && filterMonth >= startMonth)) &&
-        (filterYear < endYear ||
-          (filterYear === endYear && filterMonth <= endMonth))
-      ) {
+        (filterYear < deadlineYear ||
+          (filterYear === deadlineYear && filterMonth < deadlineMonth));
+
+      if (isWithinRange) {
         totalSavings += parseFloat(goal.monthly_saving);
       }
     });
 
     return totalSavings;
   };
-
   const calculateAnnualSavingGoalsTotal = () => {
     let totalSavings = 0;
 
@@ -48,7 +48,14 @@ export const useCalculations = (
         filterYear >= goalStart.getFullYear() &&
         filterYear <= goalEnd.getFullYear()
       ) {
-        const monthsInYear = endMonth - startMonth + 1;
+        let monthsInYear = endMonth - startMonth;
+        if (
+          goalStart.getFullYear() === goalEnd.getFullYear() &&
+          goalStart.getMonth() === goalEnd.getMonth()
+        ) {
+          monthsInYear -= 1;
+        }
+
         totalSavings += parseFloat(goal.monthly_saving) * monthsInYear;
       }
     });
@@ -127,6 +134,5 @@ export const useCalculations = (
     calculateAnnualTotals,
     getCategoryTotal,
     getAnnualCategoryTotal,
-    
   };
 };
