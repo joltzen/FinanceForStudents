@@ -2,33 +2,31 @@ import React, { useEffect, useState } from "react";
 import axiosInstance from "../../config/axios";
 import { useAuth } from "../../core/auth/auth";
 import {
-  FormControl,
   Typography,
   Box,
-  InputLabel,
-  Select,
-  MenuItem,
   Grid,
   Card,
   CardContent,
   FormControlLabel,
-  Button,
 } from "@mui/material";
-import { Doughnut } from "react-chartjs-2";
 import "chart.js/auto";
 import SwitchComp from "../../components/SwitchComp";
-
+import BudgetFilter from "./budgetfilter";
+import BudgetChart from "./budgetchart";
+import NoDataAlert from "./noalert";
+import { useFetchData } from "../../hooks/useFetchData";
 function DashboardPage() {
   const { user } = useAuth();
   const [filterMonth, setFilterMonth] = useState(new Date().getMonth() + 1);
   const [filterYear, setFilterYear] = useState(new Date().getFullYear());
-  const [transactions, setTransactions] = useState([]);
-  const [categories, setCategories] = useState([]);
-  const [settings, setSettings] = useState([]);
   const [isAnnualView, setIsAnnualView] = useState(false);
-  const [savingsGoals, setSavingsGoals] = useState([]);
   const [totalSavingGoals, setTotalSavingGoals] = useState(0);
-
+  const { transactions, categories, settings, savingsGoals } = useFetchData(
+    user,
+    isAnnualView,
+    filterMonth,
+    filterYear
+  );
   const months = [
     "Januar",
     "Februar",
@@ -161,60 +159,6 @@ function DashboardPage() {
     categoryTotals["remaining"] = totalBudget - usedBudget - totalSavingGoals;
     return categoryTotals;
   };
-
-  const fetchTransactions = async () => {
-    const endpointTransactions = isAnnualView
-      ? "/getUserTransactionsAnnual"
-      : "/getUserTransactions";
-    const endpointSettings = isAnnualView
-      ? "/getSettingsAnnual"
-      : "/getSettings";
-    const params = { year: filterYear, user_id: user.id };
-    if (!isAnnualView) {
-      params.month = filterMonth;
-    }
-
-    try {
-      const [transactionsResponse, settingsResponse] = await Promise.all([
-        axiosInstance.get(endpointTransactions, { params }),
-        axiosInstance.get(endpointSettings, { params }),
-      ]);
-
-      setTransactions(transactionsResponse.data);
-      setSettings(settingsResponse.data);
-    } catch (error) {
-      console.error("Error fetching transactions and settings:", error);
-    }
-  };
-
-  useEffect(() => {
-    fetchTransactions();
-    const fetchCategories = async () => {
-      try {
-        const response = await axiosInstance.get("/getCategories", {
-          params: { user_id: user.id },
-        });
-        setCategories(response.data);
-      } catch (error) {
-        console.error("Fehler beim Laden der Kategorien:", error);
-      }
-    };
-
-    fetchCategories();
-    fetchCategories();
-    const fetchGoals = async () => {
-      try {
-        const response = await axiosInstance.get("/get-saving-goals", {
-          params: { userId: user.id },
-        });
-        setSavingsGoals(response.data);
-      } catch (error) {
-        console.error("Fehler beim Abrufen der Sparziele", error);
-      }
-    };
-
-    fetchGoals();
-  }, [filterMonth, filterYear, isAnnualView]);
 
   useEffect(() => {
     var totalSavings = 0;
@@ -353,113 +297,24 @@ function DashboardPage() {
                     label="Jahresrückblick"
                   />
                 </Grid>
-                {!isAnnualView && (
-                  <Grid item xs={12} sm={4}>
-                    <FormControl fullWidth margin="none">
-                      <InputLabel style={{ color: "#e0e3e9" }}>
-                        Monat
-                      </InputLabel>
-                      <Select
-                        value={filterMonth}
-                        onChange={(e) => setFilterMonth(e.target.value)}
-                        label="Monat"
-                        sx={{
-                          color: "#e0e3e9",
-                          backgroundColor: "#333540",
-                          border: "1px solid #e0e3e9",
-                          "& .MuiSvgIcon-root": { color: "#e0e3e9" },
-                        }}
-                      >
-                        {months.map((month) => (
-                          <MenuItem key={month.value} value={month.value}>
-                            {month.label}
-                          </MenuItem>
-                        ))}
-                      </Select>
-                    </FormControl>
-                  </Grid>
-                )}
-                <Grid item xs={12} sm={4}>
-                  <FormControl fullWidth margin="none">
-                    <InputLabel style={{ color: "#e0e3e9" }}>Jahr</InputLabel>
-                    <Select
-                      value={filterYear}
-                      onChange={(e) => setFilterYear(e.target.value)}
-                      label="Jahr"
-                      sx={{
-                        color: "#e0e3e9",
-                        backgroundColor: "#333540",
-                        border: "1px solid #e0e3e9",
-                        "& .MuiSvgIcon-root": { color: "#e0e3e9" },
-                      }}
-                    >
-                      {years.map((year) => (
-                        <MenuItem key={year} value={year}>
-                          {year}
-                        </MenuItem>
-                      ))}
-                    </Select>
-                  </FormControl>
-                </Grid>
+                <BudgetFilter
+                  filterMonth={filterMonth}
+                  setFilterMonth={setFilterMonth}
+                  filterYear={filterYear}
+                  setFilterYear={setFilterYear}
+                  months={months}
+                  years={years}
+                  isAnnualView={isAnnualView}
+                />
               </Grid>
 
-              {hasBudgetData() && (
-                <Box
-                  sx={{
-                    height: "500px",
-                    position: "relative",
-                  }}
-                >
-                  <Doughnut data={chartData} options={chartOptions} />
-                </Box>
-              )}
-              {!hasBudgetData() && (
-                <Box
-                  sx={{
-                    height: "100px",
-                    display: "flex",
-                    flexDirection: "column",
-                    alignItems: "center",
-                    justifyContent: "center",
-                    position: "relative",
-                  }}
-                >
-                  <Typography
-                    variant="subtitle1"
-                    sx={{ color: "#e0e3e9", mb: 2, textAlign: "center" }}
-                  >
-                    Für den ausgewählten Zeitraum sind keine Budgetdaten
-                    vorhanden.
-                  </Typography>
-
-                  <Box
-                    sx={{
-                      display: "flex",
-                      flexDirection: "row",
-                      alignItems: "center",
-                      justifyContent: "center",
-                    }}
-                  >
-                    <Button
-                      type="submit"
-                      variant="contained"
-                      color="button"
-                      href="/settings"
-                      sx={{ mr: 5, color: "#e0e3e9" }}
-                    >
-                      Fixkosten verwalten
-                    </Button>
-                    <Button
-                      type="submit"
-                      variant="contained"
-                      color="button"
-                      href="/settings"
-                      sx={{ color: "#e0e3e9" }}
-                    >
-                      Ein und Ausgaben verwalten
-                    </Button>
-                  </Box>
-                </Box>
+              {hasBudgetData() ? (
+                <BudgetChart
+                  chartData={chartData}
+                  chartOptions={chartOptions}
+                />
+              ) : (
+                <NoDataAlert />
               )}
             </CardContent>
             {hasBudgetData(

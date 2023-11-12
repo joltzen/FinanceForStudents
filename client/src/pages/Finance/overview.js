@@ -28,6 +28,7 @@ import DeleteIcon from "@mui/icons-material/Delete";
 import EditIcon from "@mui/icons-material/Edit";
 import { styled } from "@mui/system";
 import TextComp from "../../components/TextComp";
+import SelectComp from "../../components/SelectComp";
 
 function FinanceOverview() {
   const today = new Date().toISOString().split("T")[0];
@@ -206,41 +207,31 @@ function FinanceOverview() {
     <div>
       <FormControl>
         <InputLabel style={{ color: "#e0e3e9" }}>Monat</InputLabel>
-        <Select
+        <SelectComp
           value={filterMonth}
           onChange={(e) => setFilterMonth(e.target.value)}
           label="Monat"
-          sx={{
-            color: "#e0e3e9",
-            backgroundColor: "#2e2e38",
-            border: "1px solid #e0e3e9",
-          }}
         >
           {months.map((month) => (
             <MenuItem key={month.value} value={month.value}>
               {month.label}
             </MenuItem>
           ))}
-        </Select>
+        </SelectComp>
       </FormControl>
       <FormControl sx={{ marginLeft: 3, marginBottom: 2 }}>
         <InputLabel style={{ color: "#e0e3e9" }}>Jahr</InputLabel>
-        <Select
+        <SelectComp
           value={filterYear}
           onChange={(e) => setFilterYear(e.target.value)}
           label="Jahr"
-          sx={{
-            color: "#e0e3e9",
-            backgroundColor: "#2e2e38",
-            border: "1px solid #e0e3e9",
-          }}
         >
           {years.map((year) => (
             <MenuItem key={year} value={year}>
               {year}
             </MenuItem>
           ))}
-        </Select>
+        </SelectComp>
       </FormControl>
       <TableContainer component={Paper}>
         <Table stickyHeader aria-label="transaction table">

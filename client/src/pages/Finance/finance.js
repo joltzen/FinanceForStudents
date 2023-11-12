@@ -14,26 +14,13 @@ import {
   DialogTitle,
 } from "@mui/material";
 import AddCircleOutlineIcon from "@mui/icons-material/AddCircleOutline";
-import { styled } from "@mui/system";
+import AddButton from "../../components/AddButtonComp";
 import axiosInstance from "../../config/axios";
 import { useAuth } from "../../core/auth/auth";
 import FinanceOverview from "./overview";
 import TextComp from "../../components/TextComp";
+import SelectComp from "../../components/SelectComp";
 
-
-const AddButton = styled(Button)(({ theme }) => ({
-  color: theme.palette.getContrastText(theme.palette.primary.main),
-  backgroundColor: theme.palette.primary.main,
-  "&:hover": {
-    backgroundColor: theme.palette.primary.dark,
-  },
-  position: "fixed",
-  bottom: theme.spacing(3),
-  right: theme.spacing(3),
-  [theme.breakpoints.up("sm")]: {
-    right: theme.spacing(10),
-  },
-}));
 function FinancePage() {
   const today = new Date().toISOString().split("T")[0];
 
@@ -152,19 +139,14 @@ function FinancePage() {
                   <InputLabel style={{ color: "#e0e3e9" }}>
                     Transaktionstyp
                   </InputLabel>
-                  <Select
+                  <SelectComp
                     value={transactionType}
                     onChange={handleTransactionTypeChange}
                     label="Transaktionstyp"
-                    sx={{
-                      color: "#e0e3e9",
-                      backgroundColor: "#2e2e38",
-                      border: "1px solid #e0e3e9",
-                    }}
                   >
                     <MenuItem value="Ausgabe">Ausgabe</MenuItem>
                     <MenuItem value="Einnahme">Einnahme</MenuItem>
-                  </Select>
+                  </SelectComp>
                 </FormControl>
                 <TextComp
                   label="Beschreibung"

@@ -23,6 +23,7 @@ import CloseIcon from "@mui/icons-material/Close";
 import { styled } from "@mui/system";
 import AddCircleOutlineIcon from "@mui/icons-material/AddCircleOutline";
 import TextComp from "../../components/TextComp";
+import AddButton from "../../components/AddButtonComp";
 const StyledCard = styled(Card)(({ theme }) => ({
   marginBottom: theme.spacing(2),
   backgroundColor: "#262b3d",
@@ -32,21 +33,6 @@ const StyledCard = styled(Card)(({ theme }) => ({
     boxShadow: theme.shadows[10],
   },
 }));
-
-const AddButton = styled(Button)(({ theme }) => ({
-  color: theme.palette.getContrastText(theme.palette.primary.main),
-  backgroundColor: theme.palette.primary.main,
-  "&:hover": {
-    backgroundColor: theme.palette.primary.dark,
-  },
-  position: "fixed",
-  bottom: theme.spacing(3),
-  right: theme.spacing(3),
-  [theme.breakpoints.up("sm")]: {
-    right: theme.spacing(10),
-  },
-}));
-
 
 function SavingPage() {
   const today = new Date().toISOString().split("T")[0];

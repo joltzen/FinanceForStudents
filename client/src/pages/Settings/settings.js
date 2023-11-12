@@ -5,19 +5,9 @@ import {
   FormControl,
   InputLabel,
   Button,
-  Select,
   MenuItem,
   Box,
-  TextField,
   Typography,
-  Table,
-  TableBody,
-  TableCell,
-  TableContainer,
-  TableHead,
-  TableRow,
-  Paper,
-  IconButton,
   Grid,
   Dialog,
   DialogTitle,
@@ -26,26 +16,13 @@ import {
   Tab,
   Tabs,
 } from "@mui/material";
-import { styled } from "@mui/system";
-import StyledTableCell from "../../components/tablecell";
 import DialogPage from "../Settings/dialog";
-import DeleteIcon from "@mui/icons-material/Delete";
 import Page from "../../components/page";
 import AddCircleOutline from "@mui/icons-material/AddCircleOutline";
 import TextComp from "../../components/TextComp";
-const AddButton = styled(Button)(({ theme }) => ({
-  color: theme.palette.getContrastText(theme.palette.primary.main),
-  backgroundColor: theme.palette.primary.main,
-  "&:hover": {
-    backgroundColor: theme.palette.primary.dark,
-  },
-  position: "fixed",
-  bottom: theme.spacing(3),
-  right: theme.spacing(3),
-  [theme.breakpoints.up("sm")]: {
-    right: theme.spacing(10),
-  },
-}));
+import SelectComp from "../../components/SelectComp";
+import TransactionSection from "./transactionselect";
+import AddButton from "../../components/AddButtonComp";
 
 function SettingsForm() {
   const [filterMonth, setFilterMonth] = useState(new Date().getMonth() + 1);
@@ -178,19 +155,14 @@ function SettingsForm() {
                 <InputLabel style={{ color: "#e0e3e9" }}>
                   Fixkostentyp
                 </InputLabel>
-                <Select
+                <SelectComp
                   value={transactionType}
                   onChange={handleTransactionTypeChange}
                   label="Transaktionstyp"
-                  sx={{
-                    color: "#e0e3e9",
-                    backgroundColor: "#2e2e38",
-                    border: "1px solid #e0e3e9",
-                  }}
                 >
                   <MenuItem value="Einnahme">Einnahme</MenuItem>
                   <MenuItem value="Ausgabe">Ausgabe</MenuItem>
-                </Select>
+                </SelectComp>
               </FormControl>
               <TextComp
                 label="Beschreibung"
@@ -211,41 +183,31 @@ function SettingsForm() {
               />
               <FormControl sx={{ marginTop: 3 }}>
                 <InputLabel style={{ color: "#e0e3e9" }}>Monat</InputLabel>
-                <Select
+                <SelectComp
                   value={filterMonth}
                   onChange={(e) => setFilterMonth(e.target.value)}
                   label="Monat"
-                  sx={{
-                    color: "#e0e3e9",
-                    backgroundColor: "#2e2e38",
-                    border: "1px solid #e0e3e9",
-                  }}
                 >
                   {months.map((month) => (
                     <MenuItem key={month.value} value={month.value}>
                       {month.label}
                     </MenuItem>
                   ))}
-                </Select>
+                </SelectComp>
               </FormControl>
               <FormControl sx={{ marginLeft: 3, marginTop: 3 }}>
                 <InputLabel style={{ color: "#e0e3e9" }}>Jahr</InputLabel>
-                <Select
+                <SelectComp
                   value={filterYear}
                   onChange={(e) => setFilterYear(e.target.value)}
                   label="Jahr"
-                  sx={{
-                    color: "#e0e3e9",
-                    backgroundColor: "#2e2e38",
-                    border: "1px solid #e0e3e9",
-                  }}
                 >
                   {years.map((year) => (
                     <MenuItem key={year} value={year}>
                       {year}
                     </MenuItem>
                   ))}
-                </Select>
+                </SelectComp>
               </FormControl>
             </form>
           </DialogContent>
@@ -304,41 +266,31 @@ function SettingsForm() {
         </Tabs>
         <FormControl sx={{ marginTop: 3 }}>
           <InputLabel style={{ color: "#e0e3e9" }}>Monat</InputLabel>
-          <Select
+          <SelectComp
             value={filterMonth}
             onChange={(e) => setFilterMonth(e.target.value)}
             label="Monat"
-            sx={{
-              color: "#e0e3e9",
-              backgroundColor: "#2e2e38",
-              border: "1px solid #e0e3e9",
-            }}
           >
             {months.map((month) => (
               <MenuItem key={month.value} value={month.value}>
                 {month.label}
               </MenuItem>
             ))}
-          </Select>
+          </SelectComp>
         </FormControl>
         <FormControl sx={{ marginLeft: 3, marginTop: 3, marginBottom: 3 }}>
           <InputLabel style={{ color: "#e0e3e9" }}>Jahr</InputLabel>
-          <Select
+          <SelectComp
             value={filterYear}
             onChange={(e) => setFilterYear(e.target.value)}
             label="Jahr"
-            sx={{
-              color: "#e0e3e9",
-              backgroundColor: "#2e2e38",
-              border: "1px solid #e0e3e9",
-            }}
           >
             {years.map((year) => (
               <MenuItem key={year} value={year}>
                 {year}
               </MenuItem>
             ))}
-          </Select>
+          </SelectComp>
         </FormControl>
         {selectedTab === 0 && (
           <TransactionSection
@@ -363,67 +315,4 @@ function SettingsForm() {
   );
 }
 
-function TransactionSection({
-  transactions,
-  filterMonth,
-  filterYear,
-  handleDeleteSettings,
-  transactionType,
-}) {
-  return (
-    <TableContainer component={Paper}>
-      <Table>
-        <TableHead>
-          <TableRow>
-            <StyledTableCell text="Beschreibung" />
-            <StyledTableCell text="Betrag" />
-            <StyledTableCell text=" " />
-          </TableRow>
-        </TableHead>
-        <TableBody>
-          {transactions
-            .filter(
-              (t) =>
-                t?.transaction_type === transactionType &&
-                t?.month === filterMonth &&
-                t?.year === filterYear
-            )
-            .map((item) => (
-              <TableRow
-                key={item.settings_id}
-                sx={{
-                  "&:nth-of-type(odd)": {
-                    backgroundColor: "#e0e3e9",
-                  },
-                  "&:nth-of-type(even)": {
-                    backgroundColor: "#D2D5DC",
-                  },
-                  borderRight: "1px solid",
-                }}
-              >
-                <TableCell
-                  component="th"
-                  scope="row"
-                  sx={{ borderRight: "1px solid" }}
-                >
-                  {item.description}
-                </TableCell>
-                <TableCell align="left" sx={{ borderRight: "1px solid" }}>
-                  {item.amount} €
-                </TableCell>
-                <TableCell align="right">
-                  <IconButton
-                    onClick={() => handleDeleteSettings(item.settings_id)}
-                    style={{ color: "black" }}
-                  >
-                    <DeleteIcon />
-                  </IconButton>
-                </TableCell>
-              </TableRow>
-            ))}
-        </TableBody>
-      </Table>
-    </TableContainer>
-  );
-}
 export default SettingsForm;
