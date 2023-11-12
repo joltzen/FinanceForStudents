@@ -45,7 +45,7 @@ const StyledMenuItem = styled(MenuItem)({
 });
 
 const StyledDrawerContent = styled("div")({
-  width: "13vw",
+  width: "14vw",
   marginTop: "70px",
 
   "& .MuiDrawer-paper": {
@@ -219,17 +219,17 @@ function Navbar() {
             <></>
           )}
           <List>
+            <StyledListItem href="/" primary="Home" icon={<HomeIcon />} />
             <StyledListItem
-              href="/"
-              primary="Home"
-              icon={<HomeIcon />}
+              href="/impressum"
+              primary="Impressum"
+              icon={<InfoIcon />}
             />
-            <StyledListItem href="/about" primary="About" icon={<InfoIcon />} />
-            <StyledListItem
+            {/* <StyledListItem
               href="/contact"
               primary="Contact"
               icon={<MailIcon />}
-            />
+            /> */}
             <Divider />
           </List>
         </StyledDrawerContent>

@@ -24,8 +24,6 @@ import SelectComp from "../../components/SelectComp";
 import TransactionSection from "./transactionselect";
 import AddButton from "../../components/AddButtonComp";
 import { months, years } from "../../config/constants";
-import useSettings from "../../hooks/useSettings";
-import { getSettings } from "../../hooks/getData";
 
 function SettingsForm() {
   const [filterMonth, setFilterMonth] = useState(new Date().getMonth() + 1);
@@ -37,7 +35,6 @@ function SettingsForm() {
   const [openDialog, setOpenDialog] = useState(false);
   const [selectedTab, setSelectedTab] = useState(0);
   const { user } = useAuth();
-  const { handleDeleteSettings } = useSettings(setTransactions);
 
   const handleTabChange = (event, newValue) => {
     setSelectedTab(newValue);
@@ -83,9 +80,29 @@ function SettingsForm() {
     setDescription("");
   };
 
+  const handleDeleteSettings = async (settingsId) => {
+    try {
+      await axiosInstance.delete("/deleteSettings", {
+        params: { id: settingsId },
+      });
+      setTransactions((prevTransactions) =>
+        prevTransactions.filter(
+          (transaction) => transaction.settings_id !== settingsId
+        )
+      );
+    } catch (error) {
+      console.error("Fehler beim Löschen der Settings:", error);
+    }
+  };
   const fetchSettings = async () => {
     try {
-      const response = await getSettings(user.id, filterMonth, filterYear);
+      const response = await axiosInstance.get("/getSettings", {
+        params: {
+          month: filterMonth,
+          year: filterYear,
+          user_id: user.id,
+        },
+      });
       setTransactions(response.data);
     } catch (error) {
       console.error("Fetching settings failed:", error);
@@ -148,7 +165,7 @@ function SettingsForm() {
                   onChange={(e) => setFilterMonth(e.target.value)}
                   label="Monat"
                 >
-                  {months.map((month) => (
+                  {months?.map((month) => (
                     <MenuItem key={month.value} value={month.value}>
                       {month.label}
                     </MenuItem>
@@ -162,7 +179,7 @@ function SettingsForm() {
                   onChange={(e) => setFilterYear(e.target.value)}
                   label="Jahr"
                 >
-                  {years.map((year) => (
+                  {years?.map((year) => (
                     <MenuItem key={year} value={year}>
                       {year}
                     </MenuItem>
@@ -231,7 +248,7 @@ function SettingsForm() {
             onChange={(e) => setFilterMonth(e.target.value)}
             label="Monat"
           >
-            {months.map((month) => (
+            {months?.map((month) => (
               <MenuItem key={month.value} value={month.value}>
                 {month.label}
               </MenuItem>
@@ -245,7 +262,7 @@ function SettingsForm() {
             onChange={(e) => setFilterYear(e.target.value)}
             label="Jahr"
           >
-            {years.map((year) => (
+            {years?.map((year) => (
               <MenuItem key={year} value={year}>
                 {year}
               </MenuItem>

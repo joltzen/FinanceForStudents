@@ -6,7 +6,7 @@ const { map } = require("../app");
 const { v4: uuidv4 } = require("uuid");
 const nodemailer = require("nodemailer");
 
-router.get("/getData", (req, res) => {
+router.get("/getUserData", (req, res) => {
   db.query("SELECT * FROM users", (err, result) => {
     if (err) {
       console.error("Fehler bei der Abfrage:", err);
@@ -60,7 +60,7 @@ router.post("/signup", async (req, res) => {
   }
 });
 
-router.get("/getUserTransactions", async (req, res) => {
+router.get("/getTransactions", async (req, res) => {
   try {
     const { month, year, user_id } = req.query;
     const result = await db.query(
@@ -74,7 +74,7 @@ router.get("/getUserTransactions", async (req, res) => {
   }
 });
 
-router.get("/getUserTransactionsAnnual", async (req, res) => {
+router.get("/getTransactionsAnnual", async (req, res) => {
   try {
     const { year, user_id } = req.query;
     const result = await db.query(

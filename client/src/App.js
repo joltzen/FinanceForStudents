@@ -11,7 +11,7 @@ import {
   Profile,
   Signup,
   Contact,
-  About,
+  Impressum,
   Settings,
   FinancePage,
   Reset,
@@ -57,7 +57,7 @@ function App() {
           >
             <Routes>
               <Route path="/" element={<Home />} />
-              <Route path="/about" element={<About />} />
+              <Route path="/impressum" element={<Impressum />} />
               <Route path="/contact" element={<Contact />} />
               <Route path="/signup" element={<Signup />} />
               <Route path="/login" element={<Login />} />

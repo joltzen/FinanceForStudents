@@ -11,8 +11,8 @@ export const useFetchData = (user, isAnnualView, filterMonth, filterYear) => {
   useEffect(() => {
     const fetchTransactionsAndSettings = async () => {
       const endpointTransactions = isAnnualView
-        ? "/getUserTransactionsAnnual"
-        : "/getUserTransactions";
+        ? "/getTransactionsAnnual"
+        : "/getTransactions";
       const endpointSettings = isAnnualView
         ? "/getSettingsAnnual"
         : "/getSettings";
@@ -27,6 +27,7 @@ export const useFetchData = (user, isAnnualView, filterMonth, filterYear) => {
           axiosInstance.get(endpointSettings, { params }),
         ]);
 
+        
         setTransactions(transactionsResponse.data);
         setSettings(settingsResponse.data);
       } catch (error) {

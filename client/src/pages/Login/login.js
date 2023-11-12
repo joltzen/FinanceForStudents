@@ -33,6 +33,7 @@ function LoginPage() {
         username: response.data.username,
         firstname: response.data.firstname,
         surname: response.data.surname,
+        email: response.data.email,
       });
       console.log("Login successful:", response.data);
       navigate("/dashboard");

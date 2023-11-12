@@ -37,7 +37,7 @@ function TransactionSection({
                 t?.month === filterMonth &&
                 t?.year === filterYear
             )
-            .map((item) => (
+            ?.map((item) => (
               <TableRow
                 key={item.settings_id}
                 sx={{

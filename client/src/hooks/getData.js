@@ -1,7 +1,7 @@
 import axiosInstance from "../config/axios";
 
 const getTransactions = async (filterMonth, filterYear, userId) => {
-  const response = await axiosInstance.get("/getUserTransactions", {
+  const response = await axiosInstance.get("/getTransactions", {
     params: {
       month: filterMonth,
       year: filterYear,
