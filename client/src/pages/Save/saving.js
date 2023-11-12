@@ -20,20 +20,10 @@ import {
 } from "@mui/material";
 import DeleteIcon from "@mui/icons-material/Delete";
 import CloseIcon from "@mui/icons-material/Close";
-import { styled } from "@mui/system";
 import AddCircleOutlineIcon from "@mui/icons-material/AddCircleOutline";
 import TextComp from "../../components/TextComp";
 import AddButton from "../../components/AddButtonComp";
-
-const StyledCard = styled(Card)(({ theme }) => ({
-  marginBottom: theme.spacing(2),
-  backgroundColor: "#262b3d",
-  color: "#be9e44",
-  boxShadow: theme.shadows[6],
-  "&:hover": {
-    boxShadow: theme.shadows[10],
-  },
-}));
+import CardComp from "../../components/CardComp";
 
 function SavingPage() {
   const today = new Date().toISOString().split("T")[0];
@@ -334,7 +324,7 @@ function SavingPage() {
           </Dialog>
           <Box sx={{ my: 2 }}>
             {goals.map((goal, index) => (
-              <StyledCard key={goal.id} sx={{ position: "relative" }}>
+              <CardComp key={goal.id} sx={{ position: "relative" }}>
                 <CardContent>
                   <Grid container spacing={2}>
                     <Grid item xs={12} md={8}>
@@ -397,7 +387,7 @@ function SavingPage() {
                     </Grid>
                   </Grid>
                 </CardContent>
-              </StyledCard>
+              </CardComp>
             ))}
           </Box>
         </Grid>
