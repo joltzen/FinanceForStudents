@@ -25,7 +25,6 @@ import AccountBalanceWalletIcon from "@mui/icons-material/AccountBalanceWallet";
 import AttachMoneyIcon from "@mui/icons-material/AttachMoney";
 import PersonIcon from "@mui/icons-material/Person";
 import InfoIcon from "@mui/icons-material/Info";
-import MailIcon from "@mui/icons-material/Mail";
 import SavingsIcon from "@mui/icons-material/Savings";
 const StyledAppBar = styled(AppBar)({
   zIndex: 1400,
