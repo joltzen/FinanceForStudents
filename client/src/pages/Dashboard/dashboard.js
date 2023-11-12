@@ -10,11 +10,12 @@ import {
 } from "@mui/material";
 import "chart.js/auto";
 import SwitchComp from "../../components/SwitchComp";
-import BudgetFilter from "./budgetfilter";
-import BudgetChart from "./budgetchart";
+import BudgetFilter from "./filter";
+import BudgetChart from "./chart";
 import NoDataAlert from "./noalert";
 import { useFetchData } from "../../hooks/useFetchData";
 import { useCalculations } from "../../hooks/useCalculations";
+import BudgetSummary from "./summary";
 
 function DashboardPage() {
   const { user } = useAuth();
@@ -29,16 +30,19 @@ function DashboardPage() {
     filterYear
   );
   const {
-    calculateSavingGoalsTotal,
-    calculateAnnualSavingGoalsTotal,
     calculateCategoryTotals,
+    totalSavings,
+    calculateAnnualTotals,
+    getCategoryTotal,
+    getAnnualCategoryTotal,
   } = useCalculations(
     transactions,
     settings,
     savingsGoals,
     filterMonth,
     filterYear,
-    totalSavingGoals
+    totalSavingGoals,
+    isAnnualView
   );
 
   const months = [
@@ -61,52 +65,9 @@ function DashboardPage() {
     (_, index) => new Date().getFullYear() - index
   );
 
-  const getCategoryTotal = (categoryId) => {
-    const totals = calculateCategoryTotals();
-    return totals[categoryId] || 0;
-  };
-
-  const getAnnualCategoryTotal = (categoryId) => {
-    const totals = calculateCategoryTotals();
-    return totals[categoryId] || 0;
-  };
-
-  const calculateAnnualTotals = () => {
-    const categoryTotals = {};
-
-    transactions.forEach((transaction) => {
-      if (!categoryTotals[transaction.category_id]) {
-        categoryTotals[transaction.category_id] = 0;
-      }
-      categoryTotals[transaction.category_id] += parseFloat(transaction.amount);
-    });
-
-    const totalBudget = settings.reduce((acc, setting) => {
-      if (setting.transaction_type === "Einnahme") {
-        return acc + parseFloat(setting.amount);
-      } else if (setting.transaction_type === "Ausgabe") {
-        return acc - parseFloat(setting.amount);
-      }
-      return acc;
-    }, 0);
-
-    const usedBudget = Object.values(categoryTotals).reduce(
-      (acc, num) => acc + num,
-      0
-    );
-    categoryTotals["remaining"] = totalBudget - usedBudget - totalSavingGoals;
-    return categoryTotals;
-  };
-
   useEffect(() => {
-    var totalSavings = 0;
-    if (isAnnualView) {
-      totalSavings = calculateAnnualSavingGoalsTotal();
-    } else {
-      totalSavings = calculateSavingGoalsTotal();
-    }
     setTotalSavingGoals(totalSavings);
-  }, [savingsGoals, filterMonth, filterYear]);
+  }, [totalSavings]);
 
   const chartData = {
     labels: categories.map((category) => category.name),
@@ -258,25 +219,10 @@ function DashboardPage() {
             {hasBudgetData(
               isAnnualView ? calculateAnnualTotals() : calculateCategoryTotals()
             ) ? (
-              <Grid item xs={12}>
-                {isAnnualView ? (
-                  <Typography
-                    variant="subtitle1"
-                    sx={{ color: "#e0e3e9", mt: 2 }}
-                  >
-                    <strong>Gesamtes Jahresbudget: </strong>
-                    {calculateAnnualTotals()["remaining"].toFixed(2)} €
-                  </Typography>
-                ) : (
-                  <Typography
-                    variant="subtitle1"
-                    sx={{ color: "#e0e3e9", mt: 2 }}
-                  >
-                    <strong>Verbleibendes Budget: </strong>
-                    {calculateCategoryTotals()["remaining"].toFixed(2)} €
-                  </Typography>
-                )}
-              </Grid>
+              <BudgetSummary
+                isAnnualView={isAnnualView}
+                totalRemaining={remainingBudget}
+              />
             ) : null}
           </Card>
         </Grid>
