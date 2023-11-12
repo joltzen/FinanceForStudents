@@ -16,38 +16,38 @@ import {
   Paper,
   Typography,
   IconButton,
+  Dialog,
+  DialogTitle,
+  DialogContent,
+  DialogActions,
+  Button,
 } from "@mui/material";
 import StyledTableCell from "../../components/tablecell";
 import DeleteIcon from "@mui/icons-material/Delete";
+import EditIcon from "@mui/icons-material/Edit";
+import TextComp from "../../components/TextComp";
+import SelectComp from "../../components/SelectComp";
+import { months, years } from "../../config/constants";
+import useTransactions from "../../hooks/useTransactions";
+import {
+  getCategories,
+  getSavingGoals,
+  getSettings,
+  getTransactions,
+} from "../../hooks/getData";
 
 function FinanceOverview() {
   const [filterMonth, setFilterMonth] = useState(new Date().getMonth() + 1);
   const [filterYear, setFilterYear] = useState(new Date().getFullYear());
   const [transactions, setTransactions] = useState([]);
   const [totalSum, setTotalSum] = useState(0);
+  const [savingSum, setSavingSum] = useState(0);
   const [categories, setCategories] = useState([]);
   const [settings, setSettings] = useState([]);
   const { user } = useAuth();
+  const [savingGoal, setSavingGoal] = useState([]);
+  const { handleDeleteTransaction } = useTransactions(setTransactions);
 
-  const months = [
-    { value: 1, label: "Januar" },
-    { value: 2, label: "Februar" },
-    { value: 3, label: "März" },
-    { value: 4, label: "April" },
-    { value: 5, label: "Mai" },
-    { value: 6, label: "Juni" },
-    { value: 7, label: "Juli" },
-    { value: 8, label: "August" },
-    { value: 9, label: "September" },
-    { value: 10, label: "Oktober" },
-    { value: 11, label: "November" },
-    { value: 12, label: "Dezember" },
-  ];
-
-  const years = Array.from(
-    { length: 10 },
-    (_, index) => new Date().getFullYear() - index
-  );
   function formatDate(dateString) {
     const options = { year: "numeric", month: "2-digit", day: "2-digit" };
     return new Date(dateString).toLocaleDateString("de-DE", options);
@@ -55,21 +55,8 @@ function FinanceOverview() {
 
   const fetchTransactions = async () => {
     try {
-      const response = await axiosInstance.get("/getUserTransactions", {
-        params: {
-          month: filterMonth,
-          year: filterYear,
-          user_id: user.id,
-        },
-      });
-
-      const res = await axiosInstance.get("/getSettings", {
-        params: {
-          month: filterMonth,
-          year: filterYear,
-          user_id: user.id,
-        },
-      });
+      const response = await getTransactions(filterMonth, filterYear, user.id);
+      const res = await getSettings(filterMonth, filterYear, user.id);
 
       const sortedTransactions = response.data.sort((a, b) => {
         const dateA = new Date(a.transaction_date);
@@ -102,29 +89,34 @@ function FinanceOverview() {
       console.error("Error fetching transactions:", error);
     }
   };
+  function calculateAdjustedTotalSum() {
+    let adjustedTotal = totalSum;
 
-  const handleDeleteTransaction = async (transactionId) => {
-    try {
-      await axiosInstance.delete("/deleteTransaction", {
-        params: { id: transactionId },
-      });
-      setTransactions((prevTransactions) =>
-        prevTransactions.filter(
-          (transaction) => transaction.transaction_id !== transactionId
-        )
-      );
-    } catch (error) {
-      console.error("Fehler beim Löschen der Transaktion:", error);
-    }
-  };
+    savingGoal.forEach((goal) => {
+      const startMonth = new Date(goal.startdate).getMonth() + 1;
+      const startYear = new Date(goal.startdate).getFullYear();
+      const deadlineMonth = new Date(goal.deadline).getMonth() + 1;
+      const deadlineYear = new Date(goal.deadline).getFullYear();
+
+      const isWithinRange =
+        (filterYear > startYear ||
+          (filterYear === startYear && filterMonth >= startMonth)) &&
+        (filterYear < deadlineYear ||
+          (filterYear === deadlineYear && filterMonth <= deadlineMonth));
+
+      if (isWithinRange) {
+        adjustedTotal -= goal.monthly_saving;
+      }
+    });
+
+    setSavingSum(adjustedTotal);
+  }
 
   useEffect(() => {
     fetchTransactions();
     const fetchCategories = async () => {
       try {
-        const response = await axiosInstance.get("/getCategories", {
-          params: { user_id: user.id },
-        });
+        const response = await getCategories(user.id);
         setCategories(response.data);
       } catch (error) {
         console.error("Fehler beim Laden der Kategorien:", error);
@@ -132,47 +124,63 @@ function FinanceOverview() {
     };
 
     fetchCategories();
-  }, [filterMonth, filterYear, transactions]);
+    const fetchGoals = async () => {
+      try {
+        const response = await getSavingGoals(user.id);
+        setSavingGoal(response.data);
+      } catch (error) {
+        console.error("Fehler beim Abrufen der Sparziele", error);
+      }
+    };
+
+    fetchGoals();
+    calculateAdjustedTotalSum();
+  }, [filterMonth, filterYear, totalSum, user.id, savingGoal]);
+
+  const [editTransaction, setEditTransaction] = useState(null);
+
+  const handleEditTransaction = async (transaction) => {
+    try {
+      await axiosInstance.patch("/updateTransaction", transaction);
+      fetchTransactions();
+    } catch (error) {
+      console.error("Error updating transaction:", error);
+    }
+  };
+
+  const handleEditButtonClick = (transaction) => {
+    setEditTransaction(transaction);
+  };
 
   return (
     <div>
       <FormControl>
         <InputLabel style={{ color: "#e0e3e9" }}>Monat</InputLabel>
-        <Select
+        <SelectComp
           value={filterMonth}
           onChange={(e) => setFilterMonth(e.target.value)}
           label="Monat"
-          sx={{
-            color: "#e0e3e9",
-            backgroundColor: "#2e2e38",
-            border: "1px solid #e0e3e9",
-          }}
         >
           {months.map((month) => (
             <MenuItem key={month.value} value={month.value}>
               {month.label}
             </MenuItem>
           ))}
-        </Select>
+        </SelectComp>
       </FormControl>
       <FormControl sx={{ marginLeft: 3, marginBottom: 2 }}>
         <InputLabel style={{ color: "#e0e3e9" }}>Jahr</InputLabel>
-        <Select
+        <SelectComp
           value={filterYear}
           onChange={(e) => setFilterYear(e.target.value)}
           label="Jahr"
-          sx={{
-            color: "#e0e3e9",
-            backgroundColor: "#2e2e38",
-            border: "1px solid #e0e3e9",
-          }}
         >
           {years.map((year) => (
             <MenuItem key={year} value={year}>
               {year}
             </MenuItem>
           ))}
-        </Select>
+        </SelectComp>
       </FormControl>
       <TableContainer component={Paper}>
         <Table stickyHeader aria-label="transaction table">
@@ -225,8 +233,12 @@ function FinanceOverview() {
                       border: "1px solid black",
                       backgroundColor: categoryColor,
                     }}
-                    s
                   >
+                    <IconButton
+                      onClick={() => handleEditButtonClick(transaction)}
+                    >
+                      <EditIcon />
+                    </IconButton>
                     <IconButton
                       onClick={() =>
                         handleDeleteTransaction(transaction.transaction_id)
@@ -257,11 +269,118 @@ function FinanceOverview() {
               fontWeight: "bold",
             }}
           >
-            Gesamtsumme: {totalSum.toFixed(2)}€
+            Gesamtsumme: {savingSum.toFixed(2)}€
           </Typography>
         </Box>
       </TableContainer>
+      {editTransaction && (
+        <EditTransactionDialog
+          transaction={editTransaction}
+          onClose={() => setEditTransaction(null)}
+          onSave={handleEditTransaction}
+        />
+      )}
     </div>
+  );
+}
+
+function EditTransactionDialog({ transaction, onClose, onSave }) {
+  const [editedTransaction, setEditedTransaction] = useState({
+    ...transaction,
+  });
+
+  const handleInputChange = (e) => {
+    const { name, value } = e.target;
+    setEditedTransaction({
+      ...editedTransaction,
+      [name]: value,
+    });
+  };
+
+  // Updated handler specifically for the Select component
+  const handleSelectChange = (event) => {
+    setEditedTransaction({
+      ...editedTransaction,
+      transaction_type: event.target.value,
+    });
+  };
+
+  const handleSave = () => {
+    onSave(editedTransaction);
+    onClose();
+  };
+  function formatDate(dateString) {
+    const date = new Date(dateString);
+    let month = "" + (date.getMonth() + 1);
+    let day = "" + date.getDate();
+    const year = date.getFullYear();
+
+    if (month.length < 2) {
+      month = "0" + month;
+    }
+    if (day.length < 2) {
+      day = "0" + day;
+    }
+
+    return [year, month, day].join("-");
+  }
+  return (
+    <Dialog open={!!transaction} onClose={onClose}>
+      <DialogTitle sx={{ backgroundColor: "#262b3d", color: "#e0e3e9" }}>
+        Bearbeiten
+      </DialogTitle>
+      <DialogContent sx={{ backgroundColor: "#262b3d" }}>
+        <FormControl fullWidth>
+          <InputLabel style={{ color: "#e0e3e9" }}>Transaktionstyp</InputLabel>
+          <Select
+            value={editedTransaction.transaction_type}
+            onChange={handleSelectChange}
+            label="Transaktionstyp"
+            sx={{
+              color: "#e0e3e9",
+              backgroundColor: "#2e2e38",
+              border: "1px solid #e0e3e9",
+            }}
+          >
+            <MenuItem value="Ausgabe">Ausgabe</MenuItem>
+            <MenuItem value="Einnahme">Einnahme</MenuItem>
+          </Select>
+        </FormControl>
+        <TextComp
+          label="Beschreibung"
+          type="text"
+          name="description"
+          value={editedTransaction.description}
+          onChange={handleInputChange}
+          fullWidth
+        />
+        <TextComp
+          label="Betrag"
+          type="number"
+          name="amount"
+          value={editedTransaction.amount}
+          onChange={handleInputChange}
+          fullWidth
+        />
+        <TextComp
+          fullWidth
+          label="Datum"
+          name="transaction_date"
+          type="date"
+          InputLabelProps={{ shrink: true }}
+          value={formatDate(editedTransaction.transaction_date)}
+          onChange={handleInputChange}
+        />
+      </DialogContent>
+      <DialogActions sx={{ backgroundColor: "#262b3d" }}>
+        <Button onClick={onClose} color="primary" sx={{ color: "#e0e3e9" }}>
+          Abbrechen
+        </Button>
+        <Button onClick={handleSave} color="primary" sx={{ color: "#e0e3e9" }}>
+          Speichern
+        </Button>
+      </DialogActions>
+    </Dialog>
   );
 }
 

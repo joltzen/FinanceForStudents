@@ -460,4 +460,23 @@ router.patch("/update-saving-goal", async (req, res) => {
   }
 });
 
+router.patch("/updateTransaction", async (req, res) => {
+  try {
+    const { transaction_id, amount, description, transaction_date } = req.body;
+
+    const query = `
+      UPDATE transactions
+      SET amount = $1, description = $2, transaction_date = $4
+      WHERE transaction_id = $3
+      RETURNING *;`;
+
+    const values = [amount, description, transaction_id, transaction_date];
+    const result = await db.query(query, values);
+    res.json(result.rows[0]);
+  } catch (error) {
+    console.error("Error updating transaction:", error);
+    res.status(500).json({ error: "Error updating transaction" });
+  }
+});
+
 module.exports = router;
