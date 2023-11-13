@@ -10,11 +10,11 @@
     "server": "cd server && npm start",
     "install": "cd server && npm install && cd ../client && npm install"
   },
-  "devDependencies": {
-    "@babel/plugin-proposal-private-property-in-object": "^7.21.11",
+  "dependencies": {
+    "@uiw/react-color": "^2.0.0",
     "concurrently": "^8.2.2"
   },
-  "dependencies": {
-    "@uiw/react-color": "^2.0.0"
+  "devDependencies": {
+    "@babel/plugin-proposal-private-property-in-object": "^7.21.11"
   }
 }
