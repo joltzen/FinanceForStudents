@@ -27,6 +27,7 @@ import DeleteIcon from "@mui/icons-material/Delete";
 import EditIcon from "@mui/icons-material/Edit";
 import TextComp from "../../components/TextComp";
 import SelectComp from "../../components/SelectComp";
+import { months, years } from "../../config/constants";
 
 function FinanceOverview() {
   const [filterMonth, setFilterMonth] = useState(new Date().getMonth() + 1);
@@ -38,25 +39,7 @@ function FinanceOverview() {
   const [settings, setSettings] = useState([]);
   const { user } = useAuth();
   const [savingGoal, setSavingGoal] = useState([]);
-  const months = [
-    "Januar",
-    "Februar",
-    "März",
-    "April",
-    "Mai",
-    "Juni",
-    "Juli",
-    "August",
-    "September",
-    "Oktober",
-    "November",
-    "Dezember",
-  ].map((label, index) => ({ value: index + 1, label }));
 
-  const years = Array.from(
-    { length: 10 },
-    (_, index) => new Date().getFullYear() - index
-  );
   function formatDate(dateString) {
     const options = { year: "numeric", month: "2-digit", day: "2-digit" };
     return new Date(dateString).toLocaleDateString("de-DE", options);
