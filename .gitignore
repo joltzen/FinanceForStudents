@@ -4,14 +4,14 @@
 /node_modules
 /.pnp
 .pnp.js
+/config
 
 # testing
 /coverage
 
 # production
 /build
-/dist
-/server/routes/config.js
+
 # misc
 .DS_Store
 .env.local
@@ -22,14 +22,3 @@
 npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
-
-.eslint.cache
-.eslintcache
-
-firebase-debug.log
-.firebase/
-.npmrc 
-
-@types/
-@components/
-.vscode
