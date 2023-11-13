@@ -2,13 +2,14 @@
   "name": "finance-for-students",
   "version": "1.0.0",
   "scripts": {
-    "start": "concurrently \"npm run server\" \"npm run client\"",
+    "start": "node server/app.js",
     "build": "npm run build:server && npm run build:client",
     "build:client": "cd client && npm run build",
     "build:server": "cd server && npm run build",
     "client": "cd client && npm start",
     "server": "cd server && npm start",
-    "install": "cd server && npm install && cd ../client && npm install"
+    "install": "cd server && npm install && cd ../client && npm install",
+    "postinstall": "npm run build:client"
   },
   "dependencies": {
     "@uiw/react-color": "^2.0.0",

@@ -1,6 +1,6 @@
 const express = require("express");
 const app = express();
-const port = 3001;
+const port = 5432;
 //const port = 5432;
 const cors = require("cors");
 
@@ -10,7 +10,7 @@ app.use(express.json());
 const routes = require("./routes/routes");
 app.use("/api", routes);
 
-app.listen(port, () => {
+app.listen(5432, () => {
   console.log(`Server is running on http://localhost:${port}`);
 });
 
