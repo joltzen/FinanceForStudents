@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import axios from "axios";
+import axiosInstance from "../../config/axios";
 import { Button, Box, Typography, Alert } from "@mui/material";
 import { useNavigate } from "react-router";
 import TextComp from "../../components/TextComp";
@@ -17,7 +17,7 @@ function SignUpForm() {
     event.preventDefault();
     setError("");
     try {
-      await axios.post("http://localhost:3001/api/signup", {
+      await axiosInstance.post("http://localhost:3001/api/signup", {
         username,
         email,
         password,
