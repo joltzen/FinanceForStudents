@@ -5,6 +5,7 @@ module.exports = {
     database: process.env.POSTGRES_DATABASE || "your_database",
     password: process.env.POSTGRES_PASSWORD || "your_password",
     port: process.env.DB_PORT || 5432,
+    connectionString: process.env.POSTGRES_URL || "your_connection_string",
   },
 };
 

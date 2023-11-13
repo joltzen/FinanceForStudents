@@ -7,9 +7,7 @@ const pool = new Pool({
   database: config.database.database,
   password: config.database.password,
   port: config.database.port,
-  ssl: {
-    rejectUnauthorized: false, // Für Produktionsumgebungen ist es besser, dies auf `true` zu setzen und die entsprechenden SSL-Zertifikate bereitzustellen.
-  },
+  connectionString: process.env.POSTGRES_URL + "?sslmode=require",
 });
 
 module.exports = pool;
