@@ -6,7 +6,6 @@ if (process.env.NODE_ENV === "production") {
   // Base URL for production
   baseURL = "https://financeforstudents-799d448ab193.herokuapp.com/api";
 } else {
-  // Base URL for development
   baseURL = "http://localhost:3001/api";
 }
 
