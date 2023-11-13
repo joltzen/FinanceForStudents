@@ -4,7 +4,7 @@ let baseURL;
 
 if (process.env.NODE_ENV === "production") {
   // Base URL for production
-  baseURL = "financeforstudents-799d448ab193.herokuapp.com/api";
+  baseURL = "/api";
 } else {
   // Base URL for development
   baseURL = "http://localhost:3001/api";
