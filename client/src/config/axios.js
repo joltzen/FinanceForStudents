@@ -1,7 +1,15 @@
 import axios from "axios";
 
-const axiosInstance = axios.create({
-  baseURL: "http://localhost:3001/api",
-});
+let baseURL;
+
+if (process.env.NODE_ENV === "production") {
+  // Base URL for production
+  baseURL = "financeforstudents-799d448ab193.herokuapp.com/api";
+} else {
+  // Base URL for development
+  baseURL = "http://localhost:3001/api";
+}
+
+const axiosInstance = axios.create({ baseURL });
 
 export default axiosInstance;
