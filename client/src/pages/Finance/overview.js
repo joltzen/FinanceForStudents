@@ -46,6 +46,7 @@ function FinanceOverview({ update }) {
     return new Date(dateString).toLocaleDateString("de-DE", options);
   }
 
+  
   // eslint-disable-next-line react-hooks/exhaustive-deps
   const fetchTransactions = useCallback(async () => {
     try {
