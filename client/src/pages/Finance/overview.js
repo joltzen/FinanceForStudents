@@ -159,7 +159,6 @@ function FinanceOverview({ update }) {
         console.error("Fehler beim Abrufen der Sparziele", error);
       }
     };
-    console.log("test");
     fetchGoals();
     calculateAdjustedTotalSum();
   }, [filterMonth, filterYear, totalSum, user.id, update, needUpdate]);
