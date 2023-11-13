@@ -2,13 +2,13 @@ import axios from "axios";
 
 let baseURL;
 
-// if (process.env.NODE_ENV === "production") {
-//   // Base URL for production
-baseURL = "financeforstudents-799d448ab193.herokuapp.com/api";
-// } else {
-//   // Base URL for development
-//   baseURL = "http://localhost:3001/api";
-// }
+if (process.env.NODE_ENV === "production") {
+  // Base URL for production
+  baseURL = "financeforstudents-799d448ab193.herokuapp.com/api";
+} else {
+  // Base URL for development
+  baseURL = "http://localhost:3001/api";
+}
 
 const axiosInstance = axios.create({ baseURL });
 
