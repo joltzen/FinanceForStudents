@@ -45,6 +45,7 @@ function FinancePage() {
   const [transactionType, setTransactionType] = useState("Ausgabe");
   const [transactions, setTransactions] = useState([]);
   const [categories, setCategories] = useState([]);
+  const [update, setUpdate] = useState(false);
 
   const { user } = useAuth();
 
@@ -98,6 +99,7 @@ function FinancePage() {
       setDate(date);
       setTransactionType("Ausgabe");
       setCategory(category);
+      setUpdate(!update);
     } catch (error) {
       console.error("Transaction failed:", error);
     }
@@ -119,7 +121,7 @@ function FinancePage() {
     };
 
     fetchCategories();
-  }, [user.id]);
+  }, [user.id, update]);
 
   return (
     <Box sx={{ flexGrow: 1, padding: 3 }}>
@@ -238,7 +240,7 @@ function FinancePage() {
           <Typography variant="h6" color="#e0e3e9" sx={{ mb: 2 }}>
             Transaktionen Übersicht
           </Typography>
-          <FinanceOverview />
+          <FinanceOverview update={update} />
         </Grid>
       </Grid>
     </Box>

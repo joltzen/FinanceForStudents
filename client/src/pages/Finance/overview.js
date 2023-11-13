@@ -29,7 +29,7 @@ import TextComp from "../../components/TextComp";
 import SelectComp from "../../components/SelectComp";
 import { months, years } from "../../config/constants";
 
-function FinanceOverview() {
+function FinanceOverview({ update }) {
   const [filterMonth, setFilterMonth] = useState(new Date().getMonth() + 1);
   const [filterYear, setFilterYear] = useState(new Date().getFullYear());
   const [transactions, setTransactions] = useState([]);
@@ -39,6 +39,7 @@ function FinanceOverview() {
   const [settings, setSettings] = useState([]);
   const { user } = useAuth();
   const [savingGoal, setSavingGoal] = useState([]);
+  const [needUpdate, setNeedUpdate] = useState(false);
 
   function formatDate(dateString) {
     const options = { year: "numeric", month: "2-digit", day: "2-digit" };
@@ -128,6 +129,7 @@ function FinanceOverview() {
           (transaction) => transaction.transaction_id !== transactionId
         )
       );
+      setNeedUpdate(!needUpdate);
     } catch (error) {
       console.error("Fehler beim Löschen der Transaktion:", error);
     }
@@ -157,18 +159,10 @@ function FinanceOverview() {
         console.error("Fehler beim Abrufen der Sparziele", error);
       }
     };
-
+    console.log("test");
     fetchGoals();
     calculateAdjustedTotalSum();
-  }, [
-    filterMonth,
-    filterYear,
-    totalSum,
-    user.id,
-    savingGoal,
-    calculateAdjustedTotalSum,
-    fetchTransactions,
-  ]);
+  }, [filterMonth, filterYear, totalSum, user.id, update, needUpdate]);
 
   const [editTransaction, setEditTransaction] = useState(null);
 
