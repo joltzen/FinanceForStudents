@@ -10,7 +10,6 @@
     "postinstall": "npm run build:client",
     "start": "node server/app.js",
     "build": "cd client && npm install && npm run build",
-    "postbuild": "npm run build"
   },
   "dependencies": {
     "@uiw/react-color": "^2.0.0",
