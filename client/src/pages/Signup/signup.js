@@ -17,7 +17,7 @@ function SignUpForm() {
     event.preventDefault();
     setError("");
     try {
-      await axiosInstance.post("http://localhost:3001/api/signup", {
+      await axiosInstance.post("/signup", {
         username,
         email,
         password,
