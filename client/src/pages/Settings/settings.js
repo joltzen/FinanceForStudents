@@ -35,7 +35,6 @@ function SettingsForm() {
   const [openDialog, setOpenDialog] = useState(false);
   const [selectedTab, setSelectedTab] = useState(0);
   const [openTransferDialog, setOpenTransferDialog] = useState(false);
-  const [sourceTransactions, setSourceTransactions] = useState();
   const { user } = useAuth();
 
   const handleTabChange = (event, newValue) => {
@@ -54,7 +53,28 @@ function SettingsForm() {
     setOpenTransferDialog(false);
   };
 
-  const fetchTransferSettings = async (
+  const postTransactions = async (transactions) => {
+    try {
+      for (let transaction of transactions) {
+        if (!transaction.transaction_type) {
+          console.error(
+            "Transaction type is missing for a transaction:",
+            transaction
+          );
+          continue;
+        }
+
+        await axiosInstance.post("/addSettings", {
+          ...transaction,
+          user_id: user.id,
+          transactionType: transaction.transaction_type,
+        });
+      }
+    } catch (error) {
+      console.error("Error posting transactions:", error);
+    }
+  };
+  const handleTransferSubmit = async (
     sourceMonth,
     sourceYear,
     targetMonth,
@@ -68,20 +88,19 @@ function SettingsForm() {
           user_id: user.id,
         },
       });
-      setSourceTransactions(response.data);
+      const sourceTransactions = await response.data;
+      const targetTransactions = sourceTransactions.map((transaction) => ({
+        ...transaction,
+        month: targetMonth,
+        year: targetYear,
+      }));
+
+      await postTransactions(targetTransactions);
+      handleTransferDialogClose();
+      fetchSettings();
     } catch (error) {
       console.error("Fetching settings failed:", error);
     }
-  };
-
-  const handleTransferSubmit = async (
-    sourceMonth,
-    sourceYear,
-    targetMonth,
-    targetYear
-  ) => {
-    await fetchTransferSettings(sourceMonth, sourceYear);
-    handleTransferDialogClose();
   };
   const handleDescriptionChange = (e) => {
     setDescription(e.target.value);
