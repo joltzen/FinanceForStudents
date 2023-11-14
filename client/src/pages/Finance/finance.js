@@ -56,6 +56,7 @@ function FinancePage() {
   };
 
   const handleCloseDialog = () => {
+    setUpdate(!update);
     setOpenDialog(false);
   };
   const handleDateChange = (e) => {
@@ -145,7 +146,7 @@ function FinancePage() {
       }
     };
     fetchCategories();
-  }, [user.id]);
+  }, [user.id, update]);
 
   return (
     <Box sx={{ flexGrow: 1, padding: 3 }}>
