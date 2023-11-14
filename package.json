@@ -9,6 +9,7 @@
     "install": "cd server && npm install && cd ../client && npm install",
     "postinstall": "npm run build:client",
     "start": "node server/app.js",
+    "sa": "concurrently \"npm run server\" \"npm run client\"",
     "build": "cd client && npm install && npm run build"
   },
   "dependencies": {
@@ -16,6 +17,7 @@
     "concurrently": "^8.2.2"
   },
   "devDependencies": {
+    "concurrently": "^8.2.2",
     "@babel/plugin-proposal-private-property-in-object": "^7.21.11"
   },
   "engines": {
