@@ -25,6 +25,8 @@ import TransactionSection from "./transactionselect";
 import AddButton from "../../components/AddButtonComp";
 import { months, years } from "../../config/constants";
 import TransferDialog from "./transerdialog";
+import EditIcon from "@mui/icons-material/Edit";
+
 function SettingsForm() {
   const [filterMonth, setFilterMonth] = useState(new Date().getMonth() + 1);
   const [filterYear, setFilterYear] = useState(new Date().getFullYear());
@@ -190,6 +192,26 @@ function SettingsForm() {
     fetchSettings();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [filterMonth, filterYear, user.id]);
+
+  const [editSettings, setEditSettings] = useState(null);
+
+  const handleEditSettings = async (transaction) => {
+    try {
+      await axiosInstance.patch("/updateSettings", transaction);
+      fetchSettings();
+    } catch (error) {
+      console.error("Error updating transaction:", error);
+    }
+  };
+
+  const handleEditButtonClick = (transactionId) => {
+    const transactionToEdit = transactions.find(
+      (t) => t.settings_id === transactionId
+    );
+    if (transactionToEdit) {
+      setEditSettings(transactionToEdit);
+    }
+  };
 
   return (
     <Page>
@@ -362,7 +384,7 @@ function SettingsForm() {
             sx={{
               display: "flex",
               justifyContent: "flex-end",
-              flexGrow: 0, // Prevents the button container from growing
+              flexGrow: 0,
             }}
           >
             <Button
@@ -388,6 +410,7 @@ function SettingsForm() {
             filterMonth={filterMonth}
             filterYear={filterYear}
             handleDeleteSettings={handleDeleteSettings}
+            handleEditButtonClick={handleEditButtonClick}
             transactionType="Einnahme"
           />
         )}
@@ -397,11 +420,150 @@ function SettingsForm() {
             filterMonth={filterMonth}
             filterYear={filterYear}
             handleDeleteSettings={handleDeleteSettings}
+            handleEditButtonClick={handleEditButtonClick}
             transactionType="Ausgabe"
           />
         )}
       </Box>
+      {editSettings && (
+        <EditSettingsDialog
+          transaction={editSettings}
+          onClose={() => setEditSettings(null)}
+          onSave={handleEditSettings}
+        />
+      )}
     </Page>
+  );
+}
+
+function EditSettingsDialog({ transaction, onClose, onSave }) {
+  const [editedSettings, setEditedSettings] = useState({
+    ...transaction,
+  });
+
+  const handleInputChange = (e) => {
+    const { name, value } = e.target;
+    setEditedSettings({
+      ...editedSettings,
+      [name]: value,
+    });
+  };
+
+  // Updated handler specifically for the Select component
+  const handleSelectChange = (event) => {
+    setEditedSettings({
+      ...editedSettings,
+      transaction_type: event.target.value,
+    });
+  };
+  const handleMonthChange = (event) => {
+    setEditedSettings({
+      ...editedSettings,
+      month: event.target.value,
+    });
+  };
+  const handleYearChange = (event) => {
+    setEditedSettings({
+      ...editedSettings,
+      year: event.target.value,
+    });
+  };
+
+  const handleSave = () => {
+    onSave(editedSettings);
+    onClose();
+  };
+  function formatDate(dateString) {
+    const date = new Date(dateString);
+    let month = "" + (date.getMonth() + 1);
+    let day = "" + date.getDate();
+    const year = date.getFullYear();
+
+    if (month.length < 2) {
+      month = "0" + month;
+    }
+    if (day.length < 2) {
+      day = "0" + day;
+    }
+
+    return [year, month, day].join("-");
+  }
+  return (
+    <Dialog open={!!transaction} onClose={onClose}>
+      <DialogTitle sx={{ backgroundColor: "#262b3d", color: "#e0e3e9" }}>
+        Bearbeiten
+      </DialogTitle>
+      <DialogContent sx={{ backgroundColor: "#262b3d" }}>
+        <FormControl fullWidth>
+          <InputLabel style={{ color: "#e0e3e9" }}>Transaktionstyp</InputLabel>
+          <SelectComp
+            value={editedSettings.transaction_type}
+            onChange={handleSelectChange}
+            label="Transaktionstyp"
+            sx={{
+              color: "#e0e3e9",
+              backgroundColor: "#2e2e38",
+              border: "1px solid #e0e3e9",
+            }}
+          >
+            <MenuItem value="Ausgabe">Ausgabe</MenuItem>
+            <MenuItem value="Einnahme">Einnahme</MenuItem>
+          </SelectComp>
+        </FormControl>
+        <TextComp
+          label="Beschreibung"
+          type="text"
+          name="description"
+          value={editedSettings.description}
+          onChange={handleInputChange}
+          fullWidth
+        />
+        <TextComp
+          label="Betrag"
+          type="number"
+          name="amount"
+          value={editedSettings.amount}
+          onChange={handleInputChange}
+          fullWidth
+        />
+        <FormControl sx={{ marginRight: 3, flexGrow: 1, marginTop: 2 }}>
+          <InputLabel style={{ color: "#e0e3e9" }}>Monat</InputLabel>
+          <SelectComp
+            value={editedSettings.month}
+            onChange={handleMonthChange}
+            label="Monat"
+          >
+            {months?.map((month) => (
+              <MenuItem key={month.value} value={month.value}>
+                {month.label}
+              </MenuItem>
+            ))}
+          </SelectComp>
+        </FormControl>
+        <FormControl sx={{ marginRight: 3, flexGrow: 1, marginTop: 2 }}>
+          <InputLabel style={{ color: "#e0e3e9" }}>Jahr</InputLabel>
+          <SelectComp
+            value={editedSettings.year}
+            onChange={handleYearChange}
+            label="Jahr"
+          >
+            {years?.map((year) => (
+              <MenuItem key={year} value={year}>
+                {year}
+              </MenuItem>
+            ))}
+          </SelectComp>
+        </FormControl>
+      </DialogContent>
+      <DialogActions sx={{ backgroundColor: "#262b3d" }}>
+        <Button onClick={onClose} color="primary" sx={{ color: "#e0e3e9" }}>
+          Abbrechen
+        </Button>
+        <Button onClick={handleSave} color="primary" sx={{ color: "#e0e3e9" }}>
+          Speichern
+        </Button>
+      </DialogActions>
+    </Dialog>
   );
 }
 

@@ -11,12 +11,14 @@ import {
 } from "@mui/material";
 import DeleteIcon from "@mui/icons-material/Delete";
 import StyledTableCell from "../../components/tablecell";
+import EditIcon from "@mui/icons-material/Edit";
 
 function TransactionSection({
   transactions,
   filterMonth,
   filterYear,
   handleDeleteSettings,
+  handleEditButtonClick,
   transactionType,
 }) {
   return (
@@ -61,6 +63,12 @@ function TransactionSection({
                   {item.amount} €
                 </TableCell>
                 <TableCell align="right">
+                  <IconButton
+                    onClick={() => handleEditButtonClick(item.settings_id)}
+                    style={{ color: "black" }}
+                  >
+                    <EditIcon />
+                  </IconButton>
                   <IconButton
                     onClick={() => handleDeleteSettings(item.settings_id)}
                     style={{ color: "black" }}

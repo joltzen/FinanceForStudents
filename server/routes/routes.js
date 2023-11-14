@@ -478,4 +478,31 @@ router.patch("/updateTransaction", async (req, res) => {
   }
 });
 
+router.patch("/updateSettings", async (req, res) => {
+  try {
+    const { settings_id, transaction_type, amount, description, month, year } =
+      req.body;
+
+    const query = `
+      UPDATE settings
+      SET transaction_type = $1, amount = $2, description = $3, month = $4, year = $5
+      WHERE settings_id = $6
+      RETURNING *;`;
+
+    const values = [
+      transaction_type,
+      amount,
+      description,
+      month,
+      year,
+      settings_id,
+    ];
+    const result = await db.query(query, values);
+    res.json(result.rows[0]);
+  } catch (error) {
+    console.error("Error updating settings:", error);
+    res.status(500).json({ error: "Error updating transaction" });
+  }
+});
+
 module.exports = router;
