@@ -320,51 +320,68 @@ function SettingsForm() {
           <Tab label="Einnahmen" />
           <Tab label="Ausgaben" />
         </Tabs>
-        <FormControl sx={{ marginTop: 3 }}>
-          <InputLabel style={{ color: "#e0e3e9" }}>Monat</InputLabel>
-          <SelectComp
-            value={filterMonth}
-            onChange={(e) => setFilterMonth(e.target.value)}
-            label="Monat"
+        <Box
+          sx={{
+            display: "flex",
+            alignItems: "center", // Aligns items vertically
+            marginTop: 3,
+            marginBottom: 3,
+          }}
+        >
+          <FormControl sx={{ marginRight: 3, flexGrow: 1 }}>
+            <InputLabel style={{ color: "#e0e3e9" }}>Monat</InputLabel>
+            <SelectComp
+              value={filterMonth}
+              onChange={(e) => setFilterMonth(e.target.value)}
+              label="Monat"
+            >
+              {months?.map((month) => (
+                <MenuItem key={month.value} value={month.value}>
+                  {month.label}
+                </MenuItem>
+              ))}
+            </SelectComp>
+          </FormControl>
+
+          <FormControl sx={{ marginRight: 3, flexGrow: 1 }}>
+            <InputLabel style={{ color: "#e0e3e9" }}>Jahr</InputLabel>
+            <SelectComp
+              value={filterYear}
+              onChange={(e) => setFilterYear(e.target.value)}
+              label="Jahr"
+            >
+              {years?.map((year) => (
+                <MenuItem key={year} value={year}>
+                  {year}
+                </MenuItem>
+              ))}
+            </SelectComp>
+          </FormControl>
+
+          <Box
+            sx={{
+              display: "flex",
+              justifyContent: "flex-end",
+              flexGrow: 0, // Prevents the button container from growing
+            }}
           >
-            {months?.map((month) => (
-              <MenuItem key={month.value} value={month.value}>
-                {month.label}
-              </MenuItem>
-            ))}
-          </SelectComp>
-        </FormControl>
-        <FormControl sx={{ marginLeft: 3, marginTop: 3, marginBottom: 3 }}>
-          <InputLabel style={{ color: "#e0e3e9" }}>Jahr</InputLabel>
-          <SelectComp
-            value={filterYear}
-            onChange={(e) => setFilterYear(e.target.value)}
-            label="Jahr"
-          >
-            {years?.map((year) => (
-              <MenuItem key={year} value={year}>
-                {year}
-              </MenuItem>
-            ))}
-          </SelectComp>
-        </FormControl>
-        <FormControl sx={{ marginLeft: 3, marginTop: 3, marginBottom: 3 }}>
-          <Button
-            variant="contained"
-            color="button"
-            sx={{ color: "#e0e3e9" }}
-            onClick={handleTransferDialogOpen}
-          >
-            Fixkosten übertragen
-          </Button>
-          <TransferDialog
-            open={openTransferDialog}
-            handleClose={handleTransferDialogClose}
-            handleSubmit={handleTransferSubmit}
-            months={months}
-            years={years}
-          />
-        </FormControl>
+            <Button
+              variant="contained"
+              color="button"
+              sx={{ color: "#e0e3e9" }}
+              onClick={handleTransferDialogOpen}
+            >
+              Fixkosten übertragen
+            </Button>
+          </Box>
+        </Box>
+        <TransferDialog
+          open={openTransferDialog}
+          handleClose={handleTransferDialogClose}
+          handleSubmit={handleTransferSubmit}
+          months={months}
+          years={years}
+        />
         {selectedTab === 0 && (
           <TransactionSection
             transactions={transactions}

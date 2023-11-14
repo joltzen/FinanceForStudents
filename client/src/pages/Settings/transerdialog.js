@@ -5,21 +5,19 @@ import {
   DialogContent,
   DialogActions,
   Button,
-  Select,
   MenuItem,
   Grid,
   FormControl,
   InputLabel,
+  Typography,
 } from "@mui/material";
 import SelectComp from "../../components/SelectComp";
 
 function TransferDialog({ open, handleClose, handleSubmit, months, years }) {
-  const [sourceMonth, setSourceMonth] = useState(new Date().getMonth() + 1);
+  const [sourceMonth, setSourceMonth] = useState(new Date().getMonth());
   const [sourceYear, setSourceYear] = useState(new Date().getFullYear());
   const [targetMonth, setTargetMonth] = useState(new Date().getMonth() + 1);
   const [targetYear, setTargetYear] = useState(new Date().getFullYear());
-
-  // ... Logic for handling transfer
 
   return (
     <Dialog open={open} onClose={handleClose}>
@@ -28,8 +26,13 @@ function TransferDialog({ open, handleClose, handleSubmit, months, years }) {
       </DialogTitle>
       <DialogContent sx={{ backgroundColor: "#262b3d", color: "#e0e3e9" }}>
         <Grid container spacing={2}>
+          <Grid item xs={12}>
+            <Typography sx={{ color: "#e0e3e9", marginTop: 3 }}>
+              Von:
+            </Typography>
+          </Grid>
           <Grid item xs={6}>
-            <FormControl fullWidth sx={{ marginTop: 3 }}>
+            <FormControl fullWidth sx={{ marginTop: 1 }}>
               <InputLabel style={{ color: "#e0e3e9" }}>Monat</InputLabel>
               <SelectComp
                 value={sourceMonth}
@@ -47,7 +50,7 @@ function TransferDialog({ open, handleClose, handleSubmit, months, years }) {
           <Grid item xs={6}>
             <FormControl
               fullWidth
-              sx={{ marginLeft: 2, marginTop: 3, marginBottom: 3 }}
+              sx={{ marginLeft: 2, marginTop: 1, marginBottom: 3 }}
             >
               <InputLabel style={{ color: "#e0e3e9" }}>Jahr</InputLabel>
               <SelectComp
@@ -63,8 +66,13 @@ function TransferDialog({ open, handleClose, handleSubmit, months, years }) {
               </SelectComp>
             </FormControl>
           </Grid>
+          <Grid item xs={12}>
+            <Typography sx={{ color: "#e0e3e9", marginTop: 3 }}>
+              Nach:
+            </Typography>
+          </Grid>
           <Grid item xs={6}>
-            <FormControl fullWidth sx={{ marginTop: 3 }}>
+            <FormControl fullWidth sx={{ marginTop: 1 }}>
               <InputLabel style={{ color: "#e0e3e9" }}>Monat</InputLabel>
               <SelectComp
                 value={targetMonth}
@@ -82,7 +90,7 @@ function TransferDialog({ open, handleClose, handleSubmit, months, years }) {
           <Grid item xs={6}>
             <FormControl
               fullWidth
-              sx={{ marginLeft: 2, marginTop: 3, marginBottom: 3 }}
+              sx={{ marginLeft: 2, marginTop: 1, marginBottom: 3 }}
             >
               <InputLabel style={{ color: "#e0e3e9" }}>Jahr</InputLabel>
               <SelectComp
