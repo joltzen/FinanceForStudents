@@ -81,21 +81,41 @@ function SettingsForm() {
     targetYear
   ) => {
     try {
-      const response = await axiosInstance.get("/getSettings", {
-        params: {
-          month: sourceMonth,
-          year: sourceYear,
-          user_id: user.id,
-        },
+      // Fetch source transactions
+      const sourceResponse = await axiosInstance.get("/getSettings", {
+        params: { month: sourceMonth, year: sourceYear, user_id: user.id },
       });
-      const sourceTransactions = await response.data;
-      const targetTransactions = sourceTransactions.map((transaction) => ({
+      const sourceTransactions = await sourceResponse.data;
+
+      // Fetch target transactions
+      const targetResponse = await axiosInstance.get("/getSettings", {
+        params: { month: targetMonth, year: targetYear, user_id: user.id },
+      });
+      const targetTransactions = await targetResponse.data;
+
+      // Filter out transactions that are already present in the target month and year
+      const transactionsToTransfer = sourceTransactions.filter(
+        (sourceTransaction) => {
+          return !targetTransactions.some((targetTransaction) => {
+            return (
+              targetTransaction.description === sourceTransaction.description &&
+              targetTransaction.amount === sourceTransaction.amount &&
+              targetTransaction.transaction_type ===
+                sourceTransaction.transaction_type
+            );
+          });
+        }
+      );
+
+      // Map transactions to target month and year
+      const mappedTransactions = transactionsToTransfer.map((transaction) => ({
         ...transaction,
         month: targetMonth,
         year: targetYear,
       }));
 
-      await postTransactions(targetTransactions);
+      // Post the filtered transactions
+      await postTransactions(mappedTransactions);
       handleTransferDialogClose();
       fetchSettings();
     } catch (error) {
