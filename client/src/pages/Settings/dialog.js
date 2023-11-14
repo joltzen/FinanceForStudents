@@ -8,6 +8,7 @@ import {
   Typography,
   Paper,
   IconButton,
+  Grid,
 } from "@mui/material";
 import React, { useState, useEffect } from "react";
 import axiosInstance from "../../config/axios";
@@ -15,11 +16,14 @@ import { useAuth } from "../../core/auth/auth";
 import Circle from "@uiw/react-color-circle";
 import DeleteIcon from "@mui/icons-material/Delete";
 import TextComp from "../../components/TextComp";
+import EditIcon from "@mui/icons-material/Edit";
 function DialogPage() {
   const [categories, setCategories] = useState([]);
   const [newCategory, setNewCategory] = useState("");
   const [categoryColor, setCategoryColor] = useState("#F44E3B");
   const [openDialog, setOpenDialog] = useState(false);
+  const [editingCategory, setEditingCategory] = useState(null);
+  const [openEditDialog, setOpenEditDialog] = useState(false);
   const { user } = useAuth();
 
   const addCategory = () => {
@@ -29,6 +33,35 @@ function DialogPage() {
     setOpenDialog(false);
   };
 
+  const handleEditCategory = async () => {
+    try {
+      await axiosInstance.patch("/updateCategory", {
+        id: editingCategory.id,
+        name: newCategory,
+        color: categoryColor,
+      });
+      // Update the local state to reflect the changes
+      setCategories((prevCategories) =>
+        prevCategories.map((category) =>
+          category.id === editingCategory.id
+            ? { ...category, name: newCategory, color: categoryColor }
+            : category
+        )
+      );
+      setOpenEditDialog(false);
+      setNewCategory("");
+      setCategoryColor("#FFFFFF");
+    } catch (error) {
+      console.error("Error updating category:", error);
+    }
+  };
+
+  const openEditDialogWithCategory = (category) => {
+    setEditingCategory(category);
+    setNewCategory(category.name);
+    setCategoryColor(category.color);
+    setOpenEditDialog(true);
+  };
   useEffect(() => {
     const fetchCategories = async () => {
       try {
@@ -106,6 +139,7 @@ function DialogPage() {
             colors={[
               "#F44336",
               "#E91E63",
+              "#FF0000",
               "#9C27B0",
               "#673AB7",
               "#3F51B5",
@@ -151,34 +185,107 @@ function DialogPage() {
       <Typography variant="h6" sx={{ mt: 2, color: "#e0e3e9" }}>
         Benutzerdefinierte Kategorien
       </Typography>
-      {categories?.map((category, index) => (
-        <Paper
-          key={index}
-          sx={{
-            backgroundColor: category.color,
-            padding: "10px",
-            marginTop: "10px",
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "space-between",
-          }}
-        >
-          <Typography
-            sx={{
-              color: isColorDark(category.color) ? "#e0e3e9" : "black",
+      <Grid container spacing={2}>
+        {categories?.map((category, index) => (
+          <Grid item xs={12} sm={6} key={index}>
+            <Paper
+              key={index}
+              sx={{
+                backgroundColor: category.color,
+                padding: "10px",
+                marginTop: "10px",
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "space-between",
+              }}
+            >
+              <Typography
+                sx={{
+                  color: isColorDark(category.color) ? "#e0e3e9" : "black",
+                }}
+              >
+                {category.name}
+              </Typography>
+              <div style={{ display: "flex" }}>
+                <IconButton
+                  onClick={() => openEditDialogWithCategory(category)}
+                  style={{ color: "black" }}
+                >
+                  <EditIcon />
+                </IconButton>
+                <IconButton
+                  onClick={() => handleDeleteCategory(category.id)}
+                  style={{ color: "black" }}
+                >
+                  <DeleteIcon />
+                </IconButton>
+              </div>
+            </Paper>
+          </Grid>
+        ))}
+      </Grid>
+      <Dialog open={openEditDialog} onClose={() => setOpenEditDialog(false)}>
+        <DialogContent sx={{ backgroundColor: "#262b3d", color: "#e0e3e9" }}>
+          <DialogContentText
+            sx={{ backgroundColor: "#262b3d", color: "#e0e3e9" }}
+          >
+            Kategorie <strong>{editingCategory?.name}</strong> bearbeiten
+          </DialogContentText>
+          <TextComp
+            autoFocus
+            margin="dense"
+            label="Kategoriename"
+            type="text"
+            fullWidth
+            variant="outlined"
+            value={newCategory}
+            onChange={(e) => setNewCategory(e.target.value)}
+          />
+          <Circle
+            style={{ marginTop: "50px" }}
+            colors={[
+              "#F44336",
+              "#E91E63",
+              "#FF0000",
+              "#9C27B0",
+              "#673AB7",
+              "#3F51B5",
+              "#2196F3",
+              "#03A9F4",
+              "#00BCD4",
+              "#009688",
+              "#4CAF50",
+              "#8BC34A",
+              "#CDDC39",
+              "#FFEB3B",
+              "#FFC107",
+              "#FF9800",
+              "#FF5722",
+              "#795548",
+              "#607D8B",
+            ]}
+            color={categoryColor}
+            onChange={(color) => {
+              setCategoryColor(color.hex);
             }}
+          />
+        </DialogContent>{" "}
+        <DialogActions sx={{ backgroundColor: "#262b3d", color: "#e0e3e9" }}>
+          <Button
+            sx={{ backgroundColor: "#262b3d", color: "#e0e3e9" }}
+            onClick={() => setOpenEditDialog(false)}
           >
-            {category.name}
-          </Typography>
+            Abbrechen
+          </Button>
+          <Button
+            sx={{ backgroundColor: "#262b3d", color: "#e0e3e9" }}
+            onClick={handleEditCategory}
+          >
+            Speichern
+          </Button>
+        </DialogActions>
+      </Dialog>
 
-          <IconButton
-            onClick={() => handleDeleteCategory(category.id)}
-            style={{ color: "black" }}
-          >
-            <DeleteIcon />
-          </IconButton>
-        </Paper>
-      ))}
       <Button
         sx={{ marginTop: 2 }}
         onClick={() => setOpenDialog(true)}
