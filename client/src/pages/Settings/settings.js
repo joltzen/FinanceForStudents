@@ -24,7 +24,7 @@ import SelectComp from "../../components/SelectComp";
 import TransactionSection from "./transactionselect";
 import AddButton from "../../components/AddButtonComp";
 import { months, years } from "../../config/constants";
-
+import TransferDialog from "./transerdialog";
 function SettingsForm() {
   const [filterMonth, setFilterMonth] = useState(new Date().getMonth() + 1);
   const [filterYear, setFilterYear] = useState(new Date().getFullYear());
@@ -34,6 +34,7 @@ function SettingsForm() {
   const [transactions, setTransactions] = useState([]);
   const [openDialog, setOpenDialog] = useState(false);
   const [selectedTab, setSelectedTab] = useState(0);
+  const [openTransferDialog, setOpenTransferDialog] = useState(false);
   const { user } = useAuth();
 
   const handleTabChange = (event, newValue) => {
@@ -44,6 +45,83 @@ function SettingsForm() {
     setOpenDialog(!openDialog);
   };
 
+  const handleTransferDialogOpen = () => {
+    setOpenTransferDialog(true);
+  };
+
+  const handleTransferDialogClose = () => {
+    setOpenTransferDialog(false);
+  };
+
+  const postTransactions = async (transactions) => {
+    try {
+      for (let transaction of transactions) {
+        if (!transaction.transaction_type) {
+          console.error(
+            "Transaction type is missing for a transaction:",
+            transaction
+          );
+          continue;
+        }
+
+        await axiosInstance.post("/addSettings", {
+          ...transaction,
+          user_id: user.id,
+          transactionType: transaction.transaction_type,
+        });
+      }
+    } catch (error) {
+      console.error("Error posting transactions:", error);
+    }
+  };
+  const handleTransferSubmit = async (
+    sourceMonth,
+    sourceYear,
+    targetMonth,
+    targetYear
+  ) => {
+    try {
+      // Fetch source transactions
+      const sourceResponse = await axiosInstance.get("/getSettings", {
+        params: { month: sourceMonth, year: sourceYear, user_id: user.id },
+      });
+      const sourceTransactions = await sourceResponse.data;
+
+      // Fetch target transactions
+      const targetResponse = await axiosInstance.get("/getSettings", {
+        params: { month: targetMonth, year: targetYear, user_id: user.id },
+      });
+      const targetTransactions = await targetResponse.data;
+
+      // Filter out transactions that are already present in the target month and year
+      const transactionsToTransfer = sourceTransactions.filter(
+        (sourceTransaction) => {
+          return !targetTransactions.some((targetTransaction) => {
+            return (
+              targetTransaction.description === sourceTransaction.description &&
+              targetTransaction.amount === sourceTransaction.amount &&
+              targetTransaction.transaction_type ===
+                sourceTransaction.transaction_type
+            );
+          });
+        }
+      );
+
+      // Map transactions to target month and year
+      const mappedTransactions = transactionsToTransfer.map((transaction) => ({
+        ...transaction,
+        month: targetMonth,
+        year: targetYear,
+      }));
+
+      // Post the filtered transactions
+      await postTransactions(mappedTransactions);
+      handleTransferDialogClose();
+      fetchSettings();
+    } catch (error) {
+      console.error("Fetching settings failed:", error);
+    }
+  };
   const handleDescriptionChange = (e) => {
     setDescription(e.target.value);
   };
@@ -269,6 +347,23 @@ function SettingsForm() {
               </MenuItem>
             ))}
           </SelectComp>
+        </FormControl>
+        <FormControl sx={{ marginLeft: 3, marginTop: 3, marginBottom: 3 }}>
+          <Button
+            variant="contained"
+            color="button"
+            sx={{ color: "#e0e3e9" }}
+            onClick={handleTransferDialogOpen}
+          >
+            Transfer Settings
+          </Button>
+          <TransferDialog
+            open={openTransferDialog}
+            handleClose={handleTransferDialogClose}
+            handleSubmit={handleTransferSubmit}
+            months={months}
+            years={years}
+          />
         </FormControl>
         {selectedTab === 0 && (
           <TransactionSection
