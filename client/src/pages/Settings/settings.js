@@ -355,7 +355,7 @@ function SettingsForm() {
             sx={{ color: "#e0e3e9" }}
             onClick={handleTransferDialogOpen}
           >
-            Transfer Settings
+            Fixkosten übertragen
           </Button>
           <TransferDialog
             open={openTransferDialog}

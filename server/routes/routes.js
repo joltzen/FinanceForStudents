@@ -140,7 +140,7 @@ const findUserByLogin = async (login) => {
     "SELECT * FROM users WHERE username = $1 OR email = $1",
     [login]
   );
-  return result.rows[0]; // Accessing the first row of the result
+  return result.rows[0];
 };
 
 router.get("/getCategories", async (req, res) => {
@@ -431,7 +431,6 @@ router.get("/get-saving-goals", async (req, res) => {
 router.delete("/delete-saving-goal", async (req, res) => {
   try {
     const { id } = req.query;
-    console.log(id);
     const query = "DELETE FROM saving_goals WHERE id = $1 returning *;";
     const values = [id];
     const result = await db.query(query, values);

@@ -9,7 +9,7 @@
     "install": "cd server && npm install && cd ../client && npm install",
     "postinstall": "npm run build:client",
     "start": "node server/app.js",
-    "sa": "concurrently \"npm run server\" \"npm run client\"",
+    "sa": "concurrently \"npm --prefix server run start\" \"npm --prefix client run start\"",
     "build": "cd client && npm install && npm run build"
   },
   "dependencies": {
