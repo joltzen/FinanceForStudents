@@ -26,6 +26,7 @@ import AttachMoneyIcon from "@mui/icons-material/AttachMoney";
 import PersonIcon from "@mui/icons-material/Person";
 import InfoIcon from "@mui/icons-material/Info";
 import SavingsIcon from "@mui/icons-material/Savings";
+
 const StyledAppBar = styled(AppBar)({
   zIndex: 1400,
   position: "relative",
@@ -67,6 +68,7 @@ function Navbar() {
   const handleLogout = () => {
     logout();
   };
+
   const handleProfileMenuOpen = (event) => {
     setAnchorEl(event.currentTarget);
   };
@@ -78,7 +80,7 @@ function Navbar() {
   return (
     <div>
       <StyledAppBar position="static">
-        <Toolbar>
+        <Toolbar style={{ display: "flex", justifyContent: "space-between" }}>
           <IconButton
             edge="start"
             color="inherit"
@@ -95,83 +97,79 @@ function Navbar() {
               <MenuIcon fontSize="inherit" />
             )}
           </IconButton>
-          <div style={{ flexGrow: 1 }} />
-          {user ? (
-            <Link
-              to="/dashboard"
-              style={{ textDecoration: "none", color: "inherit" }}
-            >
-              <Typography
-                variant="h1"
-                noWrap
-                sx={{
-                  fontWeight: "bold",
-                  fontSize: "25px",
-                  color: "#c6aa60",
-                  fontFamily: "'Lato', sans-serif",
-                }}
+
+          <div
+            style={{ flexGrow: 1, display: "flex", justifyContent: "center" }}
+          >
+            {user ? (
+              <Link
+                to="/dashboard"
+                style={{ textDecoration: "none", color: "inherit" }}
               >
-                FinanceForStudents
-              </Typography>
-            </Link>
-          ) : (
-            <Link to="/" style={{ textDecoration: "none", color: "inherit" }}>
-              <Typography
-                variant="h1"
-                noWrap
-                sx={{
-                  fontWeight: "bold",
-                  fontSize: "25px",
-                  color: "#c6aa60",
-                  fontFamily: "'Lato', sans-serif",
-                }}
-              >
-                FinanceForStudents
-              </Typography>
-            </Link>
-          )}
-          <div style={{ flexGrow: 1 }} />{" "}
-          {user ? (
-            <div>
-              <IconButton
-                edge="end"
-                aria-label="account of current user"
-                aria-haspopup="true"
-                onClick={handleProfileMenuOpen}
-                color="inherit"
-                sx={{ color: "#c6aa60", fontSize: "20px" }}
-              >
-                <AccountCircle />
-              </IconButton>
-              <Menu
-                anchorEl={anchorEl}
-                anchorOrigin={{ vertical: "top", horizontal: "right" }}
-                keepMounted
-                transformOrigin={{ vertical: "top", horizontal: "right" }}
-                open={Boolean(anchorEl)}
-                onClose={handleProfileMenuClose}
-                sx={{
-                  marginTop: 5,
-                }}
-              >
-                <StyledMenuItem
-                  onClick={handleProfileMenuClose}
-                  component={Link}
-                  to="/profile"
+                <img
+                  src="/logos/Schrift.png"
+                  alt="Schrift"
+                  style={{ maxWidth: "250px", maxHeight: "100%" }}
+                />
+              </Link>
+            ) : (
+              <Link to="/" style={{ textDecoration: "none", color: "inherit" }}>
+                <img
+                  src="/logos/Schrift.png"
+                  alt="Schrift"
+                  style={{ maxWidth: "250px", maxHeight: "100%" }}
+                />
+              </Link>
+            )}
+          </div>
+
+          <div>
+            {user ? (
+              <div>
+                <IconButton
+                  edge="end"
+                  aria-label="account of current user"
+                  aria-haspopup="true"
+                  onClick={handleProfileMenuOpen}
+                  color="inherit"
+                  sx={{ color: "#c6aa60", fontSize: "20px" }}
                 >
-                  {user.firstname} {user.surname}
-                </StyledMenuItem>
-                <StyledMenuItem onClick={handleLogout} component={Link} to="/">
-                  Logout
-                </StyledMenuItem>
-              </Menu>
-            </div>
-          ) : (
-            <>
-              <NavButtons text="Signup" path="/signup"></NavButtons>
-              <NavButtons text="Login" path="/login"></NavButtons>
-            </>
-          )}
+                  <AccountCircle />
+                </IconButton>
+                <Menu
+                  anchorEl={anchorEl}
+                  anchorOrigin={{ vertical: "top", horizontal: "right" }}
+                  keepMounted
+                  transformOrigin={{ vertical: "top", horizontal: "right" }}
+                  open={Boolean(anchorEl)}
+                  onClose={handleProfileMenuClose}
+                  sx={{
+                    marginTop: 5,
+                  }}
+                >
+                  <StyledMenuItem
+                    onClick={handleProfileMenuClose}
+                    component={Link}
+                    to="/profile"
+                  >
+                    {user.firstname} {user.surname}
+                  </StyledMenuItem>
+                  <StyledMenuItem
+                    onClick={handleLogout}
+                    component={Link}
+                    to="/"
+                  >
+                    Logout
+                  </StyledMenuItem>
+                </Menu>
+              </div>
+            ) : (
+              <>
+                <NavButtons text="Signup" path="/signup"></NavButtons>
+                <NavButtons text="Login" path="/login"></NavButtons>
+              </>
+            )}
+          </div>
         </Toolbar>
       </StyledAppBar>
       <StyledDrawer anchor="left" open={isSidebarOpen} onClose={toggleDrawer}>
@@ -224,11 +222,7 @@ function Navbar() {
               primary="Impressum"
               icon={<InfoIcon />}
             />
-            {/* <StyledListItem
-              href="/contact"
-              primary="Contact"
-              icon={<MailIcon />}
-            /> */}
+            {/* Additional items here */}
             <Divider />
           </List>
         </StyledDrawerContent>

@@ -9,9 +9,9 @@ function HomePage() {
   return (
     <Page>
       <img
-        src="/logos/Logo_stretched.jpg"
+        src="/logos/Logo_transparant.png"
         alt="Logo"
-        style={{ width: "100%", marginBottom: "20px" }}
+        style={{ width: "50%", marginBottom: "20px" }}
       />
       <div
         style={{
