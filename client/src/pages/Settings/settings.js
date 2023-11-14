@@ -24,7 +24,7 @@ import SelectComp from "../../components/SelectComp";
 import TransactionSection from "./transactionselect";
 import AddButton from "../../components/AddButtonComp";
 import { months, years } from "../../config/constants";
-
+import TransferDialog from "./transerdialog";
 function SettingsForm() {
   const [filterMonth, setFilterMonth] = useState(new Date().getMonth() + 1);
   const [filterYear, setFilterYear] = useState(new Date().getFullYear());
@@ -34,6 +34,8 @@ function SettingsForm() {
   const [transactions, setTransactions] = useState([]);
   const [openDialog, setOpenDialog] = useState(false);
   const [selectedTab, setSelectedTab] = useState(0);
+  const [openTransferDialog, setOpenTransferDialog] = useState(false);
+  const [sourceTransactions, setSourceTransactions] = useState();
   const { user } = useAuth();
 
   const handleTabChange = (event, newValue) => {
@@ -44,6 +46,43 @@ function SettingsForm() {
     setOpenDialog(!openDialog);
   };
 
+  const handleTransferDialogOpen = () => {
+    setOpenTransferDialog(true);
+  };
+
+  const handleTransferDialogClose = () => {
+    setOpenTransferDialog(false);
+  };
+
+  const fetchTransferSettings = async (
+    sourceMonth,
+    sourceYear,
+    targetMonth,
+    targetYear
+  ) => {
+    try {
+      const response = await axiosInstance.get("/getSettings", {
+        params: {
+          month: sourceMonth,
+          year: sourceYear,
+          user_id: user.id,
+        },
+      });
+      setSourceTransactions(response.data);
+    } catch (error) {
+      console.error("Fetching settings failed:", error);
+    }
+  };
+
+  const handleTransferSubmit = async (
+    sourceMonth,
+    sourceYear,
+    targetMonth,
+    targetYear
+  ) => {
+    await fetchTransferSettings(sourceMonth, sourceYear);
+    handleTransferDialogClose();
+  };
   const handleDescriptionChange = (e) => {
     setDescription(e.target.value);
   };
@@ -269,6 +308,23 @@ function SettingsForm() {
               </MenuItem>
             ))}
           </SelectComp>
+        </FormControl>
+        <FormControl sx={{ marginLeft: 3, marginTop: 3, marginBottom: 3 }}>
+          <Button
+            variant="contained"
+            color="button"
+            sx={{ color: "#e0e3e9" }}
+            onClick={handleTransferDialogOpen}
+          >
+            Transfer Settings
+          </Button>
+          <TransferDialog
+            open={openTransferDialog}
+            handleClose={handleTransferDialogClose}
+            handleSubmit={handleTransferSubmit}
+            months={months}
+            years={years}
+          />
         </FormControl>
         {selectedTab === 0 && (
           <TransactionSection
