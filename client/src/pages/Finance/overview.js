@@ -340,7 +340,7 @@ function FinanceOverview({ update }) {
         <Box
           sx={{
             display: "flex",
-            justifyContent: "flex-end",
+            justifyContent: "space-between", // This will push the children to opposite ends
             alignItems: "center",
             padding: 2,
             width: "100%", // Ensure the box takes full width
@@ -354,16 +354,10 @@ function FinanceOverview({ update }) {
             page={page}
             onPageChange={handleChangePage}
             onRowsPerPageChange={handleChangeRowsPerPage}
-            sx={{ flex: 1, mr: 110 }} // This will make the TablePagination take only the space it needs
           />
-          <Box display="flex" justifyContent="space-between">
-            <Typography
-              variant="body"
-              sx={{ flex: 1, textAlign: "right", mr: 5 }}
-            >
-              Gesamtsumme: <strong>{savingSum.toFixed(2)}€</strong>
-            </Typography>
-          </Box>
+          <Typography variant="body2" sx={{ marginRight: 5 }}>
+            Gesamtsumme: <strong>{savingSum.toFixed(2)}€</strong>
+          </Typography>
         </Box>
       </TableContainer>
 
