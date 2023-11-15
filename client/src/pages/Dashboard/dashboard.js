@@ -17,6 +17,7 @@ import { useFetchData } from "../../hooks/useFetchData";
 import { useCalculations } from "../../hooks/useCalculations";
 import BudgetSummary from "./summary";
 import { months, years } from "../../config/constants";
+import { Bar } from "react-chartjs-2";
 
 function DashboardPage() {
   const { user } = useAuth();
@@ -24,6 +25,7 @@ function DashboardPage() {
   const [filterYear, setFilterYear] = useState(new Date().getFullYear());
   const [isAnnualView, setIsAnnualView] = useState(false);
   const [totalSavingGoals, setTotalSavingGoals] = useState(0);
+  const [showBarChart, setShowBarChart] = useState(true);
   const { transactions, categories, settings, savingsGoals } = useFetchData(
     user,
     isAnnualView,
@@ -36,6 +38,7 @@ function DashboardPage() {
     calculateAnnualTotals,
     getCategoryTotal,
     getAnnualCategoryTotal,
+    calculateMonthlyRemainingBudgets,
   } = useCalculations(
     transactions,
     settings,
@@ -50,6 +53,62 @@ function DashboardPage() {
     setTotalSavingGoals(totalSavings);
   }, [totalSavings]);
 
+  const handleBarChartToggle = (event) => {
+    setShowBarChart(event.target.checked);
+  };
+
+  const handleChartToggle = (event) => {
+    setIsAnnualView(event.target.checked);
+  };
+
+  const barChartData = {
+    labels: months.map((month) => month.label),
+    datasets: [
+      {
+        data: calculateMonthlyRemainingBudgets(), // Example data
+        backgroundColor: [
+          "rgb(255, 99, 132)",
+          "rgb(255, 159, 64)",
+          "rgb(255, 205, 86)",
+          "rgb(75, 192, 192)",
+          "rgb(54, 162, 235)",
+          "rgb(153, 102, 255)",
+          "rgb(201, 203, 207)",
+        ],
+        borderColor: [
+          "rgb(255, 99, 132)",
+          "rgb(255, 159, 64)",
+          "rgb(255, 205, 86)",
+          "rgb(75, 192, 192)",
+          "rgb(54, 162, 235)",
+          "rgb(153, 102, 255)",
+          "rgb(201, 203, 207)",
+        ],
+        borderWidth: 1,
+      },
+    ],
+  };
+
+  const barChartOptions = {
+    scales: {
+      y: {
+        beginAtZero: true,
+        ticks: {
+          color: "#e0e3e9",
+        },
+      },
+      x: {
+        ticks: {
+          color: "#e0e3e9",
+        },
+      },
+    },
+    plugins: {
+      legend: {
+        display: false, // This hides the legend
+      },
+    },
+  };
   const chartData = {
     labels: categories.map((category) => category.name),
     datasets: [
@@ -170,13 +229,14 @@ function DashboardPage() {
                     control={
                       <SwitchComp
                         checked={isAnnualView}
-                        onChange={(e) => setIsAnnualView(e.target.checked)}
+                        onChange={handleChartToggle}
                       />
                     }
                     sx={{ color: "#e0e3e9" }}
                     label="Jahresrückblick"
                   />
                 </Grid>
+
                 <BudgetFilter
                   filterMonth={filterMonth}
                   setFilterMonth={setFilterMonth}
@@ -189,10 +249,33 @@ function DashboardPage() {
               </Grid>
 
               {hasBudgetData() ? (
-                <BudgetChart
-                  chartData={chartData}
-                  chartOptions={chartOptions}
-                />
+                <>
+                  <Box mb={5} mt={5}>
+                    <BudgetChart
+                      chartData={chartData}
+                      chartOptions={chartOptions}
+                    />
+                  </Box>
+                  {isAnnualView && (
+                    <Grid item xs={12}>
+                      <FormControlLabel
+                        control={
+                          <SwitchComp
+                            checked={showBarChart}
+                            onChange={handleBarChartToggle}
+                          />
+                        }
+                        label="Balkendiagramm anzeigen"
+                        sx={{ color: "#e0e3e9" }}
+                      />
+                    </Grid>
+                  )}
+                  {showBarChart && isAnnualView && (
+                    <Box>
+                      <Bar data={barChartData} options={barChartOptions} />
+                    </Box>
+                  )}
+                </>
               ) : (
                 <NoDataAlert />
               )}
