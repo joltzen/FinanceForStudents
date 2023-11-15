@@ -21,6 +21,7 @@ import {
   DialogContent,
   DialogActions,
   Button,
+  TablePagination,
 } from "@mui/material";
 import StyledTableCell from "../../components/tablecell";
 import DeleteIcon from "@mui/icons-material/Delete";
@@ -40,13 +41,57 @@ function FinanceOverview({ update }) {
   const { user } = useAuth();
   const [savingGoal, setSavingGoal] = useState([]);
   const [needUpdate, setNeedUpdate] = useState(false);
+  const [page, setPage] = useState(0);
+  const [rowsPerPage, setRowsPerPage] = useState(5); // You can adjust the number of rows per page
+  const [order, setOrder] = useState("asc");
+  const [orderBy, setOrderBy] = useState("date"); // default sorting by date
 
   function formatDate(dateString) {
     const options = { year: "numeric", month: "2-digit", day: "2-digit" };
     return new Date(dateString).toLocaleDateString("de-DE", options);
   }
 
-  
+  const handleSort = (property) => {
+    const isAsc = orderBy === property && order === "asc";
+    setOrder(isAsc ? "desc" : "asc");
+    setOrderBy(property);
+  };
+
+  const sortTransactions = (array) => {
+    return array.sort((a, b) => {
+      if (order === "asc") {
+        return a[orderBy] < b[orderBy] ? -1 : 1;
+      } else {
+        return a[orderBy] > b[orderBy] ? -1 : 1;
+      }
+    });
+  };
+  const sortTransactionByCategory = (array) => {
+    return array.sort((a, b) => {
+      let valueA = a[orderBy];
+      let valueB = b[orderBy];
+
+      if (orderBy === "category") {
+        // Assuming you have category names in your transaction object
+        valueA = a.category.name;
+        valueB = b.category.name;
+      }
+
+      if (order === "asc") {
+        return valueA < valueB ? -1 : 1;
+      } else {
+        return valueA > valueB ? -1 : 1;
+      }
+    });
+  };
+  const handleChangePage = (event, newPage) => {
+    setPage(newPage);
+  };
+
+  const handleChangeRowsPerPage = (event) => {
+    setRowsPerPage(parseInt(event.target.value, 10));
+    setPage(0);
+  };
   // eslint-disable-next-line react-hooks/exhaustive-deps
   const fetchTransactions = useCallback(async () => {
     try {
@@ -180,7 +225,7 @@ function FinanceOverview({ update }) {
   };
 
   return (
-    <div>
+    <div style={{ marginLeft: 150 }}>
       <FormControl>
         <InputLabel style={{ color: "#e0e3e9" }}>Monat</InputLabel>
         <SelectComp
@@ -219,8 +264,8 @@ function FinanceOverview({ update }) {
           ))}
         </SelectComp>
       </FormControl>
-      <TableContainer component={Paper}>
-        <Table stickyHeader aria-label="transaction table">
+      <TableContainer component={Paper} sx={{ backgroundColor: "#afb1b2" }}>
+        <Table sx={{ minWidth: 500 }} aria-label="custom pagination table">
           <TableHead>
             <TableRow>
               <StyledTableCell text="Datum" />
@@ -230,86 +275,98 @@ function FinanceOverview({ update }) {
             </TableRow>
           </TableHead>
           <TableBody>
-            {transactions.map((transaction) => {
-              const category = categories.find(
-                (c) => c.id === transaction.category_id
-              );
-              const categoryColor = category ? category.color : "#e0e3e9";
-              return (
-                <TableRow key={transaction.transaction_id}>
-                  <TableCell
-                    component="th"
-                    scope="row"
-                    sx={{
-                      border: "1px solid black",
-                      backgroundColor: categoryColor,
-                    }}
-                  >
-                    {formatDate(transaction.transaction_date)}
-                  </TableCell>
-                  <TableCell
-                    sx={{
-                      border: "1px solid black",
-                      backgroundColor: categoryColor,
-                    }}
-                  >
-                    {transaction.description}
-                  </TableCell>
-                  <TableCell
-                    sx={{
-                      border: "1px solid black",
-                      backgroundColor: categoryColor,
-                    }}
-                  >
-                    {transaction.transaction_type === "Ausgabe" ? "-" : ""}
-                    {transaction.amount} €
-                  </TableCell>
-                  <TableCell
-                    align="right"
-                    sx={{
-                      border: "1px solid black",
-                      backgroundColor: categoryColor,
-                    }}
-                  >
-                    <IconButton
-                      onClick={() => handleEditButtonClick(transaction)}
+            {sortTransactions(transactions)
+              .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
+              .map((transaction) => {
+                const category = categories.find(
+                  (c) => c.id === transaction.category_id
+                );
+                const categoryColor = category ? category.color : "#e0e3e9";
+                return (
+                  <TableRow key={transaction.transaction_id}>
+                    <TableCell
+                      component="th"
+                      scope="row"
+                      sx={{
+                        border: "1px solid black",
+                        backgroundColor: categoryColor,
+                      }}
                     >
-                      <EditIcon />
-                    </IconButton>
-                    <IconButton
-                      onClick={() =>
-                        handleDeleteTransaction(transaction.transaction_id)
-                      }
-                      style={{ color: "black" }}
+                      {formatDate(transaction.transaction_date)}
+                    </TableCell>
+                    <TableCell
+                      sx={{
+                        border: "1px solid black",
+                        backgroundColor: categoryColor,
+                      }}
                     >
-                      <DeleteIcon />
-                    </IconButton>
-                  </TableCell>
-                </TableRow>
-              );
-            })}
+                      {transaction.description}
+                    </TableCell>
+                    <TableCell
+                      sx={{
+                        border: "1px solid black",
+                        backgroundColor: categoryColor,
+                      }}
+                    >
+                      {transaction.transaction_type === "Ausgabe" ? "-" : ""}
+                      {transaction.amount} €
+                    </TableCell>
+                    <TableCell
+                      align="right"
+                      sx={{
+                        border: "1px solid black",
+                        backgroundColor: categoryColor,
+                      }}
+                    >
+                      <IconButton
+                        onClick={() => handleEditButtonClick(transaction)}
+                      >
+                        <EditIcon />
+                      </IconButton>
+                      <IconButton
+                        onClick={() =>
+                          handleDeleteTransaction(transaction.transaction_id)
+                        }
+                        style={{ color: "black" }}
+                      >
+                        <DeleteIcon />
+                      </IconButton>
+                    </TableCell>
+                  </TableRow>
+                );
+              })}
           </TableBody>
         </Table>
         <Box
           sx={{
-            p: 1,
             display: "flex",
             justifyContent: "flex-end",
-            backgroundColor: "#e0e3e9",
+            alignItems: "center",
+            padding: 2,
+            width: "100%", // Ensure the box takes full width
           }}
         >
-          <Typography
-            variant="h6"
-            sx={{
-              fontSize: 15,
-              textAlign: "right",
-              fontWeight: "bold",
-            }}
-          >
-            Gesamtsumme: {savingSum.toFixed(2)}€
-          </Typography>
+          <TablePagination
+            rowsPerPageOptions={[5, 10, 25, { label: "All", value: -1 }]}
+            component="div"
+            count={transactions.length}
+            rowsPerPage={rowsPerPage}
+            page={page}
+            onPageChange={handleChangePage}
+            onRowsPerPageChange={handleChangeRowsPerPage}
+            sx={{ flex: 1, mr: 110 }} // This will make the TablePagination take only the space it needs
+          />
+          <Box display="flex" justifyContent="space-between">
+            <Typography
+              variant="body"
+              sx={{ flex: 1, textAlign: "right", mr: 5 }}
+            >
+              Gesamtsumme: <strong>{savingSum.toFixed(2)}€</strong>
+            </Typography>
+          </Box>
         </Box>
       </TableContainer>
+
       {editTransaction && (
         <EditTransactionDialog
           transaction={editTransaction}

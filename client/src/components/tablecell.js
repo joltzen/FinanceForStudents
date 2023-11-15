@@ -9,6 +9,7 @@ function StyledTableCell(props) {
         color: "#e0e3e9",
         fontWeight: "bold",
         borderBottom: "1px solid black",
+        width: "20px",
       }}
     >
       {props.text}

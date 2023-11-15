@@ -9,3 +9,4 @@ export { FinancePage } from "./Finance";
 export { Reset } from "./Reset";
 export { Saving } from "./Save";
 export { Impressum } from "./Impressum";
+export { About } from "./About";

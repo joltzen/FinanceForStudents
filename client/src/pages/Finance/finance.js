@@ -149,13 +149,12 @@ function FinancePage() {
   }, [user.id, update]);
 
   return (
-    <Box sx={{ flexGrow: 1, padding: 3 }}>
+    <Box sx={{ flexGrow: 1, padding: 1, width: "100%", margin: "0 auto" }}>
       <Grid
-        container
-        spacing={2}
-        justifyContent="center"
-        alignItems="center"
-        style={{ marginTop: 20 }}
+        style={{
+          marginTop: 1,
+          width: "90%",
+        }}
       >
         <Grid item xs={12} md={8} lg={6}>
           <AddButton
@@ -286,7 +285,11 @@ function FinancePage() {
             </DialogActions>
           </Dialog>
 
-          <Typography variant="h6" color="#e0e3e9" sx={{ mb: 2 }}>
+          <Typography
+            variant="h6"
+            color="#e0e3e9"
+            sx={{ mb: 2, ml: 20, mt: 2 }}
+          >
             Transaktionen Übersicht
           </Typography>
           <FinanceOverview update={update} />
