@@ -42,7 +42,7 @@ function FinanceOverview({ update }) {
   const [savingGoal, setSavingGoal] = useState([]);
   const [needUpdate, setNeedUpdate] = useState(false);
   const [page, setPage] = useState(0);
-  const [rowsPerPage, setRowsPerPage] = useState(5); // You can adjust the number of rows per page
+  const [rowsPerPage, setRowsPerPage] = useState(10); // You can adjust the number of rows per page
   const [order, setOrder] = useState("asc");
   const [orderBy, setOrderBy] = useState("date"); // default sorting by date
 
@@ -343,7 +343,7 @@ function FinanceOverview({ update }) {
             justifyContent: "space-between", // This will push the children to opposite ends
             alignItems: "center",
             padding: 2,
-            width: "100%", // Ensure the box takes full width
+            width: "100%", 
           }}
         >
           <TablePagination

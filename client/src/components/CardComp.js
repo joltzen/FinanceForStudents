@@ -3,8 +3,8 @@ import { styled } from "@mui/system";
 
 const CardComp = styled(Card)(({ theme }) => ({
   marginBottom: theme.spacing(2),
-  backgroundColor: "#262b3d",
-  color: "#be9e44",
+  backgroundColor: theme.palette.card.main,
+  color: theme.palette.secondary.main,
   boxShadow: theme.shadows[6],
   "&:hover": {
     boxShadow: theme.shadows[10],

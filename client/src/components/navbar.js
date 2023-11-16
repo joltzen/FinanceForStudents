@@ -26,39 +26,43 @@ import AttachMoneyIcon from "@mui/icons-material/AttachMoney";
 import PersonIcon from "@mui/icons-material/Person";
 import InfoIcon from "@mui/icons-material/Info";
 import SavingsIcon from "@mui/icons-material/Savings";
+import Switch from "@mui/material/Switch";
+import { ColorModeContext } from "../theme";
+import { useTheme } from "@mui/material/styles";
 
-const StyledAppBar = styled(AppBar)({
+const StyledAppBar = styled(AppBar)(({ theme }) => ({
   zIndex: 1400,
   position: "relative",
-});
+}));
 
-const StyledDrawer = styled(Drawer)({
+const StyledDrawer = styled(Drawer)(({ theme }) => ({
   zIndex: 1200,
   "& .MuiDrawer-paper": {
-    backgroundColor: "#333740",
-    color: "#e0e3e9",
+    backgroundColor: theme.pallete.list.main,
+    color: theme.pallete.text.main,
   },
-});
+}));
 
-const StyledMenuItem = styled(MenuItem)({
+const StyledMenuItem = styled(MenuItem)(({ theme }) => ({
   zIndex: 1200,
-});
+}));
 
-const StyledDrawerContent = styled("div")({
+const StyledDrawerContent = styled("div")(({ theme }) => ({
   width: "14vw",
   marginTop: "70px",
 
   "& .MuiDrawer-paper": {
-    backgroundColor: "#333740",
-    color: "#e0e3e9",
+    backgroundColor: theme.pallete.list.main,
+    color: theme.pallete.text.main,
   },
-});
-
+}));
 function Navbar() {
+  const theme = useTheme();
   const { isSidebarOpen, setSidebarOpen } = useContext(SidebarContext);
   const { user, logout } = useAuth();
   const [isPlusIcon, setIsPlusIcon] = useState(false);
   const [anchorEl, setAnchorEl] = useState(null);
+  const colorMode = useContext(ColorModeContext); // Access the color mode context
 
   const toggleDrawer = () => {
     setSidebarOpen(!isSidebarOpen);
@@ -87,7 +91,7 @@ function Navbar() {
             aria-label="menu"
             onClick={toggleDrawer}
             sx={{
-              color: "#c6aa60",
+              color: theme.palette.icon.main,
               fontSize: "20px",
             }}
           >
@@ -97,7 +101,11 @@ function Navbar() {
               <MenuIcon fontSize="inherit" />
             )}
           </IconButton>
-
+          <Switch
+            checked={colorMode.mode === "dark"}
+            onChange={colorMode.toggleColorMode}
+            color="default"
+          />
           <div
             style={{ flexGrow: 1, display: "flex", justifyContent: "center" }}
           >
@@ -132,7 +140,7 @@ function Navbar() {
                   aria-haspopup="true"
                   onClick={handleProfileMenuOpen}
                   color="inherit"
-                  sx={{ color: "#c6aa60", fontSize: "20px" }}
+                  sx={{ color: theme.palette.icon.main, fontSize: "20px" }}
                 >
                   <AccountCircle />
                 </IconButton>

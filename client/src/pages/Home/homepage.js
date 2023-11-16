@@ -95,7 +95,9 @@ function HomePage() {
         <Box sx={{ flexGrow: 1, padding: 4 }}>
           <Grid container spacing={2}>
             <Grid item xs={12} md={6}>
-              <Heading text={strings.homepage.welcomeMessage} />
+              <Typography variant="h4">
+                <strong>{strings.homepage.welcomeMessage}</strong>
+              </Typography>
               <Heading2 text={strings.homepage.wm2} />
             </Grid>
             <Grid item xs={6}>

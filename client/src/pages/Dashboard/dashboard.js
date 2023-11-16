@@ -18,8 +18,11 @@ import { useCalculations } from "../../hooks/useCalculations";
 import BudgetSummary from "./summary";
 import { months, years } from "../../config/constants";
 import { Bar } from "react-chartjs-2";
+import { useTheme } from "@mui/material/styles";
 
 function DashboardPage() {
+  const theme = useTheme();
+
   const { user } = useAuth();
   const [filterMonth, setFilterMonth] = useState(new Date().getMonth() + 1);
   const [filterYear, setFilterYear] = useState(new Date().getFullYear());
@@ -94,12 +97,12 @@ function DashboardPage() {
       y: {
         beginAtZero: true,
         ticks: {
-          color: "#e0e3e9",
+          color: theme.palette.text.primary,
         },
       },
       x: {
         ticks: {
-          color: "#e0e3e9",
+          color: theme.palette.text.primary,
         },
       },
     },
@@ -120,10 +123,10 @@ function DashboardPage() {
             )
           : categories.map((category) => getCategoryTotal(category.id)),
         backgroundColor: categories.map(
-          (category) => category.color || "#ffce56"
+          (category) => category.color || theme.palette.budget.main
         ),
         hoverBackgroundColor: categories.map(
-          (category) => category.color || "#ffce56"
+          (category) => category.color || theme.palette.budget.main
         ),
       },
     ],
@@ -136,15 +139,15 @@ function DashboardPage() {
   if (remainingBudget > 0) {
     chartData.labels.push("Verbleibendes Budget");
     chartData.datasets[0].data.push(remainingBudget);
-    chartData.datasets[0].backgroundColor.push("#76ff03");
-    chartData.datasets[0].hoverBackgroundColor.push("#76ff03");
+    chartData.datasets[0].backgroundColor.push(theme.palette.budget.main);
+    chartData.datasets[0].hoverBackgroundColor.push(theme.palette.budget.main);
   }
 
   if (totalSavingGoals > 0) {
     chartData.labels.push("Sparen");
     chartData.datasets[0].data.push(totalSavingGoals);
-    chartData.datasets[0].backgroundColor.push("#4dd0e1");
-    chartData.datasets[0].hoverBackgroundColor.push("#4dd0e1");
+    chartData.datasets[0].backgroundColor.push(theme.palette.saving.main);
+    chartData.datasets[0].hoverBackgroundColor.push(theme.palette.saving.main);
   }
 
   const chartOptions = {
@@ -153,7 +156,7 @@ function DashboardPage() {
         position: "top",
         align: "start",
         labels: {
-          color: "#e0e3e9",
+          color: theme.palette.text.main,
           font: {
             size: 12,
             family: "Arial",
@@ -165,7 +168,7 @@ function DashboardPage() {
       title: {
         display: true,
         text: "Ausgaben nach Kategorien",
-        color: "#e0e3e9",
+        color: theme.palette.text.main,
         font: {
           size: 20,
           family: "Arial",
@@ -205,7 +208,7 @@ function DashboardPage() {
         style={{ marginTop: 20 }}
       >
         <Grid item xs={12} md={8} lg={6}>
-          <Card sx={{ backgroundColor: "#262b3d" }}>
+          <Card sx={{ backgroundColor: theme.palette.card.main }}>
             <CardContent>
               <Typography
                 variant="h5"
@@ -213,7 +216,7 @@ function DashboardPage() {
                   fontWeight: "bold",
                   marginTop: 3,
                   marginBottom: 3,
-                  color: "#e0e3e9",
+                  color: theme.palette.text.main,
                 }}
               >
                 Dashboard
@@ -232,7 +235,7 @@ function DashboardPage() {
                         onChange={handleChartToggle}
                       />
                     }
-                    sx={{ color: "#e0e3e9" }}
+                    sx={{ color: theme.palette.text.main }}
                     label="Jahresrückblick"
                   />
                 </Grid>
@@ -266,7 +269,7 @@ function DashboardPage() {
                           />
                         }
                         label="Balkendiagramm anzeigen"
-                        sx={{ color: "#e0e3e9" }}
+                        sx={{ color: theme.palette.text.main }}
                       />
                     </Grid>
                   )}

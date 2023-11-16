@@ -21,20 +21,8 @@ import { useAuth } from "../../core/auth/auth";
 import FinanceOverview from "./overview";
 import TextComp from "../../components/TextComp";
 import SelectComp from "../../components/SelectComp";
+import AddButton from "../../components/AddButtonComp";
 
-const AddButton = styled(Button)(({ theme }) => ({
-  color: theme.palette.getContrastText(theme.palette.primary.main),
-  backgroundColor: theme.palette.primary.main,
-  "&:hover": {
-    backgroundColor: theme.palette.primary.dark,
-  },
-  position: "fixed",
-  bottom: theme.spacing(3),
-  right: theme.spacing(3),
-  [theme.breakpoints.up("sm")]: {
-    right: theme.spacing(10),
-  },
-}));
 function FinancePage() {
   const today = new Date().toISOString().split("T")[0];
 
@@ -231,18 +219,18 @@ function FinancePage() {
                     "&:after": {
                       borderColor: "black",
                     },
-                    "& .MuiList-root .Mui-selected": {
-                      // Increased specificity for selected MenuItem
-                      backgroundColor: (theme) =>
-                        `${adjustColor(
-                          getCurrentCategoryColor(),
-                          -20
-                        )} !important`, // Using !important to override Material-UI's default styles
-                      "&:hover": {
-                        backgroundColor: (theme) =>
-                          adjustColor(getCurrentCategoryColor(), -10),
-                      },
-                    },
+                    // "& .MuiList-root .Mui-selected": {
+                    //   // Increased specificity for selected MenuItem
+                    //   backgroundColor: (theme) =>
+                    //     `${adjustColor(
+                    //       getCurrentCategoryColor(),
+                    //       -20
+                    //     )} !important`, // Using !important to override Material-UI's default styles
+                    //   "&:hover": {
+                    //     backgroundColor: (theme) =>
+                    //       adjustColor(getCurrentCategoryColor(), -10),
+                    //   },
+                    // },
                   }}
                 >
                   {categories.map((cat) => (

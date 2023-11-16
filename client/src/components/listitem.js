@@ -5,24 +5,34 @@ import {
   ListItemText,
   Typography,
 } from "@mui/material";
+import { useTheme } from "@mui/material/styles";
 
 function StyledListItem(props) {
+  const theme = useTheme();
+
   return (
     <ListItem
       button
       component="a"
       href={props.href}
       sx={{
-        backgroundColor: "#333740",
-        "&:hover": { backgroundColor: "#3A415C" },
+        backgroundColor: theme.palette.list.main,
+        "&:hover": { backgroundColor: theme.palette.primary.main },
       }}
     >
       {props.icon && (
-        <ListItemIcon sx={{ color: "white" }}>{props.icon}</ListItemIcon>
+        <ListItemIcon sx={{ color: theme.palette.iconlist.default }}>
+          {props.icon}
+        </ListItemIcon>
       )}
       <ListItemText>
         <Typography
-          sx={{ mx: 0.5, fontSize: "15px", width: 200, color: "#e0e3e9" }}
+          sx={{
+            mx: 0.5,
+            fontSize: "15px",
+            width: 200,
+            color: theme.palette.text.main,
+          }}
         >
           {props.primary}
         </Typography>
