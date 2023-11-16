@@ -1,4 +1,4 @@
-import { createContext, useState, useMemo } from "react";
+import { createContext, useState, useMemo, useEffect } from "react";
 import { createTheme } from "@mui/material/styles";
 
 // color design tokens export
@@ -187,16 +187,27 @@ export const ColorModeContext = createContext({
 });
 
 export const useMode = () => {
-  const [mode, setMode] = useState("light");
+  const [mode, setMode] = useState(() => {
+    // Check if theme mode is saved in local storage
+    const savedMode = localStorage.getItem("themeMode");
+    return savedMode ? savedMode : "light"; // Default to 'light' if not found
+  });
+
+  useEffect(() => {
+    // Save the mode to local storage whenever it changes
+    localStorage.setItem("themeMode", mode);
+  }, [mode]);
 
   const colorMode = useMemo(
     () => ({
-      toggleColorMode: () =>
-        setMode((prev) => (prev === "light" ? "dark" : "light")),
+      toggleColorMode: () => {
+        setMode((prevMode) => (prevMode === "light" ? "dark" : "light"));
+      },
     }),
     []
   );
 
   const theme = useMemo(() => createTheme(themeSettings(mode)), [mode]);
+
   return [theme, colorMode];
 };
