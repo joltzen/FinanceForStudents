@@ -34,7 +34,7 @@ import LightModeOutlinedIcon from "@mui/icons-material/LightModeOutlined";
 const StyledAppBar = styled(AppBar)(({ theme }) => ({
   zIndex: 1400,
   position: "relative",
-  minWidth: "100vw",
+  minWidth: "98vw",
   backgroundColor: "#323850",
 }));
 

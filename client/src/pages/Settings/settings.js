@@ -336,7 +336,7 @@ function SettingsForm() {
             backgroundColor: theme.palette.list.main,
             color: theme.palette.text.main,
             ".MuiTabs-indicator": {
-              backgroundColor: theme.palette.icon.main,
+              backgroundColor: theme.palette.indicator.main,
             },
             borderRadius: "50px",
             marginBottom: 2,
@@ -345,7 +345,7 @@ function SettingsForm() {
               fontWeight: "bold",
               marginRight: 2,
               "&.Mui-selected": {
-                color: theme.palette.icon.main,
+                color: theme.palette.indicator.main,
                 borderBottom: `2px solid ${theme.palette.selected.main}`,
               },
             },

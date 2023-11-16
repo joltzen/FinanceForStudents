@@ -53,6 +53,8 @@ export const tokens = (mode) => {
           darkBlueishGray: "#d1d1d1",
           //secondary.main
           gold: "#D4AF37",
+          goldIndicator: "#be9e44",
+          darkGold: "#8C6D1F",
           //text.main
           lightGray: "#2c2f36",
           //list.main
@@ -108,6 +110,9 @@ export const themeSettings = (mode) => {
               main: colors.gold,
               light: colors.lightGold,
             },
+            profile: {
+              main: colors.gold,
+            },
             budget: {
               main: colors.neonGreen,
             },
@@ -124,6 +129,9 @@ export const themeSettings = (mode) => {
               main: colors.darkGray,
             },
             icon: {
+              main: colors.brass,
+            },
+            indicator: {
               main: colors.brass,
             },
             border: {
@@ -186,6 +194,9 @@ export const themeSettings = (mode) => {
               main: colors.gold,
               light: colors.lightGold,
             },
+            profile: {
+              main: colors.darkGold,
+            },
             budget: {
               main: colors.neonGreen,
             },
@@ -203,6 +214,9 @@ export const themeSettings = (mode) => {
             },
             icon: {
               main: colors.brass,
+            },
+            indicator: {
+              main: colors.darkGold,
             },
             border: {
               main: colors.steelGray,
