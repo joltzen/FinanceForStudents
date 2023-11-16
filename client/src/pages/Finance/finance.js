@@ -15,7 +15,7 @@ import {
   DialogTitle,
 } from "@mui/material";
 import AddCircleOutlineIcon from "@mui/icons-material/AddCircleOutline";
-import { styled } from "@mui/system";
+import { Container, styled } from "@mui/system";
 import axiosInstance from "../../config/axios";
 import { useAuth } from "../../core/auth/auth";
 import FinanceOverview from "./overview";
@@ -23,6 +23,7 @@ import TextComp from "../../components/TextComp";
 import SelectComp from "../../components/SelectComp";
 import AddButton from "../../components/AddButtonComp";
 import { useTheme } from "@mui/material/styles";
+import Page from "../../components/page";
 
 function FinancePage() {
   const today = new Date().toISOString().split("T")[0];
@@ -138,158 +139,151 @@ function FinancePage() {
   }, [user.id, update]);
 
   return (
-    <Box sx={{ flexGrow: 1, padding: 1, width: "100%", margin: "0 auto" }}>
-      <Grid
-        style={{
-          marginTop: 1,
-          width: "90%",
-        }}
-      >
-        <Grid item xs={12} md={8} lg={6}>
-          <AddButton
-            variant="contained"
-            startIcon={<AddCircleOutlineIcon />}
-            onClick={handleOpenDialog}
+    <Page>
+      <Grid item xs={12} md={8} lg={6}>
+        <AddButton
+          variant="contained"
+          startIcon={<AddCircleOutlineIcon />}
+          onClick={handleOpenDialog}
+        >
+          Transaktion hinzufügen
+        </AddButton>
+        <Dialog open={openDialog} onClose={handleCloseDialog}>
+          <DialogTitle
+            sx={{
+              backgroundColor: theme.palette.card.main,
+              color: theme.palette.text.main,
+            }}
           >
-            Transaktion hinzufügen
-          </AddButton>
-          <Dialog open={openDialog} onClose={handleCloseDialog}>
-            <DialogTitle
-              sx={{
-                backgroundColor: theme.palette.card.main,
-                color: theme.palette.text.main,
-              }}
-            >
-              Neue Transaktion
-            </DialogTitle>
-            <DialogContent sx={{ backgroundColor: theme.palette.card.main }}>
-              <form onSubmit={handleSubmit}>
-                <FormControl fullWidth>
-                  <InputLabel style={{ color: theme.palette.text.main }}>
-                    Transaktionstyp
-                  </InputLabel>
-                  <SelectComp
-                    value={transactionType}
-                    onChange={handleTransactionTypeChange}
-                    label="Transaktionstyp"
-                  >
-                    <MenuItem value="Ausgabe">Ausgabe</MenuItem>
-                    <MenuItem value="Einnahme">Einnahme</MenuItem>
-                  </SelectComp>
-                </FormControl>
-                <TextComp
-                  label="Beschreibung"
-                  type="text"
-                  value={description}
-                  onChange={handleDescriptionChange}
-                  fullWidth
-                  required
-                />
-                <TextComp
-                  label="Betrag"
-                  type="number"
-                  value={amount}
-                  onChange={handleAmountChange}
-                  fullWidth
-                  required
-                />
-                <TextComp
-                  fullWidth
-                  label="Datum"
-                  name="date"
-                  type="date"
-                  InputLabelProps={{ shrink: true }}
-                  value={date}
-                  onChange={handleDateChange}
-                />
-                <InputLabel
-                  sx={{ color: theme.palette.text.main, mt: 2 }}
-                  id="category-label"
-                >
-                  Kategorie
+            Neue Transaktion
+          </DialogTitle>
+          <DialogContent sx={{ backgroundColor: theme.palette.card.main }}>
+            <form onSubmit={handleSubmit}>
+              <FormControl fullWidth>
+                <InputLabel style={{ color: theme.palette.text.main }}>
+                  Transaktionstyp
                 </InputLabel>
-                <Select
-                  fullWidth
-                  labelId="category-label"
-                  value={category}
-                  onChange={(e) => setCategory(e.target.value)}
-                  label="Kategorie"
-                  sx={{
-                    color: theme.palette.text.main,
-                    "& .MuiSelect-select": {
-                      backgroundColor: getCurrentCategoryColor(),
-                    },
-                    "&:before": {
-                      borderColor: "black",
-                    },
-                    "&:after": {
-                      borderColor: "black",
-                    },
-                    // "& .MuiList-root .Mui-selected": {
-                    //   // Increased specificity for selected MenuItem
-                    //   backgroundColor: (theme) =>
-                    //     `${adjustColor(
-                    //       getCurrentCategoryColor(),
-                    //       -20
-                    //     )} !important`, // Using !important to override Material-UI's default styles
-                    //   "&:hover": {
-                    //     backgroundColor: (theme) =>
-                    //       adjustColor(getCurrentCategoryColor(), -10),
-                    //   },
-                    // },
-                  }}
+                <SelectComp
+                  value={transactionType}
+                  onChange={handleTransactionTypeChange}
+                  label="Transaktionstyp"
                 >
-                  {categories.map((cat) => (
-                    <MenuItem
-                      key={cat.id}
-                      value={cat.id}
-                      sx={{
+                  <MenuItem value="Ausgabe">Ausgabe</MenuItem>
+                  <MenuItem value="Einnahme">Einnahme</MenuItem>
+                </SelectComp>
+              </FormControl>
+              <TextComp
+                label="Beschreibung"
+                type="text"
+                value={description}
+                onChange={handleDescriptionChange}
+                fullWidth
+                required
+              />
+              <TextComp
+                label="Betrag"
+                type="number"
+                value={amount}
+                onChange={handleAmountChange}
+                fullWidth
+                required
+              />
+              <TextComp
+                fullWidth
+                label="Datum"
+                name="date"
+                type="date"
+                InputLabelProps={{ shrink: true }}
+                value={date}
+                onChange={handleDateChange}
+              />
+              <InputLabel
+                sx={{ color: theme.palette.text.main, mt: 2 }}
+                id="category-label"
+              >
+                Kategorie
+              </InputLabel>
+              <Select
+                fullWidth
+                labelId="category-label"
+                value={category}
+                onChange={(e) => setCategory(e.target.value)}
+                label="Kategorie"
+                sx={{
+                  color: theme.palette.text.main,
+                  "& .MuiSelect-select": {
+                    backgroundColor: getCurrentCategoryColor(),
+                  },
+                  "&:before": {
+                    borderColor: "black",
+                  },
+                  "&:after": {
+                    borderColor: "black",
+                  },
+                  // "& .MuiList-root .Mui-selected": {
+                  //   // Increased specificity for selected MenuItem
+                  //   backgroundColor: (theme) =>
+                  //     `${adjustColor(
+                  //       getCurrentCategoryColor(),
+                  //       -20
+                  //     )} !important`, // Using !important to override Material-UI's default styles
+                  //   "&:hover": {
+                  //     backgroundColor: (theme) =>
+                  //       adjustColor(getCurrentCategoryColor(), -10),
+                  //   },
+                  // },
+                }}
+              >
+                {categories.map((cat) => (
+                  <MenuItem
+                    key={cat.id}
+                    value={cat.id}
+                    sx={{
+                      backgroundColor: cat.color,
+                      "&.Mui-selected": {
+                        // This targets the selected item specifically
                         backgroundColor: cat.color,
-                        "&.Mui-selected": {
-                          // This targets the selected item specifically
-                          backgroundColor: cat.color,
-                          fontWeight: "bold",
-                        },
-                        "&:hover": {
-                          backgroundColor: adjustColor(cat.color, 20),
-                        },
-                      }}
-                    >
-                      {cat.name}
-                    </MenuItem>
-                  ))}
-                </Select>
-              </form>
-            </DialogContent>
-            <DialogActions sx={{ backgroundColor: theme.palette.card.main }}>
-              <Button
-                onClick={handleCloseDialog}
-                color="primary"
-                sx={{ color: theme.palette.text.main }}
-              >
-                Abbrechen
-              </Button>
-              <Button
-                onClick={handleSubmit}
-                color="primary"
-                sx={{ color: theme.palette.text.main }}
-              >
-                Speichern
-              </Button>
-            </DialogActions>
-          </Dialog>
+                        fontWeight: "bold",
+                      },
+                      "&:hover": {
+                        backgroundColor: adjustColor(cat.color, 20),
+                      },
+                    }}
+                  >
+                    {cat.name}
+                  </MenuItem>
+                ))}
+              </Select>
+            </form>
+          </DialogContent>
+          <DialogActions sx={{ backgroundColor: theme.palette.card.main }}>
+            <Button
+              onClick={handleCloseDialog}
+              color="primary"
+              sx={{ color: theme.palette.text.main }}
+            >
+              Abbrechen
+            </Button>
+            <Button
+              onClick={handleSubmit}
+              color="primary"
+              sx={{ color: theme.palette.text.main }}
+            >
+              Speichern
+            </Button>
+          </DialogActions>
+        </Dialog>
 
-          <Typography
-            variant="h6"
-            color={theme.palette.text.main}
-            sx={{ mb: 2, ml: 20, mt: 2 }}
-          >
-            Transaktionen Übersicht
-          </Typography>
-          <FinanceOverview update={update} />
-        </Grid>
+        <Typography
+          variant="h6"
+          color={theme.palette.text.main}
+          sx={{ mb: 2, mt: 2 }}
+        >
+          Transaktionen Übersicht
+        </Typography>
+        <FinanceOverview update={update} />
       </Grid>
-    </Box>
+    </Page>
   );
 }
 

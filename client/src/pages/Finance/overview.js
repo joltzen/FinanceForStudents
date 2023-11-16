@@ -22,6 +22,7 @@ import {
   DialogActions,
   Button,
   TablePagination,
+  Grid,
 } from "@mui/material";
 import StyledTableCell from "../../components/tablecell";
 import DeleteIcon from "@mui/icons-material/Delete";
@@ -30,6 +31,7 @@ import TextComp from "../../components/TextComp";
 import SelectComp from "../../components/SelectComp";
 import { months, years } from "../../config/constants";
 import { useTheme } from "@mui/material/styles";
+import { Container } from "@mui/system";
 
 function FinanceOverview({ update }) {
   const theme = useTheme();
@@ -226,164 +228,178 @@ function FinanceOverview({ update }) {
   };
 
   return (
-    <div style={{ marginLeft: 150 }}>
-      <FormControl>
-        <InputLabel style={{ color: theme.palette.text.main }}>
-          Monat
-        </InputLabel>
-        <SelectComp
-          value={filterMonth}
-          onChange={(e) => setFilterMonth(e.target.value)}
-          label="Monat"
-          sx={{
-            color: theme.palette.text.main,
-            backgroundColor: theme.palette.select.main,
-            border: `1px solid ${theme.palette.text.main}`, // Use template literal for dynamic value
-          }}
-        >
-          {months.map((month) => (
-            <MenuItem key={month.value} value={month.value}>
-              {month.label}
-            </MenuItem>
-          ))}
-        </SelectComp>
-      </FormControl>
-      <FormControl sx={{ marginLeft: 3, marginBottom: 2 }}>
-        <InputLabel style={{ color: theme.palette.text.main }}>Jahr</InputLabel>
-        <SelectComp
-          value={filterYear}
-          onChange={(e) => setFilterYear(e.target.value)}
-          label="Jahr"
-          sx={{
-            color: theme.palette.text.main,
-            backgroundColor: theme.palette.select.main,
-            border: `1px solid ${theme.palette.text.main}`, // Use template literal for dynamic value
-          }}
-        >
-          {years.map((year) => (
-            <MenuItem key={year} value={year}>
-              {year}
-            </MenuItem>
-          ))}
-        </SelectComp>
-      </FormControl>
-      {/* change background */}
-      <TableContainer
-        component={Paper}
-        sx={{ backgroundColor: theme.palette.pagination.main }}
-      >
-        <Table sx={{ minWidth: 500 }} aria-label="custom pagination table">
-          <TableHead>
-            <TableRow>
-              <StyledTableCell text="Datum" />
-              <StyledTableCell text="Beschreibung" />
-              <StyledTableCell text="Betrag" />
-              <StyledTableCell text=" " />
-            </TableRow>
-          </TableHead>
-          <TableBody>
-            {sortTransactions(transactions)
-              .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
-              .map((transaction) => {
-                const category = categories.find(
-                  (c) => c.id === transaction.category_id
-                );
-                const categoryColor = category
-                  ? category.color
-                  : theme.palette.text.main;
-                return (
-                  <TableRow key={transaction.transaction_id}>
-                    <TableCell
-                      component="th"
-                      scope="row"
-                      sx={{
-                        border: "1px solid black",
-                        backgroundColor: categoryColor,
-                        color: "black",
-                      }}
-                    >
-                      {formatDate(transaction.transaction_date)}
-                    </TableCell>
-                    <TableCell
-                      sx={{
-                        border: "1px solid black",
-                        backgroundColor: categoryColor,
-                        color: "black",
-                      }}
-                    >
-                      {transaction.description}
-                    </TableCell>
-                    <TableCell
-                      sx={{
-                        border: "1px solid black",
-                        backgroundColor: categoryColor,
-                        color: "black",
-                      }}
-                    >
-                      {transaction.transaction_type === "Ausgabe" ? "-" : ""}
-                      {transaction.amount} €
-                    </TableCell>
-                    <TableCell
-                      align="right"
-                      sx={{
-                        border: "1px solid black",
-                        backgroundColor: categoryColor,
-                        color: "black",
-                      }}
-                    >
-                      <IconButton
-                        style={{ color: "black" }}
-                        onClick={() => handleEditButtonClick(transaction)}
-                      >
-                        <EditIcon />
-                      </IconButton>
-                      <IconButton
-                        onClick={() =>
-                          handleDeleteTransaction(transaction.transaction_id)
-                        }
-                        style={{ color: "black" }}
-                      >
-                        <DeleteIcon />
-                      </IconButton>
-                    </TableCell>
-                  </TableRow>
-                );
-              })}
-          </TableBody>
-        </Table>
-        <Box
-          sx={{
-            display: "flex",
-            justifyContent: "space-between", // This will push the children to opposite ends
-            alignItems: "center",
-            width: "100%",
-            color: "black",
-          }}
-        >
-          <TablePagination
-            rowsPerPageOptions={[5, 10, 25, { label: "All", value: -1 }]}
-            component="div"
-            count={transactions.length}
-            rowsPerPage={rowsPerPage}
-            page={page}
-            onPageChange={handleChangePage}
-            onRowsPerPageChange={handleChangeRowsPerPage}
-            sx={{ color: "black" }}
-          />
-          <Typography variant="body2" sx={{ marginRight: 5, color: "black" }}>
-            Gesamtsumme: <strong>{savingSum.toFixed(2)}€</strong>
-          </Typography>
+    <Container maxWidth="lg">
+      <Grid container spacing={3} justifyContent="center">
+        <Grid item xs={12} sx={{ mt: 4 }}>
+          <FormControl>
+            <InputLabel style={{ color: theme.palette.text.main }}>
+              Monat
+            </InputLabel>
+            <SelectComp
+              value={filterMonth}
+              onChange={(e) => setFilterMonth(e.target.value)}
+              label="Monat"
+              sx={{
+                color: theme.palette.text.main,
+                backgroundColor: theme.palette.select.main,
+                border: `1px solid ${theme.palette.text.main}`, // Use template literal for dynamic value
+              }}
+            >
+              {months.map((month) => (
+                <MenuItem key={month.value} value={month.value}>
+                  {month.label}
+                </MenuItem>
+              ))}
+            </SelectComp>
+          </FormControl>
+          <FormControl sx={{ marginLeft: 3, marginBottom: 2 }}>
+            <InputLabel style={{ color: theme.palette.text.main }}>
+              Jahr
+            </InputLabel>
+            <SelectComp
+              value={filterYear}
+              onChange={(e) => setFilterYear(e.target.value)}
+              label="Jahr"
+              sx={{
+                color: theme.palette.text.main,
+                backgroundColor: theme.palette.select.main,
+                border: `1px solid ${theme.palette.text.main}`, // Use template literal for dynamic value
+              }}
+            >
+              {years.map((year) => (
+                <MenuItem key={year} value={year}>
+                  {year}
+                </MenuItem>
+              ))}
+            </SelectComp>
+          </FormControl>
+        </Grid>
+        <Box sx={{ width: "100%", marginTop: 4, marginBottom: 20 }}>
+          <TableContainer
+            component={Paper}
+            sx={{ backgroundColor: theme.palette.pagination.main }}
+          >
+            <Table sx={{ minWidth: 500 }} aria-label="custom pagination table">
+              <TableHead>
+                <TableRow>
+                  <StyledTableCell text="Datum" />
+                  <StyledTableCell text="Beschreibung" />
+                  <StyledTableCell text="Betrag" />
+                  <StyledTableCell text=" " />
+                </TableRow>
+              </TableHead>
+              <TableBody>
+                {sortTransactions(transactions)
+                  .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
+                  .map((transaction) => {
+                    const category = categories.find(
+                      (c) => c.id === transaction.category_id
+                    );
+                    const categoryColor = category
+                      ? category.color
+                      : theme.palette.text.main;
+                    return (
+                      <TableRow key={transaction.transaction_id}>
+                        <TableCell
+                          component="th"
+                          scope="row"
+                          sx={{
+                            border: "1px solid black",
+                            backgroundColor: categoryColor,
+                            color: "black",
+                          }}
+                        >
+                          {formatDate(transaction.transaction_date)}
+                        </TableCell>
+                        <TableCell
+                          sx={{
+                            border: "1px solid black",
+                            backgroundColor: categoryColor,
+                            color: "black",
+                          }}
+                        >
+                          {transaction.description}
+                        </TableCell>
+                        <TableCell
+                          sx={{
+                            border: "1px solid black",
+                            backgroundColor: categoryColor,
+                            color: "black",
+                          }}
+                        >
+                          {transaction.transaction_type === "Ausgabe"
+                            ? "-"
+                            : ""}
+                          {transaction.amount} €
+                        </TableCell>
+                        <TableCell
+                          align="right"
+                          sx={{
+                            border: "1px solid black",
+                            backgroundColor: categoryColor,
+                            color: "black",
+                          }}
+                        >
+                          <IconButton
+                            style={{ color: "black" }}
+                            onClick={() => handleEditButtonClick(transaction)}
+                          >
+                            <EditIcon />
+                          </IconButton>
+                          <IconButton
+                            onClick={() =>
+                              handleDeleteTransaction(
+                                transaction.transaction_id
+                              )
+                            }
+                            style={{ color: "black" }}
+                          >
+                            <DeleteIcon />
+                          </IconButton>
+                        </TableCell>
+                      </TableRow>
+                    );
+                  })}
+              </TableBody>
+            </Table>
+            <Box
+              sx={{
+                display: "flex",
+                justifyContent: "space-between", // This will push the children to opposite ends
+                alignItems: "center",
+                width: "100%",
+                color: "black",
+              }}
+            >
+              <TablePagination
+                rowsPerPageOptions={[5, 10, 25, { label: "All", value: -1 }]}
+                component="div"
+                count={transactions.length}
+                rowsPerPage={rowsPerPage}
+                page={page}
+                onPageChange={handleChangePage}
+                onRowsPerPageChange={handleChangeRowsPerPage}
+                sx={{ color: "black" }}
+              />
+              <Typography
+                variant="body2"
+                sx={{ marginRight: 5, color: "black" }}
+              >
+                Gesamtsumme: <strong>{savingSum.toFixed(2)}€</strong>
+              </Typography>
+            </Box>
+          </TableContainer>
         </Box>
-      </TableContainer>
 
-      {editTransaction && (
-        <EditTransactionDialog
-          transaction={editTransaction}
-          onClose={() => setEditTransaction(null)}
-          onSave={handleEditTransaction}
-        />
-      )}
-    </div>
+        {editTransaction && (
+          <EditTransactionDialog
+            transaction={editTransaction}
+            onClose={() => setEditTransaction(null)}
+            onSave={handleEditTransaction}
+          />
+        )}
+      </Grid>
+    </Container>
   );
 }
 
