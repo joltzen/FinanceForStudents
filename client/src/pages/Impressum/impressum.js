@@ -2,8 +2,9 @@ import React from "react";
 import Page from "../../components/page";
 import { Typography, Container, Box } from "@mui/material";
 import CardComp from "../../components/CardComp";
-
+import { useTheme } from "@mui/material/styles";
 function ImpressumPage() {
+  const theme = useTheme();
   return (
     <Page>
       <CardComp sx={{ mt: 10, padding: 3 }}>
@@ -11,7 +12,7 @@ function ImpressumPage() {
           <Typography variant="h4" gutterBottom>
             Impressum
           </Typography>
-          <Box sx={{ color: "#e0e3e9" }}>
+          <Box sx={{ color: theme.palette.text.main }}>
             <Typography variant="h6" sx={{ fontWeight: "bold" }}>
               Angaben gemäß § 5 TMG:
             </Typography>
@@ -22,13 +23,13 @@ function ImpressumPage() {
               41539 Dormagen
             </Typography>
           </Box>
-          <Box mt={2} sx={{ color: "#e0e3e9" }}>
+          <Box mt={2} sx={{ color: theme.palette.text.main }}>
             <Typography variant="h6" sx={{ fontWeight: "bold" }}>
               Kontakt:
             </Typography>
             <Typography>E-Mail: webmaster@financeforstudents.de</Typography>
           </Box>
-          <Box mt={2} sx={{ color: "#e0e3e9" }}>
+          <Box mt={2} sx={{ color: theme.palette.text.main }}>
             <Typography variant="h6" sx={{ fontWeight: "bold" }}>
               Verantwortlich für den Inhalt nach § 55 Abs. 2 RStV:
             </Typography>
@@ -40,7 +41,7 @@ function ImpressumPage() {
               41539 Dormagen
             </Typography>
           </Box>
-          <Box mt={2} sx={{ color: "#e0e3e9" }}>
+          <Box mt={2} sx={{ color: theme.palette.text.main }}>
             <Typography variant="h6" sx={{ fontWeight: "bold" }}>
               Haftungsausschluss:
             </Typography>
@@ -51,7 +52,7 @@ function ImpressumPage() {
               verantwortlich.
             </Typography>
           </Box>
-          <Box mt={2} sx={{ color: "#e0e3e9" }}>
+          <Box mt={2} sx={{ color: theme.palette.text.main }}>
             <Typography variant="h6" sx={{ fontWeight: "bold" }}>
               Urheberrecht:
             </Typography>

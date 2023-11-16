@@ -1,8 +1,10 @@
 // NoDataAlert.js
 import React from "react";
 import { Box, Typography, Button } from "@mui/material";
+import { useTheme } from "@mui/material/styles";
 
 const NoDataAlert = () => {
+  const theme = useTheme();
   return (
     <Box
       sx={{
@@ -16,7 +18,7 @@ const NoDataAlert = () => {
     >
       <Typography
         variant="subtitle1"
-        sx={{ color: "#e0e3e9", mb: 2, textAlign: "center" }}
+        sx={{ color: theme.palette.text.main, mb: 2, textAlign: "center" }}
       >
         Für den ausgewählten Zeitraum sind keine Budgetdaten vorhanden.
       </Typography>
@@ -32,18 +34,16 @@ const NoDataAlert = () => {
         <Button
           type="submit"
           variant="contained"
-          color="button"
           href="/settings"
-          sx={{ mr: 5, color: "#e0e3e9" }}
+          sx={{ mr: 5, color: theme.palette.text.main }}
         >
           Fixkosten verwalten
         </Button>
         <Button
           type="submit"
           variant="contained"
-          color="button"
           href="/settings"
-          sx={{ color: "#e0e3e9" }}
+          sx={{ color: theme.palette.text.main }}
         >
           Ein und Ausgaben verwalten
         </Button>

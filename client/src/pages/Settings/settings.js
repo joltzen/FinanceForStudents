@@ -26,6 +26,7 @@ import AddButton from "../../components/AddButtonComp";
 import { months, years } from "../../config/constants";
 import TransferDialog from "./transerdialog";
 import EditIcon from "@mui/icons-material/Edit";
+import { useTheme } from "@mui/material/styles";
 
 function SettingsForm() {
   const [filterMonth, setFilterMonth] = useState(new Date().getMonth() + 1);
@@ -38,6 +39,7 @@ function SettingsForm() {
   const [selectedTab, setSelectedTab] = useState(0);
   const [openTransferDialog, setOpenTransferDialog] = useState(false);
   const { user } = useAuth();
+  const theme = useTheme();
 
   const handleTabChange = (event, newValue) => {
     setSelectedTab(newValue);
@@ -224,13 +226,18 @@ function SettingsForm() {
           Transaktion hinzufügen
         </AddButton>
         <Dialog open={openDialog} onClose={handleDialog}>
-          <DialogTitle sx={{ backgroundColor: "#262b3d", color: "#e0e3e9" }}>
+          <DialogTitle
+            sx={{
+              backgroundColor: theme.palette.card.main,
+              color: theme.palette.text.main,
+            }}
+          >
             Neue Transaktion
           </DialogTitle>
-          <DialogContent sx={{ backgroundColor: "#262b3d" }}>
+          <DialogContent sx={{ backgroundColor: theme.palette.card.main }}>
             <form onSubmit={handleSubmit}>
               <FormControl fullWidth>
-                <InputLabel style={{ color: "#e0e3e9" }}>
+                <InputLabel style={{ color: theme.palette.text.main }}>
                   Fixkostentyp
                 </InputLabel>
                 <SelectComp
@@ -260,7 +267,9 @@ function SettingsForm() {
                 required
               />
               <FormControl sx={{ marginTop: 3 }}>
-                <InputLabel style={{ color: "#e0e3e9" }}>Monat</InputLabel>
+                <InputLabel style={{ color: theme.palette.text.main }}>
+                  Monat
+                </InputLabel>
                 <SelectComp
                   value={filterMonth}
                   onChange={(e) => setFilterMonth(e.target.value)}
@@ -274,7 +283,9 @@ function SettingsForm() {
                 </SelectComp>
               </FormControl>
               <FormControl sx={{ marginLeft: 3, marginTop: 3 }}>
-                <InputLabel style={{ color: "#e0e3e9" }}>Jahr</InputLabel>
+                <InputLabel style={{ color: theme.palette.text.main }}>
+                  Jahr
+                </InputLabel>
                 <SelectComp
                   value={filterYear}
                   onChange={(e) => setFilterYear(e.target.value)}
@@ -289,25 +300,26 @@ function SettingsForm() {
               </FormControl>
             </form>
           </DialogContent>
-          <DialogActions sx={{ backgroundColor: "#262b3d" }}>
+          <DialogActions sx={{ backgroundColor: theme.palette.card.main }}>
             <Button
               onClick={handleDialog}
-              color="primary"
-              sx={{ color: "#e0e3e9" }}
+              sx={{ color: theme.palette.text.main }}
             >
               Abbrechen
             </Button>
             <Button
               onClick={handleSubmit}
-              color="primary"
-              sx={{ color: "#e0e3e9" }}
+              sx={{ color: theme.palette.text.main }}
             >
               Speichern
             </Button>
           </DialogActions>
         </Dialog>
       </Grid>
-      <Typography variant="h4" sx={{ mb: 4, mt: 5, color: "#e0e3e9" }}>
+      <Typography
+        variant="h4"
+        sx={{ mb: 4, mt: 5, color: theme.palette.text.main }}
+      >
         Fixkosten
       </Typography>
 
@@ -321,20 +333,20 @@ function SettingsForm() {
           aria-label="Income and Expenses Tabs"
           variant="fullWidth"
           sx={{
-            backgroundColor: "#333740",
-            color: "#e0e3e9",
+            backgroundColor: theme.palette.list.main,
+            color: theme.palette.text.main,
             ".MuiTabs-indicator": {
-              backgroundColor: "#c6aa60",
+              backgroundColor: theme.palette.icon.main,
             },
             borderRadius: "50px",
             marginBottom: 2,
             ".MuiTab-root": {
-              color: "#e0e3e9",
+              color: theme.palette.text.main,
               fontWeight: "bold",
               marginRight: 2,
               "&.Mui-selected": {
-                color: "#c6aa60",
-                borderBottom: "2px solid #c6aa60",
+                color: theme.palette.icon.main,
+                borderBottom: `2px solid ${theme.palette.selected.main}`,
               },
             },
           }}
@@ -351,7 +363,9 @@ function SettingsForm() {
           }}
         >
           <FormControl sx={{ marginRight: 3, flexGrow: 1 }}>
-            <InputLabel style={{ color: "#e0e3e9" }}>Monat</InputLabel>
+            <InputLabel style={{ color: theme.palette.text.main }}>
+              Monat
+            </InputLabel>
             <SelectComp
               value={filterMonth}
               onChange={(e) => setFilterMonth(e.target.value)}
@@ -366,7 +380,9 @@ function SettingsForm() {
           </FormControl>
 
           <FormControl sx={{ marginRight: 3, flexGrow: 1 }}>
-            <InputLabel style={{ color: "#e0e3e9" }}>Jahr</InputLabel>
+            <InputLabel style={{ color: theme.palette.text.main }}>
+              Jahr
+            </InputLabel>
             <SelectComp
               value={filterYear}
               onChange={(e) => setFilterYear(e.target.value)}
@@ -389,8 +405,7 @@ function SettingsForm() {
           >
             <Button
               variant="contained"
-              color="button"
-              sx={{ color: "#e0e3e9" }}
+              sx={{ color: theme.palette.text.main }}
               onClick={handleTransferDialogOpen}
             >
               Fixkosten übertragen
@@ -440,6 +455,7 @@ function EditSettingsDialog({ transaction, onClose, onSave }) {
   const [editedSettings, setEditedSettings] = useState({
     ...transaction,
   });
+  const theme = useTheme();
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
@@ -488,22 +504,30 @@ function EditSettingsDialog({ transaction, onClose, onSave }) {
 
     return [year, month, day].join("-");
   }
+
   return (
     <Dialog open={!!transaction} onClose={onClose}>
-      <DialogTitle sx={{ backgroundColor: "#262b3d", color: "#e0e3e9" }}>
+      <DialogTitle
+        sx={{
+          backgroundColor: theme.palette.card.main,
+          color: theme.palette.text.main,
+        }}
+      >
         Bearbeiten
       </DialogTitle>
-      <DialogContent sx={{ backgroundColor: "#262b3d" }}>
+      <DialogContent sx={{ backgroundColor: theme.palette.card.main }}>
         <FormControl fullWidth>
-          <InputLabel style={{ color: "#e0e3e9" }}>Transaktionstyp</InputLabel>
+          <InputLabel style={{ color: theme.palette.text.main }}>
+            Transaktionstyp
+          </InputLabel>
           <SelectComp
             value={editedSettings.transaction_type}
             onChange={handleSelectChange}
             label="Transaktionstyp"
             sx={{
-              color: "#e0e3e9",
-              backgroundColor: "#2e2e38",
-              border: "1px solid #e0e3e9",
+              color: theme.palette.text.main,
+              backgroundColor: theme.palette.select.main,
+              border: `1px solid ${theme.palette.text.main}`,
             }}
           >
             <MenuItem value="Ausgabe">Ausgabe</MenuItem>
@@ -527,7 +551,9 @@ function EditSettingsDialog({ transaction, onClose, onSave }) {
           fullWidth
         />
         <FormControl sx={{ marginRight: 3, flexGrow: 1, marginTop: 2 }}>
-          <InputLabel style={{ color: "#e0e3e9" }}>Monat</InputLabel>
+          <InputLabel style={{ color: theme.palette.text.main }}>
+            Monat
+          </InputLabel>
           <SelectComp
             value={editedSettings.month}
             onChange={handleMonthChange}
@@ -541,7 +567,9 @@ function EditSettingsDialog({ transaction, onClose, onSave }) {
           </SelectComp>
         </FormControl>
         <FormControl sx={{ marginRight: 3, flexGrow: 1, marginTop: 2 }}>
-          <InputLabel style={{ color: "#e0e3e9" }}>Jahr</InputLabel>
+          <InputLabel style={{ color: theme.palette.text.main }}>
+            Jahr
+          </InputLabel>
           <SelectComp
             value={editedSettings.year}
             onChange={handleYearChange}
@@ -555,11 +583,17 @@ function EditSettingsDialog({ transaction, onClose, onSave }) {
           </SelectComp>
         </FormControl>
       </DialogContent>
-      <DialogActions sx={{ backgroundColor: "#262b3d" }}>
-        <Button onClick={onClose} color="primary" sx={{ color: "#e0e3e9" }}>
+      <DialogActions sx={{ backgroundColor: theme.palette.card.main }}>
+        <Button
+          onClick={onClose}
+          sx={{ color: theme.palette.text.main }}
+        >
           Abbrechen
         </Button>
-        <Button onClick={handleSave} color="primary" sx={{ color: "#e0e3e9" }}>
+        <Button
+          onClick={handleSave}
+          sx={{ color: theme.palette.text.main }}
+        >
           Speichern
         </Button>
       </DialogActions>

@@ -1,19 +1,19 @@
 import { styled } from "@mui/system";
 import { TextField } from "@mui/material";
-const TextComp = styled(TextField)({
+const TextComp = styled(TextField)(({ theme }) => ({
   marginTop: "20px",
   "& label.Mui-focused": {
-    color: "#e0e3e9",
+    color: theme.palette.text.main,
   },
   "& label": {
-    color: "#e0e3e9",
+    color: theme.palette.text.main,
   },
   "& input": {
-    color: "#e0e3e9",
+    color: theme.palette.text.main,
   },
   "& .MuiOutlinedInput-root": {
     "& fieldset": {
-      borderColor: "#373c47",
+      borderColor: theme.palette.border.main,
     },
     "&:hover fieldset": {
       borderColor: "373c47",
@@ -22,8 +22,8 @@ const TextComp = styled(TextField)({
       borderColor: "373c47",
     },
   },
-  backgroundColor: "#2e2e38",
+  backgroundColor: theme.palette.select.main,
   borderRadius: "5px",
-  border: "1px solid #e0e3e9",
-});
+  border: `1px solid ${theme.palette.text.main}`, // Use template literal for dynamic value
+}));
 export default TextComp;

@@ -29,8 +29,10 @@ import EditIcon from "@mui/icons-material/Edit";
 import TextComp from "../../components/TextComp";
 import SelectComp from "../../components/SelectComp";
 import { months, years } from "../../config/constants";
+import { useTheme } from "@mui/material/styles";
 
 function FinanceOverview({ update }) {
+  const theme = useTheme();
   const [filterMonth, setFilterMonth] = useState(new Date().getMonth() + 1);
   const [filterYear, setFilterYear] = useState(new Date().getFullYear());
   const [transactions, setTransactions] = useState([]);
@@ -210,7 +212,6 @@ function FinanceOverview({ update }) {
   }, [filterMonth, filterYear, totalSum, user.id, update, needUpdate]);
 
   const [editTransaction, setEditTransaction] = useState(null);
-
   const handleEditTransaction = async (transaction) => {
     try {
       await axiosInstance.patch("/updateTransaction", transaction);
@@ -227,15 +228,17 @@ function FinanceOverview({ update }) {
   return (
     <div style={{ marginLeft: 150 }}>
       <FormControl>
-        <InputLabel style={{ color: "#e0e3e9" }}>Monat</InputLabel>
+        <InputLabel style={{ color: theme.palette.text.main }}>
+          Monat
+        </InputLabel>
         <SelectComp
           value={filterMonth}
           onChange={(e) => setFilterMonth(e.target.value)}
           label="Monat"
           sx={{
-            color: "#e0e3e9",
-            backgroundColor: "#2e2e38",
-            border: "1px solid #e0e3e9",
+            color: theme.palette.text.main,
+            backgroundColor: theme.palette.select.main,
+            border: `1px solid ${theme.palette.text.main}`, // Use template literal for dynamic value
           }}
         >
           {months.map((month) => (
@@ -246,15 +249,15 @@ function FinanceOverview({ update }) {
         </SelectComp>
       </FormControl>
       <FormControl sx={{ marginLeft: 3, marginBottom: 2 }}>
-        <InputLabel style={{ color: "#e0e3e9" }}>Jahr</InputLabel>
+        <InputLabel style={{ color: theme.palette.text.main }}>Jahr</InputLabel>
         <SelectComp
           value={filterYear}
           onChange={(e) => setFilterYear(e.target.value)}
           label="Jahr"
           sx={{
-            color: "#e0e3e9",
-            backgroundColor: "#2e2e38",
-            border: "1px solid #e0e3e9",
+            color: theme.palette.text.main,
+            backgroundColor: theme.palette.select.main,
+            border: `1px solid ${theme.palette.text.main}`, // Use template literal for dynamic value
           }}
         >
           {years.map((year) => (
@@ -264,7 +267,11 @@ function FinanceOverview({ update }) {
           ))}
         </SelectComp>
       </FormControl>
-      <TableContainer component={Paper} sx={{ backgroundColor: "#afb1b2" }}>
+      {/* change background */}
+      <TableContainer
+        component={Paper}
+        sx={{ backgroundColor: theme.palette.pagination.main }}
+      >
         <Table sx={{ minWidth: 500 }} aria-label="custom pagination table">
           <TableHead>
             <TableRow>
@@ -281,7 +288,9 @@ function FinanceOverview({ update }) {
                 const category = categories.find(
                   (c) => c.id === transaction.category_id
                 );
-                const categoryColor = category ? category.color : "#e0e3e9";
+                const categoryColor = category
+                  ? category.color
+                  : theme.palette.text.main;
                 return (
                   <TableRow key={transaction.transaction_id}>
                     <TableCell
@@ -343,7 +352,7 @@ function FinanceOverview({ update }) {
             justifyContent: "space-between", // This will push the children to opposite ends
             alignItems: "center",
             padding: 2,
-            width: "100%", 
+            width: "100%",
           }}
         >
           <TablePagination
@@ -376,7 +385,7 @@ function EditTransactionDialog({ transaction, onClose, onSave }) {
   const [editedTransaction, setEditedTransaction] = useState({
     ...transaction,
   });
-
+  const theme = useTheme();
   const handleInputChange = (e) => {
     const { name, value } = e.target;
     setEditedTransaction({
@@ -414,20 +423,27 @@ function EditTransactionDialog({ transaction, onClose, onSave }) {
   }
   return (
     <Dialog open={!!transaction} onClose={onClose}>
-      <DialogTitle sx={{ backgroundColor: "#262b3d", color: "#e0e3e9" }}>
+      <DialogTitle
+        sx={{
+          backgroundColor: theme.palette.card.main,
+          color: theme.palette.text.main,
+        }}
+      >
         Bearbeiten
       </DialogTitle>
-      <DialogContent sx={{ backgroundColor: "#262b3d" }}>
+      <DialogContent sx={{ backgroundColor: theme.palette.card.main }}>
         <FormControl fullWidth>
-          <InputLabel style={{ color: "#e0e3e9" }}>Transaktionstyp</InputLabel>
+          <InputLabel style={{ color: theme.palette.text.main }}>
+            Transaktionstyp
+          </InputLabel>
           <Select
             value={editedTransaction.transaction_type}
             onChange={handleSelectChange}
             label="Transaktionstyp"
             sx={{
-              color: "#e0e3e9",
-              backgroundColor: "#2e2e38",
-              border: "1px solid #e0e3e9",
+              color: theme.palette.text.main,
+              backgroundColor: theme.palette.select.main,
+              border: `1px solid ${theme.palette.text.main}`, // Use template literal for dynamic value
             }}
           >
             <MenuItem value="Ausgabe">Ausgabe</MenuItem>
@@ -460,11 +476,17 @@ function EditTransactionDialog({ transaction, onClose, onSave }) {
           onChange={handleInputChange}
         />
       </DialogContent>
-      <DialogActions sx={{ backgroundColor: "#262b3d" }}>
-        <Button onClick={onClose} color="primary" sx={{ color: "#e0e3e9" }}>
+      <DialogActions sx={{ backgroundColor: theme.palette.card.main }}>
+        <Button
+          onClick={onClose}
+          sx={{ color: theme.palette.text.main }}
+        >
           Abbrechen
         </Button>
-        <Button onClick={handleSave} color="primary" sx={{ color: "#e0e3e9" }}>
+        <Button
+          onClick={handleSave}
+          sx={{ color: theme.palette.text.main }}
+        >
           Speichern
         </Button>
       </DialogActions>

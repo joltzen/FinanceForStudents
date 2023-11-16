@@ -1,14 +1,18 @@
 import React from "react";
+import { useTheme } from "@mui/material/styles";
 
-const containerStyle = {
+const getContainerStyle = (theme) => ({
   display: "flex",
   flexDirection: "column",
   justifyContent: "flex-start",
   alignItems: "center",
-  backgroundColor: "#3b3d49",
-};
+  backgroundColor: theme.palette.background.default,
+});
 
 const Page = ({ children }) => {
+  const theme = useTheme();
+  const containerStyle = getContainerStyle(theme);
+
   return <div style={containerStyle}>{children}</div>;
 };
 

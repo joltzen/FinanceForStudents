@@ -12,6 +12,7 @@ import {
 import DeleteIcon from "@mui/icons-material/Delete";
 import StyledTableCell from "../../components/tablecell";
 import EditIcon from "@mui/icons-material/Edit";
+import { useTheme } from "@mui/material/styles";
 
 function TransactionSection({
   transactions,
@@ -21,6 +22,8 @@ function TransactionSection({
   handleEditButtonClick,
   transactionType,
 }) {
+  const theme = useTheme();
+
   return (
     <TableContainer component={Paper}>
       <Table>
@@ -44,10 +47,10 @@ function TransactionSection({
                 key={item.settings_id}
                 sx={{
                   "&:nth-of-type(odd)": {
-                    backgroundColor: "#e0e3e9",
+                    backgroundColor: theme.palette.text.main,
                   },
                   "&:nth-of-type(even)": {
-                    backgroundColor: "#D2D5DC",
+                    backgroundColor: theme.palette.even.main,
                   },
                   borderRight: "1px solid",
                 }}

@@ -2,6 +2,7 @@
 import React from "react";
 import { FormControl, InputLabel, MenuItem, Grid } from "@mui/material";
 import SelectComp from "../../components/SelectComp";
+import { useTheme } from "@mui/material/styles";
 
 const BudgetFilter = ({
   filterMonth,
@@ -12,12 +13,16 @@ const BudgetFilter = ({
   years,
   isAnnualView,
 }) => {
+  const theme = useTheme();
+
   return (
     <>
       {!isAnnualView && (
         <Grid item xs={12} sm={4}>
           <FormControl fullWidth margin="none">
-            <InputLabel style={{ color: "#e0e3e9" }}>Monat</InputLabel>
+            <InputLabel style={{ color: theme.palette.text.main }}>
+              Monat
+            </InputLabel>
             <SelectComp
               value={filterMonth}
               onChange={(e) => setFilterMonth(e.target.value)}
@@ -34,7 +39,9 @@ const BudgetFilter = ({
       )}
       <Grid item xs={12} sm={4}>
         <FormControl fullWidth margin="none">
-          <InputLabel style={{ color: "#e0e3e9" }}>Jahr</InputLabel>
+          <InputLabel style={{ color: theme.palette.text.main }}>
+            Jahr
+          </InputLabel>
           <SelectComp
             value={filterYear}
             onChange={(e) => setFilterYear(e.target.value)}

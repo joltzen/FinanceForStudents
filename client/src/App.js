@@ -21,28 +21,6 @@ import {
 import { CssBaseline, ThemeProvider } from "@mui/material";
 import { ColorModeContext, useMode } from "./theme";
 
-// const theme = createTheme({
-//   palette: {
-//     primary: {
-//       main: "#3A415C",
-//     },
-//     button: {
-//       main: "#4E577B",
-//     },
-//     text: {
-//       main: "#e0e3e9",
-//     },
-//     input: {
-//       main: "#2e2e38",
-//     },
-//     navicons: {
-//       main: "#c6aa60",
-//     },
-//     background: {
-//       default: "#000000",
-//     },
-//   },
-// });
 function App() {
   const [theme, colorMode] = useMode();
 

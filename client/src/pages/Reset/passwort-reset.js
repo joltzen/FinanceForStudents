@@ -1,7 +1,9 @@
 import React, { useState } from "react";
 import { Box, Typography, TextField, Button } from "@mui/material";
 import axiosInstance from "../../config/axios";
+import { useTheme } from "@mui/material/styles";
 function PasswordResetPage() {
+  const theme = useTheme();
   const [email, setEmail] = useState("");
 
   const handleSubmit = async (e) => {
@@ -41,26 +43,26 @@ function PasswordResetPage() {
           onChange={(e) => setEmail(e.target.value)}
           sx={{
             "& label.Mui-focused": {
-              color: "#e0e3e9",
+              color: theme.palette.text.main,
             },
             "& label": {
-              color: "#e0e3e9",
+              color: theme.palette.text.main,
             },
             "& input": {
-              color: "#d1d1d1",
+              color: theme.palette.savetext.main,
             },
             "& .MuiOutlinedInput-root": {
               "& fieldset": {
-                borderColor: "#d1d1d1",
+                borderColor: theme.palette.savetext.main,
               },
               "&:hover fieldset": {
-                borderColor: "#e0e3e9",
+                borderColor: theme.palette.text.main,
               },
               "&.Mui-focused fieldset": {
-                borderColor: "#e0e3e9",
+                borderColor: theme.palette.text.main,
               },
             },
-            backgroundColor: "#2c2f36",
+            backgroundColor: theme.palette.pr.main,
           }}
         />
         <Button
@@ -71,7 +73,7 @@ function PasswordResetPage() {
             mt: 3,
             mb: 2,
             backgroundColor: "button",
-            color: "#e0e3e9",
+            color: theme.palette.text.main,
             fontSize: "1rem",
             boxShadow: "0 2px 4px rgba(0, 0, 0, 0.1)",
           }}

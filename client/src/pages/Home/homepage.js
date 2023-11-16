@@ -20,6 +20,7 @@ import PaymentsIcon from "@mui/icons-material/Payments"; // function HomePage() 
 import ShoppingCartIcon from "@mui/icons-material/ShoppingCart";
 import BarChartIcon from "@mui/icons-material/BarChart";
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
+import { useTheme } from "@mui/material/styles";
 
 const faqs = [
   {
@@ -84,6 +85,7 @@ const faqs = [
 ];
 
 function HomePage() {
+  const theme = useTheme();
   return (
     <Page>
       <img
@@ -115,10 +117,10 @@ function HomePage() {
                 variant="outlined"
                 sx={{
                   mt: 5,
-                  borderColor: "#e0e3e9",
-                  color: "#e0e3e9",
+                  borderColor: theme.palette.text.main,
+                  color: theme.palette.text.main,
                   "&:hover": {
-                    borderColor: "#e0e3e9",
+                    borderColor: theme.palette.text.main,
                   },
                 }}
                 href="/about"
@@ -188,10 +190,10 @@ function HomePage() {
                 variant="outlined"
                 sx={{
                   mt: 5,
-                  borderColor: "#e0e3e9",
-                  color: "#e0e3e9",
+                  borderColor: theme.palette.text.main,
+                  color: theme.palette.text.main,
                   "&:hover": {
-                    borderColor: "#e0e3e9",
+                    borderColor: theme.palette.text.main,
                   },
                 }}
                 href="/about"
@@ -230,7 +232,13 @@ function HomePage() {
               <Heading text={strings.homepage.how} />
             </Grid>
             <Grid item xs={12} md={4} textAlign="center" marginTop={4}>
-              <PaymentsIcon sx={{ color: "#be9e44", mb: 2, fontSize: 40 }} />
+              <PaymentsIcon
+                sx={{
+                  color: theme.palette.secondary.main,
+                  mb: 2,
+                  fontSize: 40,
+                }}
+              />
               <Typography variant="h6" gutterBottom>
                 {strings.homepage.how1}
               </Typography>
@@ -238,7 +246,11 @@ function HomePage() {
             </Grid>
             <Grid item xs={12} md={4} textAlign="center" marginTop={4}>
               <ShoppingCartIcon
-                sx={{ color: "#be9e44", mb: 2, fontSize: 40 }}
+                sx={{
+                  color: theme.palette.secondary.main,
+                  mb: 2,
+                  fontSize: 40,
+                }}
               />
               <Typography variant="h6" gutterBottom>
                 {strings.homepage.how2}
@@ -246,7 +258,13 @@ function HomePage() {
               <Typography variant="body1">{strings.homepage.how21}</Typography>
             </Grid>
             <Grid item xs={12} md={4} textAlign="center" marginTop={4}>
-              <BarChartIcon sx={{ color: "#be9e44", mb: 2, fontSize: 40 }} />
+              <BarChartIcon
+                sx={{
+                  color: theme.palette.secondary.main,
+                  mb: 2,
+                  fontSize: 40,
+                }}
+              />
 
               <Typography variant="h6" gutterBottom>
                 {strings.homepage.how3}
@@ -266,10 +284,10 @@ function HomePage() {
                 variant="outlined"
                 sx={{
                   mt: 5,
-                  borderColor: "#e0e3e9",
-                  color: "#e0e3e9",
+                  borderColor: theme.palette.text.main,
+                  color: theme.palette.text.main,
                   "&:hover": {
-                    borderColor: "#e0e3e9",
+                    borderColor: theme.palette.text.main,
                   },
                 }}
                 href="/about"
@@ -313,10 +331,10 @@ function HomePage() {
               href="/contact"
               sx={{
                 mt: 5,
-                borderColor: "#e0e3e9",
-                color: "#e0e3e9",
+                borderColor: theme.palette.text.main,
+                color: theme.palette.text.main,
                 "&:hover": {
-                  borderColor: "#e0e3e9",
+                  borderColor: theme.palette.text.main,
                 },
               }}
             >

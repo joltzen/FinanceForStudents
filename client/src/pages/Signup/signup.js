@@ -3,8 +3,11 @@ import axiosInstance from "../../config/axios";
 import { Button, Box, Typography, Alert } from "@mui/material";
 import { useNavigate } from "react-router";
 import TextComp from "../../components/TextComp";
+import { useTheme } from "@mui/material/styles";
 
 function SignUpForm() {
+  const theme = useTheme();
+
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [username, setUsername] = useState("");
@@ -45,7 +48,7 @@ function SignUpForm() {
         mx: "auto",
       }}
     >
-      <Typography variant="h4" sx={{ mb: 2, color: "#e0e3e9" }}>
+      <Typography variant="h4" sx={{ mb: 2, color: theme.palette.text.main }}>
         Signup
       </Typography>
       {error && <Alert severity="error">{error}</Alert>}
@@ -99,11 +102,11 @@ function SignUpForm() {
           type="submit"
           fullWidth
           variant="contained"
-          color="button"
+          color={theme.palette.primary.main}
           sx={{
             mt: 3,
             mb: 2,
-            color: "#e0e3e9",
+            color: theme.palette.text.main,
             fontSize: "1.1rem",
             boxShadow: "0 2px 4px rgba(0, 0, 0, 0.1)",
           }}

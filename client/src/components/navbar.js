@@ -38,8 +38,8 @@ const StyledAppBar = styled(AppBar)(({ theme }) => ({
 const StyledDrawer = styled(Drawer)(({ theme }) => ({
   zIndex: 1200,
   "& .MuiDrawer-paper": {
-    backgroundColor: theme.pallete.list.main,
-    color: theme.pallete.text.main,
+    backgroundColor: theme.palette.list.main,
+    color: theme.palette.text.main,
   },
 }));
 
@@ -52,8 +52,8 @@ const StyledDrawerContent = styled("div")(({ theme }) => ({
   marginTop: "70px",
 
   "& .MuiDrawer-paper": {
-    backgroundColor: theme.pallete.list.main,
-    color: theme.pallete.text.main,
+    backgroundColor: theme.palette.list.main,
+    color: theme.palette.text.main,
   },
 }));
 function Navbar() {
@@ -216,7 +216,7 @@ function Navbar() {
               <Divider
                 sx={{
                   mt: 1,
-                  backgroundColor: "#be9e44",
+                  backgroundColor: theme.palette.secondary.main,
                 }}
               />
             </>

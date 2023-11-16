@@ -22,10 +22,11 @@ import FinanceOverview from "./overview";
 import TextComp from "../../components/TextComp";
 import SelectComp from "../../components/SelectComp";
 import AddButton from "../../components/AddButtonComp";
+import { useTheme } from "@mui/material/styles";
 
 function FinancePage() {
   const today = new Date().toISOString().split("T")[0];
-
+  const theme = useTheme();
   const [category, setCategory] = useState("");
   const [date, setDate] = useState(today);
   const [description, setDescription] = useState("");
@@ -153,13 +154,18 @@ function FinancePage() {
             Transaktion hinzufügen
           </AddButton>
           <Dialog open={openDialog} onClose={handleCloseDialog}>
-            <DialogTitle sx={{ backgroundColor: "#262b3d", color: "#e0e3e9" }}>
+            <DialogTitle
+              sx={{
+                backgroundColor: theme.palette.card.main,
+                color: theme.palette.text.main,
+              }}
+            >
               Neue Transaktion
             </DialogTitle>
-            <DialogContent sx={{ backgroundColor: "#262b3d" }}>
+            <DialogContent sx={{ backgroundColor: theme.palette.card.main }}>
               <form onSubmit={handleSubmit}>
                 <FormControl fullWidth>
-                  <InputLabel style={{ color: "#e0e3e9" }}>
+                  <InputLabel style={{ color: theme.palette.text.main }}>
                     Transaktionstyp
                   </InputLabel>
                   <SelectComp
@@ -197,7 +203,7 @@ function FinancePage() {
                   onChange={handleDateChange}
                 />
                 <InputLabel
-                  sx={{ color: "#e0e3e9", mt: 2 }}
+                  sx={{ color: theme.palette.text.main, mt: 2 }}
                   id="category-label"
                 >
                   Kategorie
@@ -209,7 +215,7 @@ function FinancePage() {
                   onChange={(e) => setCategory(e.target.value)}
                   label="Kategorie"
                   sx={{
-                    color: "#e0e3e9",
+                    color: theme.palette.text.main,
                     "& .MuiSelect-select": {
                       backgroundColor: getCurrentCategoryColor(),
                     },
@@ -255,18 +261,18 @@ function FinancePage() {
                 </Select>
               </form>
             </DialogContent>
-            <DialogActions sx={{ backgroundColor: "#262b3d" }}>
+            <DialogActions sx={{ backgroundColor: theme.palette.card.main }}>
               <Button
                 onClick={handleCloseDialog}
                 color="primary"
-                sx={{ color: "#e0e3e9" }}
+                sx={{ color: theme.palette.text.main }}
               >
                 Abbrechen
               </Button>
               <Button
                 onClick={handleSubmit}
                 color="primary"
-                sx={{ color: "#e0e3e9" }}
+                sx={{ color: theme.palette.text.main }}
               >
                 Speichern
               </Button>
@@ -275,7 +281,7 @@ function FinancePage() {
 
           <Typography
             variant="h6"
-            color="#e0e3e9"
+            color={theme.palette.text.main}
             sx={{ mb: 2, ml: 20, mt: 2 }}
           >
             Transaktionen Übersicht

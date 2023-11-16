@@ -8,8 +8,10 @@ import { useNavigate } from "react-router";
 import axiosInstance from "../../config/axios";
 import { Link } from "@mui/material";
 import TextComp from "../../components/TextComp";
+import { useTheme } from "@mui/material/styles";
 
 function LoginPage() {
+  const theme = useTheme();
   const [credentials, setCredentials] = useState({
     identifier: "",
     password: "",
@@ -56,7 +58,7 @@ function LoginPage() {
         mx: "auto",
       }}
     >
-      <Typography variant="h4" sx={{ mb: 2, color: "#e0e3e9" }}>
+      <Typography variant="h4" sx={{ mb: 2, color: theme.palette.text.main }}>
         Login
       </Typography>
       {error && <Alert severity="error">{error}</Alert>}
@@ -96,7 +98,7 @@ function LoginPage() {
             mt: 3,
             mb: 2,
             backgroundColor: "button",
-            color: "#e0e3e9",
+            color: theme.palette.text.main,
             fontSize: "1rem",
             boxShadow: "0 2px 4px rgba(0, 0, 0, 0.1)",
           }}

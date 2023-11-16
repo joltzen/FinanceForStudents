@@ -4,10 +4,10 @@ const SwitchComp = styled(Switch)(({ theme }) => ({
   "& .MuiSwitch-switchBase": {
     color: "grey",
     "&.Mui-checked": {
-      color: "#be9e44",
+      color: theme.palette.secondary.main,
     },
     "&.Mui-checked + .MuiSwitch-track": {
-      backgroundColor: "#be9e44",
+      backgroundColor: theme.palette.secondary.main,
     },
   },
   "& .MuiSwitch-track": {

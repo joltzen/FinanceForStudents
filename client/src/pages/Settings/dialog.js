@@ -17,7 +17,11 @@ import Circle from "@uiw/react-color-circle";
 import DeleteIcon from "@mui/icons-material/Delete";
 import TextComp from "../../components/TextComp";
 import EditIcon from "@mui/icons-material/Edit";
+import { useTheme } from "@mui/material/styles";
+
 function DialogPage() {
+  const theme = useTheme();
+
   const [categories, setCategories] = useState([]);
   const [newCategory, setNewCategory] = useState("");
   const [categoryColor, setCategoryColor] = useState("#F44E3B");
@@ -114,12 +118,25 @@ function DialogPage() {
   return (
     <div>
       <Dialog open={openDialog} onClose={() => setOpenDialog(false)}>
-        <DialogTitle sx={{ backgroundColor: "#262b3d", color: "#e0e3e9" }}>
+        <DialogTitle
+          sx={{
+            backgroundColor: theme.palette.card.main,
+            color: theme.palette.text.main,
+          }}
+        >
           Neue Kategorie hinzufügen
         </DialogTitle>
-        <DialogContent sx={{ backgroundColor: "#262b3d", color: "#e0e3e9" }}>
+        <DialogContent
+          sx={{
+            backgroundColor: theme.palette.card.main,
+            color: theme.palette.text.main,
+          }}
+        >
           <DialogContentText
-            sx={{ backgroundColor: "#262b3d", color: "#e0e3e9" }}
+            sx={{
+              backgroundColor: theme.palette.card.main,
+              color: theme.palette.text.main,
+            }}
           >
             Fügen Sie eine neue Kategorie hinzu und wählen Sie eine Farbe für
             sie.
@@ -163,10 +180,18 @@ function DialogPage() {
             }}
           />
         </DialogContent>
-        <DialogActions sx={{ backgroundColor: "#262b3d", color: "#e0e3e9" }}>
+        <DialogActions
+          sx={{
+            backgroundColor: theme.palette.card.main,
+            color: theme.palette.text.main,
+          }}
+        >
           <Button
             onClick={() => setOpenDialog(false)}
-            sx={{ backgroundColor: "#262b3d", color: "#e0e3e9" }}
+            sx={{
+              backgroundColor: theme.palette.card.main,
+              color: theme.palette.text.main,
+            }}
           >
             Abbrechen
           </Button>
@@ -175,14 +200,17 @@ function DialogPage() {
               addCategory();
               handleAddCategory();
             }}
-            sx={{ backgroundColor: "#262b3d", color: "#e0e3e9" }}
+            sx={{
+              backgroundColor: theme.palette.card.main,
+              color: theme.palette.text.main,
+            }}
           >
             Hinzufügen
           </Button>
         </DialogActions>
       </Dialog>
 
-      <Typography variant="h6" sx={{ mt: 2, color: "#e0e3e9" }}>
+      <Typography variant="h6" sx={{ mt: 2, color: theme.palette.text.main }}>
         Benutzerdefinierte Kategorien
       </Typography>
       <Grid container spacing={2}>
@@ -201,7 +229,9 @@ function DialogPage() {
             >
               <Typography
                 sx={{
-                  color: isColorDark(category.color) ? "#e0e3e9" : "black",
+                  color: isColorDark(category.color)
+                    ? theme.palette.text.main
+                    : "black",
                 }}
               >
                 {category.name}
@@ -225,9 +255,17 @@ function DialogPage() {
         ))}
       </Grid>
       <Dialog open={openEditDialog} onClose={() => setOpenEditDialog(false)}>
-        <DialogContent sx={{ backgroundColor: "#262b3d", color: "#e0e3e9" }}>
+        <DialogContent
+          sx={{
+            backgroundColor: theme.palette.card.main,
+            color: theme.palette.text.main,
+          }}
+        >
           <DialogContentText
-            sx={{ backgroundColor: "#262b3d", color: "#e0e3e9" }}
+            sx={{
+              backgroundColor: theme.palette.card.main,
+              color: theme.palette.text.main,
+            }}
           >
             Kategorie <strong>{editingCategory?.name}</strong> bearbeiten
           </DialogContentText>
@@ -270,15 +308,26 @@ function DialogPage() {
             }}
           />
         </DialogContent>{" "}
-        <DialogActions sx={{ backgroundColor: "#262b3d", color: "#e0e3e9" }}>
+        <DialogActions
+          sx={{
+            backgroundColor: theme.palette.card.main,
+            color: theme.palette.text.main,
+          }}
+        >
           <Button
-            sx={{ backgroundColor: "#262b3d", color: "#e0e3e9" }}
+            sx={{
+              backgroundColor: theme.palette.card.main,
+              color: theme.palette.text.main,
+            }}
             onClick={() => setOpenEditDialog(false)}
           >
             Abbrechen
           </Button>
           <Button
-            sx={{ backgroundColor: "#262b3d", color: "#e0e3e9" }}
+            sx={{
+              backgroundColor: theme.palette.card.main,
+              color: theme.palette.text.main,
+            }}
             onClick={handleEditCategory}
           >
             Speichern
@@ -290,7 +339,6 @@ function DialogPage() {
         sx={{ marginTop: 2 }}
         onClick={() => setOpenDialog(true)}
         variant="contained"
-        color="button"
       >
         Kategorie hinzufügen
       </Button>

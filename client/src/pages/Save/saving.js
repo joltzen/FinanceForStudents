@@ -23,9 +23,11 @@ import TextComp from "../../components/TextComp";
 import AddButton from "../../components/AddButtonComp";
 import CardComp from "../../components/CardComp";
 import LinearProgressComp from "../../components/LinearProgressComp";
+import { useTheme } from "@mui/material/styles";
 
 function SavingPage() {
   const today = new Date().toISOString().split("T")[0];
+  const theme = useTheme();
 
   const { user } = useAuth();
   const [open, setOpen] = useState(false);
@@ -191,10 +193,15 @@ function SavingPage() {
             Sparziel hinzufügen
           </AddButton>
           <Dialog open={open} onClose={handleOpen}>
-            <DialogTitle sx={{ backgroundColor: "#262b3d", color: "#e0e3e9" }}>
+            <DialogTitle
+              sx={{
+                backgroundColor: theme.palette.card.main,
+                color: theme.palette.text.main,
+              }}
+            >
               Sparziel setzen
             </DialogTitle>
-            <DialogContent sx={{ backgroundColor: "#262b3d" }}>
+            <DialogContent sx={{ backgroundColor: theme.palette.card.main }}>
               <Box component="form" noValidate onSubmit={handleSubmit}>
                 {alter && (
                   <>
@@ -315,18 +322,22 @@ function SavingPage() {
                 </Button>
               </Box>
             </DialogContent>
-            <DialogActions sx={{ backgroundColor: "#262b3d" }}>
+            <DialogActions sx={{ backgroundColor: theme.palette.card.main }}>
               <Button
                 onClick={handleOpen}
-                color="primary"
-                sx={{ color: "#e0e3e9" }}
+                sx={{
+                  color: theme.palette.text.main,
+                  bg: theme.palette.primary.main,
+                }}
               >
                 Abbrechen
               </Button>
               <Button
                 onClick={handleSubmit}
-                color="button"
-                sx={{ color: "#e0e3e9" }}
+                sx={{
+                  color: theme.palette.text.main,
+                  bg: theme.palette.primary.main,
+                }}
               >
                 Speichern
               </Button>
@@ -344,7 +355,7 @@ function SavingPage() {
                       <Typography
                         variant="body2"
                         component="div"
-                        color="#d1d1d1"
+                        color={theme.palette.savetext.main}
                         gutterBottom
                       >
                         <strong>Monatliches Sparen: </strong>{" "}
@@ -353,20 +364,20 @@ function SavingPage() {
                       <Typography
                         variant="body2"
                         component="div"
-                        color="#d1d1d1"
+                        color={theme.palette.savetext.main}
                         gutterBottom
                       >
                         <strong>Gesamtbetrag:</strong> {goal.total_amount} €
                       </Typography>
                       <div>
                         <Chip
-                          sx={{ color: "#e0e3e9", mr: 1, mb: 2 }}
+                          sx={{ color: theme.palette.text.main, mr: 1, mb: 2 }}
                           label={`vom: ${new Date(
                             goal.startdate
                           ).toLocaleDateString()}`}
                         />
                         <Chip
-                          sx={{ color: "#e0e3e9", mb: 2 }}
+                          sx={{ color: theme.palette.text.main, mb: 2 }}
                           label={`bis: ${
                             goal.deadline
                               ? new Date(goal.deadline).toLocaleDateString()
@@ -377,7 +388,7 @@ function SavingPage() {
                       <Typography
                         variant="body2"
                         component="div"
-                        color="#d1d1d1"
+                        sx={{ color: theme.palette.savetext.main }}
                       >
                         <strong>Dauer:</strong> {goal.duration} Monate
                       </Typography>
@@ -389,7 +400,7 @@ function SavingPage() {
                           position: "absolute",
                           top: 8,
                           right: 8,
-                          color: "#e0e3e9",
+                          color: theme.palette.text.main,
                         }}
                       >
                         <DeleteIcon />
@@ -399,8 +410,7 @@ function SavingPage() {
                   <Typography
                     variant="body2"
                     component="div"
-                    color="#e0e3e9"
-                    sx={{ mt: 1 }}
+                    sx={{ mt: 1, color: theme.palette.text.main }}
                   >
                     <strong>Ersparnisfortschritt:</strong>
                   </Typography>
@@ -410,7 +420,10 @@ function SavingPage() {
                       value={calculateSavingsProgress(goal)}
                     />
                   </Box>
-                  <Typography variant="body2" sx={{ color: "#e0e3e9" }}>
+                  <Typography
+                    variant="body2"
+                    sx={{ color: theme.palette.text.main }}
+                  >
                     {`${calculateSavingsProgress(goal).toFixed(2)}%`}
                   </Typography>
                 </CardContent>
