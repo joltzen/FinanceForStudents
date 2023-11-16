@@ -403,11 +403,7 @@ function SettingsForm() {
               flexGrow: 0,
             }}
           >
-            <Button
-              variant="contained"
-              sx={{ color: theme.palette.text.main }}
-              onClick={handleTransferDialogOpen}
-            >
+            <Button variant="contained" onClick={handleTransferDialogOpen}>
               Fixkosten übertragen
             </Button>
           </Box>
@@ -583,16 +579,10 @@ function EditSettingsDialog({ transaction, onClose, onSave }) {
         </FormControl>
       </DialogContent>
       <DialogActions sx={{ backgroundColor: theme.palette.card.main }}>
-        <Button
-          onClick={onClose}
-          sx={{ color: theme.palette.text.main }}
-        >
+        <Button onClick={onClose} sx={{ color: theme.palette.text.main }}>
           Abbrechen
         </Button>
-        <Button
-          onClick={handleSave}
-          sx={{ color: theme.palette.text.main }}
-        >
+        <Button onClick={handleSave} sx={{ color: theme.palette.text.main }}>
           Speichern
         </Button>
       </DialogActions>

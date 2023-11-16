@@ -47,7 +47,7 @@ function TransactionSection({
                 key={item.settings_id}
                 sx={{
                   "&:nth-of-type(odd)": {
-                    backgroundColor: theme.palette.text.main,
+                    backgroundColor: theme.palette.uneven.main,
                   },
                   "&:nth-of-type(even)": {
                     backgroundColor: theme.palette.even.main,

@@ -150,8 +150,10 @@ export const themeSettings = (mode) => {
             pr: {
               main: colors.darkCharcoal,
             },
-
             even: {
+              main: colors.dustyPink,
+            },
+            uneven: {
               main: colors.lightCoolGray,
             },
             iconlist: {
@@ -226,8 +228,10 @@ export const themeSettings = (mode) => {
             pr: {
               main: colors.darkCharcoal,
             },
-
             even: {
+              main: colors.steelGray,
+            },
+            uneven: {
               main: colors.lightCoolGray,
             },
             iconlist: {
