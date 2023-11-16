@@ -102,7 +102,6 @@ function SignUpForm() {
           type="submit"
           fullWidth
           variant="contained"
-          color={theme.palette.primary.main}
           sx={{
             mt: 3,
             mb: 2,
