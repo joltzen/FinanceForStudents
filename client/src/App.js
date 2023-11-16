@@ -36,8 +36,8 @@ function App() {
               style={{
                 backgroundColor: theme.palette.background.default,
                 color: theme.palette.text.primary,
-                minHeight: "100vh",
-                minWidth: "100vw",
+                minHeight: "98vh",
+                minWidth: "98vw",
               }}
             >
               <Routes>
