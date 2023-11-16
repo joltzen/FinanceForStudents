@@ -8,7 +8,12 @@ function Heading2(props) {
   return (
     <Typography
       variant="h5"
-      sx={{ fontWeight: "bold", marginTop: 5, color: theme.palette.text.main }}
+      sx={{
+        fontWeight: "bold",
+        marginTop: 1,
+        ml: 2,
+        color: theme.palette.text.main,
+      }}
     >
       {props.text}
     </Typography>

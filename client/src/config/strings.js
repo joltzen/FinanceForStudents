@@ -1,9 +1,9 @@
 const strings = {
   homepage: {
     welcomeMessage: "Willkommen bei FinanceForStudents!",
-    wm2: "Dein Partner für eine sichere finanzielle Zukunft!",
+    wm2: "- Dein Partner für eine sichere finanzielle Zukunft!",
     mission:
-      "Unsere Mission ist es, Studierenden dabei zu helfen, ihre Finanzen einfach und effektiv zu managen.Mit unserer benutzerfreundlichen Plattform können Studierende ihre Einnahmen und Ausgaben leicht verfolgen, Fixkosten und Sparziele festlegen sowie ihre Finanzsituation langfristig planen.",
+      "Unsere Mission ist es, Studierenden dabei zu helfen, ihre Finanzen einfach und effektiv zu managen. Mit unserer benutzerfreundlichen Plattform können Studierende ihre Einnahmen und Ausgaben leicht verfolgen, Fixkosten und Sparziele festlegen sowie ihre Finanzsituation langfristig planen.",
     what: "In der heutigen Zeit stehen viele Studierende vor einer wirtschaftlichen Herausforderung. Sei es das Monatsbudget, die Studiengebühren, die alltäglichen Lebenshaltungskosten oder gar Schulden – als Studierender muss man sich ständig finanziell balancieren.",
 
     why: "Warum FinanceForStudents?",

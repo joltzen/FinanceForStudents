@@ -97,7 +97,7 @@ function HomePage() {
         <Box sx={{ flexGrow: 1, padding: 4 }}>
           <Grid container spacing={2}>
             <Grid item xs={12} md={6}>
-              <Typography variant="h4">
+              <Typography variant="h4" sx={{ mt: 1 }}>
                 <strong>{strings.homepage.welcomeMessage}</strong>
               </Typography>
               <Heading2 text={strings.homepage.wm2} />
@@ -135,9 +135,16 @@ function HomePage() {
         <Box sx={{ flexGrow: 1, padding: 4 }}>
           <Grid container spacing={2}>
             <Grid item xs={12} md={6}>
-              <Typography variant="h4" component="h2" gutterBottom>
-                {strings.new.control}
-              </Typography>
+              <Grid item xs={12} textAlign="center">
+                <Typography
+                  variant="h4"
+                  component="h2"
+                  sx={{ mr: 10 }}
+                  gutterBottom
+                >
+                  {strings.new.control}
+                </Typography>
+              </Grid>
               <Typography variant="body1" paragraph marginTop={3}>
                 {strings.new.start}
               </Typography>
@@ -166,7 +173,7 @@ function HomePage() {
                 spacing={2}
               >
                 <Grid item xs={6}>
-                  <Typography variant="body1" marginBottom={5}>
+                  <Typography variant="body1" marginBottom={5} marginTop={3}>
                     {" "}
                     {strings.new.track}
                   </Typography>
@@ -324,7 +331,7 @@ function HomePage() {
           ))}
           <Box textAlign="center" sx={{ mt: 4 }}>
             <Typography variant="h5" gutterBottom>
-              Noch fragen?
+              Noch Fragen?
             </Typography>
             <Button
               variant="outlined"
