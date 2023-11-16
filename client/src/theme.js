@@ -269,7 +269,7 @@ export const useMode = () => {
   const [mode, setMode] = useState(() => {
     // Check if theme mode is saved in local storage
     const savedMode = localStorage.getItem("themeMode");
-    return savedMode ? savedMode : "light"; // Default to 'light' if not found
+    return savedMode ? savedMode : "dark"; // Default to 'light' if not found
   });
 
   useEffect(() => {
