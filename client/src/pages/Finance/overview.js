@@ -299,6 +299,7 @@ function FinanceOverview({ update }) {
                       sx={{
                         border: "1px solid black",
                         backgroundColor: categoryColor,
+                        color: "black",
                       }}
                     >
                       {formatDate(transaction.transaction_date)}
@@ -307,6 +308,7 @@ function FinanceOverview({ update }) {
                       sx={{
                         border: "1px solid black",
                         backgroundColor: categoryColor,
+                        color: "black",
                       }}
                     >
                       {transaction.description}
@@ -315,6 +317,7 @@ function FinanceOverview({ update }) {
                       sx={{
                         border: "1px solid black",
                         backgroundColor: categoryColor,
+                        color: "black",
                       }}
                     >
                       {transaction.transaction_type === "Ausgabe" ? "-" : ""}
@@ -325,9 +328,11 @@ function FinanceOverview({ update }) {
                       sx={{
                         border: "1px solid black",
                         backgroundColor: categoryColor,
+                        color: "black",
                       }}
                     >
                       <IconButton
+                        style={{ color: "black" }}
                         onClick={() => handleEditButtonClick(transaction)}
                       >
                         <EditIcon />
@@ -351,8 +356,8 @@ function FinanceOverview({ update }) {
             display: "flex",
             justifyContent: "space-between", // This will push the children to opposite ends
             alignItems: "center",
-            padding: 2,
             width: "100%",
+            color: "black",
           }}
         >
           <TablePagination
@@ -363,8 +368,9 @@ function FinanceOverview({ update }) {
             page={page}
             onPageChange={handleChangePage}
             onRowsPerPageChange={handleChangeRowsPerPage}
+            sx={{ color: "black" }}
           />
-          <Typography variant="body2" sx={{ marginRight: 5 }}>
+          <Typography variant="body2" sx={{ marginRight: 5, color: "black" }}>
             Gesamtsumme: <strong>{savingSum.toFixed(2)}€</strong>
           </Typography>
         </Box>
@@ -477,16 +483,10 @@ function EditTransactionDialog({ transaction, onClose, onSave }) {
         />
       </DialogContent>
       <DialogActions sx={{ backgroundColor: theme.palette.card.main }}>
-        <Button
-          onClick={onClose}
-          sx={{ color: theme.palette.text.main }}
-        >
+        <Button onClick={onClose} sx={{ color: theme.palette.text.main }}>
           Abbrechen
         </Button>
-        <Button
-          onClick={handleSave}
-          sx={{ color: theme.palette.text.main }}
-        >
+        <Button onClick={handleSave} sx={{ color: theme.palette.text.main }}>
           Speichern
         </Button>
       </DialogActions>

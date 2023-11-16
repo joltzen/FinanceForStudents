@@ -3,7 +3,7 @@ import { styled } from "@mui/system";
 
 const SelectComp = styled(Select)(({ theme }) => ({
   color: theme.palette.text.main,
-  backgroundColor: "#333540",
+  backgroundColor: theme.palette.selectBackground.main,
   border: `1px solid ${theme.palette.text.main}`,
   "& .MuiSvgIcon-root": { color: theme.palette.text.main },
 }));

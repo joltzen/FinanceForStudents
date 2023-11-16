@@ -29,17 +29,20 @@ import SavingsIcon from "@mui/icons-material/Savings";
 import Switch from "@mui/material/Switch";
 import { ColorModeContext } from "../theme";
 import { useTheme } from "@mui/material/styles";
-
+import DarkModeOutlinedIcon from "@mui/icons-material/DarkModeOutlined";
+import LightModeOutlinedIcon from "@mui/icons-material/LightModeOutlined";
 const StyledAppBar = styled(AppBar)(({ theme }) => ({
   zIndex: 1400,
   position: "relative",
+  minWidth: "100vw",
+  backgroundColor: "#323850",
 }));
 
 const StyledDrawer = styled(Drawer)(({ theme }) => ({
   zIndex: 1200,
   "& .MuiDrawer-paper": {
-    backgroundColor: theme.palette.list.main,
-    color: theme.palette.text.main,
+    backgroundColor: "#333740",
+    color: "#e0e3e9",
   },
 }));
 
@@ -52,8 +55,8 @@ const StyledDrawerContent = styled("div")(({ theme }) => ({
   marginTop: "70px",
 
   "& .MuiDrawer-paper": {
-    backgroundColor: theme.palette.list.main,
-    color: theme.palette.text.main,
+    backgroundColor: "#333740",
+    color: "#e0e3e9",
   },
 }));
 function Navbar() {
@@ -91,7 +94,7 @@ function Navbar() {
             aria-label="menu"
             onClick={toggleDrawer}
             sx={{
-              color: theme.palette.icon.main,
+              color: "#c6aa60",
               fontSize: "20px",
             }}
           >
@@ -101,11 +104,7 @@ function Navbar() {
               <MenuIcon fontSize="inherit" />
             )}
           </IconButton>
-          <Switch
-            checked={colorMode.mode === "dark"}
-            onChange={colorMode.toggleColorMode}
-            color="default"
-          />
+
           <div
             style={{ flexGrow: 1, display: "flex", justifyContent: "center" }}
           >
@@ -130,7 +129,6 @@ function Navbar() {
               </Link>
             )}
           </div>
-
           <div>
             {user ? (
               <div>
@@ -140,7 +138,7 @@ function Navbar() {
                   aria-haspopup="true"
                   onClick={handleProfileMenuOpen}
                   color="inherit"
-                  sx={{ color: theme.palette.icon.main, fontSize: "20px" }}
+                  sx={{ color: "#c6aa60", fontSize: "20px" }}
                 >
                   <AccountCircle />
                 </IconButton>
@@ -216,7 +214,7 @@ function Navbar() {
               <Divider
                 sx={{
                   mt: 1,
-                  backgroundColor: theme.palette.secondary.main,
+                  backgroundColor: "#be9e44",
                 }}
               />
             </>

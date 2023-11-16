@@ -2,53 +2,96 @@ import { createContext, useState, useMemo, useEffect } from "react";
 import { createTheme } from "@mui/material/styles";
 
 // color design tokens export
-export const tokens = (mode) => ({
-  ...(mode === "dark"
-    ? {
-        darkBlueishGray: "#262b3d",
-        gold: "#be9e44",
-        lightGray: "#e0e3e9",
-        darkGray: "#333740",
-        slateBlue: "#3A415C",
-        brass: "#c6aa60",
-        lightGold: "#cbb26a",
-        steelGray: "#373c47",
-        charcoal: "#2e2e38",
-        indigoBlue: "#4e577b",
-        darkSlateGrey: "#3b3d49",
-        brightYellow: "#ffce56",
-        neonGreen: "#76ff03",
-        skyBlue: "#4dd0e1",
-        offWhite: "#fcfcfc",
-        dustyPink: "#afb1b2",
-        silver: "#d1d1d1",
-        darkCharcoal: "#2c2f36",
-        bronzeGold: "#c6aa60",
-        lightCoolGray: "#d2d5dc",
-      }
-    : {
-        darkBlueishGray: "#262b3d",
-        gold: "#be9e44",
-        lightGray: "#e0e3e9",
-        darkGray: "#333740",
-        slateBlue: "#3A415C",
-        brass: "#c6aa60",
-        lightGold: "#cbb26a",
-        steelGray: "#373c47",
-        charcoal: "#2e2e38",
-        indigoBlue: "#4e577b",
-        darkSlateGrey: "#3b3d49",
-        brightYellow: "#ffce56",
-        neonGreen: "#76ff03",
-        skyBlue: "#4dd0e1",
-        offWhite: "#fcfcfc",
-        dustyPink: "#afb1b2",
-        silver: "#d1d1d1",
-        darkCharcoal: "#2c2f36",
-        bronzeGold: "#c6aa60",
-        lightCoolGray: "#d2d5dc",
-      }),
-});
+export const tokens = (mode) => {
+  return {
+    ...(mode === "dark"
+      ? {
+          //card.main
+          darkBlueishGray: "#262b3d",
+          //secondary.main
+          gold: "#be9e44",
+          //text.main
+          lightGray: "#e0e3e9",
+          //list.main
+          darkGray: "#333740",
+          //primary.main
+          slateBlue: "#3A415C",
+          //icon.main
+          brass: "#c6aa60",
+          //secondary.light
+          lightGold: "#cbb26a",
+          //border.main
+          steelGray: "#373c47",
+          //select.main
+          charcoal: "#2e2e38",
+          //tablecell.main
+          indigoBlue: "#4e577b",
+          //background.default
+          darkSlateGrey: "#3b3d49",
+          //not used
+          brightYellow: "#ffce56",
+          //budget.main
+          neonGreen: "#76ff03",
+          //saving.main
+          skyBlue: "#4dd0e1",
+          //pagination.main
+          offWhite: "#fcfcfc",
+          //savetext.main
+          dustyPink: "#afb1b2",
+          //selected.main
+          silver: "#d1d1d1",
+          //pr.main
+          darkCharcoal: "#2c2f36",
+          //iconlist.default
+          bronzeGold: "#c6aa60",
+          //even.main
+          lightCoolGray: "#d2d5dc",
+          veryDark: "#333540",
+        }
+      : {
+          //card.main
+          darkBlueishGray: "#d1d1d1",
+          //secondary.main
+          gold: "#D4AF37",
+          //text.main
+          lightGray: "#2c2f36",
+          //list.main
+          darkGray: "#9E9E9E",
+          //primary.main
+          slateBlue: "#4e577b",
+          //icon.main
+          brass: "#B87333",
+          //secondary.light
+          lightGold: "#CD7F32",
+          //border.main
+          steelGray: "#A0A0A0",
+          //select.main
+          charcoal: "#d1d1d1",
+          //tablecell.main
+          indigoBlue: "#6A8EAE",
+          //background.default
+          darkSlateGrey: "#F0F0F0",
+          //not used
+          brightYellow: "#FFD700",
+          //budget.main
+          neonGreen: "#76ff03",
+          //saving.main
+          skyBlue: "#00BFFF",
+          //pagination.main
+          offWhite: "#F2F2F2",
+          //savetext.main
+          dustyPink: "#afb1b2",
+          //selected.main
+          silver: "#C0C0C0",
+          //pr.main
+          darkCharcoal: "#9A9D9F",
+          //iconlist.default
+          bronzeGold: "#D7C3A2",
+          //even.main
+          lightCoolGray: "#ECEDEF",
+        }),
+  };
+};
 
 // mui theme settings
 export const themeSettings = (mode) => {
@@ -66,7 +109,7 @@ export const themeSettings = (mode) => {
               light: colors.lightGold,
             },
             budget: {
-              main: colors.brightYellow,
+              main: colors.neonGreen,
             },
             saving: {
               main: colors.skyBlue,
@@ -107,14 +150,30 @@ export const themeSettings = (mode) => {
             pr: {
               main: colors.darkCharcoal,
             },
-            black: {
-              default: "#000000",
-            },
+
             even: {
               main: colors.lightCoolGray,
             },
             iconlist: {
               default: "#ffffff",
+            },
+            navbar: {
+              main: colors.blue,
+            },
+            table: {
+              main: "black",
+            },
+            selectBackground: {
+              main: colors.veryDark,
+            },
+            components: {
+              MuiTableCell: {
+                styleOverrides: {
+                  root: {
+                    color: "black", // Set your desired color here
+                  },
+                },
+              },
             },
           }
         : {
@@ -126,7 +185,7 @@ export const themeSettings = (mode) => {
               light: colors.lightGold,
             },
             budget: {
-              main: colors.brightYellow,
+              main: colors.neonGreen,
             },
             saving: {
               main: colors.skyBlue,
@@ -167,14 +226,30 @@ export const themeSettings = (mode) => {
             pr: {
               main: colors.darkCharcoal,
             },
-            black: {
-              default: "#000000",
-            },
+
             even: {
               main: colors.lightCoolGray,
             },
             iconlist: {
               default: "#ffffff",
+            },
+            navbar: {
+              main: colors.blue,
+            },
+            table: {
+              main: "black",
+            },
+            selectBackground: {
+              main: colors.veryDark,
+            },
+            components: {
+              MuiTableCell: {
+                styleOverrides: {
+                  root: {
+                    color: "black", // Set your desired color here
+                  },
+                },
+              },
             },
           }),
     },
@@ -201,7 +276,7 @@ export const useMode = () => {
   const colorMode = useMemo(
     () => ({
       toggleColorMode: () => {
-        setMode((prevMode) => (prevMode === "light" ? "dark" : "light"));
+        setMode((prevMode) => (prevMode === "dark" ? "light" : "dark"));
       },
     }),
     []

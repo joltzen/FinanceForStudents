@@ -3,7 +3,7 @@ import { TextField } from "@mui/material";
 const TextComp = styled(TextField)(({ theme }) => ({
   marginTop: "20px",
   "& label.Mui-focused": {
-    color: theme.palette.text.main,
+    color: theme.palette.selectBackground.main,
   },
   "& label": {
     color: theme.palette.text.main,
@@ -22,7 +22,7 @@ const TextComp = styled(TextField)(({ theme }) => ({
       borderColor: "373c47",
     },
   },
-  backgroundColor: theme.palette.select.main,
+  backgroundColor: theme.palette.selectBackground.main,
   borderRadius: "5px",
   border: `1px solid ${theme.palette.text.main}`, // Use template literal for dynamic value
 }));

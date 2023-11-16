@@ -58,11 +58,14 @@ function TransactionSection({
                 <TableCell
                   component="th"
                   scope="row"
-                  sx={{ borderRight: "1px solid" }}
+                  sx={{ borderRight: "1px solid", color: "black" }}
                 >
                   {item.description}
                 </TableCell>
-                <TableCell align="left" sx={{ borderRight: "1px solid" }}>
+                <TableCell
+                  align="left"
+                  sx={{ borderRight: "1px solid", color: "black" }}
+                >
                   {item.amount} €
                 </TableCell>
                 <TableCell align="right">

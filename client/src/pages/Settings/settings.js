@@ -465,7 +465,6 @@ function EditSettingsDialog({ transaction, onClose, onSave }) {
     });
   };
 
-  // Updated handler specifically for the Select component
   const handleSelectChange = (event) => {
     setEditedSettings({
       ...editedSettings,

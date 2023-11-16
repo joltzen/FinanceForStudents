@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useContext } from "react";
 import { useAuth } from "../../core/auth/auth";
 import Button from "@mui/material/Button";
 import { useNavigate } from "react-router-dom";
@@ -7,7 +7,11 @@ import axiosInstance from "../../config/axios";
 import CardComp from "../../components/CardComp";
 import { Typography, Avatar, Box, Grid } from "@mui/material";
 import { deepPurple } from "@mui/material/colors";
-
+import { ColorModeContext } from "../../theme";
+import { useTheme } from "@mui/material/styles";
+import IconButton from "@mui/material/IconButton";
+import DarkModeOutlinedIcon from "@mui/icons-material/DarkModeOutlined";
+import LightModeOutlinedIcon from "@mui/icons-material/LightModeOutlined";
 function ProfilePage() {
   const { user, logout } = useAuth();
   const navigate = useNavigate();
@@ -43,6 +47,9 @@ function ProfilePage() {
   const handleOpen = () => {
     setOpen(!open);
   };
+  const theme = useTheme();
+
+  const colorMode = useContext(ColorModeContext); // Access the color mode context
 
   return (
     <Page>
@@ -76,6 +83,20 @@ function ProfilePage() {
               Email: <strong>{user?.email}</strong>
             </Typography>
           </Grid>
+        </Grid>
+        <Grid item xs={12}>
+          {colorMode.mode}
+          <IconButton
+            sx={{ mr: 4 }}
+            onClick={colorMode.toggleColorMode}
+            color="inherit"
+          >
+            {theme.palette.mode === "dark" ? (
+              <DarkModeOutlinedIcon />
+            ) : (
+              <LightModeOutlinedIcon />
+            )}
+          </IconButton>
         </Grid>
         <Box mt={4}>
           <Button

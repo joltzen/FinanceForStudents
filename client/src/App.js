@@ -27,16 +27,17 @@ function App() {
   return (
     <ColorModeContext.Provider value={colorMode}>
       <AuthProvider>
-        <ThemeProvider theme={theme}>
-          <Router>
-            <SidebarProvider>
-              <Navbar></Navbar>
-            </SidebarProvider>
+        <Router>
+          <SidebarProvider>
+            <Navbar></Navbar>
+          </SidebarProvider>
+          <ThemeProvider theme={theme}>
             <div
               style={{
-                backgroundColor: "#3b3d49",
-                color: "#e0e3e9",
+                backgroundColor: theme.palette.background.default,
+                color: theme.palette.text.primary,
                 minHeight: "100vh",
+                minWidth: "100vw",
               }}
             >
               <Routes>
@@ -54,8 +55,8 @@ function App() {
                 <Route path="/about" element={<About />} />
               </Routes>
             </div>
-          </Router>
-        </ThemeProvider>
+          </ThemeProvider>
+        </Router>
       </AuthProvider>
     </ColorModeContext.Provider>
   );

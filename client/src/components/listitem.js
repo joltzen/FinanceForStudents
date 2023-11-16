@@ -16,14 +16,12 @@ function StyledListItem(props) {
       component="a"
       href={props.href}
       sx={{
-        backgroundColor: theme.palette.list.main,
-        "&:hover": { backgroundColor: theme.palette.primary.main },
+        backgroundColor: "#333740",
+        "&:hover": { backgroundColor: "#3A415C" },
       }}
     >
       {props.icon && (
-        <ListItemIcon sx={{ color: theme.palette.iconlist.default }}>
-          {props.icon}
-        </ListItemIcon>
+        <ListItemIcon sx={{ color: "white" }}>{props.icon}</ListItemIcon>
       )}
       <ListItemText>
         <Typography
@@ -31,7 +29,7 @@ function StyledListItem(props) {
             mx: 0.5,
             fontSize: "15px",
             width: 200,
-            color: theme.palette.text.main,
+            color: "#e0e3e9",
           }}
         >
           {props.primary}
