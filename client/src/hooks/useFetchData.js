@@ -7,7 +7,9 @@ export const useFetchData = (user, isAnnualView, filterMonth, filterYear) => {
   const [categories, setCategories] = useState([]);
   const [settings, setSettings] = useState([]);
   const [savingsGoals, setSavingsGoals] = useState([]);
-
+  const [prevMonthTransactions, setPrevMonthTransactions] = useState([]);
+  const [prevSettings, setPrevSettings] = useState([]);
+  const [prevSavingsGoals, setPrevSavingsGoals] = useState([]);
   useEffect(() => {
     const fetchTransactionsAndSettings = async () => {
       const endpointTransactions = isAnnualView
@@ -27,11 +29,42 @@ export const useFetchData = (user, isAnnualView, filterMonth, filterYear) => {
           axiosInstance.get(endpointSettings, { params }),
         ]);
 
-        
         setTransactions(transactionsResponse.data);
         setSettings(settingsResponse.data);
       } catch (error) {
         console.error("Error fetching transactions and settings:", error);
+      }
+    };
+
+    const fetchPrevoiusMonthTransactions = async () => {
+      try {
+        const response = await axiosInstance.get("/getTransactions", {
+          params: {
+            year: filterMonth === 1 ? filterYear - 1 : filterYear,
+            month: filterMonth - 1,
+            user_id: user.id,
+          },
+        });
+
+        setPrevMonthTransactions(response.data);
+      } catch (error) {
+        console.error("Error fetching previous month transactions:", error);
+      }
+    };
+
+    const fetchPrevoiusMonthSettings = async () => {
+      try {
+        const response = await axiosInstance.get("/getSettings", {
+          params: {
+            year: filterMonth === 1 ? filterYear - 1 : filterYear,
+            month: filterMonth - 1,
+            user_id: user.id,
+          },
+        });
+
+        setPrevSettings(response.data);
+      } catch (error) {
+        console.error("Error fetching previous month settings:", error);
       }
     };
 
@@ -58,9 +91,18 @@ export const useFetchData = (user, isAnnualView, filterMonth, filterYear) => {
     };
 
     fetchTransactionsAndSettings();
+    fetchPrevoiusMonthTransactions();
+    fetchPrevoiusMonthSettings();
     fetchCategories();
     fetchSavingGoals();
   }, [filterMonth, filterYear, isAnnualView, user.id]);
 
-  return { transactions, categories, settings, savingsGoals };
+  return {
+    prevMonthTransactions,
+    prevSettings,
+    transactions,
+    categories,
+    settings,
+    savingsGoals,
+  };
 };

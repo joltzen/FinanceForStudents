@@ -32,6 +32,7 @@ import SelectComp from "../../components/SelectComp";
 import { months, years } from "../../config/constants";
 import { useTheme } from "@mui/material/styles";
 import { Container } from "@mui/system";
+import EditTransactionDialog from "./edit";
 
 function FinanceOverview({ update }) {
   const theme = useTheme();
@@ -369,117 +370,11 @@ function FinanceOverview({ update }) {
             transaction={editTransaction}
             onClose={() => setEditTransaction(null)}
             onSave={handleEditTransaction}
+            categories={categories}
           />
         )}
       </Grid>
     </Container>
-  );
-}
-
-function EditTransactionDialog({ transaction, onClose, onSave }) {
-  const [editedTransaction, setEditedTransaction] = useState({
-    ...transaction,
-  });
-  const theme = useTheme();
-  const handleInputChange = (e) => {
-    const { name, value } = e.target;
-    setEditedTransaction({
-      ...editedTransaction,
-      [name]: value,
-    });
-  };
-
-  // Updated handler specifically for the Select component
-  const handleSelectChange = (event) => {
-    setEditedTransaction({
-      ...editedTransaction,
-      transaction_type: event.target.value,
-    });
-  };
-
-  const handleSave = () => {
-    onSave(editedTransaction);
-    onClose();
-  };
-  function formatDate(dateString) {
-    const date = new Date(dateString);
-    let month = "" + (date.getMonth() + 1);
-    let day = "" + date.getDate();
-    const year = date.getFullYear();
-
-    if (month.length < 2) {
-      month = "0" + month;
-    }
-    if (day.length < 2) {
-      day = "0" + day;
-    }
-
-    return [year, month, day].join("-");
-  }
-  return (
-    <Dialog open={!!transaction} onClose={onClose}>
-      <DialogTitle
-        sx={{
-          backgroundColor: theme.palette.card.main,
-          color: theme.palette.text.main,
-        }}
-      >
-        Bearbeiten
-      </DialogTitle>
-      <DialogContent sx={{ backgroundColor: theme.palette.card.main }}>
-        <FormControl fullWidth>
-          <InputLabel style={{ color: theme.palette.text.main }}>
-            Transaktionstyp
-          </InputLabel>
-          <Select
-            value={editedTransaction.transaction_type}
-            onChange={handleSelectChange}
-            label="Transaktionstyp"
-            sx={{
-              color: theme.palette.text.main,
-              backgroundColor: theme.palette.select.main,
-              border: `1px solid ${theme.palette.text.main}`, // Use template literal for dynamic value
-            }}
-          >
-            <MenuItem value="Ausgabe">Ausgabe</MenuItem>
-            <MenuItem value="Einnahme">Einnahme</MenuItem>
-          </Select>
-        </FormControl>
-        <TextComp
-          label="Beschreibung"
-          type="text"
-          name="description"
-          value={editedTransaction.description}
-          onChange={handleInputChange}
-          fullWidth
-        />
-        <TextComp
-          label="Betrag"
-          type="number"
-          name="amount"
-          value={editedTransaction.amount}
-          onChange={handleInputChange}
-          fullWidth
-        />
-        <TextComp
-          fullWidth
-          label="Datum"
-          name="transaction_date"
-          type="date"
-          InputLabelProps={{ shrink: true }}
-          value={formatDate(editedTransaction.transaction_date)}
-          onChange={handleInputChange}
-        />
-      </DialogContent>
-      <DialogActions sx={{ backgroundColor: theme.palette.card.main }}>
-        <Button onClick={onClose} sx={{ color: theme.palette.text.main }}>
-          Abbrechen
-        </Button>
-        <Button onClick={handleSave} sx={{ color: theme.palette.text.main }}>
-          Speichern
-        </Button>
-      </DialogActions>
-    </Dialog>
   );
 }
 

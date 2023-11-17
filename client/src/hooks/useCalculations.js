@@ -6,7 +6,9 @@ export const useCalculations = (
   filterMonth,
   filterYear,
   totalSavingGoals,
-  isAnnualView
+  isAnnualView,
+  prevMonthTransactions,
+  prevSettings
 ) => {
   const calculateSavingGoalsTotal = () => {
     let totalSavings = 0;
@@ -176,6 +178,78 @@ export const useCalculations = (
 
     return monthlyRemainingBudgets;
   };
+  const calculatePreviousMonthRemainingBudget = () => {
+    // Determine the previous month and year
+    const previousMonth = filterMonth === 0 ? 11 : filterMonth - 1;
+    const previousYear = filterMonth === 0 ? filterYear - 1 : filterYear;
+
+    // Initialize budgets, expenses, and savings for the previous month
+    let monthlyBudget = 0;
+    let monthlyExpenses = 0;
+    let monthlySavings = 0;
+
+    // Calculate expenses for the previous month
+    prevMonthTransactions.forEach((transaction) => {
+      if (transaction.transaction_type === "Einnahme") {
+        monthlyExpenses += parseFloat(transaction.amount);
+      } else if (transaction.transaction_type === "Ausgabe") {
+        monthlyExpenses -= parseFloat(transaction.amount);
+      }
+    }, 0);
+
+    // Calculate budget and savings for the previous month
+    prevSettings?.forEach((setting) => {
+      const settingMonth = setting.month; // Adjust for zero-indexed months
+      if (settingMonth === previousMonth && setting.year === previousYear) {
+        if (setting.transaction_type === "Einnahme") {
+          monthlyBudget += parseFloat(setting.amount);
+        } else if (setting.transaction_type === "Ausgabe") {
+          monthlyBudget -= parseFloat(setting.amount);
+        }
+      }
+    });
+
+    // Calculate savings for the previous month
+    savingsGoals?.forEach((goal) => {
+      const startMonth = new Date(goal.startdate).getMonth();
+      const startYear = new Date(goal.startdate).getFullYear();
+      const endMonth = goal.deadline ? new Date(goal.deadline).getMonth() : 11;
+      const endYear = goal.deadline
+        ? new Date(goal.deadline).getFullYear()
+        : previousYear;
+
+      if (
+        (previousYear > startYear ||
+          (previousYear === startYear && previousMonth >= startMonth)) &&
+        (previousYear < endYear ||
+          (previousYear === endYear && previousMonth <= endMonth))
+      ) {
+        monthlySavings += parseFloat(goal.monthly_saving);
+      }
+    });
+
+    // Calculate remaining budget for the previous month
+    let previousMonthRemainingBudget =
+      monthlyBudget + monthlyExpenses - monthlySavings;
+
+    return previousMonthRemainingBudget;
+  };
+
+  //I want to calculate the percentage  of the remaining budget for  the given month and the one before
+  const calculateMonthlySavingsDifference = () => {
+    const previousMonthRemainingBudget =
+      calculatePreviousMonthRemainingBudget();
+    const thisMonthRemainingBudget = calculateMonthlyRemainingBudgets().filter(
+      (budget) => budget !== 0
+    )[0];
+    // calculate percentage difference
+    const percentageDifference =
+      ((thisMonthRemainingBudget - previousMonthRemainingBudget) /
+        previousMonthRemainingBudget) *
+      100;
+    return percentageDifference;
+  };
+
   return {
     calculateCategoryTotals,
     totalSavings,
@@ -183,5 +257,6 @@ export const useCalculations = (
     getCategoryTotal,
     getAnnualCategoryTotal,
     calculateMonthlyRemainingBudgets,
+    calculateMonthlySavingsDifference,
   };
 };
