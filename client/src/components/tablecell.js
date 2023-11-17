@@ -7,11 +7,12 @@ function StyledTableCell(props) {
   return (
     <TableCell
       sx={{
-        backgroundColor: theme.palette.tablecell.main,
-        color: theme.palette.text.main,
+        backgroundColor: theme.palette.table.main,
+        color: theme.palette.tabletext.main,
         fontWeight: "bold",
         borderBottom: "1px solid black",
-        width: "20px",
+        width: props.width,
+        height: "2px",
       }}
     >
       {props.text}

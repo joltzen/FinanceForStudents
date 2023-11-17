@@ -15,27 +15,7 @@ import {
   DialogTitle,
   DialogActions,
 } from "@mui/material";
-import {
-  deepPurple,
-  red,
-  pink,
-  purple,
-  indigo,
-  blue,
-  lightBlue,
-  cyan,
-  teal,
-  green,
-  lightGreen,
-  lime,
-  yellow,
-  amber,
-  orange,
-  deepOrange,
-  brown,
-  grey,
-  blueGrey,
-} from "@mui/material/colors";
+import { teal } from "@mui/material/colors";
 import { ColorModeContext } from "../../theme";
 import { useTheme } from "@mui/material/styles";
 import IconButton from "@mui/material/IconButton";
@@ -82,7 +62,7 @@ function ProfilePage() {
   const colorMode = useContext(ColorModeContext); // Access the color mode context
 
   const colorOptions = colors; // Define color options
-  
+
   const [avatarColor, setAvatarColor] = useState(() => {
     // Get the stored color from localStorage or fallback to default
     return localStorage.getItem("avatarColor") || teal[500];

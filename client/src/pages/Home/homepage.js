@@ -337,7 +337,7 @@ function HomePage() {
               variant="outlined"
               href="/contact"
               sx={{
-                mt: 5,
+                mt: 3,
                 borderColor: theme.palette.text.main,
                 color: theme.palette.text.main,
                 "&:hover": {

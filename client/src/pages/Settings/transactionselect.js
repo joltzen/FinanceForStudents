@@ -46,12 +46,7 @@ function TransactionSection({
               <TableRow
                 key={item.settings_id}
                 sx={{
-                  "&:nth-of-type(odd)": {
-                    backgroundColor: theme.palette.uneven.main,
-                  },
-                  "&:nth-of-type(even)": {
-                    backgroundColor: theme.palette.even.main,
-                  },
+                  backgroundColor: theme.palette.uneven.main,
                   borderRight: "1px solid",
                 }}
               >

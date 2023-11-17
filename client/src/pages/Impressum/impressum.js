@@ -18,7 +18,7 @@ function ImpressumPage() {
             </Typography>
             <Typography>
               Jason Oltzen <br />
-              Krefelder straße 26
+              Krefelder Straße 26
               <br />
               41539 Dormagen
             </Typography>
@@ -36,7 +36,7 @@ function ImpressumPage() {
             <Typography>
               Jason Oltzen
               <br />
-              Krefelder straße 26
+              Krefelder Straße 26
               <br />
               41539 Dormagen
             </Typography>

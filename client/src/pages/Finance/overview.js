@@ -282,15 +282,16 @@ function FinanceOverview({ update }) {
             <Table sx={{ minWidth: 500 }} aria-label="custom pagination table">
               <TableHead>
                 <TableRow>
-                  <StyledTableCell text="Datum" />
+                  <StyledTableCell width="1px" text=" " />
+                  <StyledTableCell width="20px" text="Datum" />
                   <StyledTableCell text="Beschreibung" />
-                  <StyledTableCell text="Betrag" />
-                  <StyledTableCell text=" " />
+                  <StyledTableCell width="100px" text="Betrag" />
+                  <StyledTableCell width="100px" text=" " />
                 </TableRow>
               </TableHead>
               <TableBody>
                 {sortTransactions(transactions)
-                  .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
+                  // .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
                   .map((transaction) => {
                     const category = categories.find(
                       (c) => c.id === transaction.category_id
@@ -299,13 +300,41 @@ function FinanceOverview({ update }) {
                       ? category.color
                       : theme.palette.text.main;
                     return (
-                      <TableRow key={transaction.transaction_id}>
+                      <TableRow
+                        key={transaction.transaction_id}
+                        sx={{
+                          height: "10px",
+                          backgroundColor: theme.palette.uneven.main,
+                        }}
+                      >
+                        <TableCell
+                          sx={{
+                            borderLeft: `10px solid ${categoryColor}`,
+                            height: "10px", // Reduce height
+                            color:
+                              transaction.transaction_type === "Ausgabe"
+                                ? "red"
+                                : "green",
+                          }}
+                        >
+                          <Typography
+                            variant="h5"
+                            fontSize={
+                              transaction.transaction_type === "Ausgabe"
+                                ? "23px"
+                                : "19px"
+                            }
+                          >
+                            {transaction.transaction_type === "Ausgabe"
+                              ? "-"
+                              : "+"}
+                          </Typography>
+                        </TableCell>
                         <TableCell
                           component="th"
                           scope="row"
                           sx={{
                             border: "1px solid black",
-                            backgroundColor: categoryColor,
                             color: "black",
                           }}
                         >
@@ -314,7 +343,6 @@ function FinanceOverview({ update }) {
                         <TableCell
                           sx={{
                             border: "1px solid black",
-                            backgroundColor: categoryColor,
                             color: "black",
                           }}
                         >
@@ -323,7 +351,6 @@ function FinanceOverview({ update }) {
                         <TableCell
                           sx={{
                             border: "1px solid black",
-                            backgroundColor: categoryColor,
                             color: "black",
                           }}
                         >
@@ -336,7 +363,7 @@ function FinanceOverview({ update }) {
                           align="right"
                           sx={{
                             border: "1px solid black",
-                            backgroundColor: categoryColor,
+                            height: "1px",
                             color: "black",
                           }}
                         >
@@ -365,25 +392,16 @@ function FinanceOverview({ update }) {
             <Box
               sx={{
                 display: "flex",
-                justifyContent: "space-between", // This will push the children to opposite ends
+                justifyContent: "flex-end", // This will push the children to opposite ends
                 alignItems: "center",
                 width: "100%",
+                height: "50px",
                 color: "black",
               }}
             >
-              <TablePagination
-                rowsPerPageOptions={[5, 10, 25, { label: "All", value: -1 }]}
-                component="div"
-                count={transactions.length}
-                rowsPerPage={rowsPerPage}
-                page={page}
-                onPageChange={handleChangePage}
-                onRowsPerPageChange={handleChangeRowsPerPage}
-                sx={{ color: "black" }}
-              />
               <Typography
                 variant="body2"
-                sx={{ marginRight: 5, color: "black" }}
+                sx={{ marginRight: 2, color: "black" }}
               >
                 Gesamtsumme: <strong>{savingSum.toFixed(2)}€</strong>
               </Typography>
