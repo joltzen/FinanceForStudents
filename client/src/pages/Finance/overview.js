@@ -45,57 +45,12 @@ function FinanceOverview({ update }) {
   const { user } = useAuth();
   const [savingGoal, setSavingGoal] = useState([]);
   const [needUpdate, setNeedUpdate] = useState(false);
-  const [page, setPage] = useState(0);
-  const [rowsPerPage, setRowsPerPage] = useState(10); // You can adjust the number of rows per page
-  const [order, setOrder] = useState("asc");
-  const [orderBy, setOrderBy] = useState("date"); // default sorting by date
 
   function formatDate(dateString) {
     const options = { year: "numeric", month: "2-digit", day: "2-digit" };
     return new Date(dateString).toLocaleDateString("de-DE", options);
   }
 
-  const handleSort = (property) => {
-    const isAsc = orderBy === property && order === "asc";
-    setOrder(isAsc ? "desc" : "asc");
-    setOrderBy(property);
-  };
-
-  const sortTransactions = (array) => {
-    return array.sort((a, b) => {
-      if (order === "asc") {
-        return a[orderBy] < b[orderBy] ? -1 : 1;
-      } else {
-        return a[orderBy] > b[orderBy] ? -1 : 1;
-      }
-    });
-  };
-  const sortTransactionByCategory = (array) => {
-    return array.sort((a, b) => {
-      let valueA = a[orderBy];
-      let valueB = b[orderBy];
-
-      if (orderBy === "category") {
-        // Assuming you have category names in your transaction object
-        valueA = a.category.name;
-        valueB = b.category.name;
-      }
-
-      if (order === "asc") {
-        return valueA < valueB ? -1 : 1;
-      } else {
-        return valueA > valueB ? -1 : 1;
-      }
-    });
-  };
-  const handleChangePage = (event, newPage) => {
-    setPage(newPage);
-  };
-
-  const handleChangeRowsPerPage = (event) => {
-    setRowsPerPage(parseInt(event.target.value, 10));
-    setPage(0);
-  };
   // eslint-disable-next-line react-hooks/exhaustive-deps
   const fetchTransactions = useCallback(async () => {
     try {
@@ -274,7 +229,7 @@ function FinanceOverview({ update }) {
             </SelectComp>
           </FormControl>
         </Grid>
-        <Box sx={{ width: "100%", marginTop: 4, marginBottom: 20 }}>
+        <Box sx={{ width: "100vw", marginTop: 4, marginBottom: 20 }}>
           <TableContainer
             component={Paper}
             sx={{ backgroundColor: theme.palette.pagination.main }}
@@ -290,7 +245,7 @@ function FinanceOverview({ update }) {
                 </TableRow>
               </TableHead>
               <TableBody>
-                {sortTransactions(transactions)
+                {transactions
                   // .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
                   .map((transaction) => {
                     const category = categories.find(
@@ -394,7 +349,7 @@ function FinanceOverview({ update }) {
                 display: "flex",
                 justifyContent: "flex-end", // This will push the children to opposite ends
                 alignItems: "center",
-                width: "100%",
+                width: "50vw",
                 height: "50px",
                 color: "black",
               }}

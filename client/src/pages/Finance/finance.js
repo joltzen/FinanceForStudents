@@ -159,38 +159,49 @@ function FinancePage() {
           </DialogTitle>
           <DialogContent sx={{ backgroundColor: theme.palette.card.main }}>
             <form onSubmit={handleSubmit}>
-              <FormControl fullWidth>
-                <InputLabel style={{ color: theme.palette.text.main }}>
-                  Transaktionstyp
-                </InputLabel>
+              <FormControl fullWidth sx={{ minWidth: "20vw" }}>
                 <SelectComp
                   value={transactionType}
                   onChange={handleTransactionTypeChange}
-                  label="Transaktionstyp"
                 >
                   <MenuItem value="Ausgabe">Ausgabe</MenuItem>
                   <MenuItem value="Einnahme">Einnahme</MenuItem>
                 </SelectComp>
               </FormControl>
+              <InputLabel
+                sx={{ color: theme.palette.text.main, mt: 2 }}
+                id="category-label"
+              >
+                Beschreibung
+              </InputLabel>
               <TextComp
-                label="Beschreibung"
                 type="text"
                 value={description}
                 onChange={handleDescriptionChange}
                 fullWidth
                 required
               />
+              <InputLabel
+                sx={{ color: theme.palette.text.main, mt: 2 }}
+                id="category-label"
+              >
+                Betrag
+              </InputLabel>
               <TextComp
-                label="Betrag"
                 type="number"
                 value={amount}
                 onChange={handleAmountChange}
                 fullWidth
                 required
               />
+              <InputLabel
+                sx={{ color: theme.palette.text.main, mt: 2 }}
+                id="category-label"
+              >
+                Datum
+              </InputLabel>
               <TextComp
                 fullWidth
-                label="Datum"
                 name="date"
                 type="date"
                 InputLabelProps={{ shrink: true }}
@@ -208,7 +219,6 @@ function FinancePage() {
                 labelId="category-label"
                 value={category}
                 onChange={(e) => setCategory(e.target.value)}
-                label="Kategorie"
                 sx={{
                   color: theme.palette.text.main,
                   "& .MuiSelect-select": {
@@ -220,18 +230,6 @@ function FinancePage() {
                   "&:after": {
                     borderColor: "black",
                   },
-                  // "& .MuiList-root .Mui-selected": {
-                  //   // Increased specificity for selected MenuItem
-                  //   backgroundColor: (theme) =>
-                  //     `${adjustColor(
-                  //       getCurrentCategoryColor(),
-                  //       -20
-                  //     )} !important`, // Using !important to override Material-UI's default styles
-                  //   "&:hover": {
-                  //     backgroundColor: (theme) =>
-                  //       adjustColor(getCurrentCategoryColor(), -10),
-                  //   },
-                  // },
                 }}
               >
                 {categories.map((cat) => (

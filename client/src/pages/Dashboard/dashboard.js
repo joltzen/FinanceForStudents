@@ -24,12 +24,8 @@ import { ColorModeContext } from "../../theme";
 import IconButton from "@mui/material/IconButton";
 import DarkModeOutlinedIcon from "@mui/icons-material/DarkModeOutlined";
 import LightModeOutlinedIcon from "@mui/icons-material/LightModeOutlined";
-import HomeIcon from "@mui/icons-material/Home";
-import BarChartIcon from "@mui/icons-material/BarChart";
 import AccountBalanceWalletIcon from "@mui/icons-material/AccountBalanceWallet";
 import AttachMoneyIcon from "@mui/icons-material/AttachMoney";
-import PersonIcon from "@mui/icons-material/Person";
-import InfoIcon from "@mui/icons-material/Info";
 import SavingsIcon from "@mui/icons-material/Savings";
 
 function DashboardPage() {
@@ -124,6 +120,7 @@ function DashboardPage() {
       },
     },
   };
+
   const chartData = {
     labels: categories.map((category) => category.name),
     datasets: [

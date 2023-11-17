@@ -223,7 +223,7 @@ function SettingsForm() {
           startIcon={<AddCircleOutline />}
           onClick={handleDialog}
         >
-          Transaktion hinzufügen
+          Fixkosten hinzufügen
         </AddButton>
         <Dialog open={openDialog} onClose={handleDialog}>
           <DialogTitle
@@ -232,7 +232,7 @@ function SettingsForm() {
               color: theme.palette.text.main,
             }}
           >
-            Neue Transaktion
+            Neue Fixkosten
           </DialogTitle>
           <DialogContent sx={{ backgroundColor: theme.palette.card.main }}>
             <form onSubmit={handleSubmit}>
