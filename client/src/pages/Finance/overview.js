@@ -31,7 +31,6 @@ import { Container } from "@mui/system";
 import EditTransactionDialog from "./edit";
 import MoreHorizRoundedIcon from "@mui/icons-material/MoreHorizRounded";
 import SearchIcon from "@mui/icons-material/Search";
-import SelectInput from "@mui/material/Select/SelectInput";
 import ArrowUpward from "@mui/icons-material/ArrowUpward";
 
 function FinanceOverview({ update }) {
@@ -48,6 +47,49 @@ function FinanceOverview({ update }) {
   const [needUpdate, setNeedUpdate] = useState(false);
   const [searchQuery, setSearchQuery] = useState(""); // New state for search query
   const [selectedCategory, setSelectedCategory] = useState("");
+  const [sortOrder, setSortOrder] = useState("desc");
+  const [sortOrderAmount, setSortOrderAmount] = useState("desc");
+  const [sortedByDateTransactions, setSortedByDateTransactions] = useState([]);
+  const [sortedByAmountTransactions, setSortedByAmountTransactions] = useState(
+    []
+  );
+  const [activeSorting, setActiveSorting] = useState("date"); // 'date' or 'amount'
+
+  useEffect(() => {
+    let sortedTransactions = [...transactions];
+    if (activeSorting === "date") {
+      sortedTransactions.sort((a, b) => {
+        const dateA = new Date(a.transaction_date);
+        const dateB = new Date(b.transaction_date);
+        return sortOrder === "asc" ? dateA - dateB : dateB - dateA;
+      });
+      setSortedByDateTransactions(sortedTransactions);
+    } else if (activeSorting === "amount") {
+      sortedTransactions.sort((a, b) => {
+        const amountA = parseFloat(a.amount);
+        const amountB = parseFloat(b.amount);
+        return sortOrderAmount === "asc"
+          ? amountA - amountB
+          : amountB - amountA;
+      });
+      setSortedByAmountTransactions(sortedTransactions);
+    }
+  }, [sortOrder, sortOrderAmount, transactions, activeSorting]);
+  const toggleSortOrder = () => {
+    setActiveSorting("date");
+    setSortOrder(sortOrder === "asc" ? "desc" : "asc");
+  };
+
+  const toggleSortOrderAmount = () => {
+    setActiveSorting("amount");
+    setSortOrderAmount(sortOrderAmount === "asc" ? "desc" : "asc");
+  };
+
+  // Use the correctly sorted array based on active sorting
+  const displayedTransactions =
+    activeSorting === "date"
+      ? sortedByDateTransactions
+      : sortedByAmountTransactions;
 
   const handleCategoryChange = (event) => {
     setSelectedCategory(event.target.value);
@@ -72,7 +114,6 @@ function FinanceOverview({ update }) {
       )
     : filteredTransactions;
 
-  // eslint-disable-next-line react-hooks/exhaustive-deps
   const fetchTransactions = useCallback(async () => {
     try {
       const response = await axiosInstance.get("/getTransactions", {
@@ -121,8 +162,8 @@ function FinanceOverview({ update }) {
     } catch (error) {
       console.error("Error fetching transactions:", error);
     }
-  });
-  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [filterMonth, filterYear, user.id]);
+
   function calculateAdjustedTotalSum() {
     let adjustedTotal = totalSum;
 
@@ -145,6 +186,7 @@ function FinanceOverview({ update }) {
 
     setSavingSum(adjustedTotal);
   }
+
   const handleDeleteTransaction = async (transactionId) => {
     try {
       await axiosInstance.delete("/deleteTransaction", {
@@ -187,7 +229,7 @@ function FinanceOverview({ update }) {
     };
     fetchGoals();
     calculateAdjustedTotalSum();
-  }, [filterMonth, filterYear, totalSum, user.id, update, needUpdate]);
+  }, [filterMonth, filterYear, user.id, update, needUpdate]);
 
   const [editTransaction, setEditTransaction] = useState(null);
   const handleEditTransaction = async (transaction) => {
@@ -202,6 +244,15 @@ function FinanceOverview({ update }) {
   const handleEditButtonClick = (transaction) => {
     setEditTransaction(transaction);
   };
+  const finalTransactions = displayedTransactions.filter((transaction) => {
+    const matchesSearch = transaction.description
+      .toLowerCase()
+      .includes(searchQuery);
+    const matchesCategory = selectedCategory
+      ? transaction.category_id === selectedCategory
+      : true;
+    return matchesSearch && matchesCategory;
+  });
 
   return (
     <Container maxWidth="lg">
@@ -356,10 +407,17 @@ function FinanceOverview({ update }) {
                   >
                     Datum
                     <IconButton
-                      onClick={() => console.log("clicked")}
+                      onClick={toggleSortOrder}
                       sx={{ color: theme.palette.tabletext.main }}
                     >
-                      <ArrowUpward></ArrowUpward>
+                      <ArrowUpward
+                        sx={{
+                          transform:
+                            sortOrder === "asc"
+                              ? "rotate(0deg)"
+                              : "rotate(180deg)",
+                        }}
+                      />
                     </IconButton>
                   </TableCell>
                   <TableCell sx={{ color: theme.palette.tabletext.main }}>
@@ -370,12 +428,25 @@ function FinanceOverview({ update }) {
                     sx={{ width: "100px", color: theme.palette.tabletext.main }}
                   >
                     Betrag
+                    <IconButton
+                      onClick={toggleSortOrderAmount}
+                      sx={{ color: theme.palette.tabletext.main }}
+                    >
+                      <ArrowUpward
+                        sx={{
+                          transform:
+                            sortOrderAmount === "asc"
+                              ? "rotate(0deg)"
+                              : "rotate(180deg)",
+                        }}
+                      />
+                    </IconButton>
                   </TableCell>
                   <TableCell SX={{ width: "1px" }}></TableCell>
                 </TableRow>
               </TableHead>
               <TableBody sx={{ backgroundColor: theme.palette.content.main }}>
-                {filteredTransactionsByCategory.map((transaction) => {
+                {finalTransactions.map((transaction) => {
                   const category = categories.find(
                     (c) => c.id === transaction.category_id
                   );
