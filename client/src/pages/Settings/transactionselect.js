@@ -8,11 +8,14 @@ import {
   TableRow,
   Paper,
   IconButton,
+  Menu,
+  MenuItem,
+  Divider,
 } from "@mui/material";
 import DeleteIcon from "@mui/icons-material/Delete";
-import StyledTableCell from "../../components/tablecell";
 import EditIcon from "@mui/icons-material/Edit";
 import { useTheme } from "@mui/material/styles";
+import MoreHorizRoundedIcon from "@mui/icons-material/MoreHorizRounded";
 
 function TransactionSection({
   transactions,
@@ -26,15 +29,23 @@ function TransactionSection({
 
   return (
     <TableContainer component={Paper}>
-      <Table>
-        <TableHead>
+      <Table sx={{ minWidth: 650 }}>
+        <TableHead
+          sx={{
+            backgroundColor: theme.palette.head.main,
+          }}
+        >
           <TableRow>
-            <StyledTableCell text="Beschreibung" />
-            <StyledTableCell text="Betrag" />
-            <StyledTableCell text=" " />
+            <TableCell sx={{ color: theme.palette.tabletext.main }}>
+              Beschreibung
+            </TableCell>
+            <TableCell sx={{ color: theme.palette.tabletext.main }}>
+              Betrag
+            </TableCell>
+            <TableCell sx={{ width: "1px" }}></TableCell>
           </TableRow>
         </TableHead>
-        <TableBody>
+        <TableBody sx={{ backgroundColor: theme.palette.content.main }}>
           {transactions
             .filter(
               (t) =>
@@ -43,45 +54,78 @@ function TransactionSection({
                 t?.year === filterYear
             )
             ?.map((item) => (
-              <TableRow
-                key={item.settings_id}
-                sx={{
-                  backgroundColor: theme.palette.uneven.main,
-                  borderRight: "1px solid",
-                }}
-              >
-                <TableCell
-                  component="th"
-                  scope="row"
-                  sx={{ borderRight: "1px solid", color: "black" }}
-                >
-                  {item.description}
-                </TableCell>
-                <TableCell
-                  align="left"
-                  sx={{ borderRight: "1px solid", color: "black" }}
-                >
-                  {item.amount} €
-                </TableCell>
+              <TableRow key={item.settings_id}>
+                <TableCell>{item.description}</TableCell>
+                <TableCell>{item.amount} €</TableCell>
                 <TableCell align="right">
-                  <IconButton
-                    onClick={() => handleEditButtonClick(item.settings_id)}
-                    style={{ color: "black" }}
-                  >
-                    <EditIcon />
-                  </IconButton>
-                  <IconButton
-                    onClick={() => handleDeleteSettings(item.settings_id)}
-                    style={{ color: "black" }}
-                  >
-                    <DeleteIcon />
-                  </IconButton>
+                  <RowMenu
+                    settings={item}
+                    handleEditButtonClick={() =>
+                      handleEditButtonClick(item.settings_id)
+                    }
+                    handleDeleteTransaction={() =>
+                      handleDeleteSettings(item.settings_id)
+                    }
+                  />
                 </TableCell>
               </TableRow>
             ))}
         </TableBody>
       </Table>
     </TableContainer>
+  );
+}
+
+function RowMenu({ settings, handleEditButtonClick, handleDeleteTransaction }) {
+  const [anchorEl, setAnchorEl] = React.useState(null);
+  const open = Boolean(anchorEl);
+
+  const handleClick = (event) => {
+    setAnchorEl(event.currentTarget);
+  };
+
+  const handleClose = () => {
+    setAnchorEl(null);
+  };
+
+  return (
+    <div>
+      <IconButton
+        aria-label="more"
+        aria-controls="long-menu"
+        aria-haspopup="true"
+        onClick={handleClick}
+        size="small"
+      >
+        <MoreHorizRoundedIcon />
+      </IconButton>
+      <Menu
+        id="long-menu"
+        anchorEl={anchorEl}
+        keepMounted
+        open={open}
+        onClose={handleClose}
+        PaperProps={{
+          style: {
+            width: "20ch",
+          },
+        }}
+      >
+        <MenuItem
+          onClick={() => {
+            handleEditButtonClick(settings.settings_id);
+            handleClose();
+          }}
+        >
+          Edit
+        </MenuItem>
+        <MenuItem onClick={handleClose}>Move</MenuItem>
+        <Divider />
+        <MenuItem onClick={handleDeleteTransaction} style={{ color: "red" }}>
+          Delete
+        </MenuItem>
+      </Menu>
+    </div>
   );
 }
 

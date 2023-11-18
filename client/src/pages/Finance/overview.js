@@ -4,7 +4,6 @@ import { useAuth } from "../../core/auth/auth";
 import {
   FormControl,
   InputLabel,
-  Select,
   Box,
   MenuItem,
   Table,
@@ -16,23 +15,16 @@ import {
   Paper,
   Typography,
   IconButton,
-  Dialog,
-  DialogTitle,
-  DialogContent,
-  DialogActions,
-  Button,
-  TablePagination,
   Grid,
+  Menu,
+  Divider,
 } from "@mui/material";
-import StyledTableCell from "../../components/tablecell";
-import DeleteIcon from "@mui/icons-material/Delete";
-import EditIcon from "@mui/icons-material/Edit";
-import TextComp from "../../components/TextComp";
 import SelectComp from "../../components/SelectComp";
 import { months, years } from "../../config/constants";
 import { useTheme } from "@mui/material/styles";
 import { Container } from "@mui/system";
 import EditTransactionDialog from "./edit";
+import MoreHorizRoundedIcon from "@mui/icons-material/MoreHorizRounded";
 
 function FinanceOverview({ update }) {
   const theme = useTheme();
@@ -231,118 +223,87 @@ function FinanceOverview({ update }) {
           </FormControl>
         </Grid>
         <Box sx={{ width: "100vw", marginTop: 4, marginBottom: 20 }}>
-          <TableContainer
-            component={Paper}
-            sx={{ backgroundColor: theme.palette.pagination.main }}
-          >
-            <Table sx={{ minWidth: 500 }} aria-label="custom pagination table">
-              <TableHead>
+          <TableContainer component={Paper}>
+            <Table sx={{ minWidth: 650 }}>
+              <TableHead
+                sx={{
+                  backgroundColor: theme.palette.head.main,
+                }}
+              >
                 <TableRow>
-                  <StyledTableCell width="1px" text=" " />
-                  <StyledTableCell width="20px" text="Datum" />
-                  <StyledTableCell text="Beschreibung" />
-                  <StyledTableCell width="100px" text="Betrag" />
-                  <StyledTableCell width="100px" text=" " />
+                  <TableCell sx={{ width: "1px" }}></TableCell>
+                  <TableCell
+                    sx={{ width: "20px", color: theme.palette.tabletext.main }}
+                  >
+                    Datum
+                  </TableCell>
+                  <TableCell sx={{ color: theme.palette.tabletext.main }}>
+                    Beschreibung
+                  </TableCell>
+                  <TableCell
+                    align="right"
+                    sx={{ width: "100px", color: theme.palette.tabletext.main }}
+                  >
+                    Betrag
+                  </TableCell>
+                  <TableCell SX={{ width: "1px" }}></TableCell>
                 </TableRow>
               </TableHead>
-              <TableBody>
-                {transactions
-                  // .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
-                  .map((transaction) => {
-                    const category = categories.find(
-                      (c) => c.id === transaction.category_id
-                    );
-                    const categoryColor = category
-                      ? category.color
-                      : theme.palette.text.main;
-                    return (
-                      <TableRow
-                        key={transaction.transaction_id}
+              <TableBody sx={{ backgroundColor: theme.palette.content.main }}>
+                {transactions.map((transaction) => {
+                  const category = categories.find(
+                    (c) => c.id === transaction.category_id
+                  );
+                  const categoryColor = category
+                    ? category.color
+                    : theme.palette.text.main;
+                  return (
+                    <TableRow key={transaction.transaction_id}>
+                      <TableCell
                         sx={{
-                          height: "10px",
-                          backgroundColor: theme.palette.uneven.main,
+                          borderLeft: `10px solid ${categoryColor}`,
+                          height: "10px", // Reduce height
+                          color:
+                            transaction.transaction_type === "Ausgabe"
+                              ? "red"
+                              : "green",
                         }}
                       >
-                        <TableCell
-                          sx={{
-                            borderLeft: `10px solid ${categoryColor}`,
-                            height: "10px", // Reduce height
-                            color:
-                              transaction.transaction_type === "Ausgabe"
-                                ? "red"
-                                : "green",
-                          }}
-                        >
-                          <Typography
-                            variant="h5"
-                            fontSize={
-                              transaction.transaction_type === "Ausgabe"
-                                ? "23px"
-                                : "19px"
-                            }
-                          >
-                            {transaction.transaction_type === "Ausgabe"
-                              ? "-"
-                              : "+"}
-                          </Typography>
-                        </TableCell>
-                        <TableCell
-                          component="th"
-                          scope="row"
-                          sx={{
-                            border: "1px solid black",
-                            color: "black",
-                          }}
-                        >
-                          {formatDate(transaction.transaction_date)}
-                        </TableCell>
-                        <TableCell
-                          sx={{
-                            border: "1px solid black",
-                            color: "black",
-                          }}
-                        >
-                          {transaction.description}
-                        </TableCell>
-                        <TableCell
-                          sx={{
-                            border: "1px solid black",
-                            color: "black",
-                          }}
+                        <Typography
+                          variant="h5"
+                          fontSize={
+                            transaction.transaction_type === "Ausgabe"
+                              ? "23px"
+                              : "19px"
+                          }
                         >
                           {transaction.transaction_type === "Ausgabe"
                             ? "-"
-                            : ""}
-                          {transaction.amount} €
-                        </TableCell>
-                        <TableCell
-                          align="right"
-                          sx={{
-                            border: "1px solid black",
-                            height: "1px",
-                            color: "black",
-                          }}
-                        >
-                          <IconButton
-                            style={{ color: "black" }}
-                            onClick={() => handleEditButtonClick(transaction)}
-                          >
-                            <EditIcon />
-                          </IconButton>
-                          <IconButton
-                            onClick={() =>
-                              handleDeleteTransaction(
-                                transaction.transaction_id
-                              )
-                            }
-                            style={{ color: "black" }}
-                          >
-                            <DeleteIcon />
-                          </IconButton>
-                        </TableCell>
-                      </TableRow>
-                    );
-                  })}
+                            : "+"}
+                        </Typography>
+                      </TableCell>
+                      <TableCell>
+                        <Box sx={{ marginRight: "50px" }}>
+                          {formatDate(transaction.transaction_date)}
+                        </Box>
+                      </TableCell>
+                      <TableCell>{transaction.description}</TableCell>
+                      <TableCell align="right">
+                        {transaction.transaction_type === "Ausgabe" ? "-" : ""}
+                        {transaction.amount} €
+                      </TableCell>
+                      <TableCell align="right">
+                        <RowMenu
+                          transaction={transaction}
+                          handleEditButtonClick={handleEditButtonClick}
+                          handleDeleteTransaction={() =>
+                            handleDeleteTransaction(transaction.transaction_id)
+                          }
+                        />
+                      </TableCell>
+                    </TableRow>
+                  );
+                })}
               </TableBody>
             </Table>
             <Box
@@ -350,14 +311,13 @@ function FinanceOverview({ update }) {
                 display: "flex",
                 justifyContent: "flex-end", // This will push the children to opposite ends
                 alignItems: "center",
-                width: "50vw",
-                height: "50px",
-                color: "black",
+                padding: 2,
+                color: theme.palette.text.main,
               }}
             >
               <Typography
                 variant="body2"
-                sx={{ marginRight: 2, color: "black" }}
+                sx={{ marginRight: 2, color: theme.palette.text.main }}
               >
                 Gesamtsumme: <strong>{savingSum.toFixed(2)}€</strong>
               </Typography>
@@ -378,4 +338,60 @@ function FinanceOverview({ update }) {
   );
 }
 
+function RowMenu({
+  transaction,
+  handleEditButtonClick,
+  handleDeleteTransaction,
+}) {
+  const [anchorEl, setAnchorEl] = React.useState(null);
+  const open = Boolean(anchorEl);
+
+  const handleClick = (event) => {
+    setAnchorEl(event.currentTarget);
+  };
+
+  const handleClose = () => {
+    setAnchorEl(null);
+  };
+
+  return (
+    <div>
+      <IconButton
+        aria-label="more"
+        aria-controls="long-menu"
+        aria-haspopup="true"
+        onClick={handleClick}
+        size="small"
+      >
+        <MoreHorizRoundedIcon />
+      </IconButton>
+      <Menu
+        id="long-menu"
+        anchorEl={anchorEl}
+        keepMounted
+        open={open}
+        onClose={handleClose}
+        PaperProps={{
+          style: {
+            width: "20ch",
+          },
+        }}
+      >
+        <MenuItem
+          onClick={() => {
+            handleEditButtonClick(transaction);
+            handleClose();
+          }}
+        >
+          Edit
+        </MenuItem>
+        <MenuItem onClick={handleClose}>Move</MenuItem>
+        <Divider />
+        <MenuItem onClick={handleDeleteTransaction} style={{ color: "red" }}>
+          Delete
+        </MenuItem>
+      </Menu>
+    </div>
+  );
+}
 export default FinanceOverview;

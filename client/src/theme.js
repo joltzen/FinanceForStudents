@@ -190,7 +190,7 @@ export const themeSettings = (mode) => {
               main: "black",
             },
             tabletext: {
-              main: "white",
+              main: "black",
             },
             selectBackground: {
               main: colors.veryDark,
@@ -213,8 +213,13 @@ export const themeSettings = (mode) => {
                 },
               },
             },
+            head: { main: "#cccccc" },
+            content: { main: "#444444" },
           }
         : {
+            head: { main: "#444444" },
+            content: { main: "#dddddd" },
+
             primary: {
               main: colors.slateBlue,
             },
