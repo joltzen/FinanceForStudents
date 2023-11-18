@@ -24,6 +24,7 @@ import { ColorModeContext } from "../../theme";
 import MonthlyExpenses from "./monthly";
 import MonthlySaving from "./task";
 import TotalSavings from "./total";
+import { Navigate, redirect, useNavigate } from "react-router-dom";
 
 function DashboardPage() {
   const theme = useTheme();
@@ -106,6 +107,7 @@ function DashboardPage() {
       },
     ],
   };
+  const navigate = useNavigate();
 
   const barChartOptions = {
     scales: {
@@ -219,11 +221,18 @@ function DashboardPage() {
 
   return (
     <Box sx={{ flexGrow: 1, padding: 3 }}>
-      {/* Top Row: Four Smaller Cards */}
       <Grid container spacing={2}>
         <Grid item xs={12} md={3}>
           <Card
-            sx={{ backgroundColor: theme.palette.card.main, height: "100%" }}
+            sx={{
+              backgroundColor: theme.palette.card.main,
+              boxShadow: theme.shadows[6],
+              "&:hover": {
+                boxShadow: theme.shadows[10],
+              },
+              height: "100%",
+            }}
+            onClick={() => navigate("/settings")}
           >
             <CardContent>
               <BudgetSummary
@@ -236,7 +245,15 @@ function DashboardPage() {
         </Grid>
         <Grid item xs={12} md={3}>
           <Card
-            sx={{ backgroundColor: theme.palette.card.main, height: "100%" }}
+            sx={{
+              backgroundColor: theme.palette.card.main,
+              boxShadow: theme.shadows[6],
+              "&:hover": {
+                boxShadow: theme.shadows[10],
+              },
+              height: "100%",
+            }}
+            onClick={() => navigate("/finance")}
           >
             <CardContent>
               <MonthlyExpenses expenses={calcMonthlyExpense()} />
@@ -245,7 +262,15 @@ function DashboardPage() {
         </Grid>
         <Grid item xs={12} md={3}>
           <Card
-            sx={{ backgroundColor: theme.palette.card.main, height: "100%" }}
+            sx={{
+              backgroundColor: theme.palette.card.main,
+              boxShadow: theme.shadows[6],
+              "&:hover": {
+                boxShadow: theme.shadows[10],
+              },
+              height: "100%",
+            }}
+            onClick={() => navigate("/saving")}
           >
             <CardContent>
               <MonthlySaving savings={totalSavings} month={filterMonth} />
@@ -254,7 +279,14 @@ function DashboardPage() {
         </Grid>
         <Grid item xs={12} md={3}>
           <Card
-            sx={{ backgroundColor: theme.palette.card.main, height: "100%" }}
+            sx={{
+              backgroundColor: theme.palette.card.main,
+              boxShadow: theme.shadows[6],
+              "&:hover": {
+                boxShadow: theme.shadows[10],
+              },
+              height: "100%",
+            }}
           >
             <CardContent>
               <TotalSavings total={calculateTotalSavings()} />
@@ -267,7 +299,14 @@ function DashboardPage() {
       <Grid container spacing={2} sx={{ marginTop: 2 }}>
         <Grid item xs={12} md={6}>
           <Card
-            sx={{ backgroundColor: theme.palette.card.main, height: "100%" }}
+            sx={{
+              backgroundColor: theme.palette.card.main,
+              boxShadow: theme.shadows[6],
+              "&:hover": {
+                boxShadow: theme.shadows[10],
+              },
+              height: "100%",
+            }}
           >
             <CardContent>
               <Grid
@@ -316,7 +355,14 @@ function DashboardPage() {
         </Grid>
         <Grid item xs={12} md={6}>
           <Card
-            sx={{ backgroundColor: theme.palette.card.main, height: "100%" }}
+            sx={{
+              backgroundColor: theme.palette.card.main,
+              boxShadow: theme.shadows[6],
+              "&:hover": {
+                boxShadow: theme.shadows[10],
+              },
+              height: "100%",
+            }}
           >
             <CardContent>
               <Box sx={{ mt: 3 }}>

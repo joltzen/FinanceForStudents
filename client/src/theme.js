@@ -97,6 +97,7 @@ export const tokens = (mode) => {
           teal: "#00bfa5",
           orange: "#ffab00",
           purple: "#536dfe",
+          darkCharcoal2: "#2c2f36",
         }),
   };
 };
@@ -131,6 +132,9 @@ export const themeSettings = (mode) => {
             card: {
               main: colors.darkBlueishGray,
             },
+            right: {
+              main: colors.darkBlueishGray,
+            },
             list: {
               main: colors.darkGray,
             },
@@ -162,6 +166,9 @@ export const themeSettings = (mode) => {
               main: colors.bronzeGold,
             },
             pr: {
+              main: colors.darkCharcoal,
+            },
+            left: {
               main: colors.darkCharcoal,
             },
             even: {
@@ -230,6 +237,9 @@ export const themeSettings = (mode) => {
             card: {
               main: colors.darkBlueishGray,
             },
+            right: {
+              main: colors.darkCharcoal2,
+            },
             list: {
               main: colors.darkGray,
             },
@@ -262,6 +272,9 @@ export const themeSettings = (mode) => {
             },
             pr: {
               main: colors.darkCharcoal,
+            },
+            left: {
+              main: colors.offWhite,
             },
             even: {
               main: colors.steelGray,

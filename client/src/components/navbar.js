@@ -34,7 +34,6 @@ import LightModeOutlinedIcon from "@mui/icons-material/LightModeOutlined";
 const StyledAppBar = styled(AppBar)(({ theme }) => ({
   zIndex: 1400,
   position: "relative",
-  minWidth: "98vw",
   backgroundColor: "#323850",
 }));
 
@@ -51,9 +50,7 @@ const StyledMenuItem = styled(MenuItem)(({ theme }) => ({
 }));
 
 const StyledDrawerContent = styled("div")(({ theme }) => ({
-  width: "14vw",
   marginTop: "70px",
-
   "& .MuiDrawer-paper": {
     backgroundColor: "#333740",
     color: "#e0e3e9",

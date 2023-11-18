@@ -185,6 +185,7 @@ function FinancePage() {
                 value={description}
                 onChange={handleDescriptionChange}
                 fullWidth
+                autoFocus
                 required
               />
               <InputLabel
