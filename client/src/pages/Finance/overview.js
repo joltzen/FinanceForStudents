@@ -72,7 +72,7 @@ function FinanceOverview({ update }) {
           a.transaction_type === "Ausgabe" ? -amountA : amountA;
         const adjustedAmountB =
           b.transaction_type === "Ausgabe" ? -amountB : amountB;
-          
+
         return sortOrderAmount === "asc"
           ? adjustedAmountA - adjustedAmountB
           : adjustedAmountB - adjustedAmountA;
@@ -292,9 +292,7 @@ function FinanceOverview({ update }) {
                       value={filterMonth}
                       onChange={(e) => setFilterMonth(e.target.value)}
                       sx={{
-                        color: selectedCategory
-                          ? "black"
-                          : theme.palette.text.main,
+                        color: theme.palette.text.main,
                         height: "40px",
                         ".MuiInputBase-input": {
                           paddingTop: "5px",
@@ -328,9 +326,7 @@ function FinanceOverview({ update }) {
                       value={filterYear}
                       onChange={(e) => setFilterYear(e.target.value)}
                       sx={{
-                        color: selectedCategory
-                          ? "black"
-                          : theme.palette.text.main,
+                        color: theme.palette.text.main,
                         height: "40px",
                         ".MuiInputBase-input": {
                           paddingTop: "5px",
