@@ -24,7 +24,6 @@ import {
   InputAdornment,
   Select,
 } from "@mui/material";
-import SelectComp from "../../components/SelectComp";
 import { months, years } from "../../config/constants";
 import { useTheme } from "@mui/material/styles";
 import { Container } from "@mui/system";
@@ -68,9 +67,15 @@ function FinanceOverview({ update }) {
       sortedTransactions.sort((a, b) => {
         const amountA = parseFloat(a.amount);
         const amountB = parseFloat(b.amount);
+
+        const adjustedAmountA =
+          a.transaction_type === "Ausgabe" ? -amountA : amountA;
+        const adjustedAmountB =
+          b.transaction_type === "Ausgabe" ? -amountB : amountB;
+          
         return sortOrderAmount === "asc"
-          ? amountA - amountB
-          : amountB - amountA;
+          ? adjustedAmountA - adjustedAmountB
+          : adjustedAmountB - adjustedAmountA;
       });
       setSortedByAmountTransactions(sortedTransactions);
     }
@@ -257,50 +262,7 @@ function FinanceOverview({ update }) {
   return (
     <Container maxWidth="lg">
       <Grid container spacing={3} justifyContent="center">
-        <Grid item xs={12} sx={{ mt: 4 }}>
-          <FormControl>
-            <InputLabel style={{ color: theme.palette.text.main }}>
-              Monat
-            </InputLabel>
-            <SelectComp
-              value={filterMonth}
-              onChange={(e) => setFilterMonth(e.target.value)}
-              label="Monat"
-              sx={{
-                color: theme.palette.text.main,
-                backgroundColor: theme.palette.select.main,
-                border: `1px solid ${theme.palette.text.main}`, // Use template literal for dynamic value
-              }}
-            >
-              {months.map((month) => (
-                <MenuItem key={month.value} value={month.value}>
-                  {month.label}
-                </MenuItem>
-              ))}
-            </SelectComp>
-          </FormControl>
-          <FormControl sx={{ marginLeft: 3, marginBottom: 2 }}>
-            <InputLabel style={{ color: theme.palette.text.main }}>
-              Jahr
-            </InputLabel>
-            <SelectComp
-              value={filterYear}
-              onChange={(e) => setFilterYear(e.target.value)}
-              label="Jahr"
-              sx={{
-                color: theme.palette.text.main,
-                backgroundColor: theme.palette.select.main,
-                border: `1px solid ${theme.palette.text.main}`, // Use template literal for dynamic value
-              }}
-            >
-              {years.map((year) => (
-                <MenuItem key={year} value={year}>
-                  {year}
-                </MenuItem>
-              ))}
-            </SelectComp>
-          </FormControl>
-        </Grid>
+        <Grid item xs={12} sx={{ mt: 4 }}></Grid>
         <Box sx={{ width: "100vw", marginTop: 4, marginBottom: 20 }}>
           <Card
             sx={{
@@ -315,9 +277,78 @@ function FinanceOverview({ update }) {
             }}
           >
             <CardContent>
-              <Grid container>
-                <Grid item xs={3}>
-                  <InputLabel sx={{ marginBottom: 2 }}>
+              <Grid container spacing={2}>
+                <Grid item xs={12} sm={6} md={3}>
+                  <InputLabel sx={{ marginBottom: 2 }}>Monat</InputLabel>
+                  <FormControl
+                    fullWidth
+                    sx={{
+                      marginBottom: 2,
+                      backgroundColor: theme.palette.card.main,
+                      height: "40px",
+                    }}
+                  >
+                    <Select
+                      value={filterMonth}
+                      onChange={(e) => setFilterMonth(e.target.value)}
+                      sx={{
+                        color: selectedCategory
+                          ? "black"
+                          : theme.palette.text.main,
+                        height: "40px",
+                        ".MuiInputBase-input": {
+                          paddingTop: "5px",
+                          paddingBottom: "5px",
+                        },
+                        border: `1px solid ${theme.palette.text.main}`,
+                      }}
+                    >
+                      {months.map((month) => (
+                        <MenuItem key={month.value} value={month.value}>
+                          {month.label}
+                        </MenuItem>
+                      ))}
+                    </Select>
+                  </FormControl>
+                </Grid>
+                <Grid item xs={12} sm={6} md={3}>
+                  <InputLabel sx={{ marginBottom: 2, marginLeft: 1 }}>
+                    Jahr
+                  </InputLabel>
+                  <FormControl
+                    fullWidth
+                    sx={{
+                      marginLeft: 1,
+                      marginBottom: 2,
+                      backgroundColor: theme.palette.card.main,
+                      height: "40px",
+                    }}
+                  >
+                    <Select
+                      value={filterYear}
+                      onChange={(e) => setFilterYear(e.target.value)}
+                      sx={{
+                        color: selectedCategory
+                          ? "black"
+                          : theme.palette.text.main,
+                        height: "40px",
+                        ".MuiInputBase-input": {
+                          paddingTop: "5px",
+                          paddingBottom: "5px",
+                        },
+                        border: `1px solid ${theme.palette.text.main}`,
+                      }}
+                    >
+                      {years.map((year) => (
+                        <MenuItem key={year} value={year}>
+                          {year}
+                        </MenuItem>
+                      ))}
+                    </Select>
+                  </FormControl>
+                </Grid>
+                <Grid item xs={12} sm={6} md={3}>
+                  <InputLabel sx={{ marginBottom: 2, marginLeft: 1 }}>
                     Suche nach Ausgabe
                   </InputLabel>
 
@@ -344,17 +375,18 @@ function FinanceOverview({ update }) {
                       ".MuiOutlinedInput-root": {
                         height: "40px",
                       },
+                      marginLeft: 1,
                     }}
                   />
                 </Grid>
-                <Grid item xs={3}>
-                  <InputLabel sx={{ marginBottom: 2, marginLeft: 3 }}>
+                <Grid item xs={12} sm={6} md={3}>
+                  <InputLabel sx={{ marginBottom: 2, marginLeft: 1 }}>
                     Filter nach Kategorie
                   </InputLabel>
                   <FormControl
                     fullWidth
                     sx={{
-                      marginLeft: 3,
+                      marginLeft: 1,
                       marginBottom: 2,
                       backgroundColor: selectedCategory
                         ? categories.find((c) => c.id === selectedCategory)
