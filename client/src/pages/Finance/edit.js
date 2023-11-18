@@ -107,7 +107,13 @@ export default function EditTransactionDialog({
         Bearbeiten
       </DialogTitle>
       <DialogContent sx={{ backgroundColor: theme.palette.card.main }}>
-        <FormControl fullWidth sx={{ minWidth: "20vw" }}>
+        <InputLabel
+          sx={{ color: theme.palette.text.main, mt: 2, mb: 2 }}
+          id="category-label"
+        >
+          Transaktionstyp
+        </InputLabel>
+        <FormControl fullWidth sx={{ minWidth: "10vw" }}>
           <Select
             value={editedTransaction.transaction_type}
             onChange={handleSelectChange}
@@ -163,7 +169,7 @@ export default function EditTransactionDialog({
           onChange={handleInputChange}
         />
         <InputLabel
-          sx={{ color: theme.palette.text.main, mt: 2 }}
+          sx={{ color: theme.palette.text.main, mt: 2, mb: 2 }}
           id="category-label"
         >
           Kategorie

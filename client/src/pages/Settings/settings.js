@@ -236,40 +236,49 @@ function SettingsForm() {
           </DialogTitle>
           <DialogContent sx={{ backgroundColor: theme.palette.card.main }}>
             <form onSubmit={handleSubmit}>
+              <InputLabel
+                sx={{ color: theme.palette.text.main, mt: 2, mb: 2 }}
+                id="category-label"
+              >
+                Transaktionstyp
+              </InputLabel>
               <FormControl fullWidth>
-                <InputLabel style={{ color: theme.palette.text.main }}>
-                  Fixkostentyp
-                </InputLabel>
                 <SelectComp
                   value={transactionType}
                   onChange={handleTransactionTypeChange}
-                  label="Transaktionstyp"
                 >
                   <MenuItem value="Einnahme">Einnahme</MenuItem>
                   <MenuItem value="Ausgabe">Ausgabe</MenuItem>
                 </SelectComp>
               </FormControl>
+              <InputLabel
+                sx={{ color: theme.palette.text.main, mt: 2 }}
+                id="category-label"
+              >
+                Beschreibung
+              </InputLabel>
               <TextComp
-                label="Beschreibung"
                 type="text"
                 value={description}
                 onChange={handleDescriptionChange}
                 fullWidth
                 required
               />
-              <br />
+              <InputLabel
+                sx={{ color: theme.palette.text.main, mt: 2 }}
+                id="category-label"
+              >
+                Betrag
+              </InputLabel>
               <TextComp
-                label="Betrag"
                 type="number"
                 value={amount}
                 onChange={handleAmountChange}
                 fullWidth
                 required
               />
+
               <FormControl sx={{ marginTop: 3 }}>
-                <InputLabel style={{ color: theme.palette.text.main }}>
-                  Monat
-                </InputLabel>
                 <SelectComp
                   value={filterMonth}
                   onChange={(e) => setFilterMonth(e.target.value)}
@@ -283,9 +292,6 @@ function SettingsForm() {
                 </SelectComp>
               </FormControl>
               <FormControl sx={{ marginLeft: 3, marginTop: 3 }}>
-                <InputLabel style={{ color: theme.palette.text.main }}>
-                  Jahr
-                </InputLabel>
                 <SelectComp
                   value={filterYear}
                   onChange={(e) => setFilterYear(e.target.value)}
@@ -549,11 +555,7 @@ function EditSettingsDialog({ transaction, onClose, onSave }) {
           <InputLabel style={{ color: theme.palette.text.main }}>
             Monat
           </InputLabel>
-          <SelectComp
-            value={editedSettings.month}
-            onChange={handleMonthChange}
-            label="Monat"
-          >
+          <SelectComp value={editedSettings.month} onChange={handleMonthChange}>
             {months?.map((month) => (
               <MenuItem key={month.value} value={month.value}>
                 {month.label}

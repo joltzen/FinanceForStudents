@@ -159,7 +159,13 @@ function FinancePage() {
           </DialogTitle>
           <DialogContent sx={{ backgroundColor: theme.palette.card.main }}>
             <form onSubmit={handleSubmit}>
-              <FormControl fullWidth sx={{ minWidth: "20vw" }}>
+              <InputLabel
+                sx={{ color: theme.palette.text.main, mt: 2, mb: 2 }}
+                id="category-label"
+              >
+                Transaktionstyp
+              </InputLabel>
+              <FormControl fullWidth sx={{ minWidth: "10vw" }}>
                 <SelectComp
                   value={transactionType}
                   onChange={handleTransactionTypeChange}
@@ -209,7 +215,7 @@ function FinancePage() {
                 onChange={handleDateChange}
               />
               <InputLabel
-                sx={{ color: theme.palette.text.main, mt: 2 }}
+                sx={{ color: theme.palette.text.main, mt: 2, mb: 2 }}
                 id="category-label"
               >
                 Kategorie

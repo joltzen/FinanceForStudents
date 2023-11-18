@@ -15,6 +15,7 @@ import {
   Grid,
   Alert,
   Collapse,
+  InputLabel,
 } from "@mui/material";
 import DeleteIcon from "@mui/icons-material/Delete";
 import CloseIcon from "@mui/icons-material/Close";
@@ -201,7 +202,11 @@ function SavingPage() {
             >
               Sparziel setzen
             </DialogTitle>
-            <DialogContent sx={{ backgroundColor: theme.palette.card.main }}>
+            <DialogContent
+              sx={{
+                backgroundColor: theme.palette.card.main,
+              }}
+            >
               <Box component="form" noValidate onSubmit={handleSubmit}>
                 {alter && (
                   <>
@@ -262,64 +267,86 @@ function SavingPage() {
                     </Box>
                   </>
                 )}
+                <InputLabel
+                  sx={{ color: theme.palette.text.main, mt: 2 }}
+                  id="category-label"
+                >
+                  Monatliches Sparen *
+                </InputLabel>
                 <TextComp
                   required
                   fullWidth
-                  label="Monatliches Sparen"
                   name="monthly_saving"
                   value={savingGoal.monthly_saving}
                   onChange={handleChange}
                 />
+                <InputLabel
+                  sx={{ color: theme.palette.text.main, mt: 2 }}
+                  id="category-label"
+                >
+                  Gesamtbetrag *
+                </InputLabel>
                 <TextComp
                   required
                   fullWidth
-                  label="Gesamtbetrag"
                   name="total_amount"
                   value={savingGoal.total_amount}
                   onChange={handleChange}
                 />
+                <InputLabel
+                  sx={{ color: theme.palette.text.main, mt: 2 }}
+                  id="category-label"
+                >
+                  Beschreibung
+                </InputLabel>
                 <TextComp
                   required
                   fullWidth
-                  label="Beschreibung"
                   name="description"
                   value={savingGoal.description}
                   onChange={handleChange}
                 />
+                <InputLabel
+                  sx={{ color: theme.palette.text.main, mt: 2 }}
+                  id="category-label"
+                >
+                  Startdatum
+                </InputLabel>
                 <TextComp
                   fullWidth
-                  label="Startdate (optional)"
                   name="startdate"
                   type="date"
                   InputLabelProps={{ shrink: true }}
                   value={savingGoal.startdate}
                   onChange={handleChange}
                 />
+                <InputLabel
+                  sx={{ color: theme.palette.text.main, mt: 2 }}
+                  id="category-label"
+                >
+                  Deadline
+                </InputLabel>
                 <TextComp
                   fullWidth
-                  label="Deadline (optional)"
                   name="deadline"
                   type="date"
                   InputLabelProps={{ shrink: true }}
                   value={savingGoal.deadline}
                   onChange={handleChange}
                 />
+                <InputLabel
+                  sx={{ color: theme.palette.text.main, mt: 2 }}
+                  id="category-label"
+                >
+                  Dauer in Monaten
+                </InputLabel>
                 <TextComp
                   required
                   fullWidth
-                  label="Dauer in Monaten"
                   name="duration"
                   value={savingGoal.duration}
                   onChange={handleChange}
                 />
-                <Button
-                  type="submit"
-                  fullWidth
-                  variant="contained"
-                  sx={{ mt: 3, mb: 2 }}
-                >
-                  Sparziel setzen
-                </Button>
               </Box>
             </DialogContent>
             <DialogActions sx={{ backgroundColor: theme.palette.card.main }}>
