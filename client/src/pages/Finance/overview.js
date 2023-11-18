@@ -343,38 +343,7 @@ function FinanceOverview({ update }) {
                     </Select>
                   </FormControl>
                 </Grid>
-                <Grid item xs={12} sm={6} md={3}>
-                  <InputLabel sx={{ marginBottom: 2, marginLeft: 1 }}>
-                    Suche nach Ausgabe
-                  </InputLabel>
 
-                  <TextField
-                    variant="outlined"
-                    fullWidth
-                    value={searchQuery}
-                    onChange={handleSearchInputChange}
-                    InputProps={{
-                      startAdornment: (
-                        <InputAdornment position="start">
-                          <SearchIcon />
-                        </InputAdornment>
-                      ),
-                      sx: {
-                        height: "40px",
-                        ".MuiInputBase-input": {
-                          paddingTop: "5px",
-                          paddingBottom: "5px",
-                        },
-                      },
-                    }}
-                    sx={{
-                      ".MuiOutlinedInput-root": {
-                        height: "40px",
-                      },
-                      marginLeft: 1,
-                    }}
-                  />
-                </Grid>
                 <Grid item xs={12} sm={6} md={3}>
                   <InputLabel sx={{ marginBottom: 2, marginLeft: 1 }}>
                     Filter nach Kategorie
@@ -417,6 +386,38 @@ function FinanceOverview({ update }) {
                       ))}
                     </Select>
                   </FormControl>
+                </Grid>
+                <Grid item xs={12} sm={6} md={3}>
+                  <InputLabel sx={{ marginBottom: 2, marginLeft: 1 }}>
+                    Suche
+                  </InputLabel>
+
+                  <TextField
+                    variant="outlined"
+                    fullWidth
+                    value={searchQuery}
+                    onChange={handleSearchInputChange}
+                    InputProps={{
+                      startAdornment: (
+                        <InputAdornment position="start">
+                          <SearchIcon />
+                        </InputAdornment>
+                      ),
+                      sx: {
+                        height: "40px",
+                        ".MuiInputBase-input": {
+                          paddingTop: "5px",
+                          paddingBottom: "5px",
+                        },
+                      },
+                    }}
+                    sx={{
+                      ".MuiOutlinedInput-root": {
+                        height: "40px",
+                      },
+                      marginLeft: 1,
+                    }}
+                  />
                 </Grid>
               </Grid>
             </CardContent>

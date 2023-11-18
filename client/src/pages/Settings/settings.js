@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import axiosInstance from "../../config/axios";
 import { useAuth } from "../../core/auth/auth";
 import {
@@ -15,6 +15,8 @@ import {
   DialogActions,
   Tab,
   Tabs,
+  Select,
+  TextField,
 } from "@mui/material";
 import DialogPage from "../Settings/dialog";
 import Page from "../../components/page";
@@ -40,6 +42,7 @@ function SettingsForm() {
   const [openTransferDialog, setOpenTransferDialog] = useState(false);
   const { user } = useAuth();
   const theme = useTheme();
+  const descriptionInputRef = useRef(null);
 
   const handleTabChange = (event, newValue) => {
     setSelectedTab(newValue);
@@ -78,6 +81,11 @@ function SettingsForm() {
       console.error("Error posting transactions:", error);
     }
   };
+  useEffect(() => {
+    if (openDialog) {
+      descriptionInputRef.current?.focus();
+    }
+  }, [openDialog]);
   const handleTransferSubmit = async (
     sourceMonth,
     sourceYear,
@@ -237,32 +245,58 @@ function SettingsForm() {
           <DialogContent sx={{ backgroundColor: theme.palette.card.main }}>
             <form onSubmit={handleSubmit}>
               <InputLabel
-                sx={{ color: theme.palette.text.main, mt: 2, mb: 2 }}
+                sx={{ color: theme.palette.text.main, mt: 2 }}
                 id="category-label"
               >
                 Transaktionstyp
               </InputLabel>
               <FormControl fullWidth>
-                <SelectComp
+                <Select
                   value={transactionType}
                   onChange={handleTransactionTypeChange}
+                  sx={{
+                    color: theme.palette.text.main,
+                    height: "40px",
+                    ".MuiInputBase-input": {
+                      paddingTop: "5px",
+                      paddingBottom: "5px",
+                    },
+                    border: `1px solid ${theme.palette.text.main}`,
+                    mt: 2,
+                  }}
                 >
                   <MenuItem value="Einnahme">Einnahme</MenuItem>
                   <MenuItem value="Ausgabe">Ausgabe</MenuItem>
-                </SelectComp>
+                </Select>
               </FormControl>
               <InputLabel
                 sx={{ color: theme.palette.text.main, mt: 2 }}
-                id="category-label"
+                id="description-label"
               >
                 Beschreibung
               </InputLabel>
-              <TextComp
+              <TextField
                 type="text"
                 value={description}
                 onChange={handleDescriptionChange}
                 fullWidth
                 required
+                inputRef={descriptionInputRef}
+                InputProps={{
+                  sx: {
+                    height: "40px",
+                    ".MuiInputBase-input": {
+                      paddingTop: "5px",
+                      paddingBottom: "5px",
+                    },
+                  },
+                }}
+                sx={{
+                  ".MuiOutlinedInput-root": {
+                    height: "40px",
+                  },
+                  mt: 2,
+                }}
               />
               <InputLabel
                 sx={{ color: theme.palette.text.main, mt: 2 }}
@@ -270,39 +304,71 @@ function SettingsForm() {
               >
                 Betrag
               </InputLabel>
-              <TextComp
+              <TextField
                 type="number"
                 value={amount}
                 onChange={handleAmountChange}
                 fullWidth
                 required
+                InputProps={{
+                  sx: {
+                    height: "40px",
+                    ".MuiInputBase-input": {
+                      paddingTop: "5px",
+                      paddingBottom: "5px",
+                    },
+                  },
+                }}
+                sx={{
+                  ".MuiOutlinedInput-root": {
+                    height: "40px",
+                  },
+                  marginBottom: 1,
+                  mt: 2,
+                }}
               />
 
               <FormControl sx={{ marginTop: 3 }}>
-                <SelectComp
+                <Select
                   value={filterMonth}
                   onChange={(e) => setFilterMonth(e.target.value)}
-                  label="Monat"
+                  sx={{
+                    color: theme.palette.text.main,
+                    height: "40px",
+                    ".MuiInputBase-input": {
+                      paddingTop: "5px",
+                      paddingBottom: "5px",
+                    },
+                    border: `1px solid ${theme.palette.text.main}`,
+                  }}
                 >
                   {months?.map((month) => (
                     <MenuItem key={month.value} value={month.value}>
                       {month.label}
                     </MenuItem>
                   ))}
-                </SelectComp>
+                </Select>
               </FormControl>
               <FormControl sx={{ marginLeft: 3, marginTop: 3 }}>
-                <SelectComp
+                <Select
                   value={filterYear}
                   onChange={(e) => setFilterYear(e.target.value)}
-                  label="Jahr"
+                  sx={{
+                    color: theme.palette.text.main,
+                    height: "40px",
+                    ".MuiInputBase-input": {
+                      paddingTop: "5px",
+                      paddingBottom: "5px",
+                    },
+                    border: `1px solid ${theme.palette.text.main}`,
+                  }}
                 >
                   {years?.map((year) => (
                     <MenuItem key={year} value={year}>
                       {year}
                     </MenuItem>
                   ))}
-                </SelectComp>
+                </Select>
               </FormControl>
             </form>
           </DialogContent>
@@ -507,84 +573,136 @@ function EditSettingsDialog({ transaction, onClose, onSave }) {
   }
 
   return (
-    <Dialog open={!!transaction} onClose={onClose}>
+    <Dialog open={!!transaction} onClose={onClose} fullWidth>
       <DialogTitle
         sx={{
           backgroundColor: theme.palette.card.main,
           color: theme.palette.text.main,
+          fontSize: "1.2rem", // Größere Schrift für den Titel
         }}
       >
         Bearbeiten
       </DialogTitle>
-      <DialogContent sx={{ backgroundColor: theme.palette.card.main }}>
-        <FormControl fullWidth>
-          <InputLabel style={{ color: theme.palette.text.main }}>
-            Transaktionstyp
-          </InputLabel>
-          <SelectComp
+      <DialogContent
+        sx={{ backgroundColor: theme.palette.card.main, padding: "20px" }}
+      >
+        {/* Transaktionstyp */}
+        <InputLabel style={{ color: theme.palette.text.main }}>
+          Transaktionstyp
+        </InputLabel>
+        <FormControl fullWidth margin="normal">
+          <Select
             value={editedSettings.transaction_type}
             onChange={handleSelectChange}
-            label="Transaktionstyp"
             sx={{
               color: theme.palette.text.main,
-              backgroundColor: theme.palette.select.main,
+              height: "40px",
+              ".MuiInputBase-input": {
+                paddingTop: "5px",
+                paddingBottom: "5px",
+              },
               border: `1px solid ${theme.palette.text.main}`,
             }}
           >
             <MenuItem value="Ausgabe">Ausgabe</MenuItem>
             <MenuItem value="Einnahme">Einnahme</MenuItem>
-          </SelectComp>
+          </Select>
         </FormControl>
-        <TextComp
-          label="Beschreibung"
-          type="text"
-          name="description"
+
+        {/* Beschreibung */}
+        <InputLabel style={{ color: theme.palette.text.main }}>
+          Beschreibung
+        </InputLabel>
+        <TextField
+          variant="outlined"
+          fullWidth
+          margin="normal"
           value={editedSettings.description}
           onChange={handleInputChange}
-          fullWidth
+          sx={{
+            ".MuiOutlinedInput-root": {
+              height: "40px",
+              border: `1px solid ${theme.palette.text.main}`,
+            },
+          }}
         />
-        <TextComp
-          label="Betrag"
+
+        {/* Betrag */}
+        <InputLabel style={{ color: theme.palette.text.main }}>
+          Betrag
+        </InputLabel>
+        <TextField
+          variant="outlined"
+          fullWidth
+          margin="normal"
           type="number"
-          name="amount"
           value={editedSettings.amount}
           onChange={handleInputChange}
-          fullWidth
+          sx={{
+            ".MuiOutlinedInput-root": {
+              height: "40px",
+              border: `1px solid ${theme.palette.text.main}`,
+            },
+          }}
         />
-        <FormControl sx={{ marginRight: 3, flexGrow: 1, marginTop: 2 }}>
-          <InputLabel style={{ color: theme.palette.text.main }}>
-            Monat
-          </InputLabel>
-          <SelectComp value={editedSettings.month} onChange={handleMonthChange}>
+
+        {/* Monat */}
+        <InputLabel style={{ color: theme.palette.text.main }}>
+          Monat
+        </InputLabel>
+        <FormControl fullWidth margin="normal">
+          <Select
+            value={editedSettings.month}
+            onChange={handleMonthChange}
+            sx={{
+              color: theme.palette.text.main,
+              height: "40px",
+              ".MuiInputBase-input": {
+                paddingTop: "5px",
+                paddingBottom: "5px",
+              },
+              border: `1px solid ${theme.palette.text.main}`,
+            }}
+          >
             {months?.map((month) => (
               <MenuItem key={month.value} value={month.value}>
                 {month.label}
               </MenuItem>
             ))}
-          </SelectComp>
+          </Select>
         </FormControl>
-        <FormControl sx={{ marginRight: 3, flexGrow: 1, marginTop: 2 }}>
-          <InputLabel style={{ color: theme.palette.text.main }}>
-            Jahr
-          </InputLabel>
-          <SelectComp
+
+        {/* Jahr */}
+        <InputLabel style={{ color: theme.palette.text.main }}>Jahr</InputLabel>
+        <FormControl fullWidth margin="normal">
+          <Select
             value={editedSettings.year}
             onChange={handleYearChange}
-            label="Jahr"
+            sx={{
+              color: theme.palette.text.main,
+              height: "40px",
+              ".MuiInputBase-input": {
+                paddingTop: "5px",
+                paddingBottom: "5px",
+              },
+              border: `1px solid ${theme.palette.text.main}`,
+            }}
           >
             {years?.map((year) => (
               <MenuItem key={year} value={year}>
                 {year}
               </MenuItem>
             ))}
-          </SelectComp>
+          </Select>
         </FormControl>
       </DialogContent>
-      <DialogActions sx={{ backgroundColor: theme.palette.card.main }}>
-        <Button onClick={onClose} sx={{ color: theme.palette.text.main }}>
+      <DialogActions
+        sx={{ backgroundColor: theme.palette.card.main, padding: "10px" }}
+      >
+        <Button onClick={onClose} color="secondary" variant="outlined">
           Abbrechen
         </Button>
-        <Button onClick={handleSave} sx={{ color: theme.palette.text.main }}>
+        <Button onClick={handleSave} color="primary" variant="contained">
           Speichern
         </Button>
       </DialogActions>

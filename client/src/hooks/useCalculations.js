@@ -268,7 +268,7 @@ export const useCalculations = (
       previousMonthRemainingBudget = 0;
     }
 
-    if (previousMonthRemainingBudget === 0 && thisMonthRemainingBudget >= 0) {
+    if (previousMonthRemainingBudget === 0 && thisMonthRemainingBudget > 0) {
       return 100;
     } else if (
       previousMonthRemainingBudget === 0 &&

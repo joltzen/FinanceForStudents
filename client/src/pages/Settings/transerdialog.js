@@ -10,6 +10,7 @@ import {
   FormControl,
   InputLabel,
   Typography,
+  Select,
 } from "@mui/material";
 import SelectComp from "../../components/SelectComp";
 import { useTheme } from "@mui/material/styles";
@@ -37,94 +38,135 @@ function TransferDialog({ open, handleClose, handleSubmit, months, years }) {
           color: theme.palette.text.main,
         }}
       >
-        <Grid container spacing={2}>
-          <Grid item xs={12}>
-            <Typography sx={{ color: theme.palette.text.main, marginTop: 3 }}>
+        <Grid container spacing={2} sx={{ padding: 2 }}>
+          <Grid item xs={2}>
+            <Typography
+              sx={{ color: theme.palette.text.main, marginTop: 9, mr: 2 }}
+            >
               Von:
             </Typography>
           </Grid>
-          <Grid item xs={6}>
+
+          <Grid item xs={5}>
+            <InputLabel sx={{ color: theme.palette.text.main, mt: 3 }}>
+              Monat
+            </InputLabel>
             <FormControl fullWidth sx={{ marginTop: 1 }}>
-              <InputLabel style={{ color: theme.palette.text.main }}>
-                Monat
-              </InputLabel>
-              <SelectComp
+              <Select
                 value={sourceMonth}
                 onChange={(e) => setSourceMonth(e.target.value)}
-                label="Monat"
+                sx={{
+                  color: theme.palette.text.main,
+                  height: "40px",
+                  ".MuiInputBase-input": {
+                    paddingTop: "5px",
+                    paddingBottom: "5px",
+                  },
+                  border: `1px solid ${theme.palette.text.main}`,
+                }}
               >
                 {months?.map((month) => (
                   <MenuItem key={month.value} value={month.value}>
                     {month.label}
                   </MenuItem>
                 ))}
-              </SelectComp>
+              </Select>
             </FormControl>
           </Grid>
-          <Grid item xs={6}>
+
+          <Grid item xs={5}>
+            <InputLabel sx={{ color: theme.palette.text.main, mt: 3, ml: 2 }}>
+              Jahr
+            </InputLabel>
             <FormControl
               fullWidth
               sx={{ marginLeft: 2, marginTop: 1, marginBottom: 3 }}
             >
-              <InputLabel style={{ color: theme.palette.text.main }}>
-                Jahr
-              </InputLabel>
-              <SelectComp
+              <Select
                 value={sourceYear}
                 onChange={(e) => setSourceYear(e.target.value)}
-                label="Jahr"
+                sx={{
+                  color: theme.palette.text.main,
+                  height: "40px",
+                  ".MuiInputBase-input": {
+                    paddingTop: "5px",
+                    paddingBottom: "5px",
+                  },
+                  border: `1px solid ${theme.palette.text.main}`,
+                }}
               >
                 {years?.map((year) => (
                   <MenuItem key={year} value={year}>
                     {year}
                   </MenuItem>
                 ))}
-              </SelectComp>
+              </Select>
             </FormControl>
           </Grid>
-          <Grid item xs={12}>
-            <Typography sx={{ color: theme.palette.text.main, marginTop: 3 }}>
-              Nach:
-            </Typography>
-          </Grid>
-          <Grid item xs={6}>
-            <FormControl fullWidth sx={{ marginTop: 1 }}>
-              <InputLabel style={{ color: theme.palette.text.main }}>
+
+          <Grid container spacing={2}>
+            <Grid item xs={2}>
+              <Typography
+                sx={{ color: theme.palette.text.main, marginTop: 9, ml: 2 }}
+              >
+                Nach:
+              </Typography>
+            </Grid>
+            <Grid item xs={5}>
+              <InputLabel sx={{ color: theme.palette.text.main, mt: 3, ml: 1 }}>
                 Monat
               </InputLabel>
-              <SelectComp
-                value={targetMonth}
-                onChange={(e) => setTargetMonth(e.target.value)}
-                label="Monat"
-              >
-                {months?.map((month) => (
-                  <MenuItem key={month.value} value={month.value}>
-                    {month.label}
-                  </MenuItem>
-                ))}
-              </SelectComp>
-            </FormControl>
-          </Grid>
-          <Grid item xs={6}>
-            <FormControl
-              fullWidth
-              sx={{ marginLeft: 2, marginTop: 1, marginBottom: 3 }}
-            >
-              <InputLabel style={{ color: theme.palette.text.main }}>
+              <FormControl fullWidth sx={{ marginTop: 1 }}>
+                <Select
+                  value={targetMonth}
+                  onChange={(e) => setTargetMonth(e.target.value)}
+                  sx={{
+                    color: theme.palette.text.main,
+                    height: "40px",
+                    ".MuiInputBase-input": {
+                      paddingTop: "5px",
+                      paddingBottom: "5px",
+                    },
+                    border: `1px solid ${theme.palette.text.main}`,
+                  }}
+                >
+                  {months?.map((month) => (
+                    <MenuItem key={month.value} value={month.value}>
+                      {month.label}
+                    </MenuItem>
+                  ))}
+                </Select>
+              </FormControl>
+            </Grid>
+            <Grid item xs={5}>
+              <InputLabel sx={{ color: theme.palette.text.main, mt: 3, ml: 2 }}>
                 Jahr
               </InputLabel>
-              <SelectComp
-                value={targetYear}
-                onChange={(e) => setTargetYear(e.target.value)}
-                label="Jahr"
+              <FormControl
+                fullWidth
+                sx={{ marginLeft: 2, marginTop: 1, marginBottom: 3 }}
               >
-                {years?.map((year) => (
-                  <MenuItem key={year} value={year}>
-                    {year}
-                  </MenuItem>
-                ))}
-              </SelectComp>
-            </FormControl>
+                <Select
+                  value={targetYear}
+                  onChange={(e) => setTargetYear(e.target.value)}
+                  sx={{
+                    color: theme.palette.text.main,
+                    height: "40px",
+                    ".MuiInputBase-input": {
+                      paddingTop: "5px",
+                      paddingBottom: "5px",
+                    },
+                    border: `1px solid ${theme.palette.text.main}`,
+                  }}
+                >
+                  {years?.map((year) => (
+                    <MenuItem key={year} value={year}>
+                      {year}
+                    </MenuItem>
+                  ))}
+                </Select>
+              </FormControl>
+            </Grid>
           </Grid>
         </Grid>
       </DialogContent>

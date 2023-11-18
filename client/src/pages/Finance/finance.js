@@ -148,7 +148,7 @@ function FinancePage() {
         >
           Transaktion hinzufügen
         </AddButton>
-        <Dialog open={openDialog} onClose={handleCloseDialog}>
+        <Dialog open={openDialog} onClose={handleCloseDialog} fullWidth>
           <DialogTitle
             sx={{
               backgroundColor: theme.palette.card.main,
@@ -165,7 +165,7 @@ function FinancePage() {
               >
                 Transaktionstyp
               </InputLabel>
-              <FormControl fullWidth sx={{ minWidth: "10vw" }}>
+              <FormControl fullWidth>
                 <SelectComp
                   value={transactionType}
                   onChange={handleTransactionTypeChange}
@@ -279,11 +279,7 @@ function FinancePage() {
           </DialogActions>
         </Dialog>
 
-        <Typography
-          variant="h6"
-          color={theme.palette.text.main}
-          sx={{ mb: 2, mt: 2 }}
-        >
+        <Typography variant="h3" color={theme.palette.text.main} sx={{ mt: 7 }}>
           Transaktionen Übersicht
         </Typography>
         <FinanceOverview update={update} />
