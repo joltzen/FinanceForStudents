@@ -73,7 +73,19 @@ router.get("/getTransactions", async (req, res) => {
     res.status(500).json({ error: "Error fetching transactions" });
   }
 });
-
+router.get("/getAllTransactions", async (req, res) => {
+  try {
+    const { user_id } = req.query;
+    const result = await db.query(
+      "SELECT * FROM transactions WHERE user_id = $1",
+      [user_id]
+    );
+    res.json(result.rows);
+  } catch (error) {
+    console.error("Error getting user transactions:", error);
+    res.status(500).json({ error: "Error fetching transactions" });
+  }
+});
 router.get("/getTransactionsAnnual", async (req, res) => {
   try {
     const { year, user_id } = req.query;
@@ -244,6 +256,18 @@ router.get("/getSettings", async (req, res) => {
       "SELECT * FROM settings WHERE month = $1 AND year= $2 AND user_id = $3",
       [month, year, user_id]
     );
+    res.json(result.rows);
+  } catch (error) {
+    console.error("Error getting user settings:", error);
+    res.status(500).json({ error: "Error fetching settings" });
+  }
+});
+router.get("/getAllSettings", async (req, res) => {
+  try {
+    const { user_id } = req.query;
+    const result = await db.query("SELECT * FROM settings WHERE user_id = $1", [
+      user_id,
+    ]);
     res.json(result.rows);
   } catch (error) {
     console.error("Error getting user settings:", error);

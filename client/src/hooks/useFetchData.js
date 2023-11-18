@@ -9,7 +9,9 @@ export const useFetchData = (user, isAnnualView, filterMonth, filterYear) => {
   const [savingsGoals, setSavingsGoals] = useState([]);
   const [prevMonthTransactions, setPrevMonthTransactions] = useState([]);
   const [prevSettings, setPrevSettings] = useState([]);
-  const [prevSavingsGoals, setPrevSavingsGoals] = useState([]);
+  const [allTransactions, setAllTransactions] = useState([]);
+  const [allSettings, setAllSettings] = useState([]);
+  const [allSaving, setAllSaving] = useState([]);
   useEffect(() => {
     const fetchTransactionsAndSettings = async () => {
       const endpointTransactions = isAnnualView
@@ -90,11 +92,49 @@ export const useFetchData = (user, isAnnualView, filterMonth, filterYear) => {
       }
     };
 
+    const fetchAllUserTransactions = async () => {
+      try {
+        const response = await axiosInstance.get("/getAllTransactions", {
+          params: { user_id: user.id },
+        });
+
+        setAllTransactions(response.data);
+      } catch (error) {
+        console.error("Fehler beim Laden der Transaktionen:", error);
+      }
+    };
+
+    const fetchAllUserSettings = async () => {
+      try {
+        const response = await axiosInstance.get("/getAllSettings", {
+          params: { user_id: user.id },
+        });
+        setAllSettings(response.data);
+      } catch (error) {
+        console.error("Fehler beim Laden der Einstellungen:", error);
+      }
+    };
+
+    const fetchAllUserSaving = async () => {
+      try {
+        const response = await axiosInstance.get("/get-saving-goals", {
+          params: { userId: user.id },
+        });
+        setAllSaving(response.data);
+      } catch (error) {
+        console.error("Fehler beim Laden der Sparziele:", error);
+      }
+    };
+
+    fetchAllUserTransactions();
     fetchTransactionsAndSettings();
     fetchPrevoiusMonthTransactions();
     fetchPrevoiusMonthSettings();
     fetchCategories();
     fetchSavingGoals();
+    fetchAllUserSettings();
+    fetchAllUserSaving();
+    fetchAllUserTransactions();
   }, [filterMonth, filterYear, isAnnualView, user.id]);
 
   return {
@@ -104,5 +144,8 @@ export const useFetchData = (user, isAnnualView, filterMonth, filterYear) => {
     categories,
     settings,
     savingsGoals,
+    allTransactions,
+    allSettings,
+    allSaving,
   };
 };

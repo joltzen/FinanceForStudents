@@ -1,7 +1,15 @@
 import React from "react";
-import { Paper, Typography, Grid, Box } from "@mui/material";
+import {
+  Paper,
+  Typography,
+  Grid,
+  Box,
+  IconButton,
+  Tooltip,
+} from "@mui/material";
 import { useTheme } from "@mui/material/styles";
 import ArrowUpwardIcon from "@mui/icons-material/ArrowUpward";
+import ArrowDownwardIcon from "@mui/icons-material/ArrowDownward";
 import AttachMoneyIcon from "@mui/icons-material/AttachMoney";
 
 const BudgetSummary = ({ isAnnualView, totalRemaining, percentageChange }) => {
@@ -13,24 +21,38 @@ const BudgetSummary = ({ isAnnualView, totalRemaining, percentageChange }) => {
         <Box>
           <Typography
             variant="subtitle1"
-            sx={{ color: theme.palette.text.secondary }}
+            sx={{ color: theme.palette.text.main }}
           >
             {isAnnualView ? "JAHRESBUDET" : "MONATSBUDGET"}
           </Typography>
           <Typography variant="h4" sx={{ fontWeight: "bold", mt: 2 }}>
             {totalRemaining.toFixed(2)} €
           </Typography>
-          <Box
-            display="flex"
-            alignItems="center"
-            color={theme.palette.success.main}
-            sx={{ mt: 2 }}
-          >
-            <ArrowUpwardIcon fontSize="medium" color="white" />
-            <Typography variant="subtitle2" sx={{ ml: 0.5 }}>
-              <strong>{percentageChange.toFixed(2)}% Seit letztem Monat</strong>
-            </Typography>
-          </Box>
+          {isAnnualView ? (
+            <></>
+          ) : (
+            <Box
+              display="flex"
+              alignItems="center"
+              color={
+                percentageChange < 0
+                  ? theme.palette.error.main
+                  : theme.palette.success.main
+              }
+              sx={{ mt: 2 }}
+            >
+              {percentageChange < 0 ? (
+                <ArrowDownwardIcon fontSize="medium" />
+              ) : (
+                <ArrowUpwardIcon fontSize="medium" />
+              )}
+              <Typography variant="subtitle2" sx={{ ml: 0.5 }}>
+                <strong>
+                  {percentageChange.toFixed(2)}% Seit letztem Monat
+                </strong>
+              </Typography>
+            </Box>
+          )}
         </Box>
         <Box
           sx={{
@@ -41,12 +63,15 @@ const BudgetSummary = ({ isAnnualView, totalRemaining, percentageChange }) => {
             display: "flex",
             justifyContent: "center",
             alignItems: "center",
-            position: "absolute",
             top: theme.spacing(2),
             right: theme.spacing(2),
           }}
         >
-          <AttachMoneyIcon sx={{ color: theme.palette.common.white }} />
+          <Tooltip title="Fixkosten verwalten" placement="left">
+            <IconButton href="/settings">
+              <AttachMoneyIcon sx={{ color: theme.palette.common.white }} />
+            </IconButton>
+          </Tooltip>
         </Box>
       </Box>
     </Grid>

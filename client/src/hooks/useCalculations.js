@@ -8,7 +8,10 @@ export const useCalculations = (
   totalSavingGoals,
   isAnnualView,
   prevMonthTransactions,
-  prevSettings
+  prevSettings,
+  allTransactions,
+  allSettings,
+  allSaving
 ) => {
   const calculateSavingGoalsTotal = () => {
     let totalSavings = 0;
@@ -32,6 +35,7 @@ export const useCalculations = (
 
     return totalSavings;
   };
+
   const calculateAnnualSavingGoalsTotal = () => {
     let totalSavings = 0;
 
@@ -132,6 +136,22 @@ export const useCalculations = (
     return totals[categoryId] || 0;
   };
 
+  const calcMonthlyExpense = () => {
+    let monthlyExpenses = new Array(12).fill(0);
+
+    transactions.forEach((transaction) => {
+      const date = new Date(transaction.transaction_date);
+      const month = date.getMonth();
+      const year = date.getFullYear();
+
+      if (year === filterYear) {
+        monthlyExpenses[month] += parseFloat(transaction.amount);
+      }
+    });
+
+    return monthlyExpenses[filterMonth - 1];
+  };
+
   const calculateMonthlyRemainingBudgets = () => {
     let monthlyBudgets = new Array(12).fill(0);
     let monthlyExpenses = new Array(12).fill(0);
@@ -178,15 +198,14 @@ export const useCalculations = (
 
     return monthlyRemainingBudgets;
   };
+
   const calculatePreviousMonthRemainingBudget = () => {
     // Determine the previous month and year
     const previousMonth = filterMonth === 0 ? 11 : filterMonth - 1;
     const previousYear = filterMonth === 0 ? filterYear - 1 : filterYear;
-
-    // Initialize budgets, expenses, and savings for the previous month
-    let monthlyBudget = 0;
-    let monthlyExpenses = 0;
-    let monthlySavings = 0;
+    var monthlyBudget = 0;
+    var monthlyExpenses = 0;
+    var monthlySavings = 0;
 
     // Calculate expenses for the previous month
     prevMonthTransactions.forEach((transaction) => {
@@ -237,17 +256,90 @@ export const useCalculations = (
 
   //I want to calculate the percentage  of the remaining budget for  the given month and the one before
   const calculateMonthlySavingsDifference = () => {
-    const previousMonthRemainingBudget =
-      calculatePreviousMonthRemainingBudget();
-    const thisMonthRemainingBudget = calculateMonthlyRemainingBudgets().filter(
+    var previousMonthRemainingBudget = calculatePreviousMonthRemainingBudget();
+    var thisMonthRemainingBudget = calculateMonthlyRemainingBudgets().filter(
       (budget) => budget !== 0
     )[0];
-    // calculate percentage difference
+
+    if (thisMonthRemainingBudget === undefined) {
+      thisMonthRemainingBudget = 0;
+    }
+    if (previousMonthRemainingBudget === undefined) {
+      previousMonthRemainingBudget = 0;
+    }
+
+    if (previousMonthRemainingBudget === 0 && thisMonthRemainingBudget >= 0) {
+      return 100;
+    } else if (
+      previousMonthRemainingBudget === 0 &&
+      thisMonthRemainingBudget < 0
+    ) {
+      return -100;
+    } else if (
+      thisMonthRemainingBudget === 0 &&
+      previousMonthRemainingBudget === 0
+    ) {
+      return 0;
+    }
+
     const percentageDifference =
       ((thisMonthRemainingBudget - previousMonthRemainingBudget) /
-        previousMonthRemainingBudget) *
+        Math.abs(previousMonthRemainingBudget)) *
       100;
     return percentageDifference;
+  };
+
+  const calculateTotalSavings = () => {
+    let totalSavingsFromTransactions = 0;
+    let totalSavingsFromGoals = 0;
+    let totalSavingsFromSettings = 0;
+
+    // Sum up savings from all transactions
+    allTransactions.forEach((transaction) => {
+      if (transaction.transaction_type === "Einnahme") {
+        totalSavingsFromTransactions += parseFloat(transaction.amount);
+      } else if (transaction.transaction_type === "Ausgabe") {
+        totalSavingsFromTransactions -= parseFloat(transaction.amount);
+      }
+    });
+
+    savingsGoals.forEach((goal) => {
+      const startMonth = new Date(goal.startdate).getMonth() + 1;
+      const startYear = new Date(goal.startdate).getFullYear();
+      let deadlineMonth = new Date(goal.deadline).getMonth() + 1;
+      const deadlineYear = new Date(goal.deadline).getFullYear();
+
+      // Check if the current month/year matches the deadline month/year
+      if (filterYear === deadlineYear && filterMonth === deadlineMonth) {
+        deadlineMonth--; // Decrement the deadline month so it's not included
+      }
+
+      const isWithinRange =
+        (filterYear > startYear ||
+          (filterYear === startYear && filterMonth >= startMonth)) &&
+        (filterYear < deadlineYear ||
+          (filterYear === deadlineYear && filterMonth < deadlineMonth));
+
+      if (isWithinRange) {
+        totalSavingsFromGoals += parseFloat(goal.monthly_saving);
+      }
+    });
+    // Sum up savings from all settings
+    allSettings.forEach((setting) => {
+      if (setting.transaction_type === "Einnahme") {
+        totalSavingsFromSettings += parseFloat(setting.amount);
+      } else if (setting.transaction_type === "Ausgabe") {
+        totalSavingsFromSettings -= parseFloat(setting.amount);
+      }
+    });
+
+    // Calculate total savings
+    const totalSavings =
+      totalSavingsFromTransactions +
+      totalSavingsFromSettings -
+      totalSavingsFromGoals;
+
+    return totalSavings;
   };
 
   return {
@@ -258,5 +350,8 @@ export const useCalculations = (
     getAnnualCategoryTotal,
     calculateMonthlyRemainingBudgets,
     calculateMonthlySavingsDifference,
+    calcMonthlyExpense,
+    calculateSavingGoalsTotal,
+    calculateTotalSavings,
   };
 };

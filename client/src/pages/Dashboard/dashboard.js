@@ -21,12 +21,9 @@ import { months, years } from "../../config/constants";
 import { Bar } from "react-chartjs-2";
 import { useTheme } from "@mui/material/styles";
 import { ColorModeContext } from "../../theme";
-import IconButton from "@mui/material/IconButton";
-import DarkModeOutlinedIcon from "@mui/icons-material/DarkModeOutlined";
-import LightModeOutlinedIcon from "@mui/icons-material/LightModeOutlined";
-import AccountBalanceWalletIcon from "@mui/icons-material/AccountBalanceWallet";
-import AttachMoneyIcon from "@mui/icons-material/AttachMoney";
-import SavingsIcon from "@mui/icons-material/Savings";
+import MonthlyExpenses from "./monthly";
+import MonthlySaving from "./task";
+import TotalSavings from "./total";
 
 function DashboardPage() {
   const theme = useTheme();
@@ -44,6 +41,9 @@ function DashboardPage() {
     categories,
     settings,
     savingsGoals,
+    allTransactions,
+    allSettings,
+    allSaving,
   } = useFetchData(user, isAnnualView, filterMonth, filterYear);
 
   const {
@@ -54,6 +54,8 @@ function DashboardPage() {
     getAnnualCategoryTotal,
     calculateMonthlyRemainingBudgets,
     calculateMonthlySavingsDifference,
+    calcMonthlyExpense,
+    calculateTotalSavings,
   } = useCalculations(
     transactions,
     settings,
@@ -63,16 +65,15 @@ function DashboardPage() {
     totalSavingGoals,
     isAnnualView,
     prevMonthTransactions,
-    prevSettings
+    prevSettings,
+    allTransactions,
+    allSettings,
+    allSaving
   );
 
   useEffect(() => {
     setTotalSavingGoals(totalSavings);
   }, [totalSavings]);
-
-  const handleBarChartToggle = (event) => {
-    setShowBarChart(event.target.checked);
-  };
 
   const handleChartToggle = (event) => {
     setIsAnnualView(event.target.checked);
@@ -221,7 +222,9 @@ function DashboardPage() {
       {/* Top Row: Four Smaller Cards */}
       <Grid container spacing={2}>
         <Grid item xs={12} md={3}>
-          <Card sx={{ backgroundColor: theme.palette.card.main }}>
+          <Card
+            sx={{ backgroundColor: theme.palette.card.main, height: "100%" }}
+          >
             <CardContent>
               <BudgetSummary
                 isAnnualView={isAnnualView}
@@ -232,18 +235,30 @@ function DashboardPage() {
           </Card>
         </Grid>
         <Grid item xs={12} md={3}>
-          <Card sx={{ backgroundColor: theme.palette.card.main }}>
-            <CardContent>{/* Content of Card 2 */}</CardContent>
+          <Card
+            sx={{ backgroundColor: theme.palette.card.main, height: "100%" }}
+          >
+            <CardContent>
+              <MonthlyExpenses expenses={calcMonthlyExpense()} />
+            </CardContent>
           </Card>
         </Grid>
         <Grid item xs={12} md={3}>
-          <Card sx={{ backgroundColor: theme.palette.card.main }}>
-            <CardContent>{/* Content of Card 3 */}</CardContent>
+          <Card
+            sx={{ backgroundColor: theme.palette.card.main, height: "100%" }}
+          >
+            <CardContent>
+              <MonthlySaving savings={totalSavings} month={filterMonth} />
+            </CardContent>
           </Card>
         </Grid>
         <Grid item xs={12} md={3}>
-          <Card sx={{ backgroundColor: theme.palette.card.main }}>
-            <CardContent>{/* Content of Card 4 */}</CardContent>
+          <Card
+            sx={{ backgroundColor: theme.palette.card.main, height: "100%" }}
+          >
+            <CardContent>
+              <TotalSavings total={calculateTotalSavings()} />
+            </CardContent>
           </Card>
         </Grid>
       </Grid>
@@ -251,7 +266,9 @@ function DashboardPage() {
       {/* Bottom Row: Two Cards */}
       <Grid container spacing={2} sx={{ marginTop: 2 }}>
         <Grid item xs={12} md={6}>
-          <Card sx={{ backgroundColor: theme.palette.card.main }}>
+          <Card
+            sx={{ backgroundColor: theme.palette.card.main, height: "100%" }}
+          >
             <CardContent>
               <Grid
                 container
@@ -298,7 +315,9 @@ function DashboardPage() {
           </Card>
         </Grid>
         <Grid item xs={12} md={6}>
-          <Card sx={{ backgroundColor: theme.palette.card.main }}>
+          <Card
+            sx={{ backgroundColor: theme.palette.card.main, height: "100%" }}
+          >
             <CardContent>
               <Box sx={{ mt: 3 }}>
                 <Bar data={barChartData} options={barChartOptions} />
