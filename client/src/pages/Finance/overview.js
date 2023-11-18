@@ -18,6 +18,11 @@ import {
   Grid,
   Menu,
   Divider,
+  TextField,
+  Card,
+  CardContent,
+  InputAdornment,
+  Select,
 } from "@mui/material";
 import SelectComp from "../../components/SelectComp";
 import { months, years } from "../../config/constants";
@@ -25,6 +30,9 @@ import { useTheme } from "@mui/material/styles";
 import { Container } from "@mui/system";
 import EditTransactionDialog from "./edit";
 import MoreHorizRoundedIcon from "@mui/icons-material/MoreHorizRounded";
+import SearchIcon from "@mui/icons-material/Search";
+import SelectInput from "@mui/material/Select/SelectInput";
+import ArrowUpward from "@mui/icons-material/ArrowUpward";
 
 function FinanceOverview({ update }) {
   const theme = useTheme();
@@ -38,11 +46,31 @@ function FinanceOverview({ update }) {
   const { user } = useAuth();
   const [savingGoal, setSavingGoal] = useState([]);
   const [needUpdate, setNeedUpdate] = useState(false);
+  const [searchQuery, setSearchQuery] = useState(""); // New state for search query
+  const [selectedCategory, setSelectedCategory] = useState("");
+
+  const handleCategoryChange = (event) => {
+    setSelectedCategory(event.target.value);
+  };
 
   function formatDate(dateString) {
     const options = { year: "numeric", month: "2-digit", day: "2-digit" };
     return new Date(dateString).toLocaleDateString("de-DE", options);
   }
+
+  const handleSearchInputChange = (event) => {
+    setSearchQuery(event.target.value.toLowerCase());
+  };
+
+  // Function to filter transactions based on search query
+  const filteredTransactions = transactions.filter((transaction) =>
+    transaction.description.toLowerCase().includes(searchQuery)
+  );
+  const filteredTransactionsByCategory = selectedCategory
+    ? filteredTransactions.filter(
+        (transaction) => transaction.category_id === selectedCategory
+      )
+    : filteredTransactions;
 
   // eslint-disable-next-line react-hooks/exhaustive-deps
   const fetchTransactions = useCallback(async () => {
@@ -223,6 +251,97 @@ function FinanceOverview({ update }) {
           </FormControl>
         </Grid>
         <Box sx={{ width: "100vw", marginTop: 4, marginBottom: 20 }}>
+          <Card
+            sx={{
+              marginBottom: theme.spacing(3),
+              backgroundColor: theme.palette.card.main,
+              color: theme.palette.secondary.main,
+              borderRadius: "10px",
+              boxShadow: theme.shadows[6],
+              "&:hover": {
+                boxShadow: theme.shadows[10],
+              },
+            }}
+          >
+            <CardContent>
+              <Grid container>
+                <Grid item xs={3}>
+                  <InputLabel sx={{ marginBottom: 2 }}>
+                    Suche nach Ausgabe
+                  </InputLabel>
+
+                  <TextField
+                    variant="outlined"
+                    fullWidth
+                    value={searchQuery}
+                    onChange={handleSearchInputChange}
+                    InputProps={{
+                      startAdornment: (
+                        <InputAdornment position="start">
+                          <SearchIcon />
+                        </InputAdornment>
+                      ),
+                      sx: {
+                        height: "40px",
+                        ".MuiInputBase-input": {
+                          paddingTop: "5px",
+                          paddingBottom: "5px",
+                        },
+                      },
+                    }}
+                    sx={{
+                      ".MuiOutlinedInput-root": {
+                        height: "40px",
+                      },
+                    }}
+                  />
+                </Grid>
+                <Grid item xs={3}>
+                  <InputLabel sx={{ marginBottom: 2, marginLeft: 3 }}>
+                    Filter nach Kategorie
+                  </InputLabel>
+                  <FormControl
+                    fullWidth
+                    sx={{
+                      marginLeft: 3,
+                      marginBottom: 2,
+                      backgroundColor: selectedCategory
+                        ? categories.find((c) => c.id === selectedCategory)
+                            ?.color || theme.palette.content.main
+                        : theme.palette.card.main,
+                      height: "40px",
+                    }}
+                  >
+                    <Select
+                      value={selectedCategory}
+                      onChange={handleCategoryChange}
+                      displayEmpty // To allow display of 'None' even when value is empty
+                      sx={{
+                        color: selectedCategory
+                          ? "black"
+                          : theme.palette.text.main,
+                        height: "40px",
+                        ".MuiInputBase-input": {
+                          paddingTop: "5px",
+                          paddingBottom: "5px",
+                        },
+                        border: `1px solid ${theme.palette.text.main}`,
+                      }}
+                    >
+                      <MenuItem value="">
+                        <em>None</em>
+                      </MenuItem>
+                      {categories.map((category) => (
+                        <MenuItem key={category.id} value={category.id}>
+                          {category.name}
+                        </MenuItem>
+                      ))}
+                    </Select>
+                  </FormControl>
+                </Grid>
+              </Grid>
+            </CardContent>
+          </Card>
           <TableContainer component={Paper} elevation={10}>
             <Table sx={{ minWidth: 650 }}>
               <TableHead
@@ -236,6 +355,12 @@ function FinanceOverview({ update }) {
                     sx={{ width: "20px", color: theme.palette.tabletext.main }}
                   >
                     Datum
+                    <IconButton
+                      onClick={() => console.log("clicked")}
+                      sx={{ color: theme.palette.tabletext.main }}
+                    >
+                      <ArrowUpward></ArrowUpward>
+                    </IconButton>
                   </TableCell>
                   <TableCell sx={{ color: theme.palette.tabletext.main }}>
                     Beschreibung
@@ -250,7 +375,7 @@ function FinanceOverview({ update }) {
                 </TableRow>
               </TableHead>
               <TableBody sx={{ backgroundColor: theme.palette.content.main }}>
-                {transactions.map((transaction) => {
+                {filteredTransactionsByCategory.map((transaction) => {
                   const category = categories.find(
                     (c) => c.id === transaction.category_id
                   );
