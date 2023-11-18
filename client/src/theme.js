@@ -31,7 +31,7 @@ export const tokens = (mode) => {
           //not used
           brightYellow: "#ffce56",
           //budget.main
-          neonGreen: "#76ff03",
+          neonGreen: "#64dd17",
           //saving.main
           skyBlue: "#4dd0e1",
           //pagination.main
@@ -47,6 +47,9 @@ export const tokens = (mode) => {
           //even.main
           lightCoolGray: "#d2d5dc",
           veryDark: "#333540",
+          teal: "#00bfa5",
+          orange: "#ffab00",
+          purple: "#536dfe",
         }
       : {
           //card.main
@@ -76,7 +79,7 @@ export const tokens = (mode) => {
           //not used
           brightYellow: "#FFD700",
           //budget.main
-          neonGreen: "#76ff03",
+          neonGreen: "#64dd17",
           //saving.main
           skyBlue: "#00BFFF",
           //pagination.main
@@ -91,6 +94,9 @@ export const tokens = (mode) => {
           bronzeGold: "#D7C3A2",
           //even.main
           lightCoolGray: "#ECEDEF",
+          teal: "#00bfa5",
+          orange: "#ffab00",
+          purple: "#536dfe",
         }),
   };
 };
@@ -182,6 +188,15 @@ export const themeSettings = (mode) => {
             selectBackground: {
               main: colors.veryDark,
             },
+            monthly: {
+              main: colors.teal,
+            },
+            task: {
+              main: colors.orange,
+            },
+            total: {
+              main: colors.purple,
+            },
             components: {
               MuiTableCell: {
                 styleOverrides: {
@@ -271,6 +286,15 @@ export const themeSettings = (mode) => {
             },
             selectBackground: {
               main: colors.veryDark,
+            },
+            monthly: {
+              main: colors.teal,
+            },
+            task: {
+              main: colors.orange,
+            },
+            total: {
+              main: colors.purple,
             },
             components: {
               MuiTableCell: {

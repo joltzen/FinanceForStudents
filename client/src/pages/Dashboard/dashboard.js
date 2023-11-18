@@ -21,16 +21,9 @@ import { months, years } from "../../config/constants";
 import { Bar } from "react-chartjs-2";
 import { useTheme } from "@mui/material/styles";
 import { ColorModeContext } from "../../theme";
-import IconButton from "@mui/material/IconButton";
-import DarkModeOutlinedIcon from "@mui/icons-material/DarkModeOutlined";
-import LightModeOutlinedIcon from "@mui/icons-material/LightModeOutlined";
-import HomeIcon from "@mui/icons-material/Home";
-import BarChartIcon from "@mui/icons-material/BarChart";
-import AccountBalanceWalletIcon from "@mui/icons-material/AccountBalanceWallet";
-import AttachMoneyIcon from "@mui/icons-material/AttachMoney";
-import PersonIcon from "@mui/icons-material/Person";
-import InfoIcon from "@mui/icons-material/Info";
-import SavingsIcon from "@mui/icons-material/Savings";
+import MonthlyExpenses from "./monthly";
+import MonthlySaving from "./task";
+import TotalSavings from "./total";
 
 function DashboardPage() {
   const theme = useTheme();
@@ -41,12 +34,18 @@ function DashboardPage() {
   const [isAnnualView, setIsAnnualView] = useState(false);
   const [totalSavingGoals, setTotalSavingGoals] = useState(0);
   const [showBarChart, setShowBarChart] = useState(true);
-  const { transactions, categories, settings, savingsGoals } = useFetchData(
-    user,
-    isAnnualView,
-    filterMonth,
-    filterYear
-  );
+  const {
+    prevMonthTransactions,
+    prevSettings,
+    transactions,
+    categories,
+    settings,
+    savingsGoals,
+    allTransactions,
+    allSettings,
+    allSaving,
+  } = useFetchData(user, isAnnualView, filterMonth, filterYear);
+
   const {
     calculateCategoryTotals,
     totalSavings,
@@ -54,6 +53,9 @@ function DashboardPage() {
     getCategoryTotal,
     getAnnualCategoryTotal,
     calculateMonthlyRemainingBudgets,
+    calculateMonthlySavingsDifference,
+    calcMonthlyExpense,
+    calculateTotalSavings,
   } = useCalculations(
     transactions,
     settings,
@@ -61,16 +63,17 @@ function DashboardPage() {
     filterMonth,
     filterYear,
     totalSavingGoals,
-    isAnnualView
+    isAnnualView,
+    prevMonthTransactions,
+    prevSettings,
+    allTransactions,
+    allSettings,
+    allSaving
   );
 
   useEffect(() => {
     setTotalSavingGoals(totalSavings);
   }, [totalSavings]);
-
-  const handleBarChartToggle = (event) => {
-    setShowBarChart(event.target.checked);
-  };
 
   const handleChartToggle = (event) => {
     setIsAnnualView(event.target.checked);
@@ -124,6 +127,7 @@ function DashboardPage() {
       },
     },
   };
+
   const chartData = {
     labels: categories.map((category) => category.name),
     datasets: [
@@ -178,8 +182,9 @@ function DashboardPage() {
         },
       },
       title: {
-        display: true,
+        display: false,
         text: "Ausgaben nach Kategorien",
+
         color: theme.palette.text.main,
         font: {
           size: 20,
@@ -214,66 +219,57 @@ function DashboardPage() {
 
   return (
     <Box sx={{ flexGrow: 1, padding: 3 }}>
-      <Grid
-        container
-        spacing={2}
-        justifyContent="center"
-        alignItems="center"
-        style={{ marginTop: 20 }}
-      >
-        <Grid item xs={12} md={8} lg={6}>
-          <Card sx={{ backgroundColor: theme.palette.card.main }}>
-            {colorMode.mode}
-            <IconButton onClick={colorMode.toggleColorMode} color="inherit">
-              {theme.palette.mode === "dark" ? (
-                <DarkModeOutlinedIcon sx={{ color: "white" }} />
-              ) : (
-                <LightModeOutlinedIcon sx={{ color: "black" }} />
-              )}
-            </IconButton>
-            <Button
-              href="/finance"
-              color="inherit"
-              variant="outlined"
-              sx={{ ml: 2 }}
-            >
-              <AccountBalanceWalletIcon
-                sx={{ color: theme.palette.text.primary, mr: 2 }}
-              />
-              Finanzverwaltung
-            </Button>
-            <Button
-              href="/settings"
-              color="inherit"
-              variant="outlined"
-              sx={{ ml: 2 }}
-            >
-              <AttachMoneyIcon
-                sx={{ color: theme.palette.text.primary, mr: 2 }}
-              />
-              Fixkosten
-            </Button>
-            <Button
-              href="/saving"
-              color="inherit"
-              variant="outlined"
-              sx={{ ml: 2 }}
-            >
-              <SavingsIcon sx={{ color: theme.palette.text.primary, mr: 2 }} />
-              Sparziele
-            </Button>
+      {/* Top Row: Four Smaller Cards */}
+      <Grid container spacing={2}>
+        <Grid item xs={12} md={3}>
+          <Card
+            sx={{ backgroundColor: theme.palette.card.main, height: "100%" }}
+          >
             <CardContent>
-              <Typography
-                variant="h5"
-                sx={{
-                  fontWeight: "bold",
-                  marginTop: 3,
-                  marginBottom: 3,
-                  color: theme.palette.text.main,
-                }}
-              >
-                Dashboard
-              </Typography>
+              <BudgetSummary
+                isAnnualView={isAnnualView}
+                totalRemaining={remainingBudget}
+                percentageChange={calculateMonthlySavingsDifference()}
+              />
+            </CardContent>
+          </Card>
+        </Grid>
+        <Grid item xs={12} md={3}>
+          <Card
+            sx={{ backgroundColor: theme.palette.card.main, height: "100%" }}
+          >
+            <CardContent>
+              <MonthlyExpenses expenses={calcMonthlyExpense()} />
+            </CardContent>
+          </Card>
+        </Grid>
+        <Grid item xs={12} md={3}>
+          <Card
+            sx={{ backgroundColor: theme.palette.card.main, height: "100%" }}
+          >
+            <CardContent>
+              <MonthlySaving savings={totalSavings} month={filterMonth} />
+            </CardContent>
+          </Card>
+        </Grid>
+        <Grid item xs={12} md={3}>
+          <Card
+            sx={{ backgroundColor: theme.palette.card.main, height: "100%" }}
+          >
+            <CardContent>
+              <TotalSavings total={calculateTotalSavings()} />
+            </CardContent>
+          </Card>
+        </Grid>
+      </Grid>
+
+      {/* Bottom Row: Two Cards */}
+      <Grid container spacing={2} sx={{ marginTop: 2 }}>
+        <Grid item xs={12} md={6}>
+          <Card
+            sx={{ backgroundColor: theme.palette.card.main, height: "100%" }}
+          >
+            <CardContent>
               <Grid
                 container
                 spacing={2}
@@ -303,7 +299,6 @@ function DashboardPage() {
                   isAnnualView={isAnnualView}
                 />
               </Grid>
-
               {hasBudgetData() ? (
                 <>
                   <Box mb={5} mt={5}>
@@ -312,38 +307,22 @@ function DashboardPage() {
                       chartOptions={chartOptions}
                     />
                   </Box>
-                  {isAnnualView && (
-                    <Grid item xs={12}>
-                      <FormControlLabel
-                        control={
-                          <SwitchComp
-                            checked={showBarChart}
-                            onChange={handleBarChartToggle}
-                          />
-                        }
-                        label="Balkendiagramm anzeigen"
-                        sx={{ color: theme.palette.text.main }}
-                      />
-                    </Grid>
-                  )}
-                  {showBarChart && isAnnualView && (
-                    <Box>
-                      <Bar data={barChartData} options={barChartOptions} />
-                    </Box>
-                  )}
                 </>
               ) : (
                 <NoDataAlert />
               )}
             </CardContent>
-            {hasBudgetData(
-              isAnnualView ? calculateAnnualTotals() : calculateCategoryTotals()
-            ) ? (
-              <BudgetSummary
-                isAnnualView={isAnnualView}
-                totalRemaining={remainingBudget}
-              />
-            ) : null}
+          </Card>
+        </Grid>
+        <Grid item xs={12} md={6}>
+          <Card
+            sx={{ backgroundColor: theme.palette.card.main, height: "100%" }}
+          >
+            <CardContent>
+              <Box sx={{ mt: 3 }}>
+                <Bar data={barChartData} options={barChartOptions} />
+              </Box>
+            </CardContent>
           </Card>
         </Grid>
       </Grid>
