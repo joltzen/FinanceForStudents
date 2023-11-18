@@ -12,8 +12,6 @@ import {
   MenuItem,
   Divider,
 } from "@mui/material";
-import DeleteIcon from "@mui/icons-material/Delete";
-import EditIcon from "@mui/icons-material/Edit";
 import { useTheme } from "@mui/material/styles";
 import MoreHorizRoundedIcon from "@mui/icons-material/MoreHorizRounded";
 
@@ -28,7 +26,7 @@ function TransactionSection({
   const theme = useTheme();
 
   return (
-    <TableContainer component={Paper}>
+    <TableContainer component={Paper} elevation={10}>
       <Table sx={{ minWidth: 650 }}>
         <TableHead
           sx={{

@@ -223,7 +223,7 @@ function FinanceOverview({ update }) {
           </FormControl>
         </Grid>
         <Box sx={{ width: "100vw", marginTop: 4, marginBottom: 20 }}>
-          <TableContainer component={Paper}>
+          <TableContainer component={Paper} elevation={10}>
             <Table sx={{ minWidth: 650 }}>
               <TableHead
                 sx={{
