@@ -28,7 +28,7 @@ function TransactionSection({
   const theme = useTheme();
 
   return (
-    <TableContainer component={Paper} elevation={10}>
+    <TableContainer component={Paper} elevatiyon={10}>
       <Table sx={{ minWidth: 650 }}>
         <TableHead
           sx={{

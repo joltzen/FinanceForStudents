@@ -1,14 +1,13 @@
 /* Copyright (c) 2023, Jason Oltzen */
 
-import { Box, Grid } from "@mui/material";
-import { Container } from "@mui/system";
+import { Box, Card, CardContent, Grid, Typography } from "@mui/material";
+import { useTheme } from "@mui/system";
 import React, { useCallback, useEffect, useState } from "react";
 import axiosInstance from "../../config/axios";
 import { useAuth } from "../../core/auth/auth";
 import EditTransactionDialog from "./edit";
 import FilterTransactions from "./filter";
 import TransactionsTable from "./table";
-
 function FinanceOverview({ update }) {
   const [filterMonth, setFilterMonth] = useState(new Date().getMonth() + 1);
   const [filterYear, setFilterYear] = useState(new Date().getFullYear());
@@ -254,49 +253,93 @@ function FinanceOverview({ update }) {
     return matchesSearch && matchesCategory;
   });
 
+  const theme = useTheme();
   return (
-    <Container maxWidth="lg">
-      <Grid container spacing={3} justifyContent="center">
-        <Grid item xs={12} sx={{ mt: 4 }}></Grid>
-        <Box sx={{ width: "100vw", marginTop: 4, marginBottom: 20 }}>
-          <FilterTransactions
-            transactions={transactions}
-            setTransactions={transactions}
-            setFilterYear={setFilterYear}
-            setFilterMonth={setFilterMonth}
-            filterYear={filterYear}
-            filterMonth={filterMonth}
-            categories={categories}
-            selectedCategory={selectedCategory}
-            setSelectedCategory={setSelectedCategory}
-            handleCategoryChange={handleCategoryChange}
-            searchQuery={searchQuery}
-            handleSearchInputChange={handleSearchInputChange}
-          />
-          <TransactionsTable
-            toggleSortOrder={toggleSortOrder}
-            toggleSortOrderAmount={toggleSortOrderAmount}
-            sortOrder={sortOrder}
-            sortOrderAmount={sortOrderAmount}
-            finalTransactions={finalTransactions}
-            categories={categories}
-            savingSum={savingSum}
-            handleEditButtonClick={handleEditButtonClick}
-            handleDeleteTransaction={handleDeleteTransaction}
-            formatDate={formatDate}
-          />
-        </Box>
+    <Grid container style={{ minHeight: "100vh" }}>
+      <Grid item xs={12} sm={6} style={{ minHeight: "100%" }}>
+        <Card
+          style={{
+            height: "100%",
+            width: "100%",
+            backgroundColor: theme.palette.left.main,
+          }}
+        >
+          {" "}
+          <CardContent
+            style={{
+              display: "flex",
+              flexDirection: "column",
+              padding: 10,
+              height: "100%", // Make sure CardContent takes full height of the Card
+            }}
+          >
+            <Box component="form" noValidate sx={{ mt: 4, width: "100%" }}>
+              <Typography
+                variant="h3"
+                color={theme.palette.text.main}
+                sx={{ mt: 2, mb: 4 }}
+              >
+                Transaktionen Übersicht
+              </Typography>
+              <FilterTransactions
+                transactions={transactions}
+                setTransactions={transactions}
+                setFilterYear={setFilterYear}
+                setFilterMonth={setFilterMonth}
+                filterYear={filterYear}
+                filterMonth={filterMonth}
+                categories={categories}
+                selectedCategory={selectedCategory}
+                setSelectedCategory={setSelectedCategory}
+                handleCategoryChange={handleCategoryChange}
+                searchQuery={searchQuery}
+                handleSearchInputChange={handleSearchInputChange}
+              />
+              <TransactionsTable
+                toggleSortOrder={toggleSortOrder}
+                toggleSortOrderAmount={toggleSortOrderAmount}
+                sortOrder={sortOrder}
+                sortOrderAmount={sortOrderAmount}
+                finalTransactions={finalTransactions}
+                categories={categories}
+                savingSum={savingSum}
+                handleEditButtonClick={handleEditButtonClick}
+                handleDeleteTransaction={handleDeleteTransaction}
+                formatDate={formatDate}
+              />
+            </Box>
 
-        {editTransaction && (
-          <EditTransactionDialog
-            transaction={editTransaction}
-            onClose={() => setEditTransaction(null)}
-            onSave={handleEditTransaction}
-            categories={categories}
-          />
-        )}
+            {editTransaction && (
+              <EditTransactionDialog
+                transaction={editTransaction}
+                onClose={() => setEditTransaction(null)}
+                onSave={handleEditTransaction}
+                categories={categories}
+              />
+            )}
+          </CardContent>
+        </Card>
       </Grid>
-    </Container>
+      <Grid item xs={0} sm={6} style={{ height: "100%" }}>
+        <Card
+          style={{
+            height: "100%",
+            width: "100%",
+            backgroundColor: theme.palette.right.main,
+            display: "flex",
+            flexDirection: "column",
+            alignItems: "center",
+            justifyContent: "center",
+          }}
+        >
+          <img
+            src="/logos/logo.png"
+            alt="Schrift"
+            style={{ maxWidth: "50%", maxHeight: "50%" }}
+          />
+        </Card>
+      </Grid>
+    </Grid>
   );
 }
 
