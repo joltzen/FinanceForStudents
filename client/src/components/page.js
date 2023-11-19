@@ -1,3 +1,5 @@
+ /* Copyright 2023, Jason Oltzen */
+
 import { useTheme } from "@mui/material/styles";
 import React from "react";
 

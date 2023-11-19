@@ -1,3 +1,5 @@
+/* Copyright 2023, Jason Oltzen */
+
 import Typography from "@mui/material/Typography";
 import { useTheme } from "@mui/material/styles";
 import React from "react";

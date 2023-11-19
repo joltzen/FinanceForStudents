@@ -1,3 +1,5 @@
+ /* Copyright 2023, Jason Oltzen */
+
 import { Switch, styled } from "@mui/material";
 
 const SwitchComp = styled(Switch)(({ theme }) => ({

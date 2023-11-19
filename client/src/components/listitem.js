@@ -1,3 +1,5 @@
+/* Copyright 2023, Jason Oltzen */
+
 import {
   ListItem,
   ListItemIcon,

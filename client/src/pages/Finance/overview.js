@@ -1,3 +1,5 @@
+ /* Copyright 2023, Jason Oltzen */
+ 
 import { Box, Grid } from "@mui/material";
 import { Container } from "@mui/system";
 import React, { useCallback, useEffect, useState } from "react";
@@ -75,7 +77,6 @@ function FinanceOverview({ update }) {
     setSortOrderAmount(sortOrderAmount === "asc" ? "desc" : "asc");
   };
 
-  // Use the correctly sorted array based on active sorting
   const displayedTransactions =
     activeSorting === "date"
       ? sortedByDateTransactions

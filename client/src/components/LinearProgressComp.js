@@ -1,3 +1,5 @@
+ /* Copyright 2023, Jason Oltzen */
+
 import { LinearProgress } from "@mui/material";
 import { styled } from "@mui/system";
 
