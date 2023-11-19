@@ -1,27 +1,27 @@
-import { useState, useContext } from "react";
-import { useAuth } from "../../core/auth/auth";
-import Button from "@mui/material/Button";
-import { useNavigate } from "react-router-dom";
-import Page from "../../components/page";
-import axiosInstance from "../../config/axios";
-import CardComp from "../../components/CardComp";
-import {
-  Typography,
-  Avatar,
-  Box,
-  Grid,
-  Dialog,
-  DialogContent,
-  DialogTitle,
-  DialogActions,
-} from "@mui/material";
-import { teal } from "@mui/material/colors";
-import { ColorModeContext } from "../../theme";
-import { useTheme } from "@mui/material/styles";
-import IconButton from "@mui/material/IconButton";
 import DarkModeOutlinedIcon from "@mui/icons-material/DarkModeOutlined";
 import LightModeOutlinedIcon from "@mui/icons-material/LightModeOutlined";
+import {
+  Avatar,
+  Box,
+  Dialog,
+  DialogActions,
+  DialogContent,
+  DialogTitle,
+  Grid,
+  Typography,
+} from "@mui/material";
+import Button from "@mui/material/Button";
+import IconButton from "@mui/material/IconButton";
+import { teal } from "@mui/material/colors";
+import { useTheme } from "@mui/material/styles";
+import { useContext, useState } from "react";
+import { useNavigate } from "react-router-dom";
+import CardComp from "../../components/CardComp";
+import Page from "../../components/page";
+import axiosInstance from "../../config/axios";
 import { colors } from "../../config/constants";
+import { useAuth } from "../../core/auth/auth";
+import { ColorModeContext } from "../../theme";
 function ProfilePage() {
   const { user, logout } = useAuth();
   const navigate = useNavigate();

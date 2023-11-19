@@ -35,4 +35,4 @@ const getSavingGoals = async (userId) => {
   });
   return response.data;
 };
-export { getTransactions, getSettings, getCategories, getSavingGoals };
+export { getCategories, getSavingGoals, getSettings, getTransactions };

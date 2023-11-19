@@ -1,7 +1,7 @@
 // BudgetChart.js
+import { Box } from "@mui/material";
 import React from "react";
 import { Doughnut } from "react-chartjs-2";
-import { Box } from "@mui/material";
 
 const BudgetChart = ({ chartData, chartOptions }) => {
   return (

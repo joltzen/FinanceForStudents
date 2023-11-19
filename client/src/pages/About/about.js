@@ -1,9 +1,9 @@
-import Page from "../../components/page";
-import Text from "../../components/text";
+import { Typography } from "@mui/material";
 import Heading from "../../components/heading";
 import Heading2 from "../../components/heading2";
+import Page from "../../components/page";
+import Text from "../../components/text";
 import strings from "../../config/strings";
-import { Typography } from "@mui/material";
 
 function AboutPage() {
   return (

@@ -1,13 +1,13 @@
+import {
+  Box,
+  Button,
+  Container,
+  Paper,
+  TextField,
+  Typography,
+} from "@mui/material";
 import React from "react";
 import Page from "../../components/page";
-import {
-  Container,
-  Typography,
-  TextField,
-  Button,
-  Box,
-  Paper,
-} from "@mui/material";
 
 function ContactPage() {
   const handleSubmit = (event) => {

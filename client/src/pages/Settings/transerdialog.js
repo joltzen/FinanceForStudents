@@ -1,19 +1,18 @@
-import React, { useState } from "react";
 import {
-  Dialog,
-  DialogTitle,
-  DialogContent,
-  DialogActions,
   Button,
-  MenuItem,
-  Grid,
+  Dialog,
+  DialogActions,
+  DialogContent,
+  DialogTitle,
   FormControl,
+  Grid,
   InputLabel,
-  Typography,
+  MenuItem,
   Select,
+  Typography,
 } from "@mui/material";
-import SelectComp from "../../components/SelectComp";
 import { useTheme } from "@mui/material/styles";
+import React, { useState } from "react";
 
 function TransferDialog({ open, handleClose, handleSubmit, months, years }) {
   const [sourceMonth, setSourceMonth] = useState(new Date().getMonth());

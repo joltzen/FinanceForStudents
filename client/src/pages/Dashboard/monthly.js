@@ -1,7 +1,7 @@
-import React from "react";
-import { Typography, Grid, Box, IconButton, Tooltip } from "@mui/material";
-import { useTheme } from "@mui/material/styles";
 import PaymentsIcon from "@mui/icons-material/Payments";
+import { Box, Grid, IconButton, Tooltip, Typography } from "@mui/material";
+import { useTheme } from "@mui/material/styles";
+import React from "react";
 
 const MonthlyExpenses = ({ expenses }) => {
   const theme = useTheme();

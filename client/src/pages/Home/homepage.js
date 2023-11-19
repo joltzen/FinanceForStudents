@@ -1,26 +1,23 @@
-import Page from "../../components/page";
-import Text from "../../components/text";
-import Heading from "../../components/heading";
-import Heading2 from "../../components/heading2";
-import strings from "../../config/strings";
+import BarChartIcon from "@mui/icons-material/BarChart";
+import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
+import PaymentsIcon from "@mui/icons-material/Payments";
+import ShoppingCartIcon from "@mui/icons-material/ShoppingCart";
 import {
-  Grid,
-  Typography,
+  Accordion,
+  AccordionDetails,
+  AccordionSummary,
   Box,
   Button,
   Container,
-  CardMedia,
-  Accordion,
-  AccordionSummary,
-  AccordionDetails,
-  Divider,
+  Grid,
+  Typography,
 } from "@mui/material";
-import CardComp from "../../components/CardComp";
-import PaymentsIcon from "@mui/icons-material/Payments"; // function HomePage() {
-import ShoppingCartIcon from "@mui/icons-material/ShoppingCart";
-import BarChartIcon from "@mui/icons-material/BarChart";
-import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 import { useTheme } from "@mui/material/styles";
+import Heading from "../../components/heading";
+import Heading2 from "../../components/heading2";
+import Page from "../../components/page";
+import Text from "../../components/text";
+import strings from "../../config/strings";
 
 const faqs = [
   {

@@ -1,24 +1,23 @@
+import { ThemeProvider } from "@mui/material";
 import React from "react";
-import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
+import { Route, BrowserRouter as Router, Routes } from "react-router-dom";
 import Navbar from "./components/navbar";
-import { SidebarProvider } from "./core/sidebar";
-import { createTheme } from "@mui/material/styles";
 import { AuthProvider } from "./core/auth/auth";
+import { SidebarProvider } from "./core/sidebar";
 import {
+  About,
+  Contact,
   Dashboard,
+  FinancePage,
   Home,
+  Impressum,
   Login,
   Profile,
-  Signup,
-  Contact,
-  Impressum,
-  Settings,
-  FinancePage,
   Reset,
   Saving,
-  About,
+  Settings,
+  Signup,
 } from "./pages";
-import { CssBaseline, ThemeProvider } from "@mui/material";
 import { ColorModeContext, useMode } from "./theme";
 
 function App() {

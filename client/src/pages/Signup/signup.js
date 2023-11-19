@@ -1,18 +1,18 @@
-import React, { useState } from "react";
-import axiosInstance from "../../config/axios";
 import {
-  Button,
-  Box,
-  Typography,
   Alert,
-  Grid,
+  Box,
+  Button,
   Card,
   CardContent,
+  Grid,
   InputLabel,
+  Typography,
 } from "@mui/material";
+import { useTheme } from "@mui/material/styles";
+import React, { useState } from "react";
 import { useNavigate } from "react-router";
 import TextComp from "../../components/TextComp";
-import { useTheme } from "@mui/material/styles";
+import axiosInstance from "../../config/axios";
 
 function SignUpForm() {
   const theme = useTheme();

@@ -1,21 +1,21 @@
-import React, { useEffect, useState } from "react";
-import { useAuth } from "../../core/auth/auth";
-import { Box, Grid, Card, CardContent, FormControlLabel } from "@mui/material";
-import "chart.js/auto";
-import SwitchComp from "../../components/SwitchComp";
-import BudgetFilter from "./filter";
-import BudgetChart from "./chart";
-import NoDataAlert from "./noalert";
-import { useFetchData } from "../../hooks/useFetchData";
-import { useCalculations } from "../../hooks/useCalculations";
-import BudgetSummary from "./summary";
-import { months, years } from "../../config/constants";
-import { Bar } from "react-chartjs-2";
+import { Box, Card, CardContent, FormControlLabel, Grid } from "@mui/material";
 import { useTheme } from "@mui/material/styles";
+import "chart.js/auto";
+import React, { useEffect, useState } from "react";
+import { Bar } from "react-chartjs-2";
+import { useNavigate } from "react-router-dom";
+import SwitchComp from "../../components/SwitchComp";
+import { months, years } from "../../config/constants";
+import { useAuth } from "../../core/auth/auth";
+import { useCalculations } from "../../hooks/useCalculations";
+import { useFetchData } from "../../hooks/useFetchData";
+import BudgetChart from "./chart";
+import BudgetFilter from "./filter";
 import MonthlyExpenses from "./monthly";
+import NoDataAlert from "./noalert";
+import BudgetSummary from "./summary";
 import MonthlySaving from "./task";
 import TotalSavings from "./total";
-import { useNavigate } from "react-router-dom";
 
 function DashboardPage() {
   const theme = useTheme();

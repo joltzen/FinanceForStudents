@@ -1,16 +1,9 @@
-import React from "react";
-import {
-  Paper,
-  Typography,
-  Grid,
-  Box,
-  IconButton,
-  Tooltip,
-} from "@mui/material";
-import { useTheme } from "@mui/material/styles";
-import ArrowUpwardIcon from "@mui/icons-material/ArrowUpward";
 import ArrowDownwardIcon from "@mui/icons-material/ArrowDownward";
+import ArrowUpwardIcon from "@mui/icons-material/ArrowUpward";
 import AttachMoneyIcon from "@mui/icons-material/AttachMoney";
+import { Box, Grid, IconButton, Tooltip, Typography } from "@mui/material";
+import { useTheme } from "@mui/material/styles";
+import React from "react";
 
 const BudgetSummary = ({ isAnnualView, totalRemaining, percentageChange }) => {
   const theme = useTheme();

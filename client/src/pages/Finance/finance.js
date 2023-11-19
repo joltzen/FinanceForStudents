@@ -1,30 +1,27 @@
 /* eslint-disable no-unused-vars */
-import React, { useState, useEffect } from "react";
+import AddCircleOutlineIcon from "@mui/icons-material/AddCircleOutline";
 import {
   Button,
-  Box,
-  Select,
-  MenuItem,
-  FormControl,
-  InputLabel,
-  Grid,
-  Typography,
   Dialog,
   DialogActions,
   DialogContent,
   DialogTitle,
+  FormControl,
+  Grid,
+  InputLabel,
+  MenuItem,
+  Select,
+  Typography,
 } from "@mui/material";
-import AddCircleOutlineIcon from "@mui/icons-material/AddCircleOutline";
-import { Container, styled } from "@mui/system";
+import { useTheme } from "@mui/material/styles";
+import React, { useEffect, useState } from "react";
+import AddButton from "../../components/AddButtonComp";
+import SelectComp from "../../components/SelectComp";
+import TextComp from "../../components/TextComp";
+import Page from "../../components/page";
 import axiosInstance from "../../config/axios";
 import { useAuth } from "../../core/auth/auth";
 import FinanceOverview from "./overview";
-import TextComp from "../../components/TextComp";
-import SelectComp from "../../components/SelectComp";
-import AddButton from "../../components/AddButtonComp";
-import { useTheme } from "@mui/material/styles";
-import Page from "../../components/page";
-
 function FinancePage() {
   const today = new Date().toISOString().split("T")[0];
   const theme = useTheme();

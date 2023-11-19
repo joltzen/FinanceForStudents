@@ -1,8 +1,8 @@
-import React from "react";
-import Page from "../../components/page";
-import { Typography, Container, Box } from "@mui/material";
-import CardComp from "../../components/CardComp";
+import { Box, Container, Typography } from "@mui/material";
 import { useTheme } from "@mui/material/styles";
+import React from "react";
+import CardComp from "../../components/CardComp";
+import Page from "../../components/page";
 function ImpressumPage() {
   const theme = useTheme();
   return (

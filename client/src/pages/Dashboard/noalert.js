@@ -1,7 +1,7 @@
 // NoDataAlert.js
-import React from "react";
-import { Box, Typography, Button } from "@mui/material";
+import { Box, Button, Typography } from "@mui/material";
 import { useTheme } from "@mui/material/styles";
+import React from "react";
 
 const NoDataAlert = () => {
   const theme = useTheme();

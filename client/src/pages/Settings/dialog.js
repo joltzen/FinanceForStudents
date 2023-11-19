@@ -1,24 +1,24 @@
-import {
-  Dialog,
-  DialogTitle,
-  DialogContent,
-  DialogActions,
-  DialogContentText,
-  Button,
-  Typography,
-  Paper,
-  IconButton,
-  Grid,
-} from "@mui/material";
-import React, { useState, useEffect } from "react";
-import axiosInstance from "../../config/axios";
-import { useAuth } from "../../core/auth/auth";
-import Circle from "@uiw/react-color-circle";
 import DeleteIcon from "@mui/icons-material/Delete";
-import TextComp from "../../components/TextComp";
 import EditIcon from "@mui/icons-material/Edit";
+import {
+  Button,
+  Dialog,
+  DialogActions,
+  DialogContent,
+  DialogContentText,
+  DialogTitle,
+  Grid,
+  IconButton,
+  Paper,
+  Typography,
+} from "@mui/material";
 import { useTheme } from "@mui/material/styles";
+import Circle from "@uiw/react-color-circle";
+import React, { useEffect, useState } from "react";
+import TextComp from "../../components/TextComp";
+import axiosInstance from "../../config/axios";
 import { colors } from "../../config/constants";
+import { useAuth } from "../../core/auth/auth";
 
 function DialogPage() {
   const theme = useTheme();

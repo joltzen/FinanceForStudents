@@ -1,10 +1,5 @@
-import React, { useContext, useState } from "react";
-import Button from "@mui/material/Button";
-import Box from "@mui/material/Box";
-import Alert from "@mui/material/Alert";
-import { useAuth } from "../../core/auth/auth";
-import { useNavigate } from "react-router";
-import axiosInstance from "../../config/axios";
+import DarkModeOutlinedIcon from "@mui/icons-material/DarkModeOutlined";
+import LightModeOutlinedIcon from "@mui/icons-material/LightModeOutlined";
 import {
   Card,
   CardContent,
@@ -14,11 +9,16 @@ import {
   Link,
   Typography,
 } from "@mui/material";
-import TextComp from "../../components/TextComp";
+import Alert from "@mui/material/Alert";
+import Box from "@mui/material/Box";
+import Button from "@mui/material/Button";
 import { useTheme } from "@mui/material/styles";
+import React, { useContext, useState } from "react";
+import { useNavigate } from "react-router";
+import TextComp from "../../components/TextComp";
+import axiosInstance from "../../config/axios";
+import { useAuth } from "../../core/auth/auth";
 import { ColorModeContext } from "../../theme";
-import DarkModeOutlinedIcon from "@mui/icons-material/DarkModeOutlined";
-import LightModeOutlinedIcon from "@mui/icons-material/LightModeOutlined";
 
 function LoginPage() {
   const theme = useTheme();

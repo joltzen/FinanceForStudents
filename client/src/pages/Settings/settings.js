@@ -1,34 +1,33 @@
-import React, { useState, useEffect, useRef } from "react";
-import axiosInstance from "../../config/axios";
-import { useAuth } from "../../core/auth/auth";
+import AddCircleOutline from "@mui/icons-material/AddCircleOutline";
 import {
-  FormControl,
-  InputLabel,
-  Button,
-  MenuItem,
   Box,
-  Typography,
-  Grid,
+  Button,
   Dialog,
-  DialogTitle,
-  DialogContent,
   DialogActions,
+  DialogContent,
+  DialogTitle,
+  FormControl,
+  Grid,
+  InputLabel,
+  MenuItem,
+  Select,
   Tab,
   Tabs,
-  Select,
   TextField,
+  Typography,
 } from "@mui/material";
-import DialogPage from "../Settings/dialog";
-import Page from "../../components/page";
-import AddCircleOutline from "@mui/icons-material/AddCircleOutline";
-import TextComp from "../../components/TextComp";
-import SelectComp from "../../components/SelectComp";
-import TransactionSection from "./transactionselect";
-import AddButton from "../../components/AddButtonComp";
-import { months, years } from "../../config/constants";
-import TransferDialog from "./transerdialog";
-import EditIcon from "@mui/icons-material/Edit";
 import { useTheme } from "@mui/material/styles";
+import React, { useEffect, useRef, useState } from "react";
+import AddButton from "../../components/AddButtonComp";
+import SelectComp from "../../components/SelectComp";
+import TextComp from "../../components/TextComp";
+import Page from "../../components/page";
+import axiosInstance from "../../config/axios";
+import { months, years } from "../../config/constants";
+import { useAuth } from "../../core/auth/auth";
+import DialogPage from "../Settings/dialog";
+import TransactionSection from "./transactionselect";
+import TransferDialog from "./transerdialog";
 
 function SettingsForm() {
   const [filterMonth, setFilterMonth] = useState(new Date().getMonth() + 1);

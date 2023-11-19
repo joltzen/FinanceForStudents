@@ -1,19 +1,19 @@
-import React from "react";
+import MoreHorizRoundedIcon from "@mui/icons-material/MoreHorizRounded";
 import {
+  Divider,
+  IconButton,
+  Menu,
+  MenuItem,
+  Paper,
   Table,
   TableBody,
   TableCell,
   TableContainer,
   TableHead,
   TableRow,
-  Paper,
-  IconButton,
-  Menu,
-  MenuItem,
-  Divider,
 } from "@mui/material";
 import { useTheme } from "@mui/material/styles";
-import MoreHorizRoundedIcon from "@mui/icons-material/MoreHorizRounded";
+import React from "react";
 
 function TransactionSection({
   transactions,

@@ -1,6 +1,6 @@
-import React from "react";
 import Typography from "@mui/material/Typography";
 import { useTheme } from "@mui/material/styles";
+import React from "react";
 
 function Text(props) {
   const theme = useTheme();

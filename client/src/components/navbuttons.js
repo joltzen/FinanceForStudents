@@ -1,6 +1,6 @@
-import React from "react";
 import Button from "@mui/material/Button";
 import { useTheme } from "@mui/material/styles";
+import React from "react";
 
 function NavButtons(props) {
   const theme = useTheme();

@@ -1,7 +1,7 @@
-import React, { useState } from "react";
-import { Box, Typography, TextField, Button } from "@mui/material";
-import axiosInstance from "../../config/axios";
+import { Box, Button, TextField, Typography } from "@mui/material";
 import { useTheme } from "@mui/material/styles";
+import React, { useState } from "react";
+import axiosInstance from "../../config/axios";
 function PasswordResetPage() {
   const theme = useTheme();
   const [email, setEmail] = useState("");

@@ -1,5 +1,5 @@
-import axiosInstance from "../config/axios";
 import { useCallback } from "react";
+import axiosInstance from "../config/axios";
 
 const useSettings = (setTransactions) => {
   const handleDeleteSettings = useCallback(

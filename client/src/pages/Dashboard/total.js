@@ -1,7 +1,7 @@
-import React, { useContext } from "react";
-import { Typography, Grid, Box, IconButton, Tooltip } from "@mui/material";
-import { useTheme } from "@mui/material/styles";
 import ShowChartIcon from "@mui/icons-material/ShowChart";
+import { Box, Grid, IconButton, Tooltip, Typography } from "@mui/material";
+import { useTheme } from "@mui/material/styles";
+import React, { useContext } from "react";
 import { ColorModeContext } from "../../theme";
 
 const TotalSavings = ({ total }) => {

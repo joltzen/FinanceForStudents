@@ -1,36 +1,32 @@
-import React, { useContext, useState } from "react";
+import AccountBalanceWalletIcon from "@mui/icons-material/AccountBalanceWallet";
+import AccountCircle from "@mui/icons-material/AccountCircle";
+import ArrowBackIosIcon from "@mui/icons-material/ArrowBackIos";
+import AttachMoneyIcon from "@mui/icons-material/AttachMoney";
+import BarChartIcon from "@mui/icons-material/BarChart";
+import HomeIcon from "@mui/icons-material/Home";
+import InfoIcon from "@mui/icons-material/Info";
+import MenuIcon from "@mui/icons-material/Menu";
+import PersonIcon from "@mui/icons-material/Person";
+import SavingsIcon from "@mui/icons-material/Savings";
 import {
   AppBar,
-  Toolbar,
-  IconButton,
-  Drawer,
-  List,
   Divider,
-  Typography,
+  Drawer,
+  IconButton,
+  List,
+  Toolbar,
 } from "@mui/material";
-import MenuIcon from "@mui/icons-material/Menu";
-import ArrowBackIosIcon from "@mui/icons-material/ArrowBackIos";
-import { SidebarContext } from "../core/sidebar";
-import { styled } from "@mui/system";
-import StyledListItem from "./listitem";
-import { useAuth } from "../core/auth/auth";
-import { Link } from "react-router-dom";
 import Menu from "@mui/material/Menu";
 import MenuItem from "@mui/material/MenuItem";
-import AccountCircle from "@mui/icons-material/AccountCircle";
-import NavButtons from "./navbuttons";
-import HomeIcon from "@mui/icons-material/Home";
-import BarChartIcon from "@mui/icons-material/BarChart";
-import AccountBalanceWalletIcon from "@mui/icons-material/AccountBalanceWallet";
-import AttachMoneyIcon from "@mui/icons-material/AttachMoney";
-import PersonIcon from "@mui/icons-material/Person";
-import InfoIcon from "@mui/icons-material/Info";
-import SavingsIcon from "@mui/icons-material/Savings";
-import Switch from "@mui/material/Switch";
-import { ColorModeContext } from "../theme";
 import { useTheme } from "@mui/material/styles";
-import DarkModeOutlinedIcon from "@mui/icons-material/DarkModeOutlined";
-import LightModeOutlinedIcon from "@mui/icons-material/LightModeOutlined";
+import { styled } from "@mui/system";
+import React, { useContext, useState } from "react";
+import { Link } from "react-router-dom";
+import { useAuth } from "../core/auth/auth";
+import { SidebarContext } from "../core/sidebar";
+import { ColorModeContext } from "../theme";
+import StyledListItem from "./listitem";
+import NavButtons from "./navbuttons";
 const StyledAppBar = styled(AppBar)(({ theme }) => ({
   zIndex: 1400,
   position: "relative",
