@@ -287,7 +287,6 @@ function FinanceOverview({ update, handleOpenDialog }) {
             height: "100%",
             width: "100%",
             backgroundColor: theme.palette.left.main,
-            padding: 3,
           }}
         >
           <CardContent
@@ -357,8 +356,8 @@ function FinanceOverview({ update, handleOpenDialog }) {
         </Card>
       </Grid>
 
-      <Grid item xs={12} sm={4} style={{ height: "100%" }}>
-        <Grid container direction="column" spacing={5}>
+      <Grid item xs={12} sm={4} style={{ minHeight: "100%" }}>
+        <Grid container direction="column" spacing={2}>
           <Grid item>
             <Card
               sx={{
@@ -370,7 +369,7 @@ function FinanceOverview({ update, handleOpenDialog }) {
                 height: "100%",
                 marginRight: 4,
                 minHeight: "100px",
-                marginTop: 5,
+                marginTop: 2,
               }}
             >
               <CardContent>
@@ -520,6 +519,7 @@ function FinanceOverview({ update, handleOpenDialog }) {
                   boxShadow: theme.shadows[10],
                 },
                 height: "100%",
+                marginTop: 2,
                 marginRight: 4,
               }}
             >

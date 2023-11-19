@@ -145,7 +145,7 @@ function Navbar() {
                   open={Boolean(anchorEl)}
                   onClose={handleProfileMenuClose}
                   sx={{
-                    marginTop: 5,
+                    marginTop: 7,
                   }}
                 >
                   <StyledMenuItem

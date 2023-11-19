@@ -209,7 +209,7 @@ function DialogPage() {
         </Typography>
         <Tooltip title="Kategorie hinzufügen" placement="left">
           <IconButton
-            sx={{ backgroundColor: theme.palette.secondary.main }}
+            sx={{ backgroundColor: theme.palette.monthly.main }}
             onClick={() => setOpenDialog(true)}
           >
             <Add sx={{ color: theme.palette.common.white }} />
@@ -288,7 +288,7 @@ function DialogPage() {
           <Button
             sx={{
               backgroundColor: theme.palette.card.main,
-              color: theme.palette.error.main,
+              color: theme.palette.text.main,
             }}
             onClick={() => handleDeleteCategory(editingCategory?.id)}
           >
