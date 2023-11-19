@@ -478,12 +478,12 @@ function EditSettingsDialog({ transaction, onClose, onSave }) {
   });
   const theme = useTheme();
 
-  const handleInputChange = (e) => {
-    const { name, value } = e.target;
-    setEditedSettings({
-      ...editedSettings,
+  const handleInputChange = (event) => {
+    const { name, value } = event.target;
+    setEditedSettings((prevSettings) => ({
+      ...prevSettings,
       [name]: value,
-    });
+    }));
   };
 
   const handleSelectChange = (event) => {
@@ -569,6 +569,7 @@ function EditSettingsDialog({ transaction, onClose, onSave }) {
         <TextField
           variant="outlined"
           fullWidth
+          name="description"
           margin="normal"
           value={editedSettings.description}
           onChange={handleInputChange}
@@ -587,6 +588,7 @@ function EditSettingsDialog({ transaction, onClose, onSave }) {
         <TextField
           variant="outlined"
           fullWidth
+          name="amount"
           margin="normal"
           type="number"
           value={editedSettings.amount}

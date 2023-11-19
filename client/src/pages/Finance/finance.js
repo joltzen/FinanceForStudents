@@ -1,12 +1,10 @@
 /* Copyright (c) 2023, Jason Oltzen */
 
-import AddCircleOutlineIcon from "@mui/icons-material/AddCircleOutline";
 import {
   Button,
   Dialog,
   DialogActions,
   DialogContent,
-  DialogTitle,
   FormControl,
   Grid,
   InputLabel,
@@ -15,7 +13,6 @@ import {
 } from "@mui/material";
 import { useTheme } from "@mui/material/styles";
 import React, { useEffect, useState } from "react";
-import AddButton from "../../components/AddButtonComp";
 import SelectComp from "../../components/SelectComp";
 import TextComp from "../../components/TextComp";
 import axiosInstance from "../../config/axios";
@@ -136,22 +133,15 @@ function FinancePage() {
 
   return (
     <Grid item xs={12} md={8} lg={6}>
-      <AddButton
-        variant="contained"
-        startIcon={<AddCircleOutlineIcon />}
-        onClick={handleOpenDialog}
+      <Dialog
+        open={openDialog}
+        onClose={handleCloseDialog}
+        fullWidth
+        justifyContent="center"
+        maxWidth="sm"
+        alignItems="center"
+        sx={{ marginTop: "5%" }}
       >
-        Transaktion hinzufügen
-      </AddButton>
-      <Dialog open={openDialog} onClose={handleCloseDialog} fullWidth>
-        <DialogTitle
-          sx={{
-            backgroundColor: theme.palette.card.main,
-            color: theme.palette.text.main,
-          }}
-        >
-          Neue Transaktion
-        </DialogTitle>
         <DialogContent sx={{ backgroundColor: theme.palette.card.main }}>
           <form onSubmit={handleSubmit}>
             <InputLabel
@@ -273,7 +263,8 @@ function FinancePage() {
           </Button>
         </DialogActions>
       </Dialog>
-      <FinanceOverview update={update} />
+
+      <FinanceOverview update={update} handleOpenDialog={handleOpenDialog} />
     </Grid>
   );
 }

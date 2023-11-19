@@ -1,14 +1,32 @@
 /* Copyright (c) 2023, Jason Oltzen */
 
-import { Box, Card, CardContent, Grid, Typography } from "@mui/material";
+import AddCircleOutlineIcon from "@mui/icons-material/AddCircleOutline";
+import AttachMoneyIcon from "@mui/icons-material/AttachMoney";
+import BarChartIcon from "@mui/icons-material/BarChart";
+import DarkModeOutlinedIcon from "@mui/icons-material/DarkModeOutlined";
+import LightModeOutlinedIcon from "@mui/icons-material/LightModeOutlined";
+import SavingsIcon from "@mui/icons-material/Savings";
+import {
+  Box,
+  Button,
+  Card,
+  CardContent,
+  Grid,
+  IconButton,
+  Tooltip,
+  Typography,
+} from "@mui/material";
 import { useTheme } from "@mui/system";
-import React, { useCallback, useEffect, useState } from "react";
+import React, { useCallback, useContext, useEffect, useState } from "react";
 import axiosInstance from "../../config/axios";
 import { useAuth } from "../../core/auth/auth";
+import { ColorModeContext } from "../../theme";
+import DialogPage from "./dialog";
 import EditTransactionDialog from "./edit";
 import FilterTransactions from "./filter";
 import TransactionsTable from "./table";
-function FinanceOverview({ update }) {
+
+function FinanceOverview({ update, handleOpenDialog }) {
   const [filterMonth, setFilterMonth] = useState(new Date().getMonth() + 1);
   const [filterYear, setFilterYear] = useState(new Date().getFullYear());
   const [transactions, setTransactions] = useState([]);
@@ -28,6 +46,7 @@ function FinanceOverview({ update }) {
     []
   );
   const [activeSorting, setActiveSorting] = useState("date");
+  const [addCategories, setAddCategories] = useState(false);
 
   useEffect(() => {
     let sortedTransactions = [...transactions];
@@ -74,6 +93,10 @@ function FinanceOverview({ update }) {
   const toggleSortOrderAmount = () => {
     setActiveSorting("amount");
     setSortOrderAmount(sortOrderAmount === "asc" ? "desc" : "asc");
+  };
+
+  const handleAddCategory = () => {
+    setAddCategories(true);
   };
 
   const displayedTransactions =
@@ -254,33 +277,46 @@ function FinanceOverview({ update }) {
   });
 
   const theme = useTheme();
+  const colorMode = useContext(ColorModeContext); // Access the color mode context
+
   return (
-    <Grid container style={{ minHeight: "100vh" }}>
-      <Grid item xs={12} sm={6} style={{ minHeight: "100%" }}>
+    <Grid container spacing={4} style={{ minHeight: "100vh" }}>
+      <Grid item xs={12} sm={8} style={{ minHeight: "100%" }}>
         <Card
           style={{
             height: "100%",
             width: "100%",
             backgroundColor: theme.palette.left.main,
+            padding: 3,
           }}
         >
-          {" "}
           <CardContent
             style={{
               display: "flex",
               flexDirection: "column",
               padding: 10,
-              height: "100%", // Make sure CardContent takes full height of the Card
+              height: "100%",
             }}
           >
             <Box component="form" noValidate sx={{ mt: 4, width: "100%" }}>
-              <Typography
-                variant="h3"
-                color={theme.palette.text.main}
-                sx={{ mt: 2, mb: 4 }}
+              <Box
+                display="flex"
+                justifyContent="space-between"
+                alignItems="center"
+                sx={{ mt: 2, mb: 4, width: "100%" }}
               >
-                Transaktionen Übersicht
-              </Typography>
+                <Typography variant="h4" color={theme.palette.text.main}>
+                  Übersicht
+                </Typography>
+                <Button
+                  startIcon={<AddCircleOutlineIcon />}
+                  onClick={handleOpenDialog}
+                  variant="contained"
+                >
+                  Hinzufügen
+                </Button>
+              </Box>
+
               <FilterTransactions
                 transactions={transactions}
                 setTransactions={transactions}
@@ -320,24 +356,179 @@ function FinanceOverview({ update }) {
           </CardContent>
         </Card>
       </Grid>
-      <Grid item xs={0} sm={6} style={{ height: "100%" }}>
-        <Card
-          style={{
-            height: "100%",
-            width: "100%",
-            backgroundColor: theme.palette.right.main,
-            display: "flex",
-            flexDirection: "column",
-            alignItems: "center",
-            justifyContent: "center",
-          }}
-        >
-          <img
-            src="/logos/logo.png"
-            alt="Schrift"
-            style={{ maxWidth: "50%", maxHeight: "50%" }}
-          />
-        </Card>
+
+      <Grid item xs={12} sm={4} style={{ height: "100%" }}>
+        <Grid container direction="column" spacing={5}>
+          <Grid item>
+            <Card
+              sx={{
+                backgroundColor: theme.palette.card.main,
+                boxShadow: theme.shadows[6],
+                "&:hover": {
+                  boxShadow: theme.shadows[10],
+                },
+                height: "100%",
+                marginRight: 4,
+                minHeight: "100px",
+                marginTop: 5,
+              }}
+            >
+              <CardContent>
+                <Box display="flex" justifyContent="center" alignItems="center">
+                  <Box
+                    sx={{
+                      backgroundColor: theme.palette.error.main,
+                      borderRadius: "50%",
+                      width: "50px",
+                      height: "50px",
+                      display: "flex",
+                      justifyContent: "center",
+                      alignItems: "center",
+                      position: "relative",
+                      marginRight: 5,
+                      marginLeft: 5,
+                      top: theme.spacing(2),
+                      right: theme.spacing(2),
+                    }}
+                  >
+                    <Tooltip title="Fixkosten verwalten" placement="left">
+                      <IconButton href="/settings">
+                        <AttachMoneyIcon
+                          sx={{ color: theme.palette.common.white }}
+                        />
+                      </IconButton>
+                    </Tooltip>
+                  </Box>
+
+                  <Box
+                    sx={{
+                      backgroundColor: theme.palette.total.main,
+                      borderRadius: "50%",
+                      width: "50px",
+                      height: "50px",
+                      display: "flex",
+                      marginRight: 5,
+                      justifyContent: "center",
+                      alignItems: "center",
+                      position: "relative",
+                      top: theme.spacing(2),
+                      right: theme.spacing(2),
+                    }}
+                  >
+                    <Tooltip title="Dashboard" placement="left">
+                      <IconButton href="/dashboard">
+                        <BarChartIcon
+                          sx={{ color: theme.palette.common.white }}
+                        />
+                      </IconButton>
+                    </Tooltip>
+                  </Box>
+                  <Box
+                    sx={{
+                      backgroundColor: theme.palette.task.main,
+                      borderRadius: "50%",
+                      width: "50px",
+                      height: "50px",
+                      display: "flex",
+                      marginRight: 5,
+                      justifyContent: "center",
+                      alignItems: "center",
+                      position: "relative",
+                      top: theme.spacing(2),
+                      right: theme.spacing(2),
+                    }}
+                  >
+                    <Tooltip title="Sparziele" placement="left">
+                      <IconButton href="/saving">
+                        <SavingsIcon
+                          sx={{ color: theme.palette.common.white }}
+                        />
+                      </IconButton>
+                    </Tooltip>
+                  </Box>
+                  <Box
+                    sx={{
+                      backgroundColor: theme.palette.left.main,
+                      borderRadius: "50%",
+                      width: "50px",
+                      height: "50px",
+                      display: "flex",
+                      justifyContent: "center",
+                      alignItems: "center",
+                      position: "relative",
+                      top: theme.spacing(2),
+                      right: theme.spacing(2),
+                    }}
+                  >
+                    <Tooltip title="Colormodus" placement="left">
+                      {colorMode.mode}
+                      <IconButton
+                        onClick={colorMode.toggleColorMode}
+                        color="inherit"
+                      >
+                        {theme.palette.mode === "dark" ? (
+                          <DarkModeOutlinedIcon sx={{ color: "white" }} />
+                        ) : (
+                          <LightModeOutlinedIcon sx={{ color: "black" }} />
+                        )}
+                      </IconButton>
+                    </Tooltip>
+                  </Box>
+                </Box>
+              </CardContent>
+            </Card>
+          </Grid>
+          <Grid item>
+            <Card
+              sx={{
+                backgroundColor: theme.palette.card.main,
+                boxShadow: theme.shadows[6],
+                "&:hover": {
+                  boxShadow: theme.shadows[10],
+                },
+                height: "100%",
+                marginRight: 4,
+              }}
+            >
+              <CardContent>
+                <Box
+                  display="flex"
+                  justifyContent="space-between"
+                  alignItems="center"
+                >
+                  <Box>
+                    <Typography
+                      variant="h6"
+                      sx={{ color: theme.palette.text.main }}
+                    >
+                      <strong>Gesamtausgaben diesen Monat:</strong>
+                    </Typography>
+                    <Typography variant="h4" sx={{ fontWeight: "bold", mt: 2 }}>
+                      {savingSum.toFixed(2)} €
+                    </Typography>
+                  </Box>
+                </Box>
+              </CardContent>
+            </Card>
+          </Grid>
+          <Grid item>
+            <Card
+              sx={{
+                backgroundColor: theme.palette.card.main,
+                boxShadow: theme.shadows[6],
+                "&:hover": {
+                  boxShadow: theme.shadows[10],
+                },
+                height: "100%",
+                marginRight: 4,
+              }}
+            >
+              <CardContent>
+                <DialogPage />
+              </CardContent>
+            </Card>
+          </Grid>
+        </Grid>
       </Grid>
     </Grid>
   );
