@@ -39,6 +39,7 @@ export default function EditTransactionDialog({
   };
   // Updated handler specifically for the Select component
   const handleSelectChange = (event) => {
+    console.log(event.target.value);
     setEditedTransaction({
       ...editedTransaction,
       transaction_type: event.target.value,

@@ -249,6 +249,7 @@ function FinanceOverview({ update }) {
   const [editTransaction, setEditTransaction] = useState(null);
   const handleEditTransaction = async (transaction) => {
     try {
+      console.log(transaction);
       await axiosInstance.patch("/updateTransaction", transaction);
       fetchTransactions();
     } catch (error) {
