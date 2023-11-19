@@ -1,39 +1,13 @@
+import { Box, Grid } from "@mui/material";
+import { Container } from "@mui/system";
 import React, { useCallback, useEffect, useState } from "react";
 import axiosInstance from "../../config/axios";
 import { useAuth } from "../../core/auth/auth";
-import {
-  FormControl,
-  InputLabel,
-  Box,
-  MenuItem,
-  Table,
-  TableBody,
-  TableCell,
-  TableContainer,
-  TableHead,
-  TableRow,
-  Paper,
-  Typography,
-  IconButton,
-  Grid,
-  Menu,
-  Divider,
-  TextField,
-  Card,
-  CardContent,
-  InputAdornment,
-  Select,
-} from "@mui/material";
-import { months, years } from "../../config/constants";
-import { useTheme } from "@mui/material/styles";
-import { Container } from "@mui/system";
 import EditTransactionDialog from "./edit";
-import MoreHorizRoundedIcon from "@mui/icons-material/MoreHorizRounded";
-import SearchIcon from "@mui/icons-material/Search";
-import ArrowUpward from "@mui/icons-material/ArrowUpward";
+import FilterTransactions from "./filter";
+import TransactionsTable from "./table";
 
 function FinanceOverview({ update }) {
-  const theme = useTheme();
   const [filterMonth, setFilterMonth] = useState(new Date().getMonth() + 1);
   const [filterYear, setFilterYear] = useState(new Date().getFullYear());
   const [transactions, setTransactions] = useState([]);
@@ -44,7 +18,7 @@ function FinanceOverview({ update }) {
   const { user } = useAuth();
   const [savingGoal, setSavingGoal] = useState([]);
   const [needUpdate, setNeedUpdate] = useState(false);
-  const [searchQuery, setSearchQuery] = useState(""); // New state for search query
+  const [searchQuery, setSearchQuery] = useState("");
   const [selectedCategory, setSelectedCategory] = useState("");
   const [sortOrder, setSortOrder] = useState("desc");
   const [sortOrderAmount, setSortOrderAmount] = useState("desc");
@@ -52,7 +26,7 @@ function FinanceOverview({ update }) {
   const [sortedByAmountTransactions, setSortedByAmountTransactions] = useState(
     []
   );
-  const [activeSorting, setActiveSorting] = useState("date"); // 'date' or 'amount'
+  const [activeSorting, setActiveSorting] = useState("date");
 
   useEffect(() => {
     let sortedTransactions = [...transactions];
@@ -284,290 +258,32 @@ function FinanceOverview({ update }) {
       <Grid container spacing={3} justifyContent="center">
         <Grid item xs={12} sx={{ mt: 4 }}></Grid>
         <Box sx={{ width: "100vw", marginTop: 4, marginBottom: 20 }}>
-          <Card
-            sx={{
-              marginBottom: theme.spacing(3),
-              backgroundColor: theme.palette.card.main,
-              color: theme.palette.secondary.main,
-              borderRadius: "10px",
-              boxShadow: theme.shadows[6],
-              "&:hover": {
-                boxShadow: theme.shadows[10],
-              },
-            }}
-          >
-            <CardContent>
-              <Grid container spacing={2}>
-                <Grid item xs={12} sm={6} md={3}>
-                  <InputLabel sx={{ marginBottom: 2 }}>Monat</InputLabel>
-                  <FormControl
-                    fullWidth
-                    sx={{
-                      marginBottom: 2,
-                      backgroundColor: theme.palette.card.main,
-                      height: "40px",
-                    }}
-                  >
-                    <Select
-                      value={filterMonth}
-                      onChange={(e) => setFilterMonth(e.target.value)}
-                      sx={{
-                        color: theme.palette.text.main,
-                        height: "40px",
-                        ".MuiInputBase-input": {
-                          paddingTop: "5px",
-                          paddingBottom: "5px",
-                        },
-                        border: `1px solid ${theme.palette.text.main}`,
-                      }}
-                    >
-                      {months.map((month) => (
-                        <MenuItem key={month.value} value={month.value}>
-                          {month.label}
-                        </MenuItem>
-                      ))}
-                    </Select>
-                  </FormControl>
-                </Grid>
-                <Grid item xs={12} sm={6} md={3}>
-                  <InputLabel sx={{ marginBottom: 2, marginLeft: 1 }}>
-                    Jahr
-                  </InputLabel>
-                  <FormControl
-                    fullWidth
-                    sx={{
-                      marginLeft: 1,
-                      marginBottom: 2,
-                      backgroundColor: theme.palette.card.main,
-                      height: "40px",
-                    }}
-                  >
-                    <Select
-                      value={filterYear}
-                      onChange={(e) => setFilterYear(e.target.value)}
-                      sx={{
-                        color: theme.palette.text.main,
-                        height: "40px",
-                        ".MuiInputBase-input": {
-                          paddingTop: "5px",
-                          paddingBottom: "5px",
-                        },
-                        border: `1px solid ${theme.palette.text.main}`,
-                      }}
-                    >
-                      {years.map((year) => (
-                        <MenuItem key={year} value={year}>
-                          {year}
-                        </MenuItem>
-                      ))}
-                    </Select>
-                  </FormControl>
-                </Grid>
-
-                <Grid item xs={12} sm={6} md={3}>
-                  <InputLabel sx={{ marginBottom: 2, marginLeft: 1 }}>
-                    Filter nach Kategorie
-                  </InputLabel>
-                  <FormControl
-                    fullWidth
-                    sx={{
-                      marginLeft: 1,
-                      marginBottom: 2,
-                      backgroundColor: selectedCategory
-                        ? categories.find((c) => c.id === selectedCategory)
-                            ?.color || theme.palette.content.main
-                        : theme.palette.card.main,
-                      height: "40px",
-                    }}
-                  >
-                    <Select
-                      value={selectedCategory}
-                      onChange={handleCategoryChange}
-                      displayEmpty // To allow display of 'None' even when value is empty
-                      sx={{
-                        color: selectedCategory
-                          ? "black"
-                          : theme.palette.text.main,
-                        height: "40px",
-                        ".MuiInputBase-input": {
-                          paddingTop: "5px",
-                          paddingBottom: "5px",
-                        },
-                        border: `1px solid ${theme.palette.text.main}`,
-                      }}
-                    >
-                      <MenuItem value="">
-                        <em>None</em>
-                      </MenuItem>
-                      {categories.map((category) => (
-                        <MenuItem key={category.id} value={category.id}>
-                          {category.name}
-                        </MenuItem>
-                      ))}
-                    </Select>
-                  </FormControl>
-                </Grid>
-                <Grid item xs={12} sm={6} md={3}>
-                  <InputLabel sx={{ marginBottom: 2, marginLeft: 1 }}>
-                    Suche
-                  </InputLabel>
-
-                  <TextField
-                    variant="outlined"
-                    fullWidth
-                    value={searchQuery}
-                    onChange={handleSearchInputChange}
-                    InputProps={{
-                      startAdornment: (
-                        <InputAdornment position="start">
-                          <SearchIcon />
-                        </InputAdornment>
-                      ),
-                      sx: {
-                        height: "40px",
-                        ".MuiInputBase-input": {
-                          paddingTop: "5px",
-                          paddingBottom: "5px",
-                        },
-                      },
-                    }}
-                    sx={{
-                      ".MuiOutlinedInput-root": {
-                        height: "40px",
-                      },
-                      marginLeft: 1,
-                    }}
-                  />
-                </Grid>
-              </Grid>
-            </CardContent>
-          </Card>
-          <TableContainer component={Paper} elevation={10}>
-            <Table sx={{ minWidth: 650 }}>
-              <TableHead
-                sx={{
-                  backgroundColor: theme.palette.head.main,
-                }}
-              >
-                <TableRow>
-                  <TableCell sx={{ width: "1px" }}></TableCell>
-                  <TableCell
-                    sx={{ width: "20px", color: theme.palette.tabletext.main }}
-                  >
-                    Datum
-                    <IconButton
-                      onClick={toggleSortOrder}
-                      sx={{ color: theme.palette.tabletext.main }}
-                    >
-                      <ArrowUpward
-                        sx={{
-                          transform:
-                            sortOrder === "asc"
-                              ? "rotate(0deg)"
-                              : "rotate(180deg)",
-                        }}
-                      />
-                    </IconButton>
-                  </TableCell>
-                  <TableCell sx={{ color: theme.palette.tabletext.main }}>
-                    Beschreibung
-                  </TableCell>
-                  <TableCell
-                    align="right"
-                    sx={{ width: "100px", color: theme.palette.tabletext.main }}
-                  >
-                    Betrag
-                    <IconButton
-                      onClick={toggleSortOrderAmount}
-                      sx={{ color: theme.palette.tabletext.main }}
-                    >
-                      <ArrowUpward
-                        sx={{
-                          transform:
-                            sortOrderAmount === "asc"
-                              ? "rotate(0deg)"
-                              : "rotate(180deg)",
-                        }}
-                      />
-                    </IconButton>
-                  </TableCell>
-                  <TableCell sx={{ width: "1px" }}></TableCell>
-                </TableRow>
-              </TableHead>
-              <TableBody sx={{ backgroundColor: theme.palette.content.main }}>
-                {finalTransactions.map((transaction) => {
-                  const category = categories.find(
-                    (c) => c.id === transaction.category_id
-                  );
-                  const categoryColor = category
-                    ? category.color
-                    : theme.palette.text.main;
-                  return (
-                    <TableRow key={transaction.transaction_id}>
-                      <TableCell
-                        sx={{
-                          borderLeft: `10px solid ${categoryColor}`,
-                          height: "10px", // Reduce height
-                          color:
-                            transaction.transaction_type === "Ausgabe"
-                              ? "red"
-                              : "green",
-                        }}
-                      >
-                        <Typography
-                          variant="h5"
-                          fontSize={
-                            transaction.transaction_type === "Ausgabe"
-                              ? "23px"
-                              : "19px"
-                          }
-                        >
-                          {transaction.transaction_type === "Ausgabe"
-                            ? "-"
-                            : "+"}
-                        </Typography>
-                      </TableCell>
-                      <TableCell>
-                        <Box sx={{ marginRight: "50px" }}>
-                          {formatDate(transaction.transaction_date)}
-                        </Box>
-                      </TableCell>
-                      <TableCell>{transaction.description}</TableCell>
-                      <TableCell align="right">
-                        {transaction.transaction_type === "Ausgabe" ? "-" : ""}
-                        {transaction.amount} €
-                      </TableCell>
-                      <TableCell align="right">
-                        <RowMenu
-                          transaction={transaction}
-                          handleEditButtonClick={handleEditButtonClick}
-                          handleDeleteTransaction={() =>
-                            handleDeleteTransaction(transaction.transaction_id)
-                          }
-                        />
-                      </TableCell>
-                    </TableRow>
-                  );
-                })}
-              </TableBody>
-            </Table>
-            <Box
-              sx={{
-                display: "flex",
-                justifyContent: "flex-end", // This will push the children to opposite ends
-                alignItems: "center",
-                padding: 2,
-                color: theme.palette.text.main,
-              }}
-            >
-              <Typography
-                variant="body2"
-                sx={{ marginRight: 2, color: theme.palette.text.main }}
-              >
-                Gesamtsumme: <strong>{savingSum.toFixed(2)}€</strong>
-              </Typography>
-            </Box>
-          </TableContainer>
+          <FilterTransactions
+            transactions={transactions}
+            setTransactions={transactions}
+            setFilterYear={setFilterYear}
+            setFilterMonth={setFilterMonth}
+            filterYear={filterYear}
+            filterMonth={filterMonth}
+            categories={categories}
+            selectedCategory={selectedCategory}
+            setSelectedCategory={setSelectedCategory}
+            handleCategoryChange={handleCategoryChange}
+            searchQuery={searchQuery}
+            handleSearchInputChange={handleSearchInputChange}
+          />
+          <TransactionsTable
+            toggleSortOrder={toggleSortOrder}
+            toggleSortOrderAmount={toggleSortOrderAmount}
+            sortOrder={sortOrder}
+            sortOrderAmount={sortOrderAmount}
+            finalTransactions={finalTransactions}
+            categories={categories}
+            savingSum={savingSum}
+            handleEditButtonClick={handleEditButtonClick}
+            handleDeleteTransaction={handleDeleteTransaction}
+            formatDate={formatDate}
+          />
         </Box>
 
         {editTransaction && (
@@ -583,60 +299,4 @@ function FinanceOverview({ update }) {
   );
 }
 
-function RowMenu({
-  transaction,
-  handleEditButtonClick,
-  handleDeleteTransaction,
-}) {
-  const [anchorEl, setAnchorEl] = React.useState(null);
-  const open = Boolean(anchorEl);
-
-  const handleClick = (event) => {
-    setAnchorEl(event.currentTarget);
-  };
-
-  const handleClose = () => {
-    setAnchorEl(null);
-  };
-
-  return (
-    <div>
-      <IconButton
-        aria-label="more"
-        aria-controls="long-menu"
-        aria-haspopup="true"
-        onClick={handleClick}
-        size="small"
-      >
-        <MoreHorizRoundedIcon />
-      </IconButton>
-      <Menu
-        id="long-menu"
-        anchorEl={anchorEl}
-        keepMounted
-        open={open}
-        onClose={handleClose}
-        PaperProps={{
-          style: {
-            width: "20ch",
-          },
-        }}
-      >
-        <MenuItem
-          onClick={() => {
-            handleEditButtonClick(transaction);
-            handleClose();
-          }}
-        >
-          Edit
-        </MenuItem>
-        <MenuItem onClick={handleClose}>Move</MenuItem>
-        <Divider />
-        <MenuItem onClick={handleDeleteTransaction} style={{ color: "red" }}>
-          Delete
-        </MenuItem>
-      </Menu>
-    </div>
-  );
-}
 export default FinanceOverview;
