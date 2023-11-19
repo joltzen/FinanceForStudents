@@ -76,7 +76,14 @@ export const useCalculations = (
       if (!categoryTotals[transaction.category_id]) {
         categoryTotals[transaction.category_id] = 0;
       }
-      categoryTotals[transaction.category_id] += parseFloat(transaction.amount);
+      if (transaction.transaction_type === "Einnahme")
+        categoryTotals[transaction.category_id] += parseFloat(
+          transaction.amount
+        );
+      else
+        categoryTotals[transaction.category_id] -= parseFloat(
+          transaction.amount
+        );
     });
 
     const totalBudget = settings.reduce((acc, setting) => {
@@ -92,7 +99,8 @@ export const useCalculations = (
       (acc, num) => acc + num,
       0
     );
-    categoryTotals["remaining"] = totalBudget - usedBudget - totalSavingGoals;
+
+    categoryTotals["remaining"] = totalBudget + usedBudget - totalSavingGoals;
     return categoryTotals;
   };
 
@@ -145,10 +153,14 @@ export const useCalculations = (
       const year = date.getFullYear();
 
       if (year === filterYear) {
-        monthlyExpenses[month] += parseFloat(transaction.amount);
+        if (transaction.transaction_type === "Ausgabe") {
+          monthlyExpenses[month] -= parseFloat(transaction.amount);
+        }
+        if (transaction.transaction_type === "Einnahme") {
+          monthlyExpenses[month] += parseFloat(transaction.amount);
+        }
       }
     });
-
     return monthlyExpenses[filterMonth - 1];
   };
 
@@ -157,15 +169,17 @@ export const useCalculations = (
     let monthlyExpenses = new Array(12).fill(0);
     let monthlySavings = new Array(12).fill(0);
 
-    transactions.forEach((transaction) => {
-      const date = new Date(transaction.transaction_date);
-      const month = date.getMonth();
-      const year = date.getFullYear();
-
-      if (year === filterYear) {
-        monthlyExpenses[month] += parseFloat(transaction.amount);
-      }
-    });
+    monthlyExpenses[filterMonth - 1] = transactions.reduce(
+      (acc, transaction) => {
+        if (transaction.transaction_type === "Einnahme") {
+          return acc + parseFloat(transaction.amount);
+        } else if (transaction.transaction_type === "Ausgabe") {
+          return acc - parseFloat(transaction.amount);
+        }
+        return acc;
+      },
+      0
+    );
 
     settings?.forEach((setting) => {
       if (setting.transaction_type === "Einnahme") {

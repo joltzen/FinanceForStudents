@@ -1,14 +1,6 @@
-import React, { useEffect, useState, useContext } from "react";
+import React, { useEffect, useState } from "react";
 import { useAuth } from "../../core/auth/auth";
-import {
-  Typography,
-  Box,
-  Grid,
-  Card,
-  CardContent,
-  FormControlLabel,
-  Button,
-} from "@mui/material";
+import { Box, Grid, Card, CardContent, FormControlLabel } from "@mui/material";
 import "chart.js/auto";
 import SwitchComp from "../../components/SwitchComp";
 import BudgetFilter from "./filter";
@@ -20,11 +12,10 @@ import BudgetSummary from "./summary";
 import { months, years } from "../../config/constants";
 import { Bar } from "react-chartjs-2";
 import { useTheme } from "@mui/material/styles";
-import { ColorModeContext } from "../../theme";
 import MonthlyExpenses from "./monthly";
 import MonthlySaving from "./task";
 import TotalSavings from "./total";
-import { Navigate, redirect, useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 
 function DashboardPage() {
   const theme = useTheme();
@@ -34,7 +25,6 @@ function DashboardPage() {
   const [filterYear, setFilterYear] = useState(new Date().getFullYear());
   const [isAnnualView, setIsAnnualView] = useState(false);
   const [totalSavingGoals, setTotalSavingGoals] = useState(0);
-  const [showBarChart, setShowBarChart] = useState(true);
   const {
     prevMonthTransactions,
     prevSettings,
@@ -130,6 +120,9 @@ function DashboardPage() {
     },
   };
 
+  const monthlyExpense = calcMonthlyExpense(); // Assuming this returns a positive value for positive expenses
+
+  // Modify the chartData construction
   const chartData = {
     labels: categories.map((category) => category.name),
     datasets: [
@@ -153,6 +146,7 @@ function DashboardPage() {
   const remainingBudget = isAnnualView
     ? calculateAnnualTotals()["remaining"]
     : calculateCategoryTotals()["remaining"];
+  const adjustedRemainingBudget = remainingBudget + monthlyExpense;
 
   if (remainingBudget > 0) {
     chartData.labels.push("Verbleibendes Budget");
@@ -217,7 +211,6 @@ function DashboardPage() {
       transactions.length > 0 || settings.length > 0 || savingsGoals.length > 0
     );
   };
-  const colorMode = useContext(ColorModeContext); // Access the color mode context
 
   return (
     <Box sx={{ flexGrow: 1, padding: 3 }}>

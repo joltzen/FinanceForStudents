@@ -87,6 +87,7 @@ function FinanceOverview({ update }) {
     totalSum,
     user.id,
     update,
+    settings,
     needUpdate,
     activeSorting,
   ]);
@@ -167,7 +168,15 @@ function FinanceOverview({ update }) {
     } catch (error) {
       console.error("Error fetching transactions:", error);
     }
-  }, [filterMonth, filterYear, totalSum, user.id, update, needUpdate]);
+  }, [
+    filterMonth,
+    filterYear,
+    totalSum,
+    settings,
+    user.id,
+    update,
+    needUpdate,
+  ]);
 
   function calculateAdjustedTotalSum() {
     let adjustedTotal = totalSum;
