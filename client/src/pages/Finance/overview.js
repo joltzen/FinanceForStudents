@@ -79,7 +79,17 @@ function FinanceOverview({ update }) {
       });
       setSortedByAmountTransactions(sortedTransactions);
     }
-  }, [sortOrder, sortOrderAmount, transactions, activeSorting]);
+  }, [
+    sortOrder,
+    sortOrderAmount,
+    filterMonth,
+    filterYear,
+    totalSum,
+    user.id,
+    update,
+    needUpdate,
+    activeSorting,
+  ]);
   const toggleSortOrder = () => {
     setActiveSorting("date");
     setSortOrder(sortOrder === "asc" ? "desc" : "asc");
@@ -108,16 +118,6 @@ function FinanceOverview({ update }) {
   const handleSearchInputChange = (event) => {
     setSearchQuery(event.target.value.toLowerCase());
   };
-
-  // Function to filter transactions based on search query
-  const filteredTransactions = transactions.filter((transaction) =>
-    transaction.description.toLowerCase().includes(searchQuery)
-  );
-  const filteredTransactionsByCategory = selectedCategory
-    ? filteredTransactions.filter(
-        (transaction) => transaction.category_id === selectedCategory
-      )
-    : filteredTransactions;
 
   const fetchTransactions = useCallback(async () => {
     try {
@@ -167,7 +167,7 @@ function FinanceOverview({ update }) {
     } catch (error) {
       console.error("Error fetching transactions:", error);
     }
-  }, [filterMonth, filterYear, user.id]);
+  }, [filterMonth, filterYear, totalSum, user.id, update, needUpdate]);
 
   function calculateAdjustedTotalSum() {
     let adjustedTotal = totalSum;
@@ -234,7 +234,17 @@ function FinanceOverview({ update }) {
     };
     fetchGoals();
     calculateAdjustedTotalSum();
-  }, [filterMonth, filterYear, user.id, update, needUpdate]);
+  }, [
+    sortOrder,
+    sortOrderAmount,
+    filterMonth,
+    filterYear,
+    totalSum,
+    user.id,
+    update,
+    needUpdate,
+    activeSorting,
+  ]);
 
   const [editTransaction, setEditTransaction] = useState(null);
   const handleEditTransaction = async (transaction) => {
@@ -471,7 +481,7 @@ function FinanceOverview({ update }) {
                       />
                     </IconButton>
                   </TableCell>
-                  <TableCell SX={{ width: "1px" }}></TableCell>
+                  <TableCell sx={{ width: "1px" }}></TableCell>
                 </TableRow>
               </TableHead>
               <TableBody sx={{ backgroundColor: theme.palette.content.main }}>
