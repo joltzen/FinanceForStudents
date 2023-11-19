@@ -1,3 +1,5 @@
+/* Copyright (c) 2023, Jason Oltzen */
+
 import MoreHorizRoundedIcon from "@mui/icons-material/MoreHorizRounded";
 import { Divider, IconButton, Menu, MenuItem } from "@mui/material";
 import React from "react";

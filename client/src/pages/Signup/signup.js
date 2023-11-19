@@ -1,3 +1,5 @@
+/* Copyright (c) 2023, Jason Oltzen */
+
 import {
   Alert,
   Box,

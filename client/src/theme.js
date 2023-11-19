@@ -1,4 +1,4 @@
-/* Copyright 2023, Jason Oltzen */
+/* Copyright (c) 2023, Jason Oltzen */
 
 import { createTheme } from "@mui/material/styles";
 import { createContext, useEffect, useMemo, useState } from "react";

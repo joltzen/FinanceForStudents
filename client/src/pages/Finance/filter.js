@@ -1,3 +1,5 @@
+/* Copyright (c) 2023, Jason Oltzen */
+
 import SearchIcon from "@mui/icons-material/Search";
 import {
   Card,

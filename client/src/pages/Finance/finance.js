@@ -1,4 +1,5 @@
-/* eslint-disable no-unused-vars */
+/* Copyright (c) 2023, Jason Oltzen */
+
 import AddCircleOutlineIcon from "@mui/icons-material/AddCircleOutline";
 import {
   Button,

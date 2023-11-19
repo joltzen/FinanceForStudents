@@ -1,4 +1,4 @@
- /* Copyright 2023, Jason Oltzen */
+/* Copyright (c) 2023, Jason Oltzen */
 
 import AccountBalanceWalletIcon from "@mui/icons-material/AccountBalanceWallet";
 import AccountCircle from "@mui/icons-material/AccountCircle";

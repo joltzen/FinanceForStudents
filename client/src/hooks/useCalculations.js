@@ -1,4 +1,5 @@
-// useCalculations.js
+/* Copyright (c) 2023, Jason Oltzen */
+
 export const useCalculations = (
   transactions,
   settings,

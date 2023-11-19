@@ -1,3 +1,5 @@
+/* Copyright (c) 2023, Jason Oltzen */
+
 import { useCallback } from "react";
 import axiosInstance from "../config/axios";
 

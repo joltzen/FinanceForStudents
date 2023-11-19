@@ -1,3 +1,5 @@
+ /* Copyright (c) 2023, Jason Oltzen */
+
 import axiosInstance from "../config/axios";
 
 const getTransactions = async (filterMonth, filterYear, userId) => {

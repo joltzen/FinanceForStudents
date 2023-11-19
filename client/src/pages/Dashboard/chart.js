@@ -1,4 +1,5 @@
-// BudgetChart.js
+/* Copyright (c) 2023, Jason Oltzen */
+
 import { Box } from "@mui/material";
 import React from "react";
 import { Doughnut } from "react-chartjs-2";

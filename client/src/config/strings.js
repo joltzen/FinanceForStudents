@@ -1,3 +1,5 @@
+/* Copyright (c) 2023, Jason Oltzen */
+
 const strings = {
   homepage: {
     welcomeMessage: "Willkommen bei FinanceForStudents!",

@@ -1,5 +1,41 @@
 {
+  "root": true,
+  "extends": [
+    "eslint:recommended",
+    "plugin:react/recommended",
+    "plugin:react-hooks/recommended",
+    "plugin:@typescript-eslint/eslint-recommended",
+    "plugin:@typescript-eslint/recommended.js", // Updated file extension to .js
+    "plugin:prettier/recommended"
+  ],
+  "plugins": ["prettier-plugin-header"],
+  "rules": {
+    "@typescript-eslint/no-explicit-any": "off",
+    "prettier/prettier": "error",
+    "react/prop-types": "off",
+    "@typescript-eslint/explicit-module-boundary-types": "off",
+    "header/header": [2, "block", [" Copyright (c) 2023 Jason Oltzen "], 2],
+    "react/jsx-uses-react": "error",
+    "react/jsx-uses-vars": "error",
+    "react/react-in-jsx-scope": "off"
+  },
+  "env": {
+    "browser": true,
+    "node": true,
+    "jquery": true,
+    "es6": true
+  },
+  "settings": {
+    "react": {
+      "version": "detect"
+    }
+  },
+  "globals": {
+    "firebase": "readonly"
+  },
   "editor.codeActionsOnSave": {
     "source.fixAll.eslint": true
-  }
+  },
+  "editor.snippetSuggestions": "top",
+  "editor.snippetFolderPath": "/Users/Jason/Library/Application Support/Code/User/snippets"
 }

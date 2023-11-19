@@ -1,3 +1,5 @@
+/* Copyright (c) 2023, Jason Oltzen */
+
 export { About } from "./About";
 export { Contact } from "./Contact";
 export { Dashboard } from "./Dashboard";

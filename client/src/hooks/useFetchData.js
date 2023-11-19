@@ -1,4 +1,5 @@
-// useFetchData.js
+/* Copyright (c) 2023, Jason Oltzen */
+
 import { useEffect, useState } from "react";
 import axiosInstance from "../config/axios";
 

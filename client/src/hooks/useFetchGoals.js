@@ -1,4 +1,5 @@
-// hooks/useSavingGoals.js
+/* Copyright (c) 2023, Jason Oltzen */
+
 import { useCallback, useEffect, useState } from "react";
 import axiosInstance from "../config/axios";
 

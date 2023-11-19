@@ -1,3 +1,5 @@
+/* Copyright (c) 2023, Jason Oltzen */
+
 import { TextField } from "@mui/material";
 import { styled } from "@mui/system";
 const TextComp = styled(TextField)(({ theme }) => ({

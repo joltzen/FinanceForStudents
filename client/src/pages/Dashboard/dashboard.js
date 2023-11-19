@@ -1,3 +1,5 @@
+ /* Copyright (c) 2023, Jason Oltzen */
+
 import { Box, Card, CardContent, FormControlLabel, Grid } from "@mui/material";
 import { useTheme } from "@mui/material/styles";
 import "chart.js/auto";

@@ -1,3 +1,5 @@
+/* Copyright (c) 2023, Jason Oltzen */
+
 import { Typography } from "@mui/material";
 import Heading from "../../components/heading";
 import Heading2 from "../../components/heading2";

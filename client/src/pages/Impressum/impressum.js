@@ -1,3 +1,5 @@
+ /* Copyright (c) 2023, Jason Oltzen */
+
 import { Box, Container, Typography } from "@mui/material";
 import { useTheme } from "@mui/material/styles";
 import React from "react";

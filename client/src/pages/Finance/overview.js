@@ -1,5 +1,5 @@
- /* Copyright 2023, Jason Oltzen */
- 
+/* Copyright (c) 2023, Jason Oltzen */
+
 import { Box, Grid } from "@mui/material";
 import { Container } from "@mui/system";
 import React, { useCallback, useEffect, useState } from "react";

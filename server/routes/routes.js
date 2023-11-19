@@ -1,3 +1,5 @@
+/* Copyright (c) 2023, Jason Oltzen */
+
 const express = require("express");
 const router = express.Router();
 const db = require("./db"); // Import the database module

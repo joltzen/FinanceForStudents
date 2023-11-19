@@ -1,3 +1,5 @@
+/* Copyright (c) 2023, Jason Oltzen */
+
 module.exports = {
   database: {
     user: process.env.DB_USER || "your_username",

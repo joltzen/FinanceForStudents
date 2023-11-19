@@ -1,3 +1,5 @@
+/* Copyright (c) 2023, Jason Oltzen */
+
 import ArrowUpward from "@mui/icons-material/ArrowUpward";
 import {
   Box,

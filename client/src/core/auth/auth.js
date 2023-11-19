@@ -1,3 +1,5 @@
+/* Copyright (c) 2023, Jason Oltzen */
+
 import React, { createContext, useContext, useState } from "react";
 
 const AuthContext = createContext(null);

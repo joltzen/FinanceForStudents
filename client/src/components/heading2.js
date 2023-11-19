@@ -1,4 +1,4 @@
- /* Copyright 2023, Jason Oltzen */
+/* Copyright (c) 2023, Jason Oltzen */
 
 import Typography from "@mui/material/Typography";
 import { useTheme } from "@mui/material/styles";

@@ -1,4 +1,5 @@
-// BudgetFilter.js
+/* Copyright (c) 2023, Jason Oltzen */
+
 import { FormControl, Grid, InputLabel, MenuItem } from "@mui/material";
 import { useTheme } from "@mui/material/styles";
 import React from "react";
