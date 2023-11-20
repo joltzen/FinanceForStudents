@@ -9,6 +9,7 @@ import {
   IconButton,
   InputLabel,
   Link,
+  TextField,
   Typography,
 } from "@mui/material";
 import Alert from "@mui/material/Alert";
@@ -17,7 +18,6 @@ import Button from "@mui/material/Button";
 import { useTheme } from "@mui/material/styles";
 import React, { useContext, useState } from "react";
 import { useNavigate } from "react-router";
-import TextComp from "../../components/TextComp";
 import axiosInstance from "../../config/axios";
 import { useAuth } from "../../core/auth/auth";
 import { ColorModeContext } from "../../theme";
@@ -85,7 +85,7 @@ function LoginPage() {
               component="form"
               onSubmit={handleSubmit}
               noValidate
-              sx={{ mt: 1, width: "30%" }}
+              sx={{ mt: 1, width: "50%" }}
             >
               <Box
                 sx={{
@@ -111,31 +111,60 @@ function LoginPage() {
                 </IconButton>
               </Box>
 
-              <InputLabel htmlFor="identifier">Username/Email</InputLabel>
-              <TextComp
-                margin="normal"
-                required
+              <InputLabel htmlFor="identifier">Benutzername/Email</InputLabel>
+              <TextField
+                variant="outlined"
                 fullWidth
-                id="identifier"
                 name="identifier"
-                autoComplete="identifier"
-                autoFocus
+                margin="normal"
                 value={credentials.identifier}
                 onChange={handleChange}
+                sx={{
+                  "label + & .MuiInputBase-input": {
+                    // Adjust the styles for when the input is autofilled
+                    "&:-webkit-autofill": {
+                      caretColor: "transparent", // Removes the caret if you also want to hide that
+                      WebkitBoxShadow: `0 0 0 1000px ${theme.palette.left.main} inset`,
+                      backgroundColor: theme.palette.left.main,
+                      color: theme.palette.text.main,
+                      height: "2px",
+                    },
+                  },
+                  ".MuiOutlinedInput-root": {
+                    height: "40px",
+                    border: `1px solid ${theme.palette.text.main}`,
+                  },
+                }}
               />
+
               <InputLabel htmlFor="password" sx={{ marginTop: 2 }}>
                 Password
               </InputLabel>
-              <TextComp
-                margin="normal"
-                required
+              <TextField
+                variant="outlined"
                 fullWidth
                 name="password"
+                margin="normal"
                 type="password"
-                id="password"
                 autoComplete="current-password"
                 value={credentials.password}
                 onChange={handleChange}
+                sx={{
+                  "label + & .MuiInputBase-input": {
+                    // Adjust the styles for when the input is autofilled
+                    "&:-webkit-autofill": {
+                      caretColor: "transparent", // Removes the caret if you also want to hide that
+                      WebkitBoxShadow: `0 0 0 1000px ${theme.palette.left.main} inset`,
+                      backgroundColor: theme.palette.left.main,
+                      color: theme.palette.text.main,
+                      height: "2px",
+                    },
+                  },
+                  ".MuiOutlinedInput-root": {
+                    height: "40px",
+                    border: `1px solid ${theme.palette.text.main}`,
+                  },
+                }}
               />
               <Link
                 href="/password-reset"

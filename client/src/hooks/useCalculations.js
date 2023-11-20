@@ -164,7 +164,58 @@ export const useCalculations = (
     });
     return monthlyExpenses[filterMonth - 1];
   };
+  const cmr = () => {
+    let monthlyBudgets = new Array(12).fill(0);
+    let monthlyExpenses = new Array(12).fill(0);
+    let monthlySavings = new Array(12).fill(0);
 
+    transactions.forEach((transaction) => {
+      const date = new Date(transaction.transaction_date);
+      const month = date.getMonth();
+      const year = date.getFullYear();
+
+      if (year === filterYear) {
+        if (transaction.transaction_type === "Einnahme") {
+          monthlyBudgets[month] += parseFloat(transaction.amount);
+        } else if (transaction.transaction_type === "Ausgabe") {
+          monthlyExpenses[month] -= parseFloat(transaction.amount);
+        }
+      }
+    });
+
+    settings?.forEach((setting) => {
+      if (setting.transaction_type === "Einnahme") {
+        monthlyBudgets[setting.month - 1] += parseFloat(setting.amount);
+      } else if (setting.transaction_type === "Ausgabe") {
+        monthlyBudgets[setting.month - 1] -= parseFloat(setting.amount);
+      }
+    });
+    transactions?.forEach((transaction) => {
+      if (transaction.transaction_type === "Einnahme") {
+        monthlyBudgets[transaction.month - 1] += parseFloat(transaction.amount);
+      } else if (transaction.transaction_type === "Ausgabe") {
+        monthlyExpenses[transaction.month - 1] -= parseFloat(
+          transaction.amount
+        );
+      }
+    });
+    savingsGoals?.forEach((goal) => {
+      const startMonth = new Date(goal.startdate).getMonth();
+      const endMonth = goal.deadline ? new Date(goal.deadline).getMonth() : 11;
+      for (let month = startMonth; month <= endMonth; month++) {
+        monthlySavings[month] += parseFloat(goal.monthly_saving);
+      }
+    });
+
+    let monthlyRemainingBudgets = monthlyBudgets.map((budget, index) => {
+      if (monthlyExpenses[index] > 0) {
+        return budget - monthlyExpenses[index] - monthlySavings[index];
+      } else {
+        return budget + monthlyExpenses[index] - monthlySavings[index];
+      }
+    });
+    return monthlyRemainingBudgets;
+  };
   const calculateMonthlyRemainingBudgets = () => {
     let monthlyBudgets = new Array(12).fill(0);
     let monthlyExpenses = new Array(12).fill(0);
@@ -190,15 +241,6 @@ export const useCalculations = (
       }
     });
 
-    transactions?.forEach((transaction) => {
-      if (transaction.transaction_type === "Einnahme") {
-        monthlyBudgets[transaction.month - 1] += parseFloat(transaction.amount);
-      } else if (transaction.transaction_type === "Ausgabe") {
-        monthlyExpenses[transaction.month - 1] -= parseFloat(
-          transaction.amount
-        );
-      }
-    });
     savingsGoals?.forEach((goal) => {
       const startMonth = new Date(goal.startdate).getMonth();
       const endMonth = goal.deadline ? new Date(goal.deadline).getMonth() : 11;
@@ -368,5 +410,6 @@ export const useCalculations = (
     calcMonthlyExpense,
     calculateSavingGoalsTotal,
     calculateTotalSavings,
+    cmr,
   };
 };

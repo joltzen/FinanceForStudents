@@ -10,6 +10,7 @@ import {
   InputLabel,
   MenuItem,
   Select,
+  Typography,
 } from "@mui/material";
 import { useTheme } from "@mui/material/styles";
 import React, { useEffect, useState } from "react";
@@ -200,50 +201,57 @@ function FinancePage() {
               value={date}
               onChange={handleDateChange}
             />
-            <InputLabel
-              sx={{ color: theme.palette.text.main, mt: 2, mb: 2 }}
-              id="category-label"
-            >
-              Kategorie
-            </InputLabel>
-            <Select
-              fullWidth
-              labelId="category-label"
-              value={category}
-              onChange={(e) => setCategory(e.target.value)}
-              sx={{
-                color: theme.palette.text.main,
-                "& .MuiSelect-select": {
-                  backgroundColor: getCurrentCategoryColor(),
-                },
-                "&:before": {
-                  borderColor: "black",
-                },
-                "&:after": {
-                  borderColor: "black",
-                },
-              }}
-            >
-              {categories.map((cat) => (
-                <MenuItem
-                  key={cat.id}
-                  value={cat.id}
+            {categories.length > 0 ? (
+              <>
+                <InputLabel
+                  sx={{ color: theme.palette.text.main, mt: 2, mb: 2 }}
+                  id="category-label"
+                >
+                  Kategorie
+                </InputLabel>
+                <Select
+                  fullWidth
+                  labelId="category-label"
+                  value={category}
+                  onChange={(e) => setCategory(e.target.value)}
                   sx={{
-                    backgroundColor: cat.color,
-                    "&.Mui-selected": {
-                      // This targets the selected item specifically
-                      backgroundColor: cat.color,
-                      fontWeight: "bold",
+                    color: theme.palette.text.main,
+                    "& .MuiSelect-select": {
+                      backgroundColor: getCurrentCategoryColor(),
                     },
-                    "&:hover": {
-                      backgroundColor: adjustColor(cat.color, 20),
+                    "&:before": {
+                      borderColor: "black",
+                    },
+                    "&:after": {
+                      borderColor: "black",
                     },
                   }}
                 >
-                  {cat.name}
-                </MenuItem>
-              ))}
-            </Select>
+                  {categories.map((cat) => (
+                    <MenuItem
+                      key={cat.id}
+                      value={cat.id}
+                      sx={{
+                        backgroundColor: cat.color,
+                        "&.Mui-selected": {
+                          backgroundColor: cat.color,
+                          fontWeight: "bold",
+                        },
+                        "&:hover": {
+                          backgroundColor: adjustColor(cat.color, 20),
+                        },
+                      }}
+                    >
+                      {cat.name}
+                    </MenuItem>
+                  ))}
+                </Select>
+              </>
+            ) : (
+              <Typography sx={{ color: theme.palette.text.main, mt: 2 }}>
+                Noch keine Kategorie vorhanden
+              </Typography>
+            )}
           </form>
         </DialogContent>
         <DialogActions sx={{ backgroundColor: theme.palette.card.main }}>

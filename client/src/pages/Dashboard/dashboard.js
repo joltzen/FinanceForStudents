@@ -1,4 +1,4 @@
- /* Copyright (c) 2023, Jason Oltzen */
+/* Copyright (c) 2023, Jason Oltzen */
 
 import { Box, Card, CardContent, FormControlLabel, Grid } from "@mui/material";
 import { useTheme } from "@mui/material/styles";
@@ -49,6 +49,7 @@ function DashboardPage() {
     calculateMonthlySavingsDifference,
     calcMonthlyExpense,
     calculateTotalSavings,
+    cmr,
   } = useCalculations(
     transactions,
     settings,
@@ -76,7 +77,7 @@ function DashboardPage() {
     labels: months.map((month) => month.label),
     datasets: [
       {
-        data: calculateMonthlyRemainingBudgets(), // Example data
+        data: cmr(),
         backgroundColor: [
           "rgb(255, 99, 132)",
           "rgb(255, 159, 64)",
@@ -148,7 +149,6 @@ function DashboardPage() {
   const remainingBudget = isAnnualView
     ? calculateAnnualTotals()["remaining"]
     : calculateCategoryTotals()["remaining"];
-  const adjustedRemainingBudget = remainingBudget + monthlyExpense;
 
   if (remainingBudget > 0) {
     chartData.labels.push("Verbleibendes Budget");
