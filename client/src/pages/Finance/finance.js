@@ -30,6 +30,10 @@ function FinancePage() {
   const [transactions, setTransactions] = useState([]);
   const [categories, setCategories] = useState([]);
   const [update, setUpdate] = useState(false);
+  const [updateNeeded, setUpdateNeeded] = useState(false);
+  const triggerUpdate = () => {
+    setUpdateNeeded((prev) => !prev);
+  };
 
   const { user } = useAuth();
 
@@ -130,7 +134,7 @@ function FinancePage() {
       }
     };
     fetchCategories();
-  }, [user.id, update, categories]);
+  }, [user.id, update, categories, triggerUpdate]);
 
   return (
     <Grid item xs={12} md={8} lg={6}>
@@ -272,7 +276,11 @@ function FinancePage() {
         </DialogActions>
       </Dialog>
 
-      <FinanceOverview update={update} handleOpenDialog={handleOpenDialog} />
+      <FinanceOverview
+        update={update}
+        handleOpenDialog={handleOpenDialog}
+        triggerUpdate={triggerUpdate}
+      />
     </Grid>
   );
 }

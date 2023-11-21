@@ -50,21 +50,20 @@ function AddCategory({
     setCategoryColor(category.color);
     setOpenEditDialog(true);
   };
-  useEffect(() => {
-    const fetchCategories = async () => {
-      try {
-        const response = await axiosInstance.get("/getCategories", {
-          params: { user_id: user.id },
-        });
-        setCategories(response.data);
-      } catch (error) {
-        console.error("Fehler beim Laden der Kategorien:", error);
-      }
-    };
+  const fetchCategories = async () => {
+    try {
+      const response = await axiosInstance.get("/getCategories", {
+        params: { user_id: user.id },
+      });
+      setCategories(response.data);
+    } catch (error) {
+      console.error("Fehler beim Laden der Kategorien:", error);
+    }
+  };
 
+  useEffect(() => {
     fetchCategories();
   }, [user.id]);
-
   const handleAddCategory = async () => {
     try {
       await axiosInstance.post("/saveCategory", {
@@ -72,8 +71,8 @@ function AddCategory({
         user_id: user.id,
         color: categoryColor,
       });
-      // Call the callback function after adding the category
-      onCategoryAdded();
+      fetchCategories(); // Re-fetch categories after adding
+      onCategoryAdded(); // If you need to trigger a refresh in a parent component
     } catch (error) {
       console.error("Error adding category:", error);
     }
@@ -84,9 +83,7 @@ function AddCategory({
       await axiosInstance.delete("/deleteCategory", {
         params: { id: categoryId },
       });
-      setCategories((prevCategories) =>
-        prevCategories.filter((category) => category.id !== categoryId)
-      );
+      fetchCategories(); // Re-fetch categories after deleting
     } catch (error) {
       console.error("Fehler beim Löschen der Kategorie:", error);
     }
