@@ -217,8 +217,11 @@ export const themeSettings = (mode) => {
             },
             head: { main: "#cccccc" },
             content: { main: "#444444" },
+            add: { main: "#252D4C" },
           }
         : {
+            add: { main: "#252D4C" },
+
             head: { main: "#444444" },
             content: { main: "#dddddd" },
 

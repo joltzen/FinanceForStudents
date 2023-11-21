@@ -1,6 +1,6 @@
 /* Copyright (c) 2023, Jason Oltzen */
 
-import AddCircleOutlineIcon from "@mui/icons-material/AddCircleOutline";
+import Add from "@mui/icons-material/Add";
 import AttachMoneyIcon from "@mui/icons-material/AttachMoney";
 import BarChartIcon from "@mui/icons-material/BarChart";
 import DarkModeOutlinedIcon from "@mui/icons-material/DarkModeOutlined";
@@ -361,13 +361,23 @@ function FinanceOverview({ update, handleOpenDialog }) {
                 <Typography variant="h4" color={theme.palette.text.main}>
                   Übersicht
                 </Typography>
-                <Button
-                  startIcon={<AddCircleOutlineIcon />}
-                  onClick={handleAddTransaction} // Geändert von handleOpenDialog zu handleAddTransaction
+
+                <IconButton
                   variant="contained"
+                  onClick={handleAddTransaction}
+                  sx={{
+                    backgroundColor: theme.palette.primary.main,
+
+                    boxShadow: 5,
+                  }}
                 >
-                  Hinzufügen
-                </Button>
+                  <Tooltip
+                    sx={{ color: theme.palette.text.main }}
+                    title="Transaktion hinzufügen"
+                  >
+                    <Add sx={{ color: theme.palette.common.white }} />
+                  </Tooltip>
+                </IconButton>
               </Box>
 
               <FilterTransactions
