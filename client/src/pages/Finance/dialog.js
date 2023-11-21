@@ -23,7 +23,7 @@ import axiosInstance from "../../config/axios";
 import { colors } from "../../config/constants";
 import { useAuth } from "../../core/auth/auth";
 
-function DialogPage() {
+function DialogPage({ onCategoryChange }) {
   const theme = useTheme();
 
   const [categories, setCategories] = useState([]);
@@ -92,6 +92,7 @@ function DialogPage() {
         user_id: user.id,
         color: categoryColor,
       });
+      onCategoryChange(); // Notify FinanceOverview about the change
     } catch (error) {
       console.error("category failed:", error);
     }
@@ -102,6 +103,8 @@ function DialogPage() {
       await axiosInstance.delete("/deleteCategory", {
         params: { id: categoryId },
       });
+      onCategoryChange(); // Notify FinanceOverview about the change
+
       setCategories((prevCategories) =>
         prevCategories.filter((category) => category.id !== categoryId)
       );

@@ -53,8 +53,26 @@ function FinanceOverview({ update, handleOpenDialog }) {
   const [activeSorting, setActiveSorting] = useState("date");
   const [addCategories, setAddCategories] = useState(false);
   const [isCategoryWarningOpen, setIsCategoryWarningOpen] = useState(false);
+  const [updateTrigger, setUpdateTrigger] = useState(false);
 
+  const changeCatgeory = () => {
+    // Trigger a re-render
+    setUpdateTrigger((prevState) => !prevState);
+  };
   const handleAddTransaction = () => {
+    const fetchCategories = async () => {
+      try {
+        const response = await axiosInstance.get("/getCategories", {
+          params: { user_id: user.id },
+        });
+        setCategories(response.data);
+      } catch (error) {
+        console.error("Fehler beim Laden der Kategorien:", error);
+      }
+    };
+
+    fetchCategories();
+    console.log(categories.length);
     if (categories.length === 0) {
       setIsCategoryWarningOpen(true); // Öffnet den Dialog
     } else {
@@ -317,7 +335,7 @@ function FinanceOverview({ update, handleOpenDialog }) {
 
   return (
     <Grid container spacing={4} style={{ minHeight: "100vh" }}>
-      <Grid item xs={12} sm={8} style={{ minHeight: "100%" }}>
+      <Grid item xs={12} sm={8} md={6} lg={8} style={{ minHeight: "100%" }}>
         <Card
           style={{
             height: "100%",
@@ -557,10 +575,11 @@ function FinanceOverview({ update, handleOpenDialog }) {
                 height: "100%",
                 marginTop: 2,
                 marginRight: 4,
+                marginBottom: 5,
               }}
             >
               <CardContent>
-                <DialogPage />
+                <DialogPage onCategoryChange={changeCatgeory} />
               </CardContent>
             </Card>
           </Grid>
