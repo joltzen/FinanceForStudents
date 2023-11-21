@@ -1,6 +1,7 @@
 /* Copyright (c) 2023, Jason Oltzen */
 
-import Add from "@mui/icons-material/Add";
+import DeleteIcon from "@mui/icons-material/Delete";
+import EditIcon from "@mui/icons-material/Edit";
 import {
   Button,
   Dialog,
@@ -11,11 +12,9 @@ import {
   Grid,
   IconButton,
   Paper,
-  Tooltip,
   Typography,
 } from "@mui/material";
 import { useTheme } from "@mui/material/styles";
-import { Box } from "@mui/system";
 import Circle from "@uiw/react-color-circle";
 import React, { useEffect, useState } from "react";
 import TextComp from "../../components/TextComp";
@@ -23,7 +22,11 @@ import axiosInstance from "../../config/axios";
 import { colors } from "../../config/constants";
 import { useAuth } from "../../core/auth/auth";
 
-function DialogPage({ onCategoryChange }) {
+function AddCategory({
+  isCategoryWarningOpen,
+  handleCategoryAdded,
+  onCategoryAdded,
+}) {
   const theme = useTheme();
 
   const [categories, setCategories] = useState([]);
@@ -39,29 +42,6 @@ function DialogPage({ onCategoryChange }) {
     setNewCategory("");
     setCategoryColor("#FFFFFF");
     setOpenDialog(false);
-  };
-
-  const handleEditCategory = async () => {
-    try {
-      await axiosInstance.patch("/updateCategory", {
-        id: editingCategory.id,
-        name: newCategory,
-        color: categoryColor,
-      });
-      // Update the local state to reflect the changes
-      setCategories((prevCategories) =>
-        prevCategories.map((category) =>
-          category.id === editingCategory.id
-            ? { ...category, name: newCategory, color: categoryColor }
-            : category
-        )
-      );
-      setOpenEditDialog(false);
-      setNewCategory("");
-      setCategoryColor("#FFFFFF");
-    } catch (error) {
-      console.error("Error updating category:", error);
-    }
   };
 
   const openEditDialogWithCategory = (category) => {
@@ -85,16 +65,17 @@ function DialogPage({ onCategoryChange }) {
     fetchCategories();
   }, [user.id]);
 
-  const handleAddCategory = async (event) => {
+  const handleAddCategory = async () => {
     try {
       await axiosInstance.post("/saveCategory", {
         name: newCategory,
         user_id: user.id,
         color: categoryColor,
       });
-      onCategoryChange(); // Notify FinanceOverview about the change
+      // Call the callback function after adding the category
+      onCategoryAdded();
     } catch (error) {
-      console.error("category failed:", error);
+      console.error("Error adding category:", error);
     }
   };
 
@@ -103,15 +84,12 @@ function DialogPage({ onCategoryChange }) {
       await axiosInstance.delete("/deleteCategory", {
         params: { id: categoryId },
       });
-      onCategoryChange(); // Notify FinanceOverview about the change
-
       setCategories((prevCategories) =>
         prevCategories.filter((category) => category.id !== categoryId)
       );
     } catch (error) {
       console.error("Fehler beim Löschen der Kategorie:", error);
     }
-    setOpenEditDialog(false);
   };
   function isColorDark(color) {
     const rgb = parseInt(color.substring(1), 16);
@@ -175,7 +153,9 @@ function DialogPage({ onCategoryChange }) {
           }}
         >
           <Button
-            onClick={() => setOpenDialog(false)}
+            onClick={() => {
+              setOpenDialog(false);
+            }}
             sx={{
               backgroundColor: theme.palette.card.main,
               color: theme.palette.text.main,
@@ -187,6 +167,7 @@ function DialogPage({ onCategoryChange }) {
             onClick={() => {
               addCategory();
               handleAddCategory();
+              handleCategoryAdded();
             }}
             sx={{
               backgroundColor: theme.palette.card.main,
@@ -198,31 +179,9 @@ function DialogPage({ onCategoryChange }) {
         </DialogActions>
       </Dialog>
 
-      <Box
-        sx={{
-          display: "flex",
-          justifyContent: "space-between",
-          alignItems: "center", // Align items vertically
-          mt: 2, // Top margin for spacing
-          mb: 3, // Bottom margin for spacing
-        }}
-      >
-        <Typography variant="h6" sx={{ color: theme.palette.text.main }}>
-          <strong>Kategorien</strong>
-        </Typography>
-        <Tooltip title="Kategorie hinzufügen" placement="left">
-          <IconButton
-            sx={{ backgroundColor: theme.palette.monthly.main }}
-            onClick={() => setOpenDialog(true)}
-          >
-            <Add sx={{ color: theme.palette.common.white }} />
-          </IconButton>
-        </Tooltip>
-      </Box>
-
       <Grid container spacing={2}>
         {categories?.map((category, index) => (
-          <Grid item xs={6} sm={3} key={index}>
+          <Grid item xs={12} sm={6} key={index}>
             <Paper
               key={index}
               sx={{
@@ -233,7 +192,6 @@ function DialogPage({ onCategoryChange }) {
                 alignItems: "center",
                 justifyContent: "space-between",
               }}
-              onClick={() => openEditDialogWithCategory(category)}
             >
               <Typography
                 sx={{
@@ -244,6 +202,20 @@ function DialogPage({ onCategoryChange }) {
               >
                 {category.name}
               </Typography>
+              <div style={{ display: "flex" }}>
+                <IconButton
+                  onClick={() => openEditDialogWithCategory(category)}
+                  style={{ color: "black" }}
+                >
+                  <EditIcon />
+                </IconButton>
+                <IconButton
+                  onClick={() => handleDeleteCategory(category.id)}
+                  style={{ color: "black" }}
+                >
+                  <DeleteIcon />
+                </IconButton>
+              </div>
             </Paper>
           </Grid>
         ))}
@@ -281,7 +253,7 @@ function DialogPage({ onCategoryChange }) {
               setCategoryColor(color.hex);
             }}
           />
-        </DialogContent>
+        </DialogContent>{" "}
         <DialogActions
           sx={{
             backgroundColor: theme.palette.card.main,
@@ -293,16 +265,10 @@ function DialogPage({ onCategoryChange }) {
               backgroundColor: theme.palette.card.main,
               color: theme.palette.text.main,
             }}
-            onClick={() => handleDeleteCategory(editingCategory?.id)}
-          >
-            DELETE
-          </Button>
-          <Button
-            sx={{
-              backgroundColor: theme.palette.card.main,
-              color: theme.palette.text.main,
+            onClick={() => {
+              setOpenEditDialog(false);
+              isCategoryWarningOpen(false);
             }}
-            onClick={() => setOpenEditDialog(false)}
           >
             Abbrechen
           </Button>
@@ -311,14 +277,24 @@ function DialogPage({ onCategoryChange }) {
               backgroundColor: theme.palette.card.main,
               color: theme.palette.text.main,
             }}
-            onClick={handleEditCategory}
+            onClick={() => {
+              isCategoryWarningOpen(false);
+            }}
           >
             Speichern
           </Button>
         </DialogActions>
       </Dialog>
+
+      <Button
+        sx={{ marginTop: 2 }}
+        onClick={() => setOpenDialog(true)}
+        variant="contained"
+      >
+        Kategorie hinzufügen
+      </Button>
     </div>
   );
 }
 
-export default DialogPage;
+export default AddCategory;

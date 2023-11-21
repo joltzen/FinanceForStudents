@@ -11,6 +11,11 @@ import {
   Button,
   Card,
   CardContent,
+  Dialog,
+  DialogActions,
+  DialogContent,
+  DialogContentText,
+  DialogTitle,
   Grid,
   IconButton,
   Tooltip,
@@ -21,11 +26,11 @@ import React, { useCallback, useContext, useEffect, useState } from "react";
 import axiosInstance from "../../config/axios";
 import { useAuth } from "../../core/auth/auth";
 import { ColorModeContext } from "../../theme";
+import AddCategory from "./addcategory";
 import DialogPage from "./dialog";
 import EditTransactionDialog from "./edit";
 import FilterTransactions from "./filter";
 import TransactionsTable from "./table";
-
 function FinanceOverview({ update, handleOpenDialog }) {
   const [filterMonth, setFilterMonth] = useState(new Date().getMonth() + 1);
   const [filterYear, setFilterYear] = useState(new Date().getFullYear());
@@ -47,6 +52,37 @@ function FinanceOverview({ update, handleOpenDialog }) {
   );
   const [activeSorting, setActiveSorting] = useState("date");
   const [addCategories, setAddCategories] = useState(false);
+  const [isCategoryWarningOpen, setIsCategoryWarningOpen] = useState(false);
+  const [updateTrigger, setUpdateTrigger] = useState(false);
+
+  const changeCatgeory = () => {
+    // Trigger a re-render
+    setUpdateTrigger((prevState) => !prevState);
+  };
+  const handleAddTransaction = () => {
+    const fetchCategories = async () => {
+      try {
+        const response = await axiosInstance.get("/getCategories", {
+          params: { user_id: user.id },
+        });
+        setCategories(response.data);
+      } catch (error) {
+        console.error("Fehler beim Laden der Kategorien:", error);
+      }
+    };
+
+    fetchCategories();
+    console.log(categories.length);
+    if (categories.length === 0) {
+      setIsCategoryWarningOpen(true); // Öffnet den Dialog
+    } else {
+      handleOpenDialog(); // Fährt fort mit dem Hinzufügen einer Transaktion
+    }
+  };
+
+  const handleCategoryAdded = () => {
+    setIsCategoryWarningOpen(false);
+  };
 
   useEffect(() => {
     let sortedTransactions = [...transactions];
@@ -80,6 +116,7 @@ function FinanceOverview({ update, handleOpenDialog }) {
     filterYear,
     totalSum,
     user.id,
+    categories,
     update,
     settings,
     needUpdate,
@@ -172,6 +209,7 @@ function FinanceOverview({ update, handleOpenDialog }) {
     settings,
     user.id,
     update,
+    categories,
     needUpdate,
   ]);
 
@@ -252,6 +290,22 @@ function FinanceOverview({ update, handleOpenDialog }) {
     activeSorting,
   ]);
 
+  const refreshCategories = useCallback(() => {
+    // Function to re-fetch categories
+    const fetchCategories = async () => {
+      try {
+        const response = await axiosInstance.get("/getCategories", {
+          params: { user_id: user.id },
+        });
+        setCategories(response.data);
+      } catch (error) {
+        console.error("Fehler beim Laden der Kategorien:", error);
+      }
+    };
+
+    fetchCategories();
+  }, [user.id]);
+
   const [editTransaction, setEditTransaction] = useState(null);
   const handleEditTransaction = async (transaction) => {
     try {
@@ -281,7 +335,7 @@ function FinanceOverview({ update, handleOpenDialog }) {
 
   return (
     <Grid container spacing={4} style={{ minHeight: "100vh" }}>
-      <Grid item xs={12} sm={8} style={{ minHeight: "100%" }}>
+      <Grid item xs={12} sm={8} md={6} lg={8} style={{ minHeight: "100%" }}>
         <Card
           style={{
             height: "100%",
@@ -309,7 +363,7 @@ function FinanceOverview({ update, handleOpenDialog }) {
                 </Typography>
                 <Button
                   startIcon={<AddCircleOutlineIcon />}
-                  onClick={handleOpenDialog}
+                  onClick={handleAddTransaction} // Geändert von handleOpenDialog zu handleAddTransaction
                   variant="contained"
                 >
                   Hinzufügen
@@ -521,15 +575,43 @@ function FinanceOverview({ update, handleOpenDialog }) {
                 height: "100%",
                 marginTop: 2,
                 marginRight: 4,
+                marginBottom: 5,
               }}
             >
               <CardContent>
-                <DialogPage />
+                <DialogPage onCategoryChange={changeCatgeory} />
               </CardContent>
             </Card>
           </Grid>
         </Grid>
       </Grid>
+      <Dialog
+        open={isCategoryWarningOpen}
+        onClose={() => setIsCategoryWarningOpen(false)}
+        aria-labelledby="category-warning-dialog-title"
+      >
+        <DialogTitle id="category-warning-dialog-title">
+          Kategorie erforderlich
+        </DialogTitle>
+        <DialogContent>
+          <DialogContentText>
+            Bitte legen Sie zuerst mindestens eine Kategorie an.
+          </DialogContentText>
+        </DialogContent>
+        <DialogActions>
+          <Button
+            onClick={() => setIsCategoryWarningOpen(false)}
+            variant="contained"
+          >
+            Abbrechen
+          </Button>
+          <AddCategory
+            setCategoryWarningOpen={isCategoryWarningOpen}
+            handleCategoryAdded={handleCategoryAdded}
+            onCategoryAdded={refreshCategories}
+          />
+        </DialogActions>
+      </Dialog>
     </Grid>
   );
 }
