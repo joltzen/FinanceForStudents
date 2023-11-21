@@ -31,7 +31,7 @@ import DialogPage from "./dialog";
 import EditTransactionDialog from "./edit";
 import FilterTransactions from "./filter";
 import TransactionsTable from "./table";
-function FinanceOverview({ update, handleOpenDialog }) {
+function FinanceOverview({ update, handleOpenDialog, triggerUpdate }) {
   const [filterMonth, setFilterMonth] = useState(new Date().getMonth() + 1);
   const [filterYear, setFilterYear] = useState(new Date().getFullYear());
   const [transactions, setTransactions] = useState([]);
@@ -51,14 +51,8 @@ function FinanceOverview({ update, handleOpenDialog }) {
     []
   );
   const [activeSorting, setActiveSorting] = useState("date");
-  const [addCategories, setAddCategories] = useState(false);
   const [isCategoryWarningOpen, setIsCategoryWarningOpen] = useState(false);
-  const [updateTrigger, setUpdateTrigger] = useState(false);
 
-  const changeCatgeory = () => {
-    // Trigger a re-render
-    setUpdateTrigger((prevState) => !prevState);
-  };
   const handleAddTransaction = () => {
     const fetchCategories = async () => {
       try {
@@ -130,10 +124,6 @@ function FinanceOverview({ update, handleOpenDialog }) {
   const toggleSortOrderAmount = () => {
     setActiveSorting("amount");
     setSortOrderAmount(sortOrderAmount === "asc" ? "desc" : "asc");
-  };
-
-  const handleAddCategory = () => {
-    setAddCategories(true);
   };
 
   const displayedTransactions =
@@ -211,6 +201,7 @@ function FinanceOverview({ update, handleOpenDialog }) {
     update,
     categories,
     needUpdate,
+    triggerUpdate,
   ]);
 
   function calculateAdjustedTotalSum() {
@@ -589,7 +580,7 @@ function FinanceOverview({ update, handleOpenDialog }) {
               }}
             >
               <CardContent>
-                <DialogPage onCategoryChange={changeCatgeory} />
+                <DialogPage onCategoryChange={triggerUpdate} />
               </CardContent>
             </Card>
           </Grid>
@@ -618,7 +609,7 @@ function FinanceOverview({ update, handleOpenDialog }) {
           <AddCategory
             setCategoryWarningOpen={isCategoryWarningOpen}
             handleCategoryAdded={handleCategoryAdded}
-            onCategoryAdded={refreshCategories}
+            onCategoryAdded={triggerUpdate}
           />
         </DialogActions>
       </Dialog>
