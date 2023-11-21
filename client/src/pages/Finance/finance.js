@@ -130,7 +130,7 @@ function FinancePage() {
       }
     };
     fetchCategories();
-  }, [user.id, update]);
+  }, [user.id, update, categories]);
 
   return (
     <Grid item xs={12} md={8} lg={6}>
