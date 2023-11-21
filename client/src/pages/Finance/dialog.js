@@ -232,6 +232,7 @@ function DialogPage({ onCategoryChange }) {
                 display: "flex",
                 alignItems: "center",
                 justifyContent: "space-between",
+                cursor: "pointer",
               }}
               onClick={() => openEditDialogWithCategory(category)}
             >

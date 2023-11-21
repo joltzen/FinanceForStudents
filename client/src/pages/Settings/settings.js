@@ -1,6 +1,7 @@
 /* Copyright (c) 2023, Jason Oltzen */
 
-import AddCircleOutline from "@mui/icons-material/AddCircleOutline";
+import AddIcon from "@mui/icons-material/Add";
+import EastIcon from "@mui/icons-material/East";
 import {
   Box,
   Button,
@@ -10,17 +11,18 @@ import {
   DialogTitle,
   FormControl,
   Grid,
+  IconButton,
   InputLabel,
   MenuItem,
   Select,
   Tab,
   Tabs,
   TextField,
+  Tooltip,
   Typography,
 } from "@mui/material";
 import { useTheme } from "@mui/material/styles";
 import React, { useEffect, useRef, useState } from "react";
-import AddButton from "../../components/AddButtonComp";
 import SelectComp from "../../components/SelectComp";
 import TextComp from "../../components/TextComp";
 import Page from "../../components/page";
@@ -30,7 +32,6 @@ import { useAuth } from "../../core/auth/auth";
 import DialogPage from "../Settings/dialog";
 import TransactionSection from "./transactionselect";
 import TransferDialog from "./transerdialog";
-
 function SettingsForm() {
   const [filterMonth, setFilterMonth] = useState(new Date().getMonth() + 1);
   const [filterYear, setFilterYear] = useState(new Date().getFullYear());
@@ -227,13 +228,6 @@ function SettingsForm() {
   return (
     <Page>
       <Grid item xs={12} md={8} lg={6}>
-        <AddButton
-          variant="contained"
-          startIcon={<AddCircleOutline />}
-          onClick={handleDialog}
-        >
-          Fixkosten hinzufügen
-        </AddButton>
         <Dialog open={openDialog} onClose={handleDialog} fullWidth>
           <DialogTitle
             sx={{
@@ -428,9 +422,32 @@ function SettingsForm() {
               flexGrow: 0,
             }}
           >
-            <Button variant="contained" onClick={handleTransferDialogOpen}>
-              Fixkosten übertragen
-            </Button>
+            <IconButton
+              variant="contained"
+              onClick={handleTransferDialogOpen}
+              sx={{
+                backgroundColor: theme.palette.primary.main,
+                boxShadow: 5,
+              }}
+            >
+              <Tooltip title="Fixkosten übertragen">
+                <EastIcon sx={{ color: theme.palette.common.white }} />
+              </Tooltip>
+            </IconButton>
+
+            <IconButton
+              variant="contained"
+              onClick={handleDialog}
+              sx={{
+                backgroundColor: theme.palette.primary.main,
+                boxShadow: 5,
+                marginLeft: 3,
+              }}
+            >
+              <Tooltip title="Fixkosten hinzufügen">
+                <AddIcon sx={{ color: theme.palette.common.white }} />
+              </Tooltip>
+            </IconButton>
           </Box>
         </Box>
         <TransferDialog

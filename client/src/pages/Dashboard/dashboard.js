@@ -118,14 +118,11 @@ function DashboardPage() {
     },
     plugins: {
       legend: {
-        display: false, // This hides the legend
+        display: false,
       },
     },
   };
 
-  const monthlyExpense = calcMonthlyExpense(); // Assuming this returns a positive value for positive expenses
-
-  // Modify the chartData construction
   const chartData = {
     labels: categories.map((category) => category.name),
     datasets: [
@@ -167,15 +164,15 @@ function DashboardPage() {
   const chartOptions = {
     plugins: {
       legend: {
-        position: "left", // Position the legend to the left of the chart
+        position: "left",
         labels: {
-          color: theme.palette.text.main, // Set the color of the text
+          color: theme.palette.text.main,
           font: {
             size: 15,
             family: "Arial",
           },
-          boxWidth: 40, // Width of the color box
-          padding: 40, // Padding around labels
+          boxWidth: 40,
+          padding: 40,
           margin: 20,
         },
       },
