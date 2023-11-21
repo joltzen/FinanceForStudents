@@ -2,6 +2,8 @@
 
 import DarkModeOutlinedIcon from "@mui/icons-material/DarkModeOutlined";
 import LightModeOutlinedIcon from "@mui/icons-material/LightModeOutlined";
+import Visibility from "@mui/icons-material/Visibility";
+import VisibilityOff from "@mui/icons-material/VisibilityOff";
 import {
   Card,
   CardContent,
@@ -15,16 +17,17 @@ import {
 import Alert from "@mui/material/Alert";
 import Box from "@mui/material/Box";
 import Button from "@mui/material/Button";
+import InputAdornment from "@mui/material/InputAdornment";
 import { useTheme } from "@mui/material/styles";
 import React, { useContext, useState } from "react";
 import { useNavigate } from "react-router";
 import axiosInstance from "../../config/axios";
 import { useAuth } from "../../core/auth/auth";
 import { ColorModeContext } from "../../theme";
-
 function LoginPage() {
   const theme = useTheme();
   const colorMode = useContext(ColorModeContext); // Access the color mode context
+  const [showPassword, setShowPassword] = useState(false);
 
   const [credentials, setCredentials] = useState({
     identifier: "",
@@ -37,7 +40,9 @@ function LoginPage() {
   const handleChange = (e) => {
     setCredentials({ ...credentials, [e.target.name]: e.target.value });
   };
-
+  const handlePasswordVisibility = () => {
+    setShowPassword(!showPassword);
+  };
   const handleSubmit = async (e) => {
     e.preventDefault();
     setError("");
@@ -145,15 +150,27 @@ function LoginPage() {
                 fullWidth
                 name="password"
                 margin="normal"
-                type="password"
+                type={showPassword ? "text" : "password"}
                 autoComplete="current-password"
                 value={credentials.password}
                 onChange={handleChange}
+                InputProps={{
+                  endAdornment: (
+                    <InputAdornment position="end">
+                      <IconButton
+                        aria-label="toggle password visibility"
+                        onClick={handlePasswordVisibility}
+                        edge="end"
+                      >
+                        {showPassword ? <VisibilityOff /> : <Visibility />}
+                      </IconButton>
+                    </InputAdornment>
+                  ),
+                }}
                 sx={{
                   "label + & .MuiInputBase-input": {
-                    // Adjust the styles for when the input is autofilled
                     "&:-webkit-autofill": {
-                      caretColor: "transparent", // Removes the caret if you also want to hide that
+                      caretColor: "transparent",
                       WebkitBoxShadow: `0 0 0 1000px ${theme.palette.left.main} inset`,
                       backgroundColor: theme.palette.left.main,
                       color: theme.palette.text.main,
@@ -166,6 +183,7 @@ function LoginPage() {
                   },
                 }}
               />
+
               <Link
                 href="/password-reset"
                 underline="hover"
