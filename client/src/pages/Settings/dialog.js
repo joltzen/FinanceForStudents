@@ -299,7 +299,7 @@ function DialogPage() {
       </Dialog>
 
       <Button
-        sx={{ marginTop: 2 }}
+        sx={{ marginTop: 3 }}
         onClick={() => setOpenDialog(true)}
         variant="contained"
       >
