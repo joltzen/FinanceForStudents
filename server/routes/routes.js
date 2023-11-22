@@ -18,6 +18,56 @@ router.get("/getUserData", (req, res) => {
     }
   });
 });
+router.patch("/updateUser", async (req, res) => {
+  try {
+    // Destructure the potential fields from the request body
+    const { firstname, surname, username, email, userId } = req.body;
+
+    // Start with a base query
+    let query = "UPDATE users SET";
+    const values = [];
+    let setClause = [];
+
+    // For each possible field, add to the query if it's present in the request
+    if (firstname !== undefined) {
+      values.push(firstname);
+      setClause.push(` firstname = $${values.length}`);
+    }
+    if (surname !== undefined) {
+      values.push(surname);
+      setClause.push(` surname = $${values.length}`);
+    }
+    if (username !== undefined) {
+      values.push(username);
+      setClause.push(` username = $${values.length}`);
+    }
+    if (email !== undefined) {
+      values.push(email);
+      setClause.push(` email = $${values.length}`);
+    }
+
+    // Combine the set clauses and add a where clause to target the correct user
+    query += setClause.join(",");
+    values.push(userId);
+    query += ` WHERE id = $${values.length} RETURNING *;`;
+
+    // If no fields were provided to update, send a bad request response
+    if (values.length === 1) {
+      return res.status(400).json({ error: "No fields provided for update" });
+    }
+
+    // Run the dynamically built query
+    const result = await db.query(query, values);
+    if (result.rows.length > 0) {
+      res.json(result.rows[0]);
+    } else {
+      res.status(404).json({ error: "User not found" });
+    }
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: "Error updating user" });
+  }
+});
 
 router.post("/login", async (req, res) => {
   try {
@@ -334,29 +384,21 @@ router.post("/reset-password", async (req, res) => {
   const { token, newPassword } = req.body;
 
   try {
-    // Überprüfe das Token und hole die Benutzer-ID
     const user = await db.query(
       "SELECT user_id FROM password_reset WHERE token = $1",
       [token]
     );
 
-    // Token nicht gefunden oder abgelaufen
     if (user.rows.length === 0) {
       return res.status(400).send("Invalid or expired password reset token");
     }
-
     const userId = user.rows[0].user_id;
     const hashedPassword = await bcrypt.hash(newPassword, 10);
-
-    // Update das Passwort in der Datenbank
     await db.query("UPDATE users SET password = $1 WHERE id = $2", [
       hashedPassword,
       userId,
     ]);
-
-    // Lösche das Token aus der Datenbank, da es nicht mehr benötigt wird
     await db.query("DELETE FROM password_reset WHERE token = $1", [token]);
-
     res.send("Password has been successfully reset");
   } catch (error) {
     console.error("Error resetting password:", error);
@@ -365,21 +407,54 @@ router.post("/reset-password", async (req, res) => {
 });
 
 router.delete("/delete-account", async (req, res) => {
-  const { userId } = req.body; // Oder holen Sie die Benutzer-ID aus dem Authentifizierungstoken
+  const { userId } = req.query;
+
+  if (!userId) {
+    return res.status(400).send("User ID is required");
+  }
 
   try {
-    // Lösche alle Benutzerdaten, hier nur als Beispiel für die users-Tabelle
-    await db.query("DELETE FROM users WHERE id = $1", [userId]);
+    // Start a transaction
+    await db.query("BEGIN");
 
-    // Hier sollten Sie alle anderen Daten löschen, die mit dem Benutzer verbunden sind
+    // List all related tables that have a foreign key reference to the users table
+    // and delete the related data in the order that respects the foreign key constraints.
+    // The order is important: delete from the "many" side of a one-to-many relationship first.
 
-    res.send("Account has been successfully deleted");
+    // Example: Assuming you have `transactions` and `categories` tables that reference `users`
+    const tablesToDeleteFrom = [
+      "transactions",
+      "categories",
+      "saving_goals",
+      "settings",
+    ]; // add all related tables here
+
+    for (const tableName of tablesToDeleteFrom) {
+      await db.query(`DELETE FROM ${tableName} WHERE user_id = $1`, [userId]);
+    }
+
+    // After all related data is deleted, delete the user
+    const deleteUserResult = await db.query("DELETE FROM users WHERE id = $1", [
+      userId,
+    ]);
+
+    if (deleteUserResult.rowCount === 0) {
+      // If no user was found, roll back the transaction and return an error
+      await db.query("ROLLBACK");
+      return res.status(404).send("User not found");
+    }
+
+    // If everything went well, commit the transaction
+    await db.query("COMMIT");
+
+    res.status(204).send();
   } catch (error) {
+    // If any error occurs, roll back the transaction
+    await db.query("ROLLBACK");
     console.error("Error deleting account:", error);
     res.status(500).send("Error deleting account");
   }
 });
-
 async function insertSavingGoal(
   userId,
   monthlySaving,

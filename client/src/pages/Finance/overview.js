@@ -446,7 +446,7 @@ function FinanceOverview({ update, handleOpenDialog, triggerUpdate }) {
                     }}
                   >
                     <Tooltip title="Fixkosten verwalten" placement="left">
-                      <IconButton href="/settings">
+                      <IconButton href="/fixed">
                         <AttachMoneyIcon
                           sx={{ color: theme.palette.common.white }}
                         />

@@ -1,14 +1,13 @@
- /* Copyright (c) 2023, Jason Oltzen */
+/* Copyright (c) 2023, Jason Oltzen */
 
 import { Box, Container, Typography } from "@mui/material";
 import { useTheme } from "@mui/material/styles";
 import React from "react";
 import CardComp from "../../components/CardComp";
-import Page from "../../components/page";
 function ImpressumPage() {
   const theme = useTheme();
   return (
-    <Page>
+    <div>
       <CardComp sx={{ mt: 10, padding: 3 }}>
         <Container>
           <Typography variant="h4" gutterBottom>
@@ -68,7 +67,7 @@ function ImpressumPage() {
           </Box>
         </Container>
       </CardComp>
-    </Page>
+    </div>
   );
 }
 

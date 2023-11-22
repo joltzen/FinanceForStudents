@@ -192,7 +192,7 @@ function Navbar() {
                 icon={<AccountBalanceWalletIcon />}
               />
               <StyledListItem
-                href="/settings"
+                href="/fixed"
                 primary="Fixkosten"
                 icon={<AttachMoneyIcon />}
               />
