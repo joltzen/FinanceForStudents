@@ -146,10 +146,19 @@ function ProfilePage() {
             </Alert>
           </Snackbar>
           <Grid item xs={12} sm={6} md={2}>
-            <Typography variant="h3" sx={{ mb: 2 }}>
+            <Typography variant="h4" sx={{ mb: 2 }}>
               Profil
             </Typography>
-            <Card sx={{ borderRadius: 5 }}>
+            <Card
+              sx={{
+                borderRadius: 5,
+                backgroundColor: theme.palette.card.main,
+                boxShadow: theme.shadows[6],
+                "&:hover": {
+                  boxShadow: theme.shadows[10],
+                },
+              }}
+            >
               <CardContent>
                 <Grid
                   container
@@ -159,7 +168,7 @@ function ProfilePage() {
                 >
                   <Grid item>
                     <Avatar
-                      sx={{ bgcolor: avatarColor, width: 56, height: 56 }}
+                      sx={{ bgcolor: avatarColor, width: 76, height: 76 }}
                     >
                       {user?.username.charAt(0).toUpperCase()}
                     </Avatar>{" "}
@@ -186,7 +195,17 @@ function ProfilePage() {
             </Card>
           </Grid>
           <Grid item xs={12} sm={6} md={4}>
-            <Card sx={{ borderRadius: 5, mt: 9 }}>
+            <Card
+              sx={{
+                borderRadius: 5,
+                mt: 7,
+                backgroundColor: theme.palette.card.main,
+                boxShadow: theme.shadows[6],
+                "&:hover": {
+                  boxShadow: theme.shadows[10],
+                },
+              }}
+            >
               <CardContent>
                 <form>
                   <TextField
