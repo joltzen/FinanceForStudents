@@ -3,13 +3,12 @@
 import { Typography } from "@mui/material";
 import Heading from "../../components/heading";
 import Heading2 from "../../components/heading2";
-import Page from "../../components/page";
 import Text from "../../components/text";
 import strings from "../../config/strings";
 
 function AboutPage() {
   return (
-    <Page>
+    <div>
       <img
         src="/logos/Logo_transparant.png"
         alt="Logo"
@@ -42,7 +41,7 @@ function AboutPage() {
         <Text text={strings.about.goal}></Text>
         <Typography sx={{ marginTop: 30, color: "#e0e3e9" }}></Typography>
       </div>
-    </Page>
+    </div>
   );
 }
 

@@ -35,7 +35,7 @@ const NoDataAlert = () => {
         <Button
           type="submit"
           variant="contained"
-          href="/settings"
+          href="/fixed"
           sx={{ mr: 5, color: theme.palette.text.main }}
         >
           Fixkosten verwalten
@@ -43,7 +43,7 @@ const NoDataAlert = () => {
         <Button
           type="submit"
           variant="contained"
-          href="/settings"
+          href="/fixed"
           sx={{ color: theme.palette.text.main }}
         >
           Ein und Ausgaben verwalten
