@@ -1,32 +1,30 @@
 /* Copyright (c) 2023, Jason Oltzen */
 
+import AttachMoneyIcon from "@mui/icons-material/AttachMoney";
+import BarChartIcon from "@mui/icons-material/BarChart";
+import DarkModeOutlinedIcon from "@mui/icons-material/DarkModeOutlined";
+import LightModeOutlinedIcon from "@mui/icons-material/LightModeOutlined";
+import SavingsIcon from "@mui/icons-material/Savings";
 import AddIcon from "@mui/icons-material/Add";
 import EastIcon from "@mui/icons-material/East";
+import { ColorModeContext } from "../../theme";
 import {
   Box,
-  Button,
   Card,
   CardContent,
-  Dialog,
-  DialogActions,
-  DialogContent,
-  DialogTitle,
   FormControl,
   Grid,
   IconButton,
   InputLabel,
   MenuItem,
-  Select,
   Tab,
   Tabs,
-  TextField,
   Tooltip,
   Typography,
 } from "@mui/material";
 import { useTheme } from "@mui/material/styles";
-import React, { useEffect, useRef, useState } from "react";
+import React, { useContext, useEffect, useRef, useState } from "react";
 import SelectComp from "../../components/SelectComp";
-import TextComp from "../../components/TextComp";
 import Page from "../../components/page";
 import axiosInstance from "../../config/axios";
 import { months, years } from "../../config/constants";
@@ -49,6 +47,7 @@ function SettingsForm() {
   const { user } = useAuth();
   const theme = useTheme();
   const descriptionInputRef = useRef(null);
+  const colorMode = useContext(ColorModeContext); // Access the color mode context
 
   const handleTabChange = (event, newValue) => {
     setSelectedTab(newValue);
@@ -228,6 +227,15 @@ function SettingsForm() {
       setEditSettings(transactionToEdit);
     }
   };
+
+  //calculate total budget for the month
+  const totalBudget = transactions?.reduce(
+    (total, transaction) =>
+      transaction?.transaction_type === "Einnahme"
+        ? total + parseFloat(transaction?.amount)
+        : total - parseFloat(transaction?.amount),
+    0
+  );
 
   return (
     <Page>
@@ -410,6 +418,166 @@ function SettingsForm() {
         </Grid>
         <Grid item xs={12} sm={4} style={{ minHeight: "100%" }}>
           <Grid container direction="column" spacing={2}>
+            <Grid item>
+              <Card
+                sx={{
+                  backgroundColor: theme.palette.card.main,
+                  boxShadow: theme.shadows[6],
+                  "&:hover": {
+                    boxShadow: theme.shadows[10],
+                  },
+                  height: "100%",
+                  marginRight: 4,
+                  minHeight: "100px",
+                  marginTop: 2,
+                }}
+              >
+                <CardContent>
+                  <Box
+                    display="flex"
+                    justifyContent="center"
+                    alignItems="center"
+                  >
+                    <Box
+                      sx={{
+                        backgroundColor: theme.palette.error.main,
+                        borderRadius: "50%",
+                        width: "50px",
+                        height: "50px",
+                        display: "flex",
+                        justifyContent: "center",
+                        alignItems: "center",
+                        position: "relative",
+                        marginRight: 5,
+                        marginLeft: 5,
+                        top: theme.spacing(2),
+                        right: theme.spacing(2),
+                      }}
+                    >
+                      <Tooltip title="Fixkosten verwalten" placement="left">
+                        <IconButton href="/settings">
+                          <AttachMoneyIcon
+                            sx={{ color: theme.palette.common.white }}
+                          />
+                        </IconButton>
+                      </Tooltip>
+                    </Box>
+
+                    <Box
+                      sx={{
+                        backgroundColor: theme.palette.total.main,
+                        borderRadius: "50%",
+                        width: "50px",
+                        height: "50px",
+                        display: "flex",
+                        marginRight: 5,
+                        justifyContent: "center",
+                        alignItems: "center",
+                        position: "relative",
+                        top: theme.spacing(2),
+                        right: theme.spacing(2),
+                      }}
+                    >
+                      <Tooltip title="Dashboard" placement="left">
+                        <IconButton href="/dashboard">
+                          <BarChartIcon
+                            sx={{ color: theme.palette.common.white }}
+                          />
+                        </IconButton>
+                      </Tooltip>
+                    </Box>
+                    <Box
+                      sx={{
+                        backgroundColor: theme.palette.task.main,
+                        borderRadius: "50%",
+                        width: "50px",
+                        height: "50px",
+                        display: "flex",
+                        marginRight: 5,
+                        justifyContent: "center",
+                        alignItems: "center",
+                        position: "relative",
+                        top: theme.spacing(2),
+                        right: theme.spacing(2),
+                      }}
+                    >
+                      <Tooltip title="Sparziele" placement="left">
+                        <IconButton href="/saving">
+                          <SavingsIcon
+                            sx={{ color: theme.palette.common.white }}
+                          />
+                        </IconButton>
+                      </Tooltip>
+                    </Box>
+                    <Box
+                      sx={{
+                        backgroundColor: theme.palette.left.main,
+                        borderRadius: "50%",
+                        width: "50px",
+                        height: "50px",
+                        display: "flex",
+                        justifyContent: "center",
+                        alignItems: "center",
+                        position: "relative",
+                        top: theme.spacing(2),
+                        right: theme.spacing(2),
+                      }}
+                    >
+                      <Tooltip title="Colormodus" placement="left">
+                        {colorMode.mode}
+                        <IconButton
+                          onClick={colorMode.toggleColorMode}
+                          color="inherit"
+                        >
+                          {theme.palette.mode === "dark" ? (
+                            <DarkModeOutlinedIcon sx={{ color: "white" }} />
+                          ) : (
+                            <LightModeOutlinedIcon sx={{ color: "black" }} />
+                          )}
+                        </IconButton>
+                      </Tooltip>
+                    </Box>
+                  </Box>
+                </CardContent>
+              </Card>
+            </Grid>
+            <Grid item>
+              <Card
+                sx={{
+                  backgroundColor: theme.palette.card.main,
+                  boxShadow: theme.shadows[6],
+                  "&:hover": {
+                    boxShadow: theme.shadows[10],
+                  },
+                  height: "100%",
+                  marginRight: 4,
+                }}
+              >
+                <CardContent>
+                  <Box
+                    display="flex"
+                    justifyContent="space-between"
+                    alignItems="center"
+                  >
+                    <Box>
+                      <Typography
+                        variant="h6"
+                        sx={{ color: theme.palette.text.main }}
+                      >
+                        <strong>Gesamtbudget für diesen Monat:</strong>
+                      </Typography>
+                      <Typography
+                        variant="h4"
+                        sx={{ fontWeight: "bold", mt: 2 }}
+                      >
+                        {totalBudget.toFixed(2)} €
+                      </Typography>
+                    </Box>
+                  </Box>
+                </CardContent>
+              </Card>
+            </Grid>
+
             <Grid item>
               <Card
                 sx={{
