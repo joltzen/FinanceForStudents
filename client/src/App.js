@@ -11,13 +11,13 @@ import {
   Contact,
   Dashboard,
   FinancePage,
+  Fixed,
   Home,
   Impressum,
   Login,
   Profile,
   Reset,
   Saving,
-  Settings,
   Signup,
 } from "./pages";
 import { ColorModeContext, useMode } from "./theme";
@@ -50,7 +50,7 @@ function App() {
                 <Route path="/profile" element={<Profile />} />
                 <Route path="/finance" element={<FinancePage />} />
                 <Route path="/dashboard" element={<Dashboard />} />
-                <Route path="/settings" element={<Settings />} />
+                <Route path="/fixed" element={<Fixed />} />
                 <Route path="/password-reset" element={<Reset />} />
                 <Route path="/saving" element={<Saving />} />
                 <Route path="/about" element={<About />} />

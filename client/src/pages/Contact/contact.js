@@ -9,7 +9,6 @@ import {
   Typography,
 } from "@mui/material";
 import React from "react";
-import Page from "../../components/page";
 
 function ContactPage() {
   const handleSubmit = (event) => {
@@ -18,7 +17,7 @@ function ContactPage() {
   };
 
   return (
-    <Page>
+    <div>
       <Container maxWidth="md">
         <Typography variant="h4" component="h1" gutterBottom>
           Willkommen auf der Kontaktseite!
@@ -64,7 +63,7 @@ function ContactPage() {
           webmaster@financeforstudents.com
         </Typography>
       </Container>
-    </Page>
+    </div>
   );
 }
 

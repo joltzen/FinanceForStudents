@@ -1,13 +1,14 @@
 /* Copyright (c) 2023, Jason Oltzen */
 
+import AddIcon from "@mui/icons-material/Add";
 import AttachMoneyIcon from "@mui/icons-material/AttachMoney";
 import BarChartIcon from "@mui/icons-material/BarChart";
 import DarkModeOutlinedIcon from "@mui/icons-material/DarkModeOutlined";
-import LightModeOutlinedIcon from "@mui/icons-material/LightModeOutlined";
-import SavingsIcon from "@mui/icons-material/Savings";
-import AddIcon from "@mui/icons-material/Add";
 import EastIcon from "@mui/icons-material/East";
-import { ColorModeContext } from "../../theme";
+import LightModeOutlinedIcon from "@mui/icons-material/LightModeOutlined";
+import PaymentsIcon from "@mui/icons-material/Payments";
+import SavingsIcon from "@mui/icons-material/Savings";
+
 import {
   Box,
   Card,
@@ -29,11 +30,12 @@ import Page from "../../components/page";
 import axiosInstance from "../../config/axios";
 import { months, years } from "../../config/constants";
 import { useAuth } from "../../core/auth/auth";
+import { ColorModeContext } from "../../theme";
 import DialogPage from "../Settings/dialog";
+import EditSettingsDialog from "./edit";
+import FixedDialog from "./fixeddialog";
 import TransactionSection from "./transactionselect";
 import TransferDialog from "./transerdialog";
-import FixedDialog from "./fixeddialog";
-import EditSettingsDialog from "./edit";
 function SettingsForm() {
   const [filterMonth, setFilterMonth] = useState(new Date().getMonth() + 1);
   const [filterYear, setFilterYear] = useState(new Date().getFullYear());
@@ -271,15 +273,20 @@ function SettingsForm() {
               style={{
                 display: "flex",
                 flexDirection: "column",
+
                 padding: 10,
                 height: "100%",
               }}
             >
-              <Typography variant="h4" color={theme.palette.text.main}>
-                Fixkosten
-              </Typography>
-
-              <Box sx={{ width: "100%", marginTop: 2 }}></Box>
+              <Box sx={{ width: "100%", mt: 4 }}>
+                <Typography
+                  variant="h4"
+                  color={theme.palette.text.main}
+                  sx={{ mt: 2, mb: 2 }}
+                >
+                  Fixkosten
+                </Typography>
+              </Box>
               <Box sx={{ width: "100%", marginTop: 3, marginBottom: 20 }}>
                 <Tabs
                   value={selectedTab}
@@ -440,7 +447,7 @@ function SettingsForm() {
                   >
                     <Box
                       sx={{
-                        backgroundColor: theme.palette.error.main,
+                        backgroundColor: theme.palette.monthly.main,
                         borderRadius: "50%",
                         width: "50px",
                         height: "50px",
@@ -454,9 +461,9 @@ function SettingsForm() {
                         right: theme.spacing(2),
                       }}
                     >
-                      <Tooltip title="Fixkosten verwalten" placement="left">
-                        <IconButton href="/settings">
-                          <AttachMoneyIcon
+                      <Tooltip title="Transaktionen verwalten" placement="left">
+                        <IconButton href="/finance">
+                          <PaymentsIcon
                             sx={{ color: theme.palette.common.white }}
                           />
                         </IconButton>

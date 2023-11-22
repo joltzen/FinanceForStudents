@@ -224,7 +224,7 @@ function DashboardPage() {
               },
               height: "100%",
             }}
-            onClick={() => navigate("/settings")}
+            onClick={() => navigate("/fixed")}
           >
             <CardContent>
               <BudgetSummary

@@ -10,5 +10,5 @@ export { Login } from "./Login";
 export { Profile } from "./Profile";
 export { Reset } from "./Reset";
 export { Saving } from "./Save";
-export { Settings } from "./Settings";
+export { Fixed } from "./Fixed";
 export { Signup } from "./Signup";
