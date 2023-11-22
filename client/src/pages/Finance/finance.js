@@ -19,6 +19,8 @@ import TextComp from "../../components/TextComp";
 import axiosInstance from "../../config/axios";
 import { useAuth } from "../../core/auth/auth";
 import FinanceOverview from "./overview";
+import Add from "@mui/icons-material/Add";
+import AddTransaction from "./addtransaction";
 function FinancePage() {
   const today = new Date().toISOString().split("T")[0];
   const theme = useTheme();
@@ -138,143 +140,23 @@ function FinancePage() {
 
   return (
     <Grid item xs={12} md={8} lg={6}>
-      <Dialog
-        open={openDialog}
-        onClose={handleCloseDialog}
-        fullWidth
-        justifyContent="center"
-        maxWidth="sm"
-        alignItems="center"
-        sx={{ marginTop: "5%" }}
-      >
-        <DialogContent sx={{ backgroundColor: theme.palette.card.main }}>
-          <form onSubmit={handleSubmit}>
-            <InputLabel
-              sx={{ color: theme.palette.text.main, mt: 2, mb: 2 }}
-              id="category-label"
-            >
-              Transaktionstyp
-            </InputLabel>
-            <FormControl fullWidth>
-              <SelectComp
-                value={transactionType}
-                onChange={handleTransactionTypeChange}
-              >
-                <MenuItem value="Ausgabe">Ausgabe</MenuItem>
-                <MenuItem value="Einnahme">Einnahme</MenuItem>
-              </SelectComp>
-            </FormControl>
-            <InputLabel
-              sx={{ color: theme.palette.text.main, mt: 2 }}
-              id="category-label"
-            >
-              Beschreibung
-            </InputLabel>
-            <TextComp
-              type="text"
-              value={description}
-              onChange={handleDescriptionChange}
-              fullWidth
-              autoFocus
-              required
-            />
-            <InputLabel
-              sx={{ color: theme.palette.text.main, mt: 2 }}
-              id="category-label"
-            >
-              Betrag
-            </InputLabel>
-            <TextComp
-              type="number"
-              value={amount}
-              onChange={handleAmountChange}
-              fullWidth
-              required
-            />
-            <InputLabel
-              sx={{ color: theme.palette.text.main, mt: 2 }}
-              id="category-label"
-            >
-              Datum
-            </InputLabel>
-            <TextComp
-              fullWidth
-              name="date"
-              type="date"
-              InputLabelProps={{ shrink: true }}
-              value={date}
-              onChange={handleDateChange}
-            />
-            {categories.length > 0 ? (
-              <>
-                <InputLabel
-                  sx={{ color: theme.palette.text.main, mt: 2, mb: 2 }}
-                  id="category-label"
-                >
-                  Kategorie
-                </InputLabel>
-                <Select
-                  fullWidth
-                  labelId="category-label"
-                  value={category}
-                  onChange={(e) => setCategory(e.target.value)}
-                  sx={{
-                    color: theme.palette.text.main,
-                    "& .MuiSelect-select": {
-                      backgroundColor: getCurrentCategoryColor(),
-                    },
-                    "&:before": {
-                      borderColor: "black",
-                    },
-                    "&:after": {
-                      borderColor: "black",
-                    },
-                  }}
-                >
-                  {categories.map((cat) => (
-                    <MenuItem
-                      key={cat.id}
-                      value={cat.id}
-                      sx={{
-                        backgroundColor: cat.color,
-                        "&.Mui-selected": {
-                          backgroundColor: cat.color,
-                          fontWeight: "bold",
-                        },
-                        "&:hover": {
-                          backgroundColor: adjustColor(cat.color, 20),
-                        },
-                      }}
-                    >
-                      {cat.name}
-                    </MenuItem>
-                  ))}
-                </Select>
-              </>
-            ) : (
-              <Typography sx={{ color: theme.palette.text.main, mt: 2 }}>
-                Noch keine Kategorie vorhanden
-              </Typography>
-            )}
-          </form>
-        </DialogContent>
-        <DialogActions sx={{ backgroundColor: theme.palette.card.main }}>
-          <Button
-            onClick={handleCloseDialog}
-            color="primary"
-            sx={{ color: theme.palette.text.main }}
-          >
-            Abbrechen
-          </Button>
-          <Button
-            onClick={handleSubmit}
-            color="primary"
-            sx={{ color: theme.palette.text.main }}
-          >
-            Speichern
-          </Button>
-        </DialogActions>
-      </Dialog>
+      <AddTransaction
+        openDialog={openDialog}
+        handleCloseDialog={handleCloseDialog}
+        theme={theme}
+        handleSubmit={handleSubmit}
+        description={description}
+        handleDescriptionChange={handleDescriptionChange}
+        amount={amount}
+        handleAmountChange={handleAmountChange}
+        transactionType={transactionType}
+        handleTransactionTypeChange={handleTransactionTypeChange}
+        categories={categories}
+        category={category}
+        setCategory={setCategory}
+        date={date}
+        handleDateChange={handleDateChange}
+      />
 
       <FinanceOverview
         update={update}
