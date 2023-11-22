@@ -5,6 +5,8 @@ import EastIcon from "@mui/icons-material/East";
 import {
   Box,
   Button,
+  Card,
+  CardContent,
   Dialog,
   DialogActions,
   DialogContent,
@@ -32,6 +34,8 @@ import { useAuth } from "../../core/auth/auth";
 import DialogPage from "../Settings/dialog";
 import TransactionSection from "./transactionselect";
 import TransferDialog from "./transerdialog";
+import FixedDialog from "./fixeddialog";
+import EditSettingsDialog from "./edit";
 function SettingsForm() {
   const [filterMonth, setFilterMonth] = useState(new Date().getMonth() + 1);
   const [filterYear, setFilterYear] = useState(new Date().getFullYear());
@@ -227,257 +231,207 @@ function SettingsForm() {
 
   return (
     <Page>
-      <Grid item xs={12} md={8} lg={6}>
-        <Dialog open={openDialog} onClose={handleDialog} fullWidth>
-          <DialogTitle
-            sx={{
-              backgroundColor: theme.palette.card.main,
-              color: theme.palette.text.main,
+      <FixedDialog
+        openDialog={openDialog}
+        handleDialog={handleDialog}
+        handleSubmit={handleSubmit}
+        theme={theme}
+        months={months}
+        years={years}
+        filterMonth={filterMonth}
+        setFilterMonth={setFilterMonth}
+        filterYear={filterYear}
+        setFilterYear={setFilterYear}
+        description={description}
+        handleDescriptionChange={handleDescriptionChange}
+        amount={amount}
+        handleAmountChange={handleAmountChange}
+        transactionType={transactionType}
+        handleTransactionTypeChange={handleTransactionTypeChange}
+      />
+
+      <Grid container spacing={4} style={{ minHeight: "100vh" }}>
+        <Grid item xs={12} sm={8} md={6} lg={8} style={{ minHeight: "100%" }}>
+          <Card
+            style={{
+              height: "100%",
+              width: "100%",
+              backgroundColor: theme.palette.left.main,
             }}
           >
-            Neue Transaktion
-          </DialogTitle>
-          <DialogContent sx={{ backgroundColor: theme.palette.card.main }}>
-            <form onSubmit={handleSubmit}>
-              <InputLabel
-                sx={{ color: theme.palette.text.main, mt: 2, mb: 2 }}
-                id="category-label"
-              >
-                Transaktionstyp
-              </InputLabel>
-              <FormControl fullWidth>
-                <SelectComp
-                  value={transactionType}
-                  onChange={handleTransactionTypeChange}
+            <CardContent
+              style={{
+                display: "flex",
+                flexDirection: "column",
+                padding: 10,
+                height: "100%",
+              }}
+            >
+              <Typography variant="h4" color={theme.palette.text.main}>
+                Fixkosten
+              </Typography>
+
+              <Box sx={{ width: "100%", marginTop: 2 }}></Box>
+              <Box sx={{ width: "100%", marginTop: 3, marginBottom: 20 }}>
+                <Tabs
+                  value={selectedTab}
+                  onChange={handleTabChange}
+                  aria-label="Income and Expenses Tabs"
+                  variant="fullWidth"
+                  sx={{
+                    backgroundColor: theme.palette.list.main,
+                    color: theme.palette.text.main,
+                    ".MuiTabs-indicator": {
+                      backgroundColor: theme.palette.indicator.main,
+                    },
+                    borderRadius: "50px",
+                    marginBottom: 2,
+                    ".MuiTab-root": {
+                      color: theme.palette.text.main,
+                      fontWeight: "bold",
+                      marginRight: 2,
+                      "&.Mui-selected": {
+                        color: theme.palette.indicator.main,
+                        borderBottom: `2px solid ${theme.palette.selected.main}`,
+                      },
+                    },
+                  }}
                 >
-                  <MenuItem value="Ausgabe">Ausgabe</MenuItem>
-                  <MenuItem value="Einnahme">Einnahme</MenuItem>
-                </SelectComp>
-              </FormControl>
-              <InputLabel
-                sx={{ color: theme.palette.text.main, mt: 2 }}
-                id="category-label"
+                  <Tab label="Einnahmen" />
+                  <Tab label="Ausgaben" />
+                </Tabs>
+                <Box
+                  sx={{
+                    display: "flex",
+                    alignItems: "center", // Aligns items vertically
+                    marginTop: 3,
+                    marginBottom: 3,
+                  }}
+                >
+                  <FormControl sx={{ marginRight: 3, flexGrow: 1 }}>
+                    <InputLabel style={{ color: theme.palette.text.main }}>
+                      Monat
+                    </InputLabel>
+                    <SelectComp
+                      value={filterMonth}
+                      onChange={(e) => setFilterMonth(e.target.value)}
+                      label="Monat"
+                    >
+                      {months?.map((month) => (
+                        <MenuItem key={month.value} value={month.value}>
+                          {month.label}
+                        </MenuItem>
+                      ))}
+                    </SelectComp>
+                  </FormControl>
+
+                  <FormControl sx={{ marginRight: 3, flexGrow: 1 }}>
+                    <InputLabel style={{ color: theme.palette.text.main }}>
+                      Jahr
+                    </InputLabel>
+                    <SelectComp
+                      value={filterYear}
+                      onChange={(e) => setFilterYear(e.target.value)}
+                      label="Jahr"
+                    >
+                      {years?.map((year) => (
+                        <MenuItem key={year} value={year}>
+                          {year}
+                        </MenuItem>
+                      ))}
+                    </SelectComp>
+                  </FormControl>
+
+                  <Box
+                    sx={{
+                      display: "flex",
+                      justifyContent: "flex-end",
+                      flexGrow: 0,
+                    }}
+                  >
+                    <IconButton
+                      variant="contained"
+                      onClick={handleTransferDialogOpen}
+                      sx={{
+                        backgroundColor: theme.palette.primary.main,
+                        boxShadow: 5,
+                      }}
+                    >
+                      <Tooltip title="Fixkosten übertragen">
+                        <EastIcon sx={{ color: theme.palette.common.white }} />
+                      </Tooltip>
+                    </IconButton>
+
+                    <IconButton
+                      variant="contained"
+                      onClick={handleDialog}
+                      sx={{
+                        backgroundColor: theme.palette.primary.main,
+                        boxShadow: 5,
+                        marginLeft: 3,
+                      }}
+                    >
+                      <Tooltip title="Fixkosten hinzufügen">
+                        <AddIcon sx={{ color: theme.palette.common.white }} />
+                      </Tooltip>
+                    </IconButton>
+                  </Box>
+                </Box>
+                <TransferDialog
+                  open={openTransferDialog}
+                  handleClose={handleTransferDialogClose}
+                  handleSubmit={handleTransferSubmit}
+                  months={months}
+                  years={years}
+                />
+                {selectedTab === 0 && (
+                  <TransactionSection
+                    transactions={transactions}
+                    filterMonth={filterMonth}
+                    filterYear={filterYear}
+                    handleDeleteSettings={handleDeleteSettings}
+                    handleEditButtonClick={handleEditButtonClick}
+                    transactionType="Einnahme"
+                  />
+                )}
+                {selectedTab === 1 && (
+                  <TransactionSection
+                    transactions={transactions}
+                    filterMonth={filterMonth}
+                    filterYear={filterYear}
+                    handleDeleteSettings={handleDeleteSettings}
+                    handleEditButtonClick={handleEditButtonClick}
+                    transactionType="Ausgabe"
+                  />
+                )}
+              </Box>
+            </CardContent>
+          </Card>
+        </Grid>
+        <Grid item xs={12} sm={4} style={{ minHeight: "100%" }}>
+          <Grid container direction="column" spacing={2}>
+            <Grid item>
+              <Card
+                sx={{
+                  backgroundColor: theme.palette.card.main,
+                  boxShadow: theme.shadows[6],
+                  "&:hover": {
+                    boxShadow: theme.shadows[10],
+                  },
+                  height: "100%",
+                  marginRight: 4,
+                  minHeight: "100px",
+                  marginTop: 2,
+                }}
               >
-                Beschreibung
-              </InputLabel>
-              <TextComp
-                type="text"
-                value={description}
-                onChange={handleDescriptionChange}
-                fullWidth
-                autoFocus
-                required
-              />
-              <InputLabel
-                sx={{ color: theme.palette.text.main, mt: 2 }}
-                id="category-label"
-              >
-                Betrag
-              </InputLabel>
-              <TextComp
-                type="number"
-                value={amount}
-                onChange={handleAmountChange}
-                fullWidth
-                required
-              />
-              <InputLabel
-                sx={{ color: theme.palette.text.main, mt: 2, mb: 2 }}
-                id="category-label"
-              >
-                Monat
-              </InputLabel>
-              <SelectComp
-                fullWidth
-                labelId="category-label"
-                value={filterMonth}
-                onChange={(e) => setFilterMonth(e.target.value)}
-              >
-                {months?.map((month) => (
-                  <MenuItem key={month.value} value={month.value}>
-                    {month.label}
-                  </MenuItem>
-                ))}
-              </SelectComp>
-              <InputLabel
-                sx={{ color: theme.palette.text.main, mt: 2, mb: 2 }}
-                id="category-label"
-              >
-                Jahr
-              </InputLabel>
-              <SelectComp
-                fullWidth
-                labelId="category-label"
-                value={filterYear}
-                onChange={(e) => setFilterYear(e.target.value)}
-              >
-                {years?.map((year) => (
-                  <MenuItem key={year} value={year}>
-                    {year}
-                  </MenuItem>
-                ))}
-              </SelectComp>
-            </form>
-          </DialogContent>
-          <DialogActions sx={{ backgroundColor: theme.palette.card.main }}>
-            <Button
-              onClick={handleDialog}
-              sx={{ color: theme.palette.text.main }}
-            >
-              Abbrechen
-            </Button>
-            <Button
-              onClick={handleSubmit}
-              sx={{ color: theme.palette.text.main }}
-            >
-              Speichern
-            </Button>
-          </DialogActions>
-        </Dialog>
+                <CardContent>
+                  <DialogPage />
+                </CardContent>
+              </Card>
+            </Grid>
+          </Grid>
+        </Grid>
       </Grid>
-      <Typography
-        variant="h4"
-        sx={{ mb: 4, mt: 5, color: theme.palette.text.main }}
-      >
-        Fixkosten
-      </Typography>
-
-      <Box sx={{ width: "40%", marginTop: 2 }}>
-        <DialogPage />
-      </Box>
-      <Box sx={{ width: "40%", marginTop: 10, marginBottom: 20 }}>
-        <Tabs
-          value={selectedTab}
-          onChange={handleTabChange}
-          aria-label="Income and Expenses Tabs"
-          variant="fullWidth"
-          sx={{
-            backgroundColor: theme.palette.list.main,
-            color: theme.palette.text.main,
-            ".MuiTabs-indicator": {
-              backgroundColor: theme.palette.indicator.main,
-            },
-            borderRadius: "50px",
-            marginBottom: 2,
-            ".MuiTab-root": {
-              color: theme.palette.text.main,
-              fontWeight: "bold",
-              marginRight: 2,
-              "&.Mui-selected": {
-                color: theme.palette.indicator.main,
-                borderBottom: `2px solid ${theme.palette.selected.main}`,
-              },
-            },
-          }}
-        >
-          <Tab label="Einnahmen" />
-          <Tab label="Ausgaben" />
-        </Tabs>
-        <Box
-          sx={{
-            display: "flex",
-            alignItems: "center", // Aligns items vertically
-            marginTop: 3,
-            marginBottom: 3,
-          }}
-        >
-          <FormControl sx={{ marginRight: 3, flexGrow: 1 }}>
-            <InputLabel style={{ color: theme.palette.text.main }}>
-              Monat
-            </InputLabel>
-            <SelectComp
-              value={filterMonth}
-              onChange={(e) => setFilterMonth(e.target.value)}
-              label="Monat"
-            >
-              {months?.map((month) => (
-                <MenuItem key={month.value} value={month.value}>
-                  {month.label}
-                </MenuItem>
-              ))}
-            </SelectComp>
-          </FormControl>
-
-          <FormControl sx={{ marginRight: 3, flexGrow: 1 }}>
-            <InputLabel style={{ color: theme.palette.text.main }}>
-              Jahr
-            </InputLabel>
-            <SelectComp
-              value={filterYear}
-              onChange={(e) => setFilterYear(e.target.value)}
-              label="Jahr"
-            >
-              {years?.map((year) => (
-                <MenuItem key={year} value={year}>
-                  {year}
-                </MenuItem>
-              ))}
-            </SelectComp>
-          </FormControl>
-
-          <Box
-            sx={{
-              display: "flex",
-              justifyContent: "flex-end",
-              flexGrow: 0,
-            }}
-          >
-            <IconButton
-              variant="contained"
-              onClick={handleTransferDialogOpen}
-              sx={{
-                backgroundColor: theme.palette.primary.main,
-                boxShadow: 5,
-              }}
-            >
-              <Tooltip title="Fixkosten übertragen">
-                <EastIcon sx={{ color: theme.palette.common.white }} />
-              </Tooltip>
-            </IconButton>
-
-            <IconButton
-              variant="contained"
-              onClick={handleDialog}
-              sx={{
-                backgroundColor: theme.palette.primary.main,
-                boxShadow: 5,
-                marginLeft: 3,
-              }}
-            >
-              <Tooltip title="Fixkosten hinzufügen">
-                <AddIcon sx={{ color: theme.palette.common.white }} />
-              </Tooltip>
-            </IconButton>
-          </Box>
-        </Box>
-        <TransferDialog
-          open={openTransferDialog}
-          handleClose={handleTransferDialogClose}
-          handleSubmit={handleTransferSubmit}
-          months={months}
-          years={years}
-        />
-        {selectedTab === 0 && (
-          <TransactionSection
-            transactions={transactions}
-            filterMonth={filterMonth}
-            filterYear={filterYear}
-            handleDeleteSettings={handleDeleteSettings}
-            handleEditButtonClick={handleEditButtonClick}
-            transactionType="Einnahme"
-          />
-        )}
-        {selectedTab === 1 && (
-          <TransactionSection
-            transactions={transactions}
-            filterMonth={filterMonth}
-            filterYear={filterYear}
-            handleDeleteSettings={handleDeleteSettings}
-            handleEditButtonClick={handleEditButtonClick}
-            transactionType="Ausgabe"
-          />
-        )}
-      </Box>
       {editSettings && (
         <EditSettingsDialog
           transaction={editSettings}
@@ -486,184 +440,6 @@ function SettingsForm() {
         />
       )}
     </Page>
-  );
-}
-
-function EditSettingsDialog({ transaction, onClose, onSave }) {
-  const [editedSettings, setEditedSettings] = useState({
-    ...transaction,
-  });
-  const theme = useTheme();
-
-  const handleInputChange = (event) => {
-    const { name, value } = event.target;
-    setEditedSettings((prevSettings) => ({
-      ...prevSettings,
-      [name]: value,
-    }));
-  };
-
-  const handleSelectChange = (event) => {
-    setEditedSettings({
-      ...editedSettings,
-      transaction_type: event.target.value,
-    });
-  };
-  const handleMonthChange = (event) => {
-    setEditedSettings({
-      ...editedSettings,
-      month: event.target.value,
-    });
-  };
-  const handleYearChange = (event) => {
-    setEditedSettings({
-      ...editedSettings,
-      year: event.target.value,
-    });
-  };
-
-  const handleSave = () => {
-    onSave(editedSettings);
-    onClose();
-  };
-
-  return (
-    <Dialog open={!!transaction} onClose={onClose} fullWidth>
-      <DialogTitle
-        sx={{
-          backgroundColor: theme.palette.card.main,
-          color: theme.palette.text.main,
-          fontSize: "1.2rem", // Größere Schrift für den Titel
-        }}
-      >
-        Bearbeiten
-      </DialogTitle>
-      <DialogContent
-        sx={{ backgroundColor: theme.palette.card.main, padding: "20px" }}
-      >
-        {/* Transaktionstyp */}
-        <InputLabel style={{ color: theme.palette.text.main }}>
-          Transaktionstyp
-        </InputLabel>
-        <FormControl fullWidth margin="normal">
-          <Select
-            value={editedSettings.transaction_type}
-            onChange={handleSelectChange}
-            sx={{
-              color: theme.palette.text.main,
-              height: "40px",
-              ".MuiInputBase-input": {
-                paddingTop: "5px",
-                paddingBottom: "5px",
-              },
-              border: `1px solid ${theme.palette.text.main}`,
-            }}
-          >
-            <MenuItem value="Ausgabe">Ausgabe</MenuItem>
-            <MenuItem value="Einnahme">Einnahme</MenuItem>
-          </Select>
-        </FormControl>
-
-        {/* Beschreibung */}
-        <InputLabel style={{ color: theme.palette.text.main }}>
-          Beschreibung
-        </InputLabel>
-        <TextField
-          variant="outlined"
-          fullWidth
-          name="description"
-          margin="normal"
-          value={editedSettings.description}
-          onChange={handleInputChange}
-          sx={{
-            ".MuiOutlinedInput-root": {
-              height: "40px",
-              border: `1px solid ${theme.palette.text.main}`,
-            },
-          }}
-        />
-
-        {/* Betrag */}
-        <InputLabel style={{ color: theme.palette.text.main }}>
-          Betrag
-        </InputLabel>
-        <TextField
-          variant="outlined"
-          fullWidth
-          name="amount"
-          margin="normal"
-          type="number"
-          value={editedSettings.amount}
-          onChange={handleInputChange}
-          sx={{
-            ".MuiOutlinedInput-root": {
-              height: "40px",
-              border: `1px solid ${theme.palette.text.main}`,
-            },
-          }}
-        />
-
-        {/* Monat */}
-        <InputLabel style={{ color: theme.palette.text.main }}>
-          Monat
-        </InputLabel>
-        <FormControl fullWidth margin="normal">
-          <Select
-            value={editedSettings.month}
-            onChange={handleMonthChange}
-            sx={{
-              color: theme.palette.text.main,
-              height: "40px",
-              ".MuiInputBase-input": {
-                paddingTop: "5px",
-                paddingBottom: "5px",
-              },
-              border: `1px solid ${theme.palette.text.main}`,
-            }}
-          >
-            {months?.map((month) => (
-              <MenuItem key={month.value} value={month.value}>
-                {month.label}
-              </MenuItem>
-            ))}
-          </Select>
-        </FormControl>
-
-        {/* Jahr */}
-        <InputLabel style={{ color: theme.palette.text.main }}>Jahr</InputLabel>
-        <FormControl fullWidth margin="normal">
-          <Select
-            value={editedSettings.year}
-            onChange={handleYearChange}
-            sx={{
-              color: theme.palette.text.main,
-              height: "40px",
-              ".MuiInputBase-input": {
-                paddingTop: "5px",
-                paddingBottom: "5px",
-              },
-              border: `1px solid ${theme.palette.text.main}`,
-            }}
-          >
-            {years?.map((year) => (
-              <MenuItem key={year} value={year}>
-                {year}
-              </MenuItem>
-            ))}
-          </Select>
-        </FormControl>
-      </DialogContent>
-      <DialogActions
-        sx={{ backgroundColor: theme.palette.card.main, padding: "10px" }}
-      >
-        <Button onClick={onClose} color="secondary" variant="outlined">
-          Abbrechen
-        </Button>
-        <Button onClick={handleSave} color="primary" variant="contained">
-          Speichern
-        </Button>
-      </DialogActions>
-    </Dialog>
   );
 }
 
