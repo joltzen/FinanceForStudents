@@ -39,6 +39,7 @@ function DialogPage({ onCategoryChange }) {
     setNewCategory("");
     setCategoryColor("#FFFFFF");
     setOpenDialog(false);
+    onCategoryChange();
   };
 
   const handleEditCategory = async () => {
@@ -59,6 +60,7 @@ function DialogPage({ onCategoryChange }) {
       setOpenEditDialog(false);
       setNewCategory("");
       setCategoryColor("#FFFFFF");
+      onCategoryChange();
     } catch (error) {
       console.error("Error updating category:", error);
     }
@@ -83,7 +85,7 @@ function DialogPage({ onCategoryChange }) {
     };
 
     fetchCategories();
-  }, [user.id]);
+  }, [user.id, categories]);
 
   const handleAddCategory = async (event) => {
     try {
@@ -112,6 +114,7 @@ function DialogPage({ onCategoryChange }) {
       console.error("Fehler beim Löschen der Kategorie:", error);
     }
     setOpenEditDialog(false);
+    onCategoryChange();
   };
   function isColorDark(color) {
     const rgb = parseInt(color.substring(1), 16);
