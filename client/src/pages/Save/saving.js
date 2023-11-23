@@ -1,7 +1,7 @@
 /* Copyright (c) 2023, Jason Oltzen */
 
 import Add from "@mui/icons-material/Add";
-import { Card, Grid } from "@mui/material";
+import { Button, Card, Grid, Typography } from "@mui/material";
 import { useTheme } from "@mui/material/styles";
 import React, { useEffect, useState } from "react";
 import AddButton from "../../components/AddButtonComp";
@@ -13,7 +13,6 @@ import SavingDialog from "./dialog";
 function SavingPage() {
   const today = new Date().toISOString().split("T")[0];
   const theme = useTheme();
-
   const { user } = useAuth();
   const [open, setOpen] = useState(false);
   const [goals, setGoals] = useState([]);
@@ -25,14 +24,12 @@ function SavingPage() {
     deadline: "",
     duration: "",
   });
-
   const [alter, setAlert] = useState(false);
   const [alterDuration, setAlertDuration] = useState(false);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
     let updatedGoal = { ...savingGoal, [name]: value };
-
     if (name === "monthly_saving" || name === "total_amount") {
       const monthlySaving = parseFloat(updatedGoal.monthly_saving) || 0;
       const totalAmount = parseFloat(updatedGoal.total_amount) || 0;
@@ -50,7 +47,6 @@ function SavingPage() {
         }
       }
     }
-
     if (name === "startdate" || name === "duration") {
       const startDate = updatedGoal.startdate
         ? new Date(updatedGoal.startdate)
@@ -64,6 +60,7 @@ function SavingPage() {
         };
       }
     }
+
     if (name === "deadline") {
       const enteredDeadline = new Date(value);
       const startDate = new Date(updatedGoal.startdate);
@@ -71,15 +68,14 @@ function SavingPage() {
       calculatedDeadline.setMonth(
         startDate.getMonth() + (parseInt(updatedGoal.duration, 10) || 0)
       );
-
       const diffTime = Math.abs(enteredDeadline - startDate);
       const diffMonths = Math.ceil(diffTime / (1000 * 60 * 60 * 24 * 30));
-
       if (diffMonths <= (parseInt(updatedGoal.duration, 10) || 0)) {
         setAlertDuration(true);
         return;
       }
     }
+
     setSavingGoal(updatedGoal);
   };
 
@@ -113,6 +109,7 @@ function SavingPage() {
       console.error("Fehler beim Speichern des Sparziels", error);
     }
   };
+
   const handleOpen = () => {
     setOpen(!open);
   };
@@ -161,29 +158,56 @@ function SavingPage() {
 
   return (
     <Grid container>
-      <AddButton variant="contained" onClick={handleOpen} startIcon={<Add />}>
-        Sparziel hinzufügen
-      </AddButton>
+      {goals.length > 0 ? (
+        <AddButton variant="contained" onClick={handleOpen} startIcon={<Add />}>
+          Sparziel hinzufügen
+        </AddButton>
+      ) : (
+        <></>
+      )}
 
-      {goals.map((goal, index) => (
-        <Grid item xs={12} md={6} lg={4} key={goal.id || index}>
+      {goals.length > 0 ? (
+        goals.map((goal, index) => (
+          <Grid item xs={12} md={6} lg={3} key={goal.id || index}>
+            <Card
+              sx={{
+                backgroundColor: theme.palette.card.main,
+                margin: 2,
+                borderRadius: 5,
+              }}
+            >
+              <SavingCards
+                goal={goal}
+                handleDelete={handleDelete}
+                calculateSavingsProgress={calculateSavingsProgress}
+                theme={theme}
+              />
+            </Card>
+          </Grid>
+        ))
+      ) : (
+        <Grid item xs={12}>
           <Card
             sx={{
               backgroundColor: theme.palette.card.main,
               margin: 2,
               borderRadius: 5,
+              padding: 2,
+              textAlign: "center",
             }}
           >
-            <SavingCards
-              goal={goal}
-              handleDelete={handleDelete}
-              calculateSavingsProgress={calculateSavingsProgress}
-              theme={theme}
-            />
+            <Typography variant="h6">
+              Es sind noch keine Sparziele vorhanden!
+            </Typography>
+            <Typography variant="subtitle1" sx={{ mt: 2 }}>
+              Fügen Sie ein neues Sparziel hinzu, um loszulegen!
+            </Typography>
+            <Button variant="contained" onClick={handleOpen} sx={{ mt: 10 }}>
+              Sparziel hinzufügen
+            </Button>
           </Card>
         </Grid>
-      ))}
-
+      )}
       <SavingDialog
         open={open}
         handleOpen={handleOpen}
