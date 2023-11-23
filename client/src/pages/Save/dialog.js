@@ -28,12 +28,14 @@ function SavingDialog({
 }) {
   const theme = useTheme();
   return (
-    <Dialog open={open} onClose={handleOpen} fullwidth minWidth="lg">
+    <Dialog open={open} onClose={handleOpen}>
       <DialogTitle
         sx={{
           backgroundColor: theme.palette.card.main,
           color: theme.palette.text.main,
           fontSize: "1.2rem", // Größere Schrift für den Titel
+          fontWeight: "bold",
+          minWidth: "400px",
         }}
       >
         Sparziel setzen

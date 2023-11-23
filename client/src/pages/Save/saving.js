@@ -1,32 +1,10 @@
 /* Copyright (c) 2023, Jason Oltzen */
 
 import Add from "@mui/icons-material/Add";
-import AddCircleOutlineIcon from "@mui/icons-material/AddCircleOutline";
-import CloseIcon from "@mui/icons-material/Close";
-import DeleteIcon from "@mui/icons-material/Delete";
-import {
-  Alert,
-  Box,
-  Button,
-  Card,
-  CardContent,
-  Chip,
-  Collapse,
-  Dialog,
-  DialogActions,
-  DialogContent,
-  DialogTitle,
-  Grid,
-  IconButton,
-  InputLabel,
-  Typography,
-} from "@mui/material";
+import { Card, Grid } from "@mui/material";
 import { useTheme } from "@mui/material/styles";
 import React, { useEffect, useState } from "react";
 import AddButton from "../../components/AddButtonComp";
-import CardComp from "../../components/CardComp";
-import LinearProgressComp from "../../components/LinearProgressComp";
-import TextComp from "../../components/TextComp";
 import axiosInstance from "../../config/axios";
 import { useAuth } from "../../core/auth/auth";
 import SavingCards from "./card";
@@ -188,7 +166,7 @@ function SavingPage() {
       </AddButton>
 
       {goals.map((goal, index) => (
-        <Grid item xs={12} md={6} lg={4}>
+        <Grid item xs={12} md={6} lg={4} key={goal.id || index}>
           <Card
             sx={{
               backgroundColor: theme.palette.card.main,
@@ -205,6 +183,7 @@ function SavingPage() {
           </Card>
         </Grid>
       ))}
+
       <SavingDialog
         open={open}
         handleOpen={handleOpen}
