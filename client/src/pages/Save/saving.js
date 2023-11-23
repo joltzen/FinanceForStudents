@@ -1,5 +1,6 @@
 /* Copyright (c) 2023, Jason Oltzen */
 
+import Add from "@mui/icons-material/Add";
 import AddCircleOutlineIcon from "@mui/icons-material/AddCircleOutline";
 import CloseIcon from "@mui/icons-material/Close";
 import DeleteIcon from "@mui/icons-material/Delete";
@@ -7,6 +8,7 @@ import {
   Alert,
   Box,
   Button,
+  Card,
   CardContent,
   Chip,
   Collapse,
@@ -27,6 +29,8 @@ import LinearProgressComp from "../../components/LinearProgressComp";
 import TextComp from "../../components/TextComp";
 import axiosInstance from "../../config/axios";
 import { useAuth } from "../../core/auth/auth";
+import SavingCards from "./card";
+import SavingDialog from "./dialog";
 
 function SavingPage() {
   const today = new Date().toISOString().split("T")[0];
@@ -178,290 +182,39 @@ function SavingPage() {
   }
 
   return (
-    <Box sx={{ flexGrow: 1, padding: 3 }}>
-      <Grid
-        container
-        spacing={2}
-        justifyContent="center"
-        alignItems="center"
-        style={{ marginTop: 20 }}
-      >
-        <Grid item xs={12} md={8} lg={6}>
-          <Typography variant="h3">Sparziele</Typography>
-          <AddButton
-            variant="contained"
-            onClick={handleOpen}
-            startIcon={<AddCircleOutlineIcon />}
+    <Grid container>
+      <AddButton variant="contained" onClick={handleOpen} startIcon={<Add />}>
+        Sparziel hinzufügen
+      </AddButton>
+
+      {goals.map((goal, index) => (
+        <Grid item xs={12} md={6} lg={4}>
+          <Card
+            sx={{
+              backgroundColor: theme.palette.card.main,
+              margin: 2,
+              borderRadius: 5,
+            }}
           >
-            Sparziel hinzufügen
-          </AddButton>
-          <Dialog open={open} onClose={handleOpen}>
-            <DialogTitle
-              sx={{
-                backgroundColor: theme.palette.card.main,
-                color: theme.palette.text.main,
-              }}
-            >
-              Sparziel setzen
-            </DialogTitle>
-            <DialogContent
-              sx={{
-                backgroundColor: theme.palette.card.main,
-              }}
-            >
-              <Box component="form" noValidate onSubmit={handleSubmit}>
-                {alter && (
-                  <>
-                    <Box sx={{ width: "100%" }}>
-                      <Collapse in={open}>
-                        <Alert
-                          severity="warning"
-                          action={
-                            <IconButton
-                              aria-label="close"
-                              color="inherit"
-                              size="small"
-                              onClick={() => {
-                                setAlert(false);
-                              }}
-                            >
-                              <CloseIcon fontSize="inherit" />
-                            </IconButton>
-                          }
-                          sx={{ mb: 2 }}
-                        >
-                          <strong>
-                            Das Enddatum muss nach dem Startdatum liegen!
-                          </strong>
-                        </Alert>
-                      </Collapse>
-                    </Box>
-                  </>
-                )}
-                {alterDuration && (
-                  <>
-                    <Box sx={{ width: "100%" }}>
-                      <Collapse in={open}>
-                        <Alert
-                          severity="error"
-                          variant="filled"
-                          action={
-                            <IconButton
-                              aria-label="close"
-                              color="inherit"
-                              size="small"
-                              onClick={() => {
-                                setAlertDuration(false);
-                              }}
-                            >
-                              <CloseIcon fontSize="inherit" />
-                            </IconButton>
-                          }
-                          sx={{ mb: 2 }}
-                        >
-                          <strong>
-                            Das manuell festgelegte Enddatum führt zu einer
-                            anderen Dauer als berechnet. Bitte passen Sie Ihr
-                            monatliches Sparen entsprechend an.
-                          </strong>
-                        </Alert>
-                      </Collapse>
-                    </Box>
-                  </>
-                )}
-                <InputLabel
-                  sx={{ color: theme.palette.text.main, mt: 2 }}
-                  id="category-label"
-                >
-                  Monatliches Sparen *
-                </InputLabel>
-                <TextComp
-                  required
-                  fullWidth
-                  name="monthly_saving"
-                  value={savingGoal.monthly_saving}
-                  onChange={handleChange}
-                />
-                <InputLabel
-                  sx={{ color: theme.palette.text.main, mt: 2 }}
-                  id="category-label"
-                >
-                  Gesamtbetrag *
-                </InputLabel>
-                <TextComp
-                  required
-                  fullWidth
-                  name="total_amount"
-                  value={savingGoal.total_amount}
-                  onChange={handleChange}
-                />
-                <InputLabel
-                  sx={{ color: theme.palette.text.main, mt: 2 }}
-                  id="category-label"
-                >
-                  Beschreibung
-                </InputLabel>
-                <TextComp
-                  required
-                  fullWidth
-                  name="description"
-                  value={savingGoal.description}
-                  onChange={handleChange}
-                />
-                <InputLabel
-                  sx={{ color: theme.palette.text.main, mt: 2 }}
-                  id="category-label"
-                >
-                  Startdatum
-                </InputLabel>
-                <TextComp
-                  fullWidth
-                  name="startdate"
-                  type="date"
-                  InputLabelProps={{ shrink: true }}
-                  value={savingGoal.startdate}
-                  onChange={handleChange}
-                />
-                <InputLabel
-                  sx={{ color: theme.palette.text.main, mt: 2 }}
-                  id="category-label"
-                >
-                  Deadline
-                </InputLabel>
-                <TextComp
-                  fullWidth
-                  name="deadline"
-                  type="date"
-                  InputLabelProps={{ shrink: true }}
-                  value={savingGoal.deadline}
-                  onChange={handleChange}
-                />
-                <InputLabel
-                  sx={{ color: theme.palette.text.main, mt: 2 }}
-                  id="category-label"
-                >
-                  Dauer in Monaten
-                </InputLabel>
-                <TextComp
-                  required
-                  fullWidth
-                  name="duration"
-                  value={savingGoal.duration}
-                  onChange={handleChange}
-                />
-              </Box>
-            </DialogContent>
-            <DialogActions sx={{ backgroundColor: theme.palette.card.main }}>
-              <Button
-                onClick={handleOpen}
-                sx={{
-                  color: theme.palette.text.main,
-                  bg: theme.palette.primary.main,
-                }}
-              >
-                Abbrechen
-              </Button>
-              <Button
-                onClick={handleSubmit}
-                sx={{
-                  color: theme.palette.text.main,
-                  bg: theme.palette.primary.main,
-                }}
-              >
-                Speichern
-              </Button>
-            </DialogActions>
-          </Dialog>
-          <Box sx={{ my: 2 }}>
-            {goals.map((goal, index) => (
-              <CardComp key={goal.id} sx={{ position: "relative" }}>
-                <CardContent>
-                  <Grid container spacing={2}>
-                    <Grid item xs={12} md={8}>
-                      <Typography variant="h5" component="div" sx={{ mb: 2 }}>
-                        <strong>{goal.description}</strong>
-                      </Typography>
-                      <Typography
-                        variant="body2"
-                        component="div"
-                        color={theme.palette.savetext.main}
-                        gutterBottom
-                      >
-                        <strong>Monatliches Sparen: </strong>{" "}
-                        {goal.monthly_saving} €
-                      </Typography>
-                      <Typography
-                        variant="body2"
-                        component="div"
-                        color={theme.palette.savetext.main}
-                        gutterBottom
-                      >
-                        <strong>Gesamtbetrag:</strong> {goal.total_amount} €
-                      </Typography>
-                      <div>
-                        <Chip
-                          sx={{ color: theme.palette.text.main, mr: 1, mb: 2 }}
-                          label={`vom: ${new Date(
-                            goal.startdate
-                          ).toLocaleDateString()}`}
-                        />
-                        <Chip
-                          sx={{ color: theme.palette.text.main, mb: 2 }}
-                          label={`bis: ${
-                            goal.deadline
-                              ? new Date(goal.deadline).toLocaleDateString()
-                              : "Keine"
-                          }`}
-                        />
-                      </div>
-                      <Typography
-                        variant="body2"
-                        component="div"
-                        sx={{ color: theme.palette.savetext.main }}
-                      >
-                        <strong>Dauer:</strong> {goal.duration} Monate
-                      </Typography>
-                    </Grid>
-                    <Grid item xs={12} md={4}>
-                      <IconButton
-                        onClick={() => handleDelete(goal.id)}
-                        sx={{
-                          position: "absolute",
-                          top: 8,
-                          right: 8,
-                          color: theme.palette.text.main,
-                        }}
-                      >
-                        <DeleteIcon />
-                      </IconButton>
-                    </Grid>
-                  </Grid>
-                  <Typography
-                    variant="body2"
-                    component="div"
-                    sx={{ mt: 1, color: theme.palette.text.main }}
-                  >
-                    <strong>Ersparnisfortschritt:</strong>
-                  </Typography>
-                  <Box sx={{ width: "100%", mr: 1 }}>
-                    <LinearProgressComp
-                      variant="determinate"
-                      value={calculateSavingsProgress(goal)}
-                    />
-                  </Box>
-                  <Typography
-                    variant="body2"
-                    sx={{ color: theme.palette.text.main }}
-                  >
-                    {`${calculateSavingsProgress(goal).toFixed(2)}%`}
-                  </Typography>
-                </CardContent>
-              </CardComp>
-            ))}
-          </Box>
+            <SavingCards
+              goal={goal}
+              handleDelete={handleDelete}
+              calculateSavingsProgress={calculateSavingsProgress}
+              theme={theme}
+            />
+          </Card>
         </Grid>
-      </Grid>
-    </Box>
+      ))}
+      <SavingDialog
+        open={open}
+        handleOpen={handleOpen}
+        handleSubmit={handleSubmit}
+        alter={alter}
+        alterDuaation={alterDuration}
+        savingGoal={savingGoal}
+        handleChange={handleChange}
+      />
+    </Grid>
   );
 }
 
