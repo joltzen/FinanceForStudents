@@ -59,6 +59,11 @@ function AddTransaction({
 
     return (usePound ? "#" : "") + (g | (b << 8) | (r << 16)).toString(16);
   };
+
+  const handleChangeCategory = (event) => {
+    setCategory(event.target.value);
+    console.log("Kategorie geändert auf:", event.target.value);
+  };
   return (
     <Dialog open={openDialog} onClose={handleCloseDialog} fullWidth>
       <DialogTitle
@@ -161,7 +166,7 @@ function AddTransaction({
         <Select
           fullWidth
           value={category}
-          onChange={(e) => setCategory(e.target.value)}
+          onChange={(e) => handleChangeCategory(e.target.value)}
           sx={{
             color: theme.palette.text.main,
             height: "40px",
