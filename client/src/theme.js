@@ -33,7 +33,7 @@ export const tokens = (mode) => {
           //not used
           brightYellow: "#ffce56",
           //budget.main
-          neonGreen: "#71C839",
+          neonGreen: "#65C023",
           //saving.main
           skyBlue: "#4dd0e1",
           //pagination.main
@@ -81,7 +81,7 @@ export const tokens = (mode) => {
           //not used
           brightYellow: "#FFD700",
           //budget.main
-          neonGreen: "#71C839",
+          neonGreen: "#65C023",
           //saving.main
           skyBlue: "#00BFFF",
           //pagination.main
