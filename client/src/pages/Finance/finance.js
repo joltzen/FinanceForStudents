@@ -1,26 +1,12 @@
 /* Copyright (c) 2023, Jason Oltzen */
 
-import {
-  Button,
-  Dialog,
-  DialogActions,
-  DialogContent,
-  FormControl,
-  Grid,
-  InputLabel,
-  MenuItem,
-  Select,
-  Typography,
-} from "@mui/material";
+import { Grid } from "@mui/material";
 import { useTheme } from "@mui/material/styles";
 import React, { useEffect, useState } from "react";
-import SelectComp from "../../components/SelectComp";
-import TextComp from "../../components/TextComp";
 import axiosInstance from "../../config/axios";
 import { useAuth } from "../../core/auth/auth";
-import FinanceOverview from "./overview";
-import Add from "@mui/icons-material/Add";
 import AddTransaction from "./addtransaction";
+import FinanceOverview from "./overview";
 function FinancePage() {
   const today = new Date().toISOString().split("T")[0];
   const theme = useTheme();

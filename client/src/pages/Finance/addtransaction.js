@@ -9,11 +9,8 @@ import {
   MenuItem,
   Select,
   TextField,
-  Typography,
 } from "@mui/material";
 import React from "react";
-import SelectComp from "../../components/SelectComp";
-import TextComp from "../../components/TextComp";
 
 function AddTransaction({
   openDialog,

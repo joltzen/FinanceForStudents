@@ -8,7 +8,7 @@ function ImpressumPage() {
   const theme = useTheme();
   return (
     <div>
-      <CardComp sx={{ mt: 10, padding: 3 }}>
+      <CardComp>
         <Container>
           <Typography variant="h4" gutterBottom>
             Impressum
