@@ -200,7 +200,7 @@ function SavingPage() {
               Es sind noch keine Sparziele vorhanden!
             </Typography>
             <Typography variant="subtitle1" sx={{ mt: 2 }}>
-              Fügen Sie ein neues Sparziel hinzu, um loszulegen!
+              Fügen ein neues Sparziel hinzu, um loszulegen!
             </Typography>
             <Button variant="contained" onClick={handleOpen} sx={{ mt: 10 }}>
               Sparziel hinzufügen
