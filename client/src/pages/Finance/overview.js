@@ -110,7 +110,6 @@ function FinanceOverview({ update, handleOpenDialog, triggerUpdate }) {
     filterYear,
     totalSum,
     user.id,
-    categories,
     update,
     settings,
     needUpdate,
@@ -199,7 +198,6 @@ function FinanceOverview({ update, handleOpenDialog, triggerUpdate }) {
     settings,
     user.id,
     update,
-    categories,
     needUpdate,
     triggerUpdate,
   ]);
@@ -281,21 +279,21 @@ function FinanceOverview({ update, handleOpenDialog, triggerUpdate }) {
     activeSorting,
   ]);
 
-  const refreshCategories = useCallback(() => {
-    // Function to re-fetch categories
-    const fetchCategories = async () => {
-      try {
-        const response = await axiosInstance.get("/getCategories", {
-          params: { user_id: user.id },
-        });
-        setCategories(response.data);
-      } catch (error) {
-        console.error("Fehler beim Laden der Kategorien:", error);
-      }
-    };
+  // const refreshCategories = useCallback(() => {
+  //   // Function to re-fetch categories
+  //   const fetchCategories = async () => {
+  //     try {
+  //       const response = await axiosInstance.get("/getCategories", {
+  //         params: { user_id: user.id },
+  //       });
+  //       setCategories(response.data);
+  //     } catch (error) {
+  //       console.error("Fehler beim Laden der Kategorien:", error);
+  //     }
+  //   };
 
-    fetchCategories();
-  }, [user.id]);
+  //   fetchCategories();
+  // }, [user.id]);
 
   const [editTransaction, setEditTransaction] = useState(null);
   const handleEditTransaction = async (transaction) => {
@@ -410,7 +408,6 @@ function FinanceOverview({ update, handleOpenDialog, triggerUpdate }) {
           </CardContent>
         </Card>
       </Grid>
-
       <Grid item xs={12} sm={4} style={{ minHeight: "100%" }}>
         <Grid container direction="column" spacing={2}>
           <Grid item>
