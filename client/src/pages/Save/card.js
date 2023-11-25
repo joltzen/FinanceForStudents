@@ -27,7 +27,7 @@ function SavingCards({ goal, handleDelete, calculateSavingsProgress, theme }) {
             <Typography
               variant="body2"
               component="div"
-              color={theme.palette.savetext.main}
+              color={theme.palette.text.main}
               gutterBottom
             >
               <strong>Monatliches Sparen: </strong> {goal.monthly_saving} €
@@ -35,7 +35,7 @@ function SavingCards({ goal, handleDelete, calculateSavingsProgress, theme }) {
             <Typography
               variant="body2"
               component="div"
-              color={theme.palette.savetext.main}
+              color={theme.palette.text.main}
               gutterBottom
             >
               <strong>Gesamtbetrag:</strong> {goal.total_amount} €
@@ -57,7 +57,7 @@ function SavingCards({ goal, handleDelete, calculateSavingsProgress, theme }) {
             <Typography
               variant="body2"
               component="div"
-              sx={{ color: theme.palette.savetext.main }}
+              sx={{ color: theme.palette.text.main }}
             >
               <strong>Dauer:</strong> {goal.duration} Monate
             </Typography>
