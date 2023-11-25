@@ -467,7 +467,7 @@ function FinanceOverview({ update, handleOpenDialog, triggerUpdate }) {
                     }}
                   >
                     <Tooltip title="Dashboard" placement="left">
-                      <IconButton href="/dashboard">
+                      <IconButton href="/">
                         <BarChartIcon
                           sx={{ color: theme.palette.common.white }}
                         />

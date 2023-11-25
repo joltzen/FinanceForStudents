@@ -118,7 +118,7 @@ function SavingDialog({
         />
 
         <InputLabel style={{ color: theme.palette.text.main }}>
-          Gesamtbetrag *
+          Sparziel *
         </InputLabel>
         <TextField
           variant="outlined"
