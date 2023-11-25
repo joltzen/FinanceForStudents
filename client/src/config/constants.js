@@ -39,7 +39,7 @@ export const months = [
 
 export const years = Array.from(
   { length: 10 },
-  (_, index) => new Date().getFullYear() - index
+  (_, index) => new Date().getFullYear() - index + 1
 );
 
 export const colors = [
