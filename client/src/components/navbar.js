@@ -214,10 +214,9 @@ function Navbar() {
               />
             </>
           ) : (
-            <></>
+            <StyledListItem href="/" primary="Home" icon={<HomeIcon />} />
           )}
           <List>
-            <StyledListItem href="/" primary="Home" icon={<HomeIcon />} />
             <StyledListItem
               href="/impressum"
               primary="Impressum"

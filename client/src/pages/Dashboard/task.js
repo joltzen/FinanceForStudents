@@ -34,7 +34,7 @@ const MonthlySaving = ({ savings, month }) => {
             variant="subtitle1"
             sx={{ color: theme.palette.text.main }}
           >
-            {"SPAARQUOTE " + getMonthName(month - 1)}
+            {"SPARQUOTE " + getMonthName(month - 1)}
           </Typography>
           <Typography variant="h4" sx={{ fontWeight: "bold", mt: 2 }}>
             {savings.toFixed(2)} €

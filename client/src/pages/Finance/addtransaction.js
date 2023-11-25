@@ -10,7 +10,7 @@ import {
   Select,
   TextField,
 } from "@mui/material";
-import React from "react";
+import React, { useEffect, useRef } from "react";
 
 function AddTransaction({
   openDialog,
@@ -60,10 +60,6 @@ function AddTransaction({
     return (usePound ? "#" : "") + (g | (b << 8) | (r << 16)).toString(16);
   };
 
-  const handleChangeCategory = (event) => {
-    setCategory(event.target.value);
-    console.log("Kategorie geändert auf:", event.target.value);
-  };
   return (
     <Dialog open={openDialog} onClose={handleCloseDialog} fullWidth>
       <DialogTitle
@@ -108,6 +104,7 @@ function AddTransaction({
         <TextField
           variant="outlined"
           fullWidth
+          autoFocus
           name="description"
           margin="normal"
           value={description}
@@ -165,19 +162,20 @@ function AddTransaction({
         </InputLabel>
         <Select
           fullWidth
+          labelId="category-label"
           value={category}
-          onChange={(e) => handleChangeCategory(e.target.value)}
+          onChange={(e) => setCategory(e.target.value)}
           sx={{
             color: theme.palette.text.main,
-            height: "40px",
-            ".MuiInputBase-input": {
-              paddingTop: "5px",
-              paddingBottom: "5px",
-            },
             "& .MuiSelect-select": {
               backgroundColor: getCurrentCategoryColor(),
             },
-            border: `1px solid ${theme.palette.text.main}`,
+            "&:before": {
+              borderColor: "black",
+            },
+            "&:after": {
+              borderColor: "black",
+            },
           }}
         >
           {categories.map((cat) => (
@@ -187,6 +185,7 @@ function AddTransaction({
               sx={{
                 backgroundColor: cat.color,
                 "&.Mui-selected": {
+                  // This targets the selected item specifically
                   backgroundColor: cat.color,
                   fontWeight: "bold",
                 },

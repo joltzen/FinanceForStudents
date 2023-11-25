@@ -15,11 +15,15 @@ import {
   Typography,
 } from "@mui/material";
 import { useTheme } from "@mui/material/styles";
+import { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
 import Heading from "../../components/heading";
 import Heading2 from "../../components/heading2";
 import Page from "../../components/page";
 import Text from "../../components/text";
 import strings from "../../config/strings";
+import { useAuth } from "../../core/auth/auth";
+import { Dashboard } from "../Dashboard";
 
 const faqs = [
   {
@@ -85,271 +89,297 @@ const faqs = [
 
 function HomePage() {
   const theme = useTheme();
+  const [users, setUsers] = useState(null);
+  const navigate = useNavigate();
+  const { user } = useAuth();
+
   return (
-    <Page>
-      <img
-        src="/logos/Logo_transparant.png"
-        alt="Logo"
-        style={{ width: "60%", marginBottom: "20px" }}
-      />
-      <Container maxWidth="xl" sx={{ mt: 10 }}>
-        <Box sx={{ flexGrow: 1, padding: 4 }}>
-          <Grid container spacing={2}>
-            <Grid item xs={12} md={6}>
-              <Typography variant="h4" sx={{ mt: 1 }}>
-                <strong>{strings.homepage.welcomeMessage}</strong>
-              </Typography>
-              <Heading2 text={strings.homepage.wm2} />
-            </Grid>
-            <Grid item xs={6}>
-              <Text text={strings.homepage.mission}></Text>
+    <>
+      {!user ? (
+        <Page>
+          <img
+            src="/logos/Logo_transparant.png"
+            alt="Logo"
+            style={{ width: "60%", marginBottom: "20px" }}
+          />
+          <Container maxWidth="xl" sx={{ mt: 10 }}>
+            <Box sx={{ flexGrow: 1, padding: 4 }}>
+              <Grid container spacing={2}>
+                <Grid item xs={12} md={6}>
+                  <Typography variant="h4" sx={{ mt: 1 }}>
+                    <strong>{strings.homepage.welcomeMessage}</strong>
+                  </Typography>
+                  <Heading2 text={strings.homepage.wm2} />
+                </Grid>
+                <Grid item xs={6}>
+                  <Text text={strings.homepage.mission}></Text>
 
-              <Button
-                variant="contained"
-                color="primary"
-                sx={{ marginRight: 3, mt: 5 }}
-                href="/signup"
-              >
-                Leg los
-              </Button>
-              <Button
-                variant="outlined"
-                sx={{
-                  mt: 5,
-                  borderColor: theme.palette.text.main,
-                  color: theme.palette.text.main,
-                  "&:hover": {
-                    borderColor: theme.palette.text.main,
-                  },
-                }}
-                href="/about"
-              >
-                Erfahre mehr
-              </Button>
-            </Grid>
-          </Grid>
-        </Box>
-      </Container>
-      <Container maxWidth="xl" sx={{ mt: 10 }}>
-        <Box sx={{ flexGrow: 1, padding: 4 }}>
-          <Grid container spacing={2}>
-            <Grid item xs={12} md={6}>
-              <Grid item xs={12} textAlign="center">
-                <Typography
-                  variant="h4"
-                  component="h2"
-                  sx={{ mr: 10 }}
-                  gutterBottom
+                  <Button
+                    variant="contained"
+                    color="primary"
+                    sx={{ marginRight: 3, mt: 5 }}
+                    href="/signup"
+                  >
+                    Leg los
+                  </Button>
+                  <Button
+                    variant="outlined"
+                    sx={{
+                      mt: 5,
+                      borderColor: theme.palette.text.main,
+                      color: theme.palette.text.main,
+                      "&:hover": {
+                        borderColor: theme.palette.text.main,
+                      },
+                    }}
+                    href="/about"
+                  >
+                    Erfahre mehr
+                  </Button>
+                </Grid>
+              </Grid>
+            </Box>
+          </Container>
+          <Container maxWidth="xl" sx={{ mt: 10 }}>
+            <Box sx={{ flexGrow: 1, padding: 4 }}>
+              <Grid container spacing={2}>
+                <Grid item xs={12} md={6}>
+                  <Grid item xs={12} textAlign="center">
+                    <Typography
+                      variant="h4"
+                      component="h2"
+                      sx={{ mr: 10 }}
+                      gutterBottom
+                    >
+                      {strings.new.control}
+                    </Typography>
+                  </Grid>
+                  <Typography variant="body1" paragraph marginTop={3}>
+                    {strings.new.start}
+                  </Typography>
+                  <Grid
+                    container
+                    alignItems="center"
+                    justifyContent="space-between"
+                    spacing={2}
+                    marginTop={2}
+                  >
+                    <Grid item xs={6}>
+                      <Typography variant="h6" gutterBottom>
+                        <strong>Verfolgen</strong>
+                      </Typography>
+                    </Grid>
+                    <Grid item xs={6}>
+                      <Typography variant="h6" gutterBottom>
+                        <strong>Planen</strong>
+                      </Typography>
+                    </Grid>
+                  </Grid>
+                  <Grid
+                    container
+                    alignItems="center"
+                    justifyContent="space-between"
+                    spacing={2}
+                  >
+                    <Grid item xs={6}>
+                      <Typography
+                        variant="body1"
+                        marginBottom={5}
+                        marginTop={3}
+                      >
+                        {" "}
+                        {strings.new.track}
+                      </Typography>
+                    </Grid>
+                    <Grid item xs={6}>
+                      <Typography variant="body1" marginTop={1}>
+                        {strings.new.plan}
+                      </Typography>
+                    </Grid>
+                  </Grid>
+
+                  <Button
+                    variant="contained"
+                    color="primary"
+                    sx={{ marginRight: 3, mt: 5 }}
+                    href="/signup"
+                  >
+                    Leg los
+                  </Button>
+                  <Button
+                    variant="outlined"
+                    sx={{
+                      mt: 5,
+                      borderColor: theme.palette.text.main,
+                      color: theme.palette.text.main,
+                      "&:hover": {
+                        borderColor: theme.palette.text.main,
+                      },
+                    }}
+                    href="/about"
+                  >
+                    Erfahre mehr
+                  </Button>
+                </Grid>
+                <Grid
+                  item
+                  xs={12}
+                  md={6}
+                  sx={{
+                    display: "flex",
+                    alignItems: "center",
+                    justifyContent: "center",
+                  }}
                 >
-                  {strings.new.control}
-                </Typography>
-              </Grid>
-              <Typography variant="body1" paragraph marginTop={3}>
-                {strings.new.start}
-              </Typography>
-              <Grid
-                container
-                alignItems="center"
-                justifyContent="space-between"
-                spacing={2}
-                marginTop={2}
-              >
-                <Grid item xs={6}>
-                  <Typography variant="h6" gutterBottom>
-                    <strong>Verfolgen</strong>
-                  </Typography>
-                </Grid>
-                <Grid item xs={6}>
-                  <Typography variant="h6" gutterBottom>
-                    <strong>Planen</strong>
-                  </Typography>
+                  <Box
+                    component="img"
+                    sx={{
+                      width: "80%", // Width in pixels
+                      height: "80%",
+                    }}
+                    src={"/logos/logo.png"}
+                    alt="My Icon"
+                  />
                 </Grid>
               </Grid>
-              <Grid
-                container
-                alignItems="center"
-                justifyContent="space-between"
-                spacing={2}
-              >
-                <Grid item xs={6}>
-                  <Typography variant="body1" marginBottom={5} marginTop={3}>
-                    {" "}
-                    {strings.new.track}
-                  </Typography>
-                </Grid>
-                <Grid item xs={6}>
-                  <Typography variant="body1" marginTop={1}>
-                    {strings.new.plan}
-                  </Typography>
-                </Grid>
-              </Grid>
+            </Box>
+          </Container>
 
-              <Button
-                variant="contained"
-                color="primary"
-                sx={{ marginRight: 3, mt: 5 }}
-                href="/signup"
-              >
-                Leg los
-              </Button>
-              <Button
-                variant="outlined"
-                sx={{
-                  mt: 5,
-                  borderColor: theme.palette.text.main,
-                  color: theme.palette.text.main,
-                  "&:hover": {
-                    borderColor: theme.palette.text.main,
-                  },
-                }}
-                href="/about"
-              >
-                Erfahre mehr
-              </Button>
-            </Grid>
-            <Grid
-              item
-              xs={12}
-              md={6}
+          <Container maxWidth="xl" sx={{ mt: 10 }}>
+            <Box sx={{ flexGrow: 1, padding: 4 }}>
+              <Grid container spacing={2} justifyContent="center">
+                <Grid item xs={12} textAlign="center">
+                  <Heading text={strings.homepage.how} />
+                </Grid>
+                <Grid item xs={12} md={4} textAlign="center" marginTop={4}>
+                  <PaymentsIcon
+                    sx={{
+                      color: theme.palette.secondary.main,
+                      mb: 2,
+                      fontSize: 40,
+                    }}
+                  />
+                  <Typography variant="h6" gutterBottom>
+                    {strings.homepage.how1}
+                  </Typography>
+                  <Typography variant="body1">
+                    {strings.homepage.how11}
+                  </Typography>
+                </Grid>
+                <Grid item xs={12} md={4} textAlign="center" marginTop={4}>
+                  <ShoppingCartIcon
+                    sx={{
+                      color: theme.palette.secondary.main,
+                      mb: 2,
+                      fontSize: 40,
+                    }}
+                  />
+                  <Typography variant="h6" gutterBottom>
+                    {strings.homepage.how2}
+                  </Typography>
+                  <Typography variant="body1">
+                    {strings.homepage.how21}
+                  </Typography>
+                </Grid>
+                <Grid item xs={12} md={4} textAlign="center" marginTop={4}>
+                  <BarChartIcon
+                    sx={{
+                      color: theme.palette.secondary.main,
+                      mb: 2,
+                      fontSize: 40,
+                    }}
+                  />
+
+                  <Typography variant="h6" gutterBottom>
+                    {strings.homepage.how3}
+                  </Typography>
+                  <Typography variant="body1">
+                    {strings.homepage.how31}
+                  </Typography>
+                </Grid>
+                <Grid item xs={12} textAlign="center" sx={{ mt: 2 }}>
+                  <Button
+                    variant="contained"
+                    color="primary"
+                    sx={{ marginRight: 3, mt: 5 }}
+                    href="/signup"
+                  >
+                    Leg los
+                  </Button>
+                  <Button
+                    variant="outlined"
+                    sx={{
+                      mt: 5,
+                      borderColor: theme.palette.text.main,
+                      color: theme.palette.text.main,
+                      "&:hover": {
+                        borderColor: theme.palette.text.main,
+                      },
+                    }}
+                    href="/about"
+                  >
+                    Erfahre mehr
+                  </Button>
+                </Grid>
+              </Grid>
+            </Box>
+          </Container>
+          <Container maxWidth="xl" sx={{ mt: 10 }}>
+            <Box
               sx={{
-                display: "flex",
-                alignItems: "center",
-                justifyContent: "center",
+                width: "100%",
+                maxWidth: 800,
+                margin: "auto",
+                mt: 4,
+                mb: 4,
               }}
             >
-              <Box
-                component="img"
-                sx={{
-                  width: "80%", // Width in pixels
-                  height: "80%",
-                }}
-                src={"/logos/logo.png"}
-                alt="My Icon"
-              />
-            </Grid>
-          </Grid>
-        </Box>
-      </Container>
-
-      <Container maxWidth="xl" sx={{ mt: 10 }}>
-        <Box sx={{ flexGrow: 1, padding: 4 }}>
-          <Grid container spacing={2} justifyContent="center">
-            <Grid item xs={12} textAlign="center">
-              <Heading text={strings.homepage.how} />
-            </Grid>
-            <Grid item xs={12} md={4} textAlign="center" marginTop={4}>
-              <PaymentsIcon
-                sx={{
-                  color: theme.palette.secondary.main,
-                  mb: 2,
-                  fontSize: 40,
-                }}
-              />
-              <Typography variant="h6" gutterBottom>
-                {strings.homepage.how1}
-              </Typography>
-              <Typography variant="body1">{strings.homepage.how11}</Typography>
-            </Grid>
-            <Grid item xs={12} md={4} textAlign="center" marginTop={4}>
-              <ShoppingCartIcon
-                sx={{
-                  color: theme.palette.secondary.main,
-                  mb: 2,
-                  fontSize: 40,
-                }}
-              />
-              <Typography variant="h6" gutterBottom>
-                {strings.homepage.how2}
-              </Typography>
-              <Typography variant="body1">{strings.homepage.how21}</Typography>
-            </Grid>
-            <Grid item xs={12} md={4} textAlign="center" marginTop={4}>
-              <BarChartIcon
-                sx={{
-                  color: theme.palette.secondary.main,
-                  mb: 2,
-                  fontSize: 40,
-                }}
-              />
-
-              <Typography variant="h6" gutterBottom>
-                {strings.homepage.how3}
-              </Typography>
-              <Typography variant="body1">{strings.homepage.how31}</Typography>
-            </Grid>
-            <Grid item xs={12} textAlign="center" sx={{ mt: 2 }}>
-              <Button
-                variant="contained"
-                color="primary"
-                sx={{ marginRight: 3, mt: 5 }}
-                href="/signup"
-              >
-                Leg los
-              </Button>
-              <Button
-                variant="outlined"
-                sx={{
-                  mt: 5,
-                  borderColor: theme.palette.text.main,
-                  color: theme.palette.text.main,
-                  "&:hover": {
-                    borderColor: theme.palette.text.main,
-                  },
-                }}
-                href="/about"
-              >
-                Erfahre mehr
-              </Button>
-            </Grid>
-          </Grid>
-        </Box>
-      </Container>
-      <Container maxWidth="xl" sx={{ mt: 10 }}>
-        <Box
-          sx={{ width: "100%", maxWidth: 800, margin: "auto", mt: 4, mb: 4 }}
-        >
-          <Grid item xs={12} textAlign="center">
-            <Typography variant="h4" gutterBottom>
-              FAQs
-            </Typography>
-          </Grid>
-          <Typography variant="subtitle1" gutterBottom sx={{ mb: 3 }}>
-            {strings.new.question}
-          </Typography>
-          {faqs.map((faq, index) => (
-            <Accordion key={index}>
-              <AccordionSummary expandIcon={<ExpandMoreIcon />}>
-                <Typography>
-                  <strong>{faq.question}</strong>
+              <Grid item xs={12} textAlign="center">
+                <Typography variant="h4" gutterBottom>
+                  FAQs
                 </Typography>
-              </AccordionSummary>
-              <AccordionDetails>
-                <Typography>{faq.answer}</Typography>
-              </AccordionDetails>
-            </Accordion>
-          ))}
-          <Box textAlign="center" sx={{ mt: 4 }}>
-            <Typography variant="h5" gutterBottom>
-              Noch Fragen?
-            </Typography>
-            <Button
-              variant="outlined"
-              href="/contact"
-              sx={{
-                mt: 3,
-                borderColor: theme.palette.text.main,
-                color: theme.palette.text.main,
-                "&:hover": {
-                  borderColor: theme.palette.text.main,
-                },
-              }}
-            >
-              Kontakt
-            </Button>
-          </Box>
-        </Box>
-      </Container>
-    </Page>
+              </Grid>
+              <Typography variant="subtitle1" gutterBottom sx={{ mb: 3 }}>
+                {strings.new.question}
+              </Typography>
+              {faqs.map((faq, index) => (
+                <Accordion key={index}>
+                  <AccordionSummary expandIcon={<ExpandMoreIcon />}>
+                    <Typography>
+                      <strong>{faq.question}</strong>
+                    </Typography>
+                  </AccordionSummary>
+                  <AccordionDetails>
+                    <Typography>{faq.answer}</Typography>
+                  </AccordionDetails>
+                </Accordion>
+              ))}
+              <Box textAlign="center" sx={{ mt: 4 }}>
+                <Typography variant="h5" gutterBottom>
+                  Noch Fragen?
+                </Typography>
+                <Button
+                  variant="outlined"
+                  href="/contact"
+                  sx={{
+                    mt: 3,
+                    borderColor: theme.palette.text.main,
+                    color: theme.palette.text.main,
+                    "&:hover": {
+                      borderColor: theme.palette.text.main,
+                    },
+                  }}
+                >
+                  Kontakt
+                </Button>
+              </Box>
+            </Box>
+          </Container>
+        </Page>
+      ) : (
+        <Dashboard />
+      )}
+    </>
   );
 }
 export default HomePage;

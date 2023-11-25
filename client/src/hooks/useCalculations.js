@@ -381,7 +381,7 @@ export const useCalculations = (
         totalSavingsFromGoals += parseFloat(goal.monthly_saving);
       }
     });
-    // Sum up savings from all settings
+    // Sum up savings from all settingsa
     allSettings.forEach((setting) => {
       if (setting.transaction_type === "Einnahme") {
         totalSavingsFromSettings += parseFloat(setting.amount);
