@@ -67,7 +67,6 @@ function LoginPage() {
 
   return (
     <Grid container style={{ height: "100vh" }}>
-      {/* Left Section with Full-Width and Full-Height Card */}
       <Grid item xs={12} sm={6} style={{ height: "100%" }}>
         <Card
           style={{
@@ -82,7 +81,7 @@ function LoginPage() {
               flexDirection: "column",
               justifyContent: "center",
               alignItems: "center",
-              height: "100%", // Make sure CardContent takes full height of the Card
+              height: "100%",
             }}
           >
             {error && <Alert severity="error">{error}</Alert>}
@@ -97,8 +96,8 @@ function LoginPage() {
                   display: "flex",
                   justifyContent: "space-between",
                   alignItems: "center",
-                  width: "100%", // Ensure the container takes the full width
-                  mb: 4, // Margin bottom for spacing below this row
+                  width: "100%", 
+                  mb: 4,
                 }}
               >
                 <Typography
@@ -115,7 +114,6 @@ function LoginPage() {
                   )}
                 </IconButton>
               </Box>
-
               <InputLabel htmlFor="identifier">Benutzername/Email</InputLabel>
               <TextField
                 variant="outlined"

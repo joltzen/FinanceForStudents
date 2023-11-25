@@ -10,6 +10,7 @@ import {
   InputLabel,
   MenuItem,
   Select,
+  TextField,
 } from "@mui/material";
 import { useTheme } from "@mui/material/styles";
 import React, { useState } from "react";
@@ -100,88 +101,110 @@ export default function EditTransactionDialog({
     return [year, month, day].join("-");
   }
   return (
-    <Dialog open={!!transaction} onClose={onClose}>
+    <Dialog open={!!transaction} onClose={onClose} fullWidth>
       <DialogTitle
         sx={{
           backgroundColor: theme.palette.card.main,
           color: theme.palette.text.main,
+          fontSize: "1.2rem", // Größere Schrift für den Titel
         }}
       >
-        Bearbeiten
+        Transaktion Hinzufügen
       </DialogTitle>
-      <DialogContent sx={{ backgroundColor: theme.palette.card.main }}>
-        <InputLabel
-          sx={{ color: theme.palette.text.main, mt: 2, mb: 2 }}
-          id="category-label"
-        >
+      <DialogContent
+        sx={{ backgroundColor: theme.palette.card.main, padding: "20px" }}
+      >
+        {/* Transaktionstyp */}
+        <InputLabel style={{ color: theme.palette.text.main }}>
           Transaktionstyp
         </InputLabel>
-        <FormControl fullWidth sx={{ minWidth: "10vw" }}>
+        <FormControl fullWidth margin="normal">
           <Select
             value={editedTransaction.transaction_type}
             onChange={handleSelectChange}
-            label="Transaktionstyp"
             sx={{
               color: theme.palette.text.main,
-              backgroundColor: theme.palette.select.main,
-              border: `1px solid ${theme.palette.text.main}`, // Use template literal for dynamic value
+              height: "40px",
+              ".MuiInputBase-input": {
+                paddingTop: "5px",
+                paddingBottom: "5px",
+              },
+              border: `1px solid ${theme.palette.text.main}`,
             }}
           >
             <MenuItem value="Ausgabe">Ausgabe</MenuItem>
             <MenuItem value="Einnahme">Einnahme</MenuItem>
           </Select>
         </FormControl>
-        <InputLabel
-          sx={{ color: theme.palette.text.main, mt: 2 }}
-          id="category-label"
-        >
+
+        {/* Beschreibung */}
+        <InputLabel style={{ color: theme.palette.text.main }}>
           Beschreibung
         </InputLabel>
-        <TextComp
-          type="text"
+        <TextField
+          variant="outlined"
+          fullWidth
+          autoFocus
           name="description"
+          margin="normal"
           value={editedTransaction.description}
           onChange={handleInputChange}
-          fullWidth
+          sx={{
+            ".MuiOutlinedInput-root": {
+              height: "40px",
+              border: `1px solid ${theme.palette.text.main}`,
+            },
+          }}
         />
-        <InputLabel
-          sx={{ color: theme.palette.text.main, mt: 2 }}
-          id="category-label"
-        >
+
+        {/* Betrag */}
+        <InputLabel style={{ color: theme.palette.text.main }}>
           Betrag
         </InputLabel>
-        <TextComp
-          type="number"
+        <TextField
+          variant="outlined"
+          fullWidth
           name="amount"
+          margin="normal"
+          type="number"
           value={editedTransaction.amount}
           onChange={handleInputChange}
-          fullWidth
+          sx={{
+            ".MuiOutlinedInput-root": {
+              height: "40px",
+              border: `1px solid ${theme.palette.text.main}`,
+            },
+          }}
         />
-        <InputLabel
-          sx={{ color: theme.palette.text.main, mt: 2 }}
-          id="category-label"
-        >
+
+        {/* Monat */}
+        <InputLabel style={{ color: theme.palette.text.main }}>
           Datum
         </InputLabel>
-        <TextComp
+        <TextField
           fullWidth
-          name="transaction_date"
+          name="date"
           type="date"
-          InputLabelProps={{ shrink: true }}
-          value={formatDate(editedTransaction.transaction_date)}
+          value={editedTransaction.date}
           onChange={handleInputChange}
+          sx={{
+            ".MuiOutlinedInput-root": {
+              height: "40px",
+              border: `1px solid ${theme.palette.text.main}`,
+            },
+            marginBottom: 2,
+          }}
         />
-        <InputLabel
-          sx={{ color: theme.palette.text.main, mt: 2, mb: 2 }}
-          id="category-label"
-        >
+
+        {/* Jahr */}
+        <InputLabel style={{ color: theme.palette.text.main }}>
           Kategorie
         </InputLabel>
         <Select
           fullWidth
+          labelId="category-label"
           value={editedTransaction.category_id}
           onChange={handleCategoryChange}
-          label="Kategorie"
           sx={{
             color: theme.palette.text.main,
             "& .MuiSelect-select": {
@@ -195,32 +218,33 @@ export default function EditTransactionDialog({
             },
           }}
         >
-          {categories.map((category) => (
+          {categories.map((cat) => (
             <MenuItem
-              key={category.id}
-              value={category.id}
+              key={cat.id}
+              value={cat.id}
               sx={{
-                backgroundColor: category.color,
+                backgroundColor: cat.color,
                 "&.Mui-selected": {
-                  // This targets the selected item specifically
-                  backgroundColor: category.color,
+                  backgroundColor: cat.color,
                   fontWeight: "bold",
                 },
                 "&:hover": {
-                  backgroundColor: adjustColor(category.color, 20),
+                  backgroundColor: adjustColor(cat.color, 20),
                 },
               }}
             >
-              {category.name}
+              {cat.name}
             </MenuItem>
           ))}
         </Select>
       </DialogContent>
-      <DialogActions sx={{ backgroundColor: theme.palette.card.main }}>
-        <Button onClick={onClose} sx={{ color: theme.palette.text.main }}>
+      <DialogActions
+        sx={{ backgroundColor: theme.palette.card.main, padding: "10px" }}
+      >
+        <Button onClick={onClose} color="secondary" variant="outlined">
           Abbrechen
         </Button>
-        <Button onClick={handleSave} sx={{ color: theme.palette.text.main }}>
+        <Button onClick={handleSave} color="primary" variant="contained">
           Speichern
         </Button>
       </DialogActions>

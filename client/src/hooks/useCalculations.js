@@ -200,10 +200,20 @@ export const useCalculations = (
       }
     });
     savingsGoals?.forEach((goal) => {
-      const startMonth = new Date(goal.startdate).getMonth();
-      const endMonth = goal.deadline ? new Date(goal.deadline).getMonth() : 11;
-      for (let month = startMonth; month <= endMonth; month++) {
-        monthlySavings[month] += parseFloat(goal.monthly_saving);
+      const start = new Date(goal.startdate);
+      const end = goal.deadline
+        ? new Date(goal.deadline)
+        : new Date(start.getFullYear(), 11, 31);
+
+      for (let year = start.getFullYear(); year <= end.getFullYear(); year++) {
+        const startMonth = year === start.getFullYear() ? start.getMonth() : 0;
+        const endMonth = year === end.getFullYear() ? end.getMonth() : 11;
+
+        for (let month = startMonth; month <= endMonth; month++) {
+          if (year === filterYear) {
+            monthlySavings[month] += parseFloat(goal.monthly_saving);
+          }
+        }
       }
     });
 
@@ -381,7 +391,7 @@ export const useCalculations = (
         totalSavingsFromGoals += parseFloat(goal.monthly_saving);
       }
     });
-    // Sum up savings from all settings
+    // Sum up savings from all settingsa
     allSettings.forEach((setting) => {
       if (setting.transaction_type === "Einnahme") {
         totalSavingsFromSettings += parseFloat(setting.amount);

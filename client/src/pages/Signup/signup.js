@@ -249,13 +249,12 @@ function SignUpForm() {
                     onChange={(e) => setPassword(e.target.value)}
                     sx={{
                       "label + & .MuiInputBase-input": {
-                        // Adjust the styles for when the input is autofilled
                         "&:-webkit-autofill": {
-                          caretColor: "transparent", // Removes the caret if you also want to hide that
+                          caretColor: "transparent",
                           WebkitBoxShadow: `0 0 0 1000px ${theme.palette.left.main} inset`,
-                          backgroundColor: theme.palette.left.main,
                           color: theme.palette.text.main,
-                          height: "2px",
+                          margin: "20px",
+                          height: "0px",
                         },
                       },
                       ".MuiOutlinedInput-root": {
@@ -282,9 +281,8 @@ function SignUpForm() {
                     onChange={(e) => setPasswordConfirmation(e.target.value)}
                     sx={{
                       "label + & .MuiInputBase-input": {
-                        // Adjust the styles for when the input is autofilled
                         "&:-webkit-autofill": {
-                          caretColor: "transparent", // Removes the caret if you also want to hide that
+                          caretColor: "transparent",
                           WebkitBoxShadow: `0 0 0 1000px ${theme.palette.left.main} inset`,
                           backgroundColor: theme.palette.left.main,
                           color: theme.palette.text.main,
