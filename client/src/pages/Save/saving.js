@@ -1,7 +1,7 @@
 /* Copyright (c) 2023, Jason Oltzen */
 
 import Add from "@mui/icons-material/Add";
-import { Button, Card, Grid, Typography } from "@mui/material";
+import { Alert, Button, Card, Grid, Snackbar, Typography } from "@mui/material";
 import { useTheme } from "@mui/material/styles";
 import React, { useEffect, useState } from "react";
 import AddButton from "../../components/AddButtonComp";
@@ -24,8 +24,11 @@ function SavingPage() {
     deadline: "",
     duration: "",
   });
-  const [alter, setAlert] = useState(false);
-  const [alterDuration, setAlertDuration] = useState(false);
+  const [alert, setAlert] = useState(false);
+  const [alertDuration, setAlertDuration] = useState(false);
+  const [snackbarOpen, setSnackbarOpen] = useState(false);
+  const [snackbarMessage, setSnackbarMessage] = useState("");
+  const [snackbarSeverity, setSnackbarSeverity] = useState("success");
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -105,9 +108,14 @@ function SavingPage() {
         duration: "",
       });
       setOpen(false);
+      setSnackbarMessage("Sparziel erfolgreich hinzugefügt!");
+      setSnackbarSeverity("success");
     } catch (error) {
       console.error("Fehler beim Speichern des Sparziels", error);
+      setSnackbarMessage("Fehler beim hinzufügen des Sparziels!");
+      setSnackbarSeverity("error");
     }
+    setSnackbarOpen(true);
   };
 
   const handleOpen = () => {
@@ -130,7 +138,6 @@ function SavingPage() {
   }, [savingGoal, user.id]);
 
   const handleDelete = async (goalId) => {
-    console.log("Löschen des Sparziels mit ID:", goalId);
     try {
       const response = await axiosInstance.delete("/delete-saving-goal", {
         params: { id: goalId },
@@ -138,9 +145,14 @@ function SavingPage() {
       if (response.data) {
         setGoals(goals.filter((goal) => goal.id !== goalId));
       }
+      setSnackbarMessage("Sparziel erfolgreich gelöscht!");
+      setSnackbarSeverity("success");
     } catch (error) {
       console.error("Fehler beim Löschen des Sparziels", error);
+      setSnackbarMessage("Fehler beim löschen des Sparziels!");
+      setSnackbarSeverity("error");
     }
+    setSnackbarOpen(true);
   };
   function calculateSavingsProgress(goal) {
     const today = new Date();
@@ -158,6 +170,19 @@ function SavingPage() {
 
   return (
     <Grid container>
+      <Snackbar
+        open={snackbarOpen}
+        autoHideDuration={6000}
+        onClose={() => setSnackbarOpen(false)}
+      >
+        <Alert
+          onClose={() => setSnackbarOpen(false)}
+          severity={snackbarSeverity}
+          sx={{ width: "100%" }}
+        >
+          {snackbarMessage}
+        </Alert>
+      </Snackbar>
       {goals.length > 0 ? (
         <AddButton variant="contained" onClick={handleOpen} startIcon={<Add />}>
           Sparziel hinzufügen
@@ -212,8 +237,8 @@ function SavingPage() {
         open={open}
         handleOpen={handleOpen}
         handleSubmit={handleSubmit}
-        alter={alter}
-        alterDuaation={alterDuration}
+        alter={alert}
+        alterDuaation={alertDuration}
         savingGoal={savingGoal}
         handleChange={handleChange}
       />

@@ -10,7 +10,7 @@ import {
   Select,
   TextField,
 } from "@mui/material";
-import React, { useEffect, useRef } from "react";
+import React from "react";
 
 function AddTransaction({
   openDialog,

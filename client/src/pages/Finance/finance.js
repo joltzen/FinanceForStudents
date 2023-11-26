@@ -1,18 +1,6 @@
 /* Copyright (c) 2023, Jason Oltzen */
 
-import {
-  Button,
-  Dialog,
-  DialogActions,
-  DialogContent,
-  DialogTitle,
-  FormControl,
-  Grid,
-  InputLabel,
-  MenuItem,
-  Select,
-  TextField,
-} from "@mui/material";
+import { Alert, Grid, Snackbar } from "@mui/material";
 import { useTheme } from "@mui/material/styles";
 import React, { useEffect, useState } from "react";
 import axiosInstance from "../../config/axios";
@@ -39,6 +27,9 @@ function FinancePage() {
   const { user } = useAuth();
 
   const [openDialog, setOpenDialog] = useState(false);
+  const [snackbarOpen, setSnackbarOpen] = useState(false);
+  const [snackbarMessage, setSnackbarMessage] = useState("");
+  const [snackbarSeverity, setSnackbarSeverity] = useState("success"); // Can be "success", "error", "warning", or "info"
 
   const handleOpenDialog = () => {
     setOpenDialog(true);
@@ -64,11 +55,6 @@ function FinancePage() {
     setTransactionType(e.target.value);
   };
 
-  const getCurrentCategoryColor = () => {
-    if (!Array.isArray(categories)) return "defaultColor";
-    const currentCategory = categories.find((cat) => cat.id === category);
-    return currentCategory ? currentCategory.color : "defaultColor";
-  };
 
   const handleSubmit = async (event) => {
     event.preventDefault();
@@ -90,35 +76,14 @@ function FinancePage() {
       setDate(date);
       setTransactionType("Ausgabe");
       setCategory(category);
+      setSnackbarMessage("Transaktion erfolgreich hinzugefügt!");
+      setSnackbarSeverity("success");
     } catch (error) {
       console.error("Transaction failed:", error);
+      setSnackbarMessage("Fehler beim hinzufügen der Transaktion!");
+      setSnackbarSeverity("error");
     }
-  };
-  const adjustColor = (color, amount) => {
-    let usePound = false;
-    if (color[0] === "#") {
-      color = color.slice(1);
-      usePound = true;
-    }
-
-    const num = parseInt(color, 16);
-
-    let r = (num >> 16) + amount;
-
-    if (r > 255) r = 255;
-    else if (r < 0) r = 0;
-
-    let b = ((num >> 8) & 0x00ff) + amount;
-
-    if (b > 255) b = 255;
-    else if (b < 0) b = 0;
-
-    let g = (num & 0x0000ff) + amount;
-
-    if (g > 255) g = 255;
-    else if (g < 0) g = 0;
-
-    return (usePound ? "#" : "") + (g | (b << 8) | (r << 16)).toString(16);
+    setSnackbarOpen(true);
   };
 
   useEffect(() => {
@@ -138,13 +103,21 @@ function FinancePage() {
     fetchCategories();
   }, [user.id, update]);
 
-  const handleCategoryChange = (e) => {
-    const newCategory = e?.target?.value || ""; // Fallback zu einem leeren String
-    setCategory(newCategory);
-    console.log("Ausgewählte Kategorie:", newCategory);
-  };
   return (
     <Grid item xs={12} md={8} lg={6}>
+      <Snackbar
+        open={snackbarOpen}
+        autoHideDuration={6000}
+        onClose={() => setSnackbarOpen(false)}
+      >
+        <Alert
+          onClose={() => setSnackbarOpen(false)}
+          severity={snackbarSeverity}
+          sx={{ width: "100%" }}
+        >
+          {snackbarMessage}
+        </Alert>
+      </Snackbar>
       <AddTransaction
         openDialog={openDialog}
         handleCloseDialog={handleCloseDialog}

@@ -3,6 +3,7 @@
 import DeleteIcon from "@mui/icons-material/Delete";
 import EditIcon from "@mui/icons-material/Edit";
 import {
+  Alert,
   Button,
   Dialog,
   DialogActions,
@@ -12,6 +13,7 @@ import {
   Grid,
   IconButton,
   Paper,
+  Snackbar,
   Typography,
 } from "@mui/material";
 import { useTheme } from "@mui/material/styles";
@@ -31,6 +33,9 @@ function DialogPage() {
   const [openDialog, setOpenDialog] = useState(false);
   const [editingCategory, setEditingCategory] = useState(null);
   const [openEditDialog, setOpenEditDialog] = useState(false);
+  const [snackbarOpen, setSnackbarOpen] = useState(false);
+  const [snackbarMessage, setSnackbarMessage] = useState("");
+  const [snackbarSeverity, setSnackbarSeverity] = useState("success");
   const { user } = useAuth();
 
   const addCategory = () => {
@@ -58,9 +63,14 @@ function DialogPage() {
       setOpenEditDialog(false);
       setNewCategory("");
       setCategoryColor("#FFFFFF");
+      setSnackbarMessage("Kategorie erfolgreich gespeichert!");
+      setSnackbarSeverity("success");
     } catch (error) {
       console.error("Error updating category:", error);
+      setSnackbarMessage("Fehler beim speichern der Kategorie!");
+      setSnackbarSeverity("error");
     }
+    setSnackbarOpen(true);
   };
 
   const openEditDialogWithCategory = (category) => {
@@ -91,9 +101,14 @@ function DialogPage() {
         user_id: user.id,
         color: categoryColor,
       });
+      setSnackbarMessage("Kategorie erfolgreich hinzugefügt!");
+      setSnackbarSeverity("success");
     } catch (error) {
       console.error("category failed:", error);
+      setSnackbarMessage("Fehler beim hinzufügen der Kategorie!");
+      setSnackbarSeverity("error");
     }
+    setSnackbarOpen(true);
   };
 
   const handleDeleteCategory = async (categoryId) => {
@@ -104,9 +119,14 @@ function DialogPage() {
       setCategories((prevCategories) =>
         prevCategories.filter((category) => category.id !== categoryId)
       );
+      setSnackbarMessage("Kategorie erfolgreich gelöscht!");
+      setSnackbarSeverity("success");
     } catch (error) {
       console.error("Fehler beim Löschen der Kategorie:", error);
+      setSnackbarMessage("Fehler beim löschen der Kategorie!");
+      setSnackbarSeverity("error");
     }
+    setSnackbarOpen(true);
   };
   function isColorDark(color) {
     const rgb = parseInt(color.substring(1), 16);
@@ -120,6 +140,19 @@ function DialogPage() {
 
   return (
     <div>
+      <Snackbar
+        open={snackbarOpen}
+        autoHideDuration={6000}
+        onClose={() => setSnackbarOpen(false)}
+      >
+        <Alert
+          onClose={() => setSnackbarOpen(false)}
+          severity={snackbarSeverity}
+          sx={{ width: "100%" }}
+        >
+          {snackbarMessage}
+        </Alert>
+      </Snackbar>
       <Dialog open={openDialog} onClose={() => setOpenDialog(false)}>
         <DialogTitle
           sx={{

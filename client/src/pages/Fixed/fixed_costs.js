@@ -10,6 +10,7 @@ import PaymentsIcon from "@mui/icons-material/Payments";
 import SavingsIcon from "@mui/icons-material/Savings";
 
 import {
+  Alert,
   Box,
   Card,
   CardContent,
@@ -18,6 +19,7 @@ import {
   IconButton,
   InputLabel,
   MenuItem,
+  Snackbar,
   Tab,
   Tabs,
   Tooltip,
@@ -49,7 +51,9 @@ function FixedForm() {
   const theme = useTheme();
   const descriptionInputRef = useRef(null);
   const colorMode = useContext(ColorModeContext); // Access the color mode context
-
+  const [snackbarOpen, setSnackbarOpen] = useState(false);
+  const [snackbarMessage, setSnackbarMessage] = useState("");
+  const [snackbarSeverity, setSnackbarSeverity] = useState("success");
   const handleTabChange = (event, newValue) => {
     setSelectedTab(newValue);
   };
@@ -167,13 +171,18 @@ function FixedForm() {
         ...prevTransactions,
         response.data.transaction,
       ]);
+      setSnackbarMessage("Fixkosten wurden erfolgreich hinzugefügt!");
+      setSnackbarSeverity("success");
     } catch (error) {
       console.error("Settings failed:", error);
+      setSnackbarMessage("Fehler beim hinzufügen der Fixkosten!");
+      setSnackbarSeverity("error");
     }
     fetchSettings();
     setTransactionType(transactionType);
     setAmount("");
     setDescription("");
+    setSnackbarOpen(true);
   };
 
   const handleDeleteSettings = async (settingsId) => {
@@ -186,9 +195,13 @@ function FixedForm() {
           (transaction) => transaction.settings_id !== settingsId
         )
       );
+      setSnackbarMessage("Fixkosten wurden erfolgreich gelöscht!");
+      setSnackbarSeverity("success");
     } catch (error) {
       console.error("Fehler beim Löschen der Settings:", error);
+      setSnackbarMessage("Fehler beim löschen der Fixkosten!");
     }
+    setSnackbarOpen(true);
   };
   const fetchSettings = async () => {
     try {
@@ -215,9 +228,12 @@ function FixedForm() {
     try {
       await axiosInstance.patch("/updateSettings", transaction);
       fetchSettings();
+      setSnackbarMessage("Fixkosten erfolgreich gespeichert!");
     } catch (error) {
       console.error("Error updating transaction:", error);
+      setSnackbarMessage("Fehler beim speichern der Fixkosten!");
     }
+    setSnackbarOpen(true);
   };
 
   const handleEditButtonClick = (transactionId) => {
@@ -229,7 +245,6 @@ function FixedForm() {
     }
   };
 
-  //calculate total budget for the month
   const totalBudget = transactions?.reduce(
     (total, transaction) =>
       transaction?.transaction_type === "Einnahme"
@@ -240,6 +255,19 @@ function FixedForm() {
 
   return (
     <div>
+      <Snackbar
+        open={snackbarOpen}
+        autoHideDuration={6000}
+        onClose={() => setSnackbarOpen(false)}
+      >
+        <Alert
+          onClose={() => setSnackbarOpen(false)}
+          severity={snackbarSeverity}
+          sx={{ width: "100%" }}
+        >
+          {snackbarMessage}
+        </Alert>
+      </Snackbar>
       <FixedDialog
         openDialog={openDialog}
         handleDialog={handleDialog}
