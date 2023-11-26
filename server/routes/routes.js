@@ -18,6 +18,37 @@ router.get("/getUserData", (req, res) => {
     }
   });
 });
+
+router.patch("/updateThemeMode", async (req, res) => {
+  try {
+    const { userId, themeMode } = req.body;
+    await db.query("UPDATE users SET thememode = $1 WHERE id = $2", [
+      themeMode,
+      userId,
+    ]);
+    res.status(200).json({ message: "Theme mode updated successfully." });
+  } catch (error) {
+    console.error("Error updating theme mode:", error);
+    res.status(500).json({ error: "Error updating theme mode" });
+  }
+});
+
+router.get("/getThemeMode", async (req, res) => {
+  try {
+    const { userId } = req.query;
+    const result = await db.query("SELECT thememode FROM users WHERE id = $1", [
+      userId,
+    ]);
+    if (result.rows.length === 0) {
+      return res.status(404).json({ error: "User not found" });
+    }
+    res.json({ themeMode: result.rows[0].themeMode });
+  } catch (error) {
+    console.error("Error retrieving theme mode:", error);
+    res.status(500).json({ error: "Error retrieving theme mode" });
+  }
+});
+
 router.patch("/updateUser", async (req, res) => {
   try {
     // Destructure the potential fields from the request body
@@ -96,8 +127,8 @@ router.post("/signup", async (req, res) => {
     const hashedPassword = await bcrypt.hash(password, 10);
 
     db.query(
-      "INSERT INTO users (username, email, password, firstname, surname) VALUES ($1, $2, $3, $4, $5)",
-      [username, email, hashedPassword, firstname, surname],
+      "INSERT INTO users (username, email, password, firstname, surname, thememode) VALUES ($1, $2, $3, $4, $5, $6)",
+      [username, email, hashedPassword, firstname, surname, "dark"],
       (err, result) => {
         if (err) {
           console.error("Error inserting data:", err);
