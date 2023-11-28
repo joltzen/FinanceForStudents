@@ -85,7 +85,7 @@ function DashboardPage() {
           "rgb(75, 192, 192)",
           "rgb(54, 162, 235)",
           "rgb(153, 102, 255)",
-          "rgb(201, 203, 207)",
+          "rgb(251, 44, 249)",
         ],
         borderColor: [
           "rgb(255, 99, 132)",
@@ -94,7 +94,7 @@ function DashboardPage() {
           "rgb(75, 192, 192)",
           "rgb(54, 162, 235)",
           "rgb(153, 102, 255)",
-          "rgb(201, 203, 207)",
+          "rgb(251, 44, 249)",
         ],
         borderWidth: 1,
       },

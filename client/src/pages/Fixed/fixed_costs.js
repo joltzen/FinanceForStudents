@@ -36,7 +36,7 @@ import DialogPage from "./dialog";
 import EditSettingsDialog from "./edit";
 import FixedDialog from "./fixeddialog";
 import TransactionSection from "./transactionselect";
-import TransferDialog from "./transerdialog";
+import TransferDialog from "./transferdialog";
 function FixedForm() {
   const [filterMonth, setFilterMonth] = useState(new Date().getMonth() + 1);
   const [filterYear, setFilterYear] = useState(new Date().getFullYear());
@@ -54,6 +54,12 @@ function FixedForm() {
   const [snackbarOpen, setSnackbarOpen] = useState(false);
   const [snackbarMessage, setSnackbarMessage] = useState("");
   const [snackbarSeverity, setSnackbarSeverity] = useState("success");
+  const [startMonth, setStartMonth] = useState(filterMonth);
+  const [endMonth, setEndMonth] = useState(filterMonth);
+  const [startYear, setStartYear] = useState(filterYear);
+  const [endYear, setEndYear] = useState(filterYear);
+  const [mode, setMode] = useState("range"); // "single" oder "range"
+
   const handleTabChange = (event, newValue) => {
     setSelectedTab(newValue);
   };
@@ -159,30 +165,47 @@ function FixedForm() {
   const handleSubmit = async (event) => {
     event.preventDefault();
     try {
-      const response = await axiosInstance.post("/addSettings", {
-        user_id: user.id,
-        transactionType,
-        amount,
-        description,
-        month: filterMonth,
-        year: filterYear,
-      });
-      setTransactions((prevTransactions) => [
-        ...prevTransactions,
-        response.data.transaction,
-      ]);
+      if (mode === "range") {
+        for (let year = startYear; year <= endYear; year++) {
+          const startM = year === startYear ? startMonth : 1;
+          const endM = year === endYear ? endMonth : 12;
+
+          for (let month = startM; month <= endM; month++) {
+            await axiosInstance.post("/addSettings", {
+              user_id: user.id,
+              transactionType,
+              amount,
+              description,
+              month,
+              year,
+            });
+          }
+        }
+      } else {
+        await axiosInstance.post("/addSettings", {
+          user_id: user.id,
+          transactionType,
+          amount,
+          description,
+          month: filterMonth,
+          year: filterYear,
+        });
+      }
+
+      // Benachrichtigung setzen und Zustände zurücksetzen
       setSnackbarMessage("Fixkosten wurden erfolgreich hinzugefügt!");
       setSnackbarSeverity("success");
+      fetchSettings();
+      setTransactionType(transactionType);
+      setAmount("");
+      setDescription("");
+      setSnackbarOpen(true);
     } catch (error) {
-      console.error("Settings failed:", error);
-      setSnackbarMessage("Fehler beim hinzufügen der Fixkosten!");
+      console.error("Error posting settings:", error);
+      setSnackbarMessage("Fehler beim Hinzufügen der Fixkosten!");
       setSnackbarSeverity("error");
+      setSnackbarOpen(true);
     }
-    fetchSettings();
-    setTransactionType(transactionType);
-    setAmount("");
-    setDescription("");
-    setSnackbarOpen(true);
   };
 
   const handleDeleteSettings = async (settingsId) => {
@@ -285,6 +308,16 @@ function FixedForm() {
         handleAmountChange={handleAmountChange}
         transactionType={transactionType}
         handleTransactionTypeChange={handleTransactionTypeChange}
+        mode={mode}
+        setMode={setMode}
+        startMonth={startMonth}
+        setStartMonth={setStartMonth}
+        endMonth={endMonth}
+        setEndMonth={setEndMonth}
+        startYear={startYear}
+        setStartYear={setStartYear}
+        endYear={endYear}
+        setEndYear={setEndYear}
       />
 
       <Grid container spacing={4} style={{ minHeight: "100vh" }}>

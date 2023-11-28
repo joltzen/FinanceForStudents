@@ -1,4 +1,5 @@
 import CloseIcon from "@mui/icons-material/Close";
+import InfoIcon from "@mui/icons-material/Info";
 import {
   Alert,
   Button,
@@ -11,6 +12,7 @@ import {
   InputLabel,
   TextField,
 } from "@mui/material";
+import Tooltip from "@mui/material/Tooltip";
 import { useTheme } from "@mui/material/styles";
 import { Box } from "@mui/system";
 import React from "react";
@@ -99,27 +101,16 @@ function SavingDialog({
           </>
         )}
 
-        <InputLabel style={{ color: theme.palette.text.main }}>
-          Monatliches Sparen *
-        </InputLabel>
-        <TextField
-          variant="outlined"
-          fullWidth
-          name="monthly_saving"
-          margin="normal"
-          value={savingGoal.monthly_saving}
-          onChange={handleChange}
-          sx={{
-            ".MuiOutlinedInput-root": {
-              height: "40px",
-              border: `1px solid ${theme.palette.text.main}`,
-            },
-          }}
-        />
-
-        <InputLabel style={{ color: theme.palette.text.main }}>
-          Sparziel *
-        </InputLabel>
+        <Box display="flex" alignItems="center">
+          <InputLabel
+            style={{ color: theme.palette.text.main, marginRight: "8px" }}
+          >
+            Sparziel *
+          </InputLabel>
+          <Tooltip title="Gib hier den Betrag ein, den Du insgesamt sparen möchtest.">
+            <InfoIcon fontSize="small" />
+          </Tooltip>
+        </Box>
         <TextField
           variant="outlined"
           fullWidth
@@ -134,10 +125,41 @@ function SavingDialog({
             },
           }}
         />
+        <Box display="flex" alignItems="center">
+          <InputLabel
+            style={{ color: theme.palette.text.main, marginRight: "8px" }}
+          >
+            Dauer in Monaten
+          </InputLabel>
+          <Tooltip title="Wie lange möchtest du sparen?">
+            <InfoIcon fontSize="small" />
+          </Tooltip>
+        </Box>
+        <TextField
+          variant="outlined"
+          fullWidth
+          name="duration"
+          margin="normal"
+          value={savingGoal.duration}
+          onChange={handleChange}
+          sx={{
+            ".MuiOutlinedInput-root": {
+              height: "40px",
+              border: `1px solid ${theme.palette.text.main}`,
+            },
+          }}
+        />
 
-        <InputLabel style={{ color: theme.palette.text.main }}>
-          Beschreibung
-        </InputLabel>
+        <Box display="flex" alignItems="center">
+          <InputLabel
+            style={{ color: theme.palette.text.main, marginRight: "8px" }}
+          >
+            Beschreibung
+          </InputLabel>
+          <Tooltip title="Worauf sparst du?">
+            <InfoIcon fontSize="small" />
+          </Tooltip>
+        </Box>
         <TextField
           variant="outlined"
           fullWidth
@@ -181,6 +203,7 @@ function SavingDialog({
           name="deadline"
           margin="normal"
           type="date"
+          disabled
           value={savingGoal.deadline}
           onChange={handleChange}
           sx={{
@@ -190,16 +213,22 @@ function SavingDialog({
             },
           }}
         />
-
-        <InputLabel style={{ color: theme.palette.text.main }}>
-          Dauer in Monaten
-        </InputLabel>
+        <Box display="flex" alignItems="center">
+          <InputLabel
+            style={{ color: theme.palette.text.main, marginRight: "8px" }}
+          >
+            Monatliches Sparen *
+          </InputLabel>
+          <Tooltip title="Gib hier den Betrag ein, den Du monatlich sparen möchtest.">
+            <InfoIcon fontSize="small" />
+          </Tooltip>
+        </Box>
         <TextField
           variant="outlined"
           fullWidth
-          name="duration"
+          name="monthly_saving"
           margin="normal"
-          value={savingGoal.duration}
+          value={savingGoal.monthly_saving}
           onChange={handleChange}
           sx={{
             ".MuiOutlinedInput-root": {

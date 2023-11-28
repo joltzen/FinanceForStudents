@@ -8,6 +8,7 @@ import AddButton from "../../components/AddButtonComp";
 import axiosInstance from "../../config/axios";
 import { useAuth } from "../../core/auth/auth";
 import SavingCards from "./card";
+import DeleteDialog from "./delete";
 import SavingDialog from "./dialog";
 
 function SavingPage() {
@@ -29,10 +30,52 @@ function SavingPage() {
   const [snackbarOpen, setSnackbarOpen] = useState(false);
   const [snackbarMessage, setSnackbarMessage] = useState("");
   const [snackbarSeverity, setSnackbarSeverity] = useState("success");
+  const [openConfirmDialog, setOpenConfirmDialog] = useState(false);
+  const [deletingGoalId, setDeletingGoalId] = useState(null);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
     let updatedGoal = { ...savingGoal, [name]: value };
+
+    // Berechnung basierend auf Änderungen an der monatlichen Dauer
+    if (name === "duration") {
+      const durationMonths = parseInt(value, 10) || 0;
+      const totalAmount = parseFloat(updatedGoal.total_amount) || 0;
+
+      const monthlySaving =
+        durationMonths > 0 ? totalAmount / durationMonths : 0;
+      updatedGoal = {
+        ...updatedGoal,
+        monthly_saving: monthlySaving.toString(),
+      };
+
+      const startDate = updatedGoal.startdate
+        ? new Date(updatedGoal.startdate)
+        : new Date();
+      startDate.setMonth(startDate.getMonth() + durationMonths);
+      updatedGoal = {
+        ...updatedGoal,
+        deadline: startDate.toISOString().split("T")[0],
+      };
+    }
+
+    if (name === "monthly_saving" || name === "total_amount") {
+      const monthlySaving = parseFloat(updatedGoal.monthly_saving) || 0;
+      const totalAmount = parseFloat(updatedGoal.total_amount) || 0;
+      const duration =
+        monthlySaving > 0 ? Math.ceil(totalAmount / monthlySaving) : 0;
+      updatedGoal = { ...updatedGoal, duration: duration.toString() };
+
+      if (updatedGoal.startdate) {
+        const startDate = new Date(updatedGoal.startdate);
+        startDate.setMonth(startDate.getMonth() + duration);
+        updatedGoal = {
+          ...updatedGoal,
+          deadline: startDate.toISOString().split("T")[0],
+        };
+      }
+    }
+
     if (name === "monthly_saving" || name === "total_amount") {
       const monthlySaving = parseFloat(updatedGoal.monthly_saving) || 0;
       const totalAmount = parseFloat(updatedGoal.total_amount) || 0;
@@ -137,7 +180,12 @@ function SavingPage() {
     fetchGoals();
   }, [savingGoal, user.id]);
 
-  const handleDelete = async (goalId) => {
+  const handleDelete = (goalId) => {
+    setDeletingGoalId(goalId);
+    setOpenConfirmDialog(true);
+  };
+
+  const deleteSaving = async (goalId) => {
     try {
       const response = await axiosInstance.delete("/delete-saving-goal", {
         params: { id: goalId },
@@ -154,20 +202,29 @@ function SavingPage() {
     }
     setSnackbarOpen(true);
   };
+
+  const confirmDelete = async () => {
+    setOpenConfirmDialog(false);
+    // Hier rufen Sie die ursprüngliche handleDelete Funktion mit deletingGoalId auf
+    await deleteSaving(deletingGoalId);
+  };
   function calculateSavingsProgress(goal) {
     const today = new Date();
     const startdate = new Date(goal.startdate);
-    const diffTime = Math.abs(today - startdate);
-    const diffMonths = Math.ceil(diffTime / (1000 * 60 * 60 * 24 * 30)); // -1 to exclude the last month
+    const deadline = new Date(goal.deadline);
 
-    const totalSavedSoFar = diffMonths * parseFloat(goal.monthly_saving);
+    if (today < startdate) {
+      return 0;
+    }
+    const diffTimeStart = Math.abs(today - startdate);
+    const diffTimeTotal = Math.abs(deadline - startdate);
+    const elapsedMonths = Math.ceil(diffTimeStart / (1000 * 60 * 60 * 24 * 30));
+    const totalMonths = Math.ceil(diffTimeTotal / (1000 * 60 * 60 * 24 * 30));
+    const totalSavedSoFar = elapsedMonths * parseFloat(goal.monthly_saving);
     const totalGoalAmount = parseFloat(goal.total_amount);
-
     const progressPercentage = (totalSavedSoFar / totalGoalAmount) * 100;
-
-    return Math.min(progressPercentage, 100); // Ensure it doesn't exceed 100%
+    return Math.min(progressPercentage, 100);
   }
-
   return (
     <Grid container>
       <Snackbar
@@ -190,7 +247,6 @@ function SavingPage() {
       ) : (
         <></>
       )}
-
       {goals.length > 0 ? (
         goals.map((goal, index) => (
           <Grid item xs={12} md={6} lg={3} key={goal.id || index}>
@@ -241,6 +297,12 @@ function SavingPage() {
         alterDuaation={alertDuration}
         savingGoal={savingGoal}
         handleChange={handleChange}
+      />
+      <DeleteDialog
+        openConfirmDialog={openConfirmDialog}
+        setOpenConfirmDialog={setOpenConfirmDialog}
+        confirmDelete={confirmDelete}
+        deletingGoalId={deletingGoalId}
       />
     </Grid>
   );
