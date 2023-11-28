@@ -2,6 +2,7 @@
 
 import DeleteIcon from "@mui/icons-material/Delete";
 import EditIcon from "@mui/icons-material/Edit";
+import InfoIcon from "@mui/icons-material/Info";
 import {
   Alert,
   Button,
@@ -12,14 +13,17 @@ import {
   DialogTitle,
   Grid,
   IconButton,
+  InputLabel,
   Paper,
   Snackbar,
+  TextField,
+  Tooltip,
   Typography,
 } from "@mui/material";
 import { useTheme } from "@mui/material/styles";
+import { Box } from "@mui/system";
 import Circle from "@uiw/react-color-circle";
 import React, { useEffect, useState } from "react";
-import TextComp from "../../components/TextComp";
 import axiosInstance from "../../config/axios";
 import { colors } from "../../config/constants";
 import { useAuth } from "../../core/auth/auth";
@@ -37,6 +41,7 @@ function DialogPage() {
   const [snackbarMessage, setSnackbarMessage] = useState("");
   const [snackbarSeverity, setSnackbarSeverity] = useState("success");
   const { user } = useAuth();
+  const [maxValue, setMaxValue] = useState(0);
 
   const addCategory = () => {
     setCategories([...categories, { name: newCategory, color: categoryColor }]);
@@ -172,21 +177,61 @@ function DialogPage() {
             sx={{
               backgroundColor: theme.palette.card.main,
               color: theme.palette.text.main,
+              mb: 5,
             }}
           >
             Fügen Sie eine neue Kategorie hinzu und wählen Sie eine Farbe für
             sie.
           </DialogContentText>
-          <TextComp
+          <InputLabel style={{ color: theme.palette.text.main, mt: 4 }}>
+            Kategoriename
+          </InputLabel>
+          <TextField
             autoFocus
-            margin="dense"
-            label="Kategoriename"
-            type="text"
-            fullWidth
             variant="outlined"
+            fullWidth
+            name="description"
+            margin="normal"
             value={newCategory}
             onChange={(e) => setNewCategory(e.target.value)}
+            sx={{
+              ".MuiOutlinedInput-root": {
+                height: "40px",
+                border: `1px solid ${theme.palette.text.main}`,
+              },
+              mb: 3,
+            }}
           />
+          <Box display="flex" alignItems="center">
+            <InputLabel
+              style={{
+                color: theme.palette.text.main,
+                mt: 10,
+                marginRight: "8px",
+              }}
+            >
+              Limit pro Monat (%)
+            </InputLabel>
+            <Tooltip title="Gib hier den Prozentwert ein, den Du maximal pro Monat ausgeben möchtest. Der Betrag wird dann Anhand deines Monatsbudgets kalkuliert">
+              <InfoIcon fontSize="small" />
+            </Tooltip>
+          </Box>
+          <TextField
+            variant="outlined"
+            fullWidth
+            type="number"
+            name="maxValue"
+            margin="normal"
+            value={maxValue}
+            onChange={(e) => setMaxValue(e.target.value)}
+            sx={{
+              ".MuiOutlinedInput-root": {
+                height: "40px",
+                border: `1px solid ${theme.palette.text.main}`,
+              },
+            }}
+          />
+
           <Circle
             style={{ marginTop: "50px" }}
             colors={colors}
@@ -281,19 +326,28 @@ function DialogPage() {
             sx={{
               backgroundColor: theme.palette.card.main,
               color: theme.palette.text.main,
+              mb: 4,
             }}
           >
             Kategorie <strong>{editingCategory?.name}</strong> bearbeiten
           </DialogContentText>
-          <TextComp
+          <InputLabel style={{ color: theme.palette.text.main }}>
+            Kategoriename
+          </InputLabel>
+          <TextField
             autoFocus
-            margin="dense"
-            label="Kategoriename"
-            type="text"
-            fullWidth
             variant="outlined"
+            fullWidth
+            name="description"
+            margin="normal"
             value={newCategory}
             onChange={(e) => setNewCategory(e.target.value)}
+            sx={{
+              ".MuiOutlinedInput-root": {
+                height: "40px",
+                border: `1px solid ${theme.palette.text.main}`,
+              },
+            }}
           />
           <Circle
             style={{ marginTop: "50px" }}
