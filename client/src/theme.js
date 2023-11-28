@@ -138,13 +138,13 @@ export const themeSettings = (mode) => {
               main: colors.darkBlueishGray,
             },
             list: {
-              main: colors.darkGray,
+              main: colors.darkSlateGrey,
             },
             icon: {
               main: colors.brass,
             },
             indicator: {
-              main: colors.brass,
+              main: colors.lightGold,
             },
             border: {
               main: colors.steelGray,
