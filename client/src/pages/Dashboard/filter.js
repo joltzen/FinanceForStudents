@@ -1,9 +1,15 @@
-/* Copyright (c) 2023, Jason Oltzen */
-
-import { FormControl, Grid, InputLabel, MenuItem } from "@mui/material";
+import ChevronLeftIcon from "@mui/icons-material/ChevronLeft";
+import ChevronRightIcon from "@mui/icons-material/ChevronRight";
+import {
+  FormControl,
+  Grid,
+  IconButton,
+  InputLabel,
+  MenuItem,
+  Select,
+} from "@mui/material";
 import { useTheme } from "@mui/material/styles";
 import React from "react";
-import SelectComp from "../../components/SelectComp";
 
 const BudgetFilter = ({
   filterMonth,
@@ -16,47 +22,74 @@ const BudgetFilter = ({
 }) => {
   const theme = useTheme();
 
+  const handleMonthChange = (direction) => {
+    let newMonth = filterMonth + (direction === "next" ? 1 : -1);
+    let newYear = filterYear;
+
+    if (newMonth > 12) {
+      newMonth = 1;
+      newYear++;
+    } else if (newMonth < 1) {
+      newMonth = 12;
+      newYear--;
+    }
+
+    setFilterMonth(newMonth);
+    setFilterYear(newYear);
+  };
+
   return (
-    <>
+    <Grid container spacing={2} alignItems="center">
       {!isAnnualView && (
-        <Grid item xs={12} sm={4}>
-          <FormControl fullWidth margin="none">
-            <InputLabel style={{ color: theme.palette.text.main }}>
-              Monat
-            </InputLabel>
-            <SelectComp
+        <Grid item>
+          <IconButton onClick={() => handleMonthChange("prev")}>
+            <ChevronLeftIcon />
+          </IconButton>
+        </Grid>
+      )}
+
+      {!isAnnualView && (
+        <Grid item>
+          <InputLabel>Monat</InputLabel>
+          <FormControl fullWidth>
+            <Select
               value={filterMonth}
               onChange={(e) => setFilterMonth(e.target.value)}
-              label="Monat"
             >
               {months.map((month) => (
                 <MenuItem key={month.value} value={month.value}>
                   {month.label}
                 </MenuItem>
               ))}
-            </SelectComp>
+            </Select>
           </FormControl>
         </Grid>
       )}
-      <Grid item xs={12} sm={4}>
-        <FormControl fullWidth margin="none">
-          <InputLabel style={{ color: theme.palette.text.main }}>
-            Jahr
-          </InputLabel>
-          <SelectComp
+
+      <Grid item>
+        <InputLabel>Jahr</InputLabel>
+        <FormControl fullWidth>
+          <Select
             value={filterYear}
             onChange={(e) => setFilterYear(e.target.value)}
-            label="Jahr"
           >
             {years.map((year) => (
               <MenuItem key={year} value={year}>
                 {year}
               </MenuItem>
             ))}
-          </SelectComp>
+          </Select>
         </FormControl>
       </Grid>
-    </>
+
+      {!isAnnualView && (
+        <Grid item>
+          <IconButton onClick={() => handleMonthChange("next")}>
+            <ChevronRightIcon />
+          </IconButton>
+        </Grid>
+      )}
+    </Grid>
   );
 };
 

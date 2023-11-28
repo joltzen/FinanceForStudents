@@ -18,6 +18,7 @@ import NoDataAlert from "./noalert";
 import BudgetSummary from "./summary";
 import MonthlySaving from "./task";
 import TotalSavings from "./total";
+import YearlySaving from "./yeartask";
 
 function DashboardPage() {
   const theme = useTheme();
@@ -49,7 +50,9 @@ function DashboardPage() {
     calculateMonthlySavingsDifference,
     calcMonthlyExpense,
     calculateTotalSavings,
+    cyr,
     cmr,
+    calculateYearlyTotalSavings,
   } = useCalculations(
     transactions,
     settings,
@@ -77,7 +80,7 @@ function DashboardPage() {
     labels: months.map((month) => month.label),
     datasets: [
       {
-        data: cmr(),
+        data: cyr(),
         backgroundColor: [
           "rgb(255, 99, 132)",
           "rgb(255, 159, 64)",
@@ -265,7 +268,11 @@ function DashboardPage() {
             onClick={() => navigate("/saving")}
           >
             <CardContent>
-              <MonthlySaving savings={totalSavings} month={filterMonth} />
+              {isAnnualView ? (
+                <YearlySaving savings={totalSavings} />
+              ) : (
+                <MonthlySaving savings={totalSavings} month={filterMonth} />
+              )}
             </CardContent>
           </Card>
         </Grid>
@@ -301,47 +308,57 @@ function DashboardPage() {
             }}
           >
             <CardContent>
-              <Grid
-                container
-                spacing={2}
-                style={{ marginBottom: 20 }}
-                alignItems="center"
-              >
-                <Grid item xs={12} sm={4}>
-                  <FormControlLabel
-                    control={
-                      <SwitchComp
-                        checked={isAnnualView}
-                        onChange={handleChartToggle}
+              <Grid container spacing={2} alignItems="center">
+                <Grid item xs={12}>
+                  <Grid
+                    container
+                    justifyContent="space-between"
+                    alignItems="center"
+                  >
+                    <Grid item>
+                      <FormControlLabel
+                        control={
+                          <SwitchComp
+                            checked={isAnnualView}
+                            onChange={handleChartToggle}
+                          />
+                        }
+                        sx={{ color: theme.palette.text.main }}
+                        label="Jahresrückblick"
                       />
-                    }
-                    sx={{ color: theme.palette.text.main }}
-                    label="Jahresrückblick"
-                  />
+                    </Grid>
+                    <Grid item>
+                      <BudgetFilter
+                        filterMonth={filterMonth}
+                        setFilterMonth={setFilterMonth}
+                        filterYear={filterYear}
+                        setFilterYear={setFilterYear}
+                        months={months}
+                        years={years}
+                        isAnnualView={isAnnualView}
+                      />
+                    </Grid>
+                  </Grid>
                 </Grid>
-
-                <BudgetFilter
-                  filterMonth={filterMonth}
-                  setFilterMonth={setFilterMonth}
-                  filterYear={filterYear}
-                  setFilterYear={setFilterYear}
-                  months={months}
-                  years={years}
-                  isAnnualView={isAnnualView}
-                />
-              </Grid>
-              {hasBudgetData() ? (
-                <>
-                  <Box mb={5} mt={5}>
+                {/* Chart display code */}
+                {hasBudgetData() ? (
+                  <Box mb={5} mt={5} sx={{ width: "100%" }}>
                     <BudgetChart
                       chartData={chartData}
                       chartOptions={chartOptions}
                     />
                   </Box>
-                </>
-              ) : (
-                <NoDataAlert />
-              )}
+                ) : (
+                  <Box
+                    sx={{
+                      width: "100%",
+                      textAlign: "center",
+                    }}
+                  >
+                    <NoDataAlert />
+                  </Box>
+                )}
+              </Grid>
             </CardContent>
           </Card>
         </Grid>
@@ -357,9 +374,14 @@ function DashboardPage() {
             }}
           >
             <CardContent>
-              <Box sx={{ mt: 3 }}>
-                <Bar data={barChartData} options={barChartOptions} />
-              </Box>
+              {isAnnualView ? (
+                <Box sx={{ mt: 3 }}>
+                  <Bar data={barChartData} options={barChartOptions} />
+                </Box>
+              ) : (
+                //Hier einfügen von Kategorien Statistiken wie viel Geld noch Pro Kategorie zur verfügung
+                <></>
+              )}
             </CardContent>
           </Card>
         </Grid>

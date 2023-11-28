@@ -131,9 +131,6 @@ export const useCalculations = (
     categoryTotals["remaining"] = totalBudget - usedBudget - totalSavingGoals;
     return categoryTotals;
   };
-  const totalSavings = isAnnualView
-    ? calculateAnnualSavingGoalsTotal()
-    : calculateSavingGoalsTotal();
 
   const getCategoryTotal = (categoryId) => {
     const totals = calculateCategoryTotals();
@@ -164,7 +161,68 @@ export const useCalculations = (
     });
     return monthlyExpenses[filterMonth - 1];
   };
+
   const cmr = () => {
+    let monthlyBudget = 0;
+    let monthlyExpense = 0;
+    let monthlySaving = 0;
+
+    // Process transactions for the selected month and year
+    transactions?.forEach((transaction) => {
+      const date = new Date(transaction.transaction_date);
+      const month = date.getMonth();
+      const year = date.getFullYear();
+
+      if (year === filterYear && month === filterMonth - 1) {
+        if (transaction.transaction_type === "Einnahme") {
+          monthlyBudget += parseFloat(transaction.amount);
+        } else if (transaction.transaction_type === "Ausgabe") {
+          monthlyExpense -= parseFloat(transaction.amount);
+        }
+      }
+    });
+
+    // Process settings for the selected month
+    settings?.forEach((setting) => {
+      if (setting.month === filterMonth) {
+        if (setting.transaction_type === "Einnahme") {
+          monthlyBudget += parseFloat(setting.amount);
+        } else if (setting.transaction_type === "Ausgabe") {
+          monthlyExpense -= parseFloat(setting.amount);
+        }
+      }
+    });
+
+    // Process savings goals for the selected month and year
+    savingsGoals?.forEach((goal) => {
+      const start = new Date(goal.startdate);
+      const end = goal.deadline
+        ? new Date(goal.deadline)
+        : new Date(start.getFullYear(), 11, 31);
+
+      if (
+        start.getFullYear() <= filterYear &&
+        (!goal.deadline || end.getFullYear() >= filterYear)
+      ) {
+        const startMonth =
+          start.getFullYear() === filterYear ? start.getMonth() : 0;
+        const endMonth =
+          !goal.deadline || end.getFullYear() === filterYear
+            ? end.getMonth()
+            : 11;
+
+        if (startMonth <= filterMonth - 1 && endMonth >= filterMonth - 1) {
+          monthlySaving += parseFloat(goal.monthly_saving);
+        }
+      }
+    });
+
+    // Calculate the remaining budget for the selected month
+    let monthlyRemainingBudget = monthlyBudget - monthlyExpense - monthlySaving;
+    return monthlyRemainingBudget;
+  };
+
+  const cyr = () => {
     let monthlyBudgets = new Array(12).fill(0);
     let monthlyExpenses = new Array(12).fill(0);
     let monthlySavings = new Array(12).fill(0);
@@ -226,6 +284,7 @@ export const useCalculations = (
     });
     return monthlyRemainingBudgets;
   };
+
   const calculateMonthlyRemainingBudgets = () => {
     let monthlyBudgets = new Array(12).fill(0);
     let monthlyExpenses = new Array(12).fill(0);
@@ -409,6 +468,42 @@ export const useCalculations = (
     return totalSavings;
   };
 
+  //TODO: Diese Funktion überarbeiten
+  const calculateYearlyTotalSavings = () => {
+    let totalYearlySavings = 0;
+
+    savingsGoals.forEach((goal) => {
+      const goalStart = new Date(goal.startdate);
+      const goalEnd = goal.deadline
+        ? new Date(goal.deadline)
+        : new Date(goalStart.getFullYear() + 1, 0, 1);
+
+      const startMonth =
+        goalStart.getFullYear() === filterYear ? goalStart.getMonth() + 1 : 1;
+      const endMonth =
+        goalEnd.getFullYear() === filterYear ? goalEnd.getMonth() + 1 : 12;
+
+      if (
+        filterYear >= goalStart.getFullYear() &&
+        filterYear <= goalEnd.getFullYear()
+      ) {
+        let monthsInYear = endMonth - startMonth;
+        if (
+          goalStart.getFullYear() === goalEnd.getFullYear() &&
+          goalStart.getMonth() === goalEnd.getMonth()
+        ) {
+          monthsInYear -= 1;
+        }
+
+        totalYearlySavings += parseFloat(goal.monthly_saving) * monthsInYear;
+      }
+    });
+    return totalYearlySavings;
+  };
+
+  const totalSavings = isAnnualView
+    ? calculateYearlyTotalSavings()
+    : calculateSavingGoalsTotal();
   return {
     calculateCategoryTotals,
     totalSavings,
@@ -420,6 +515,8 @@ export const useCalculations = (
     calcMonthlyExpense,
     calculateSavingGoalsTotal,
     calculateTotalSavings,
+    cyr,
     cmr,
+    calculateYearlyTotalSavings,
   };
 };
