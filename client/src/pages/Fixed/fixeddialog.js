@@ -69,12 +69,26 @@ function FixedDialog({
             >
               <FormControlLabel
                 value="range"
-                control={<Radio />}
+                control={
+                  <Radio
+                    sx={{
+                      color: theme.palette.primary.main,
+                      "&.Mui-checked": { color: theme.palette.secondary.main },
+                    }}
+                  />
+                }
                 label="Zeitraum"
               />
               <FormControlLabel
                 value="single"
-                control={<Radio />}
+                control={
+                  <Radio
+                    sx={{
+                      color: theme.palette.primary.main,
+                      "&.Mui-checked": { color: theme.palette.secondary.main },
+                    }}
+                  />
+                }
                 label="Einzelner Monat"
               />
             </RadioGroup>
