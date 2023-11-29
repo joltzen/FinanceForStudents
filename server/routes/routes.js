@@ -649,4 +649,95 @@ router.patch("/updateSettings", async (req, res) => {
   }
 });
 
+router.get("/getFavorites", async (req, res) => {
+  try {
+    const { user_id } = req.query;
+    const result = await db.query(
+      "SELECT * FROM favorites WHERE user_id = $1",
+      [user_id]
+    );
+    res.json(result.rows);
+  } catch (error) {
+    console.error("Error getting user transactions:", error);
+    res.status(500).json({ error: "Error fetching transactions" });
+  }
+});
+
+router.patch("/updateFavorites", async (req, res) => {
+  try {
+    const { favorites_id, transaction_type, amount, description, category_id } =
+      req.body;
+
+    const query = `
+      UPDATE favorites
+      SET amount = $1, description = $2, transaction_type = $3, category_id = $4
+      WHERE favorites_id = $5
+      RETURNING *;`;
+
+    const values = [
+      amount,
+      description,
+      transaction_type,
+      category_id,
+      favorites_id,
+    ];
+    const result = await db.query(query, values);
+    res.json(result.rows[0]);
+  } catch (error) {
+    console.error("Error updating transaction:", error);
+    res.status(500).json({ error: "Error updating transaction" });
+  }
+});
+
+router.post("/addFavorites", async (req, res) => {
+  try {
+    const {
+      isOwn,
+      description,
+      amount,
+      transactionType,
+      user_id,
+      category_id,
+    } = req.body;
+    const query = `
+      INSERT INTO favorites (user_id, transaction_type, amount, description, is_own, category_id)
+      VALUES ($1, $2, $3, $4, $5, $6)
+      RETURNING *;`;
+
+    const values = [
+      user_id,
+      transactionType,
+      amount,
+      description,
+      isOwn,
+      category_id,
+    ];
+
+    db.query(query, values, (err, result) => {
+      if (err) {
+        console.error("Fehler beim Einfügen der Favoriten:", err);
+        return res
+          .status(500)
+          .json({ error: "Fehler beim Einfügen der Favoriten" });
+      }
+      const insertedFavorites = result.rows[0];
+      res.status(201).json(insertedFavorites);
+    });
+  } catch (error) {
+    console.error("Fehler beim Hinzufügen der Favoriten:", error);
+    res.status(500).json({ error: "Fehler beim Hinzufügen der Favoriten" });
+  }
+});
+
+router.delete("/deleteFavorites", async (req, res) => {
+  try {
+    const { id } = req.query;
+    const query = "DELETE FROM favorites WHERE favorites_id = $1 RETURNING *;";
+    const values = [id];
+    const result = await db.query(query, values);
+    res.json(result.rows[0]);
+  } catch (error) {
+    res.status(500).json({ error: "Fehler beim Löschen der Favoriten" });
+  }
+});
 module.exports = router;

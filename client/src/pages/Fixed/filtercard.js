@@ -86,7 +86,6 @@ function FilterCard({
                 <Box sx={{ marginTop: 3, marginBottom: 3 }}>
                   <Grid
                     container
-                    spacing={2}
                     alignItems="center"
                     justifyContent="space-around"
                   >
@@ -170,7 +169,7 @@ function FilterCard({
                         <ChevronRightIcon />
                       </IconButton>
                     </Grid>
-                    <Grid item>
+                    <Grid item sx={{ marginLeft: 40 }}>
                       <IconButton
                         variant="contained"
                         onClick={handleTransferDialogOpen}
@@ -187,7 +186,7 @@ function FilterCard({
                         </Tooltip>
                       </IconButton>
                     </Grid>
-                    <Grid item xs={1}>
+                    <Grid item>
                       <IconButton
                         variant="contained"
                         onClick={handleDialog}

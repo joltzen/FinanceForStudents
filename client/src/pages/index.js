@@ -12,3 +12,4 @@ export { Reset } from "./Reset";
 export { Saving } from "./Save";
 export { Fixed } from "./Fixed";
 export { Signup } from "./Signup";
+export { Favorites } from "./Favorites";

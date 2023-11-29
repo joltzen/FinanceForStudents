@@ -2,9 +2,7 @@
 
 import DeleteIcon from "@mui/icons-material/Delete";
 import EditIcon from "@mui/icons-material/Edit";
-import InfoIcon from "@mui/icons-material/Info";
 import {
-  Alert,
   Button,
   Dialog,
   DialogActions,
@@ -13,22 +11,22 @@ import {
   DialogTitle,
   Grid,
   IconButton,
-  InputLabel,
   Paper,
-  Snackbar,
-  TextField,
-  Tooltip,
   Typography,
 } from "@mui/material";
 import { useTheme } from "@mui/material/styles";
-import { Box } from "@mui/system";
 import Circle from "@uiw/react-color-circle";
 import React, { useEffect, useState } from "react";
+import TextComp from "../../components/TextComp";
 import axiosInstance from "../../config/axios";
 import { colors } from "../../config/constants";
 import { useAuth } from "../../core/auth/auth";
 
-function DialogPage() {
+function AddCategory({
+  isCategoryWarningOpen,
+  handleCategoryAdded,
+  onCategoryAdded,
+}) {
   const theme = useTheme();
 
   const [categories, setCategories] = useState([]);
@@ -37,11 +35,7 @@ function DialogPage() {
   const [openDialog, setOpenDialog] = useState(false);
   const [editingCategory, setEditingCategory] = useState(null);
   const [openEditDialog, setOpenEditDialog] = useState(false);
-  const [snackbarOpen, setSnackbarOpen] = useState(false);
-  const [snackbarMessage, setSnackbarMessage] = useState("");
-  const [snackbarSeverity, setSnackbarSeverity] = useState("success");
   const { user } = useAuth();
-  const [maxValue, setMaxValue] = useState(0);
 
   const addCategory = () => {
     setCategories([...categories, { name: newCategory, color: categoryColor }]);
@@ -50,70 +44,38 @@ function DialogPage() {
     setOpenDialog(false);
   };
 
-  const handleEditCategory = async () => {
-    try {
-      await axiosInstance.patch("/updateCategory", {
-        id: editingCategory.id,
-        name: newCategory,
-        color: categoryColor,
-      });
-      // Update the local state to reflect the changes
-      setCategories((prevCategories) =>
-        prevCategories.map((category) =>
-          category.id === editingCategory.id
-            ? { ...category, name: newCategory, color: categoryColor }
-            : category
-        )
-      );
-      setOpenEditDialog(false);
-      setNewCategory("");
-      setCategoryColor("#FFFFFF");
-      setSnackbarMessage("Kategorie erfolgreich gespeichert!");
-      setSnackbarSeverity("success");
-    } catch (error) {
-      console.error("Error updating category:", error);
-      setSnackbarMessage("Fehler beim speichern der Kategorie!");
-      setSnackbarSeverity("error");
-    }
-    setSnackbarOpen(true);
-  };
-
   const openEditDialogWithCategory = (category) => {
     setEditingCategory(category);
     setNewCategory(category.name);
     setCategoryColor(category.color);
     setOpenEditDialog(true);
   };
-  useEffect(() => {
-    const fetchCategories = async () => {
-      try {
-        const response = await axiosInstance.get("/getCategories", {
-          params: { user_id: user.id },
-        });
-        setCategories(response.data);
-      } catch (error) {
-        console.error("Fehler beim Laden der Kategorien:", error);
-      }
-    };
+  const fetchCategories = async () => {
+    try {
+      const response = await axiosInstance.get("/getCategories", {
+        params: { user_id: user.id },
+      });
+      setCategories(response.data);
+    } catch (error) {
+      console.error("Fehler beim Laden der Kategorien:", error);
+    }
+  };
 
+  useEffect(() => {
     fetchCategories();
   }, [user.id]);
-
-  const handleAddCategory = async (event) => {
+  const handleAddCategory = async () => {
     try {
       await axiosInstance.post("/saveCategory", {
         name: newCategory,
         user_id: user.id,
         color: categoryColor,
       });
-      setSnackbarMessage("Kategorie erfolgreich hinzugefügt!");
-      setSnackbarSeverity("success");
+      fetchCategories(); // Re-fetch categories after adding
+      onCategoryAdded(); // If you need to trigger a refresh in a parent component
     } catch (error) {
-      console.error("category failed:", error);
-      setSnackbarMessage("Fehler beim hinzufügen der Kategorie!");
-      setSnackbarSeverity("error");
+      console.error("Error adding category:", error);
     }
-    setSnackbarOpen(true);
   };
 
   const handleDeleteCategory = async (categoryId) => {
@@ -121,17 +83,10 @@ function DialogPage() {
       await axiosInstance.delete("/deleteCategory", {
         params: { id: categoryId },
       });
-      setCategories((prevCategories) =>
-        prevCategories.filter((category) => category.id !== categoryId)
-      );
-      setSnackbarMessage("Kategorie erfolgreich gelöscht!");
-      setSnackbarSeverity("success");
+      fetchCategories(); // Re-fetch categories after deleting
     } catch (error) {
       console.error("Fehler beim Löschen der Kategorie:", error);
-      setSnackbarMessage("Fehler beim löschen der Kategorie!");
-      setSnackbarSeverity("error");
     }
-    setSnackbarOpen(true);
   };
   function isColorDark(color) {
     const rgb = parseInt(color.substring(1), 16);
@@ -145,19 +100,6 @@ function DialogPage() {
 
   return (
     <div>
-      <Snackbar
-        open={snackbarOpen}
-        autoHideDuration={6000}
-        onClose={() => setSnackbarOpen(false)}
-      >
-        <Alert
-          onClose={() => setSnackbarOpen(false)}
-          severity={snackbarSeverity}
-          sx={{ width: "100%" }}
-        >
-          {snackbarMessage}
-        </Alert>
-      </Snackbar>
       <Dialog open={openDialog} onClose={() => setOpenDialog(false)}>
         <DialogTitle
           sx={{
@@ -177,32 +119,21 @@ function DialogPage() {
             sx={{
               backgroundColor: theme.palette.card.main,
               color: theme.palette.text.main,
-              mb: 5,
             }}
           >
             Fügen Sie eine neue Kategorie hinzu und wählen Sie eine Farbe für
             sie.
           </DialogContentText>
-          <InputLabel style={{ color: theme.palette.text.main, mt: 4 }}>
-            Kategoriename
-          </InputLabel>
-          <TextField
+          <TextComp
             autoFocus
-            variant="outlined"
+            margin="dense"
+            label="Kategoriename"
+            type="text"
             fullWidth
-            name="description"
-            margin="normal"
+            variant="outlined"
             value={newCategory}
             onChange={(e) => setNewCategory(e.target.value)}
-            sx={{
-              ".MuiOutlinedInput-root": {
-                height: "40px",
-                border: `1px solid ${theme.palette.text.main}`,
-              },
-              mb: 3,
-            }}
           />
-
           <Circle
             style={{ marginTop: "50px" }}
             colors={colors}
@@ -219,7 +150,9 @@ function DialogPage() {
           }}
         >
           <Button
-            onClick={() => setOpenDialog(false)}
+            onClick={() => {
+              setOpenDialog(false);
+            }}
             sx={{
               backgroundColor: theme.palette.card.main,
               color: theme.palette.text.main,
@@ -231,6 +164,7 @@ function DialogPage() {
             onClick={() => {
               addCategory();
               handleAddCategory();
+              handleCategoryAdded();
             }}
             sx={{
               backgroundColor: theme.palette.card.main,
@@ -242,9 +176,6 @@ function DialogPage() {
         </DialogActions>
       </Dialog>
 
-      <Typography variant="h6" sx={{ mt: 2, color: theme.palette.text.main }}>
-        Benutzerdefinierte Kategorien
-      </Typography>
       <Grid container spacing={2}>
         {categories?.map((category, index) => (
           <Grid item xs={12} sm={6} key={index}>
@@ -297,28 +228,19 @@ function DialogPage() {
             sx={{
               backgroundColor: theme.palette.card.main,
               color: theme.palette.text.main,
-              mb: 4,
             }}
           >
             Kategorie <strong>{editingCategory?.name}</strong> bearbeiten
           </DialogContentText>
-          <InputLabel style={{ color: theme.palette.text.main }}>
-            Kategoriename
-          </InputLabel>
-          <TextField
+          <TextComp
             autoFocus
-            variant="outlined"
+            margin="dense"
+            label="Kategoriename"
+            type="text"
             fullWidth
-            name="description"
-            margin="normal"
+            variant="outlined"
             value={newCategory}
             onChange={(e) => setNewCategory(e.target.value)}
-            sx={{
-              ".MuiOutlinedInput-root": {
-                height: "40px",
-                border: `1px solid ${theme.palette.text.main}`,
-              },
-            }}
           />
           <Circle
             style={{ marginTop: "50px" }}
@@ -340,7 +262,10 @@ function DialogPage() {
               backgroundColor: theme.palette.card.main,
               color: theme.palette.text.main,
             }}
-            onClick={() => setOpenEditDialog(false)}
+            onClick={() => {
+              setOpenEditDialog(false);
+              isCategoryWarningOpen(false);
+            }}
           >
             Abbrechen
           </Button>
@@ -349,7 +274,9 @@ function DialogPage() {
               backgroundColor: theme.palette.card.main,
               color: theme.palette.text.main,
             }}
-            onClick={handleEditCategory}
+            onClick={() => {
+              isCategoryWarningOpen(false);
+            }}
           >
             Speichern
           </Button>
@@ -357,7 +284,7 @@ function DialogPage() {
       </Dialog>
 
       <Button
-        sx={{ marginTop: 3 }}
+        sx={{ marginTop: 2 }}
         onClick={() => setOpenDialog(true)}
         variant="contained"
       >
@@ -367,4 +294,4 @@ function DialogPage() {
   );
 }
 
-export default DialogPage;
+export default AddCategory;
