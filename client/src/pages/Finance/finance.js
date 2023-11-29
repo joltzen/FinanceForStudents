@@ -19,7 +19,7 @@ function FinancePage() {
   const [categories, setCategories] = useState([]);
   const [update, setUpdate] = useState(false);
   const [updateNeeded, setUpdateNeeded] = useState(false);
-
+  const [favorites, setFavorites] = useState([]);
   const triggerUpdate = () => {
     setUpdateNeeded((prev) => !prev);
   };
@@ -54,7 +54,6 @@ function FinancePage() {
   const handleTransactionTypeChange = (e) => {
     setTransactionType(e.target.value);
   };
-
 
   const handleSubmit = async (event) => {
     event.preventDefault();
@@ -101,7 +100,18 @@ function FinancePage() {
       }
     };
     fetchCategories();
-  }, [user.id, update]);
+    const fetchFavorites = async () => {
+      try {
+        const response = await axiosInstance.get("/getFavorites", {
+          params: { user_id: user.id },
+        });
+        setFavorites(response.data);
+      } catch (error) {
+        console.error("Fehler beim Laden der Favoriten:", error);
+      }
+    };
+    fetchFavorites();
+  }, [user.id, update, favorites]);
 
   return (
     <Grid item xs={12} md={8} lg={6}>
@@ -140,6 +150,7 @@ function FinancePage() {
         update={update}
         handleOpenDialog={handleOpenDialog}
         triggerUpdate={triggerUpdate}
+        favorites={favorites}
       />
     </Grid>
   );

@@ -1,6 +1,8 @@
 /* Copyright (c) 2023, Jason Oltzen */
 
 import ArrowUpward from "@mui/icons-material/ArrowUpward";
+import StarIcon from "@mui/icons-material/Star";
+import StarBorderOutlinedIcon from "@mui/icons-material/StarBorderOutlined";
 import {
   Box,
   IconButton,
@@ -31,6 +33,9 @@ function TransactionsTable({
   handleEditButtonClick,
   handleDeleteTransaction,
   formatDate,
+  handleAddFavorites,
+  handleDeleteFavorites,
+  favorites,
 }) {
   const theme = useTheme();
   const [page, setPage] = React.useState(1);
@@ -52,6 +57,7 @@ function TransactionsTable({
     (page - 1) * rowsPerPage,
     page * rowsPerPage
   );
+
   return (
     <TableContainer component={Paper} elevation={10}>
       <Table sx={{ minWidth: 650 }}>
@@ -100,6 +106,7 @@ function TransactionsTable({
                 />
               </IconButton>
             </TableCell>
+            <TableCell sx={{ width: "1px" }}></TableCell>
             <TableCell sx={{ width: "1px" }}></TableCell>
           </TableRow>
         </TableHead>
@@ -152,6 +159,27 @@ function TransactionsTable({
                       handleDeleteTransaction(transaction.transaction_id)
                     }
                   />
+                </TableCell>
+                <TableCell align="right">
+                  {favorites.some(
+                    (fav) =>
+                      fav.transaction_id === transaction.transaction_id &&
+                      fav.user_id === transaction.user_id
+                  ) ? (
+                    <IconButton
+                      onClick={() => handleDeleteFavorites(transaction)}
+                      sx={{ color: theme.palette.secondary.main }}
+                    >
+                      <StarIcon />
+                    </IconButton>
+                  ) : (
+                    <IconButton
+                      onClick={() => handleAddFavorites(transaction)}
+                      sx={{ color: theme.palette.text.main }}
+                    >
+                      <StarBorderOutlinedIcon />
+                    </IconButton>
+                  )}
                 </TableCell>
               </TableRow>
             );

@@ -52,6 +52,18 @@ function FinanceOverview({ update, handleOpenDialog, triggerUpdate }) {
   );
   const [activeSorting, setActiveSorting] = useState("date");
   const [isCategoryWarningOpen, setIsCategoryWarningOpen] = useState(false);
+  const [favorites, setFavorites] = useState([]);
+
+  const fetchFavorites = useCallback(async () => {
+    try {
+      const response = await axiosInstance.get("/getFavorites", {
+        params: { user_id: user.id },
+      });
+      setFavorites(response.data);
+    } catch (error) {
+      console.error("Fehler beim Abrufen der Favoriten:", error);
+    }
+  }, [user.id]);
 
   const handleAddTransaction = () => {
     const fetchCategories = async () => {
@@ -103,6 +115,7 @@ function FinanceOverview({ update, handleOpenDialog, triggerUpdate }) {
       });
       setSortedByAmountTransactions(sortedTransactions);
     }
+    fetchFavorites();
   }, [
     sortOrder,
     sortOrderAmount,
@@ -279,22 +292,6 @@ function FinanceOverview({ update, handleOpenDialog, triggerUpdate }) {
     activeSorting,
   ]);
 
-  // const refreshCategories = useCallback(() => {
-  //   // Function to re-fetch categories
-  //   const fetchCategories = async () => {
-  //     try {
-  //       const response = await axiosInstance.get("/getCategories", {
-  //         params: { user_id: user.id },
-  //       });
-  //       setCategories(response.data);
-  //     } catch (error) {
-  //       console.error("Fehler beim Laden der Kategorien:", error);
-  //     }
-  //   };
-
-  //   fetchCategories();
-  // }, [user.id]);
-
   const [editTransaction, setEditTransaction] = useState(null);
   const handleEditTransaction = async (transaction) => {
     try {
@@ -318,6 +315,54 @@ function FinanceOverview({ update, handleOpenDialog, triggerUpdate }) {
       : true;
     return matchesSearch && matchesCategory;
   });
+
+  const handleAddFavorites = async (transaction) => {
+    try {
+      const response = await axiosInstance.post("/addFavorites", {
+        user_id: transaction.user_id,
+        transactionType: transaction.transaction_type,
+        description: transaction.description,
+        amount: transaction.amount,
+        category_id: transaction.category_id,
+        transaction_id: transaction.transaction_id,
+        isOwn: false,
+      });
+      setFavorites((prevFavorites) => [...prevFavorites, response.data]);
+    } catch (error) {
+      console.error("Favorites failed:", error);
+    }
+    try {
+      await axiosInstance.patch("/setTransactionFavorite", {
+        transaction_id: transaction.transaction_id,
+        isFavorite: true,
+      });
+    } catch (error) {
+      console.error("Favorites failed:", error);
+    }
+  };
+
+  const handleDeleteFavorites = async (transaction) => {
+    try {
+      await axiosInstance.delete("/deleteFavoritesByTransaction", {
+        params: { id: transaction.transaction_id },
+      });
+      setFavorites(
+        favorites.filter(
+          (fav) => fav.transaction_id !== transaction.transaction_id
+        )
+      );
+    } catch (error) {
+      console.error("Fehler beim Löschen der Favoriten:", error);
+    }
+    try {
+      await axiosInstance.patch("/setTransactionFavorite", {
+        transaction_id: transaction.transaction_id,
+        isFavorite: false,
+      });
+    } catch (error) {
+      console.error("Favorites failed:", error);
+    }
+  };
 
   const theme = useTheme();
   const colorMode = useContext(ColorModeContext); // Access the color mode context
@@ -394,6 +439,9 @@ function FinanceOverview({ update, handleOpenDialog, triggerUpdate }) {
                 handleEditButtonClick={handleEditButtonClick}
                 handleDeleteTransaction={handleDeleteTransaction}
                 formatDate={formatDate}
+                handleAddFavorites={handleAddFavorites}
+                handleDeleteFavorites={handleDeleteFavorites}
+                favorites={favorites}
               />
             </Box>
 

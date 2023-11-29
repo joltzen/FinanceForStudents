@@ -698,10 +698,11 @@ router.post("/addFavorites", async (req, res) => {
       transactionType,
       user_id,
       category_id,
+      transaction_id,
     } = req.body;
     const query = `
-      INSERT INTO favorites (user_id, transaction_type, amount, description, is_own, category_id)
-      VALUES ($1, $2, $3, $4, $5, $6)
+      INSERT INTO favorites (user_id, transaction_type, amount, description, is_own, category_id,transaction_id)
+      VALUES ($1, $2, $3, $4, $5, $6,$7)
       RETURNING *;`;
 
     const values = [
@@ -711,6 +712,7 @@ router.post("/addFavorites", async (req, res) => {
       description,
       isOwn,
       category_id,
+      transaction_id,
     ];
 
     db.query(query, values, (err, result) => {
@@ -738,6 +740,36 @@ router.delete("/deleteFavorites", async (req, res) => {
     res.json(result.rows[0]);
   } catch (error) {
     res.status(500).json({ error: "Fehler beim Löschen der Favoriten" });
+  }
+});
+
+router.delete("/deleteFavoritesByTransaction", async (req, res) => {
+  try {
+    const { id } = req.query;
+    const query =
+      "DELETE FROM favorites WHERE transaction_id = $1 RETURNING *;";
+    const values = [id];
+    const result = await db.query(query, values);
+    res.json(result.rows[0]);
+  } catch (error) {
+    res.status(500).json({ error: "Fehler beim Löschen der Favoriten" });
+  }
+});
+router.patch("/setTransactionFavorite", async (req, res) => {
+  try {
+    const { transaction_id, isFavorite } = req.body;
+    const query = `
+      UPDATE transactions
+      SET favorites= $1
+      WHERE transaction_id = $2
+      RETURNING *;`;
+
+    const values = [isFavorite, transaction_id];
+    const result = await db.query(query, values);
+    res.json(result.rows[0]);
+  } catch (error) {
+    console.error("Error updating transaction:", error);
+    res.status(500).json({ error: "Error updating transaction" });
   }
 });
 module.exports = router;
