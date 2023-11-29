@@ -31,7 +31,7 @@ export const tokens = (mode) => {
           //background.default
           darkSlateGrey: "#3b3d49",
           //not used
-          brightYellow: "#ffce56",
+          brightYellow: "#FFD700",
           //budget.main
           neonGreen: "#65C023",
           //saving.main
@@ -155,6 +155,9 @@ export const themeSettings = (mode) => {
             tablecell: {
               main: colors.indigoBlue,
             },
+            favlist: {
+              main: colors.slateBlue,
+            },
             background: {
               default: colors.darkSlateGrey,
             },
@@ -206,6 +209,9 @@ export const themeSettings = (mode) => {
             total: {
               main: colors.purple,
             },
+            favorites: {
+              main: colors.brightYellow,
+            },
             components: {
               MuiTableCell: {
                 styleOverrides: {
@@ -224,9 +230,14 @@ export const themeSettings = (mode) => {
 
             head: { main: "#444444" },
             content: { main: "#dddddd" },
-
+            favorites: {
+              main: colors.brightYellow,
+            },
             primary: {
               main: colors.slateBlue,
+            },
+            favlist: {
+              main: colors.steelGray,
             },
             secondary: {
               main: colors.gold,

@@ -10,6 +10,7 @@ import {
   About,
   Contact,
   Dashboard,
+  Favorites,
   FinancePage,
   Fixed,
   Home,
@@ -54,6 +55,7 @@ function App() {
                 <Route path="/password-reset" element={<Reset />} />
                 <Route path="/saving" element={<Saving />} />
                 <Route path="/about" element={<About />} />
+                <Route path="/favorites" element={<Favorites />} />
               </Routes>
             </div>
           </ThemeProvider>

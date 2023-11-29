@@ -19,7 +19,7 @@ function ContactPage() {
   return (
     <div>
       <Container maxWidth="md">
-        <Typography variant="h4" component="h1" gutterBottom>
+        <Typography åvariant="h4" component="h1" gutterBottom>
           Willkommen auf der Kontaktseite!
         </Typography>
         <Paper elevation={3} sx={{ padding: 4 }}>

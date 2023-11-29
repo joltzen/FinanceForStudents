@@ -1,8 +1,6 @@
 /* Copyright (c) 2023, Jason Oltzen */
 
 import ArrowUpward from "@mui/icons-material/ArrowUpward";
-import StarIcon from "@mui/icons-material/Star";
-import StarBorderOutlinedIcon from "@mui/icons-material/StarBorderOutlined";
 import {
   Box,
   IconButton,
@@ -23,24 +21,17 @@ import React from "react";
 import RowMenu from "./rowmenu";
 
 function TransactionsTable({
-  toggleSortOrder,
   toggleSortOrderAmount,
-  sortOrder,
   sortOrderAmount,
-  finalTransactions,
+  finalFavorites,
   categories,
-  savingSum,
   handleEditButtonClick,
   handleDeleteTransaction,
-  formatDate,
-  handleAddFavorites,
-  handleDeleteFavorites,
-  favorites,
 }) {
   const theme = useTheme();
   const [page, setPage] = React.useState(1);
-  const [rowsPerPage, setRowsPerPage] = React.useState(10); // Default rows per page
-
+  const [rowsPerPage, setRowsPerPage] = React.useState(10);
+  const favoritesPerPage = 10;
   const handlePageChange = (event, value) => {
     setPage(value);
   };
@@ -48,12 +39,12 @@ function TransactionsTable({
   const handleChangeRowsPerPage = (event) => {
     const value = event.target.value;
     setRowsPerPage(
-      value === "all" ? finalTransactions.length : parseInt(value, 10)
+      value === "all" ? finalFavorites.length : parseInt(value, 10)
     );
-    setPage(1); // Reset page to 1 after changing the number of rows
+    setPage(1);
   };
-  const pageCount = Math.ceil(finalTransactions.length / rowsPerPage);
-  const displayedTransactions = finalTransactions.slice(
+  const pageCount = Math.ceil(finalFavorites.length / rowsPerPage);
+  const displayedFavorites = finalFavorites.slice(
     (page - 1) * rowsPerPage,
     page * rowsPerPage
   );
@@ -68,22 +59,6 @@ function TransactionsTable({
         >
           <TableRow>
             <TableCell sx={{ width: "1px" }}></TableCell>
-            <TableCell
-              sx={{ width: "20px", color: theme.palette.tabletext.main }}
-            >
-              Datum
-              <IconButton
-                onClick={toggleSortOrder}
-                sx={{ color: theme.palette.tabletext.main }}
-              >
-                <ArrowUpward
-                  sx={{
-                    transform:
-                      sortOrder === "asc" ? "rotate(0deg)" : "rotate(180deg)",
-                  }}
-                />
-              </IconButton>
-            </TableCell>
             <TableCell sx={{ color: theme.palette.tabletext.main }}>
               Beschreibung
             </TableCell>
@@ -107,25 +82,24 @@ function TransactionsTable({
               </IconButton>
             </TableCell>
             <TableCell sx={{ width: "1px" }}></TableCell>
-            <TableCell sx={{ width: "1px" }}></TableCell>
           </TableRow>
         </TableHead>
         <TableBody sx={{ backgroundColor: theme.palette.content.main }}>
-          {displayedTransactions.map((transaction) => {
+          {displayedFavorites.map((favorites) => {
             const category = categories.find(
-              (c) => c.id === transaction.category_id
+              (c) => c.id === favorites.category_id
             );
             const categoryColor = category
               ? category.color
               : theme.palette.text.main;
             return (
-              <TableRow key={transaction.transaction_id}>
+              <TableRow key={favorites.favorites_id}>
                 <TableCell
                   sx={{
                     borderLeft: `10px solid ${categoryColor}`,
                     height: "10px", // Reduce height
                     color:
-                      transaction.transaction_type === "Ausgabe"
+                      favorites.transaction_type === "Ausgabe"
                         ? "red"
                         : "green",
                   }}
@@ -133,54 +107,25 @@ function TransactionsTable({
                   <Typography
                     variant="h5"
                     fontSize={
-                      transaction.transaction_type === "Ausgabe"
-                        ? "23px"
-                        : "19px"
+                      favorites.transaction_type === "Ausgabe" ? "23px" : "19px"
                     }
                   >
-                    {transaction.transaction_type === "Ausgabe" ? "-" : "+"}
+                    {favorites.transaction_type === "Ausgabe" ? "-" : "+"}
                   </Typography>
                 </TableCell>
-                <TableCell>
-                  <Box sx={{ marginRight: "50px" }}>
-                    {formatDate(transaction.transaction_date)}
-                  </Box>
-                </TableCell>
-                <TableCell>{transaction.description}</TableCell>
+                <TableCell>{favorites.description}</TableCell>
                 <TableCell align="right">
-                  {transaction.transaction_type === "Ausgabe" ? "-" : ""}
-                  {transaction.amount} €
+                  {favorites.transaction_type === "Ausgabe" ? "-" : ""}
+                  {favorites.amount} €
                 </TableCell>
                 <TableCell align="right">
                   <RowMenu
-                    transaction={transaction}
+                    transaction={favorites}
                     handleEditButtonClick={handleEditButtonClick}
                     handleDeleteTransaction={() =>
-                      handleDeleteTransaction(transaction.transaction_id)
+                      handleDeleteTransaction(favorites.favorites_id)
                     }
                   />
-                </TableCell>
-                <TableCell align="right">
-                  {favorites.some(
-                    (fav) =>
-                      (fav.transaction_id === transaction.transaction_id &&
-                        fav.user_id === transaction.user_id) ||
-                      transaction.favorites === true
-                  ) ? (
-                    <IconButton
-                      onClick={() => handleDeleteFavorites(transaction)}
-                      sx={{ color: theme.palette.secondary.main }}
-                    >
-                      <StarIcon />
-                    </IconButton>
-                  ) : (
-                    <IconButton
-                      onClick={() => handleAddFavorites(transaction)}
-                      sx={{ color: theme.palette.text.main }}
-                    >
-                      <StarBorderOutlinedIcon />
-                    </IconButton>
-                  )}
                 </TableCell>
               </TableRow>
             );
@@ -252,19 +197,6 @@ function TransactionsTable({
               },
             }}
           />
-        </Box>
-
-        {/* Typography Box */}
-        <Box
-          sx={{
-            display: "flex",
-            justifyContent: "flex-end",
-            width: "33%", // takes up 1/3 of the space
-          }}
-        >
-          <Typography variant="body2" sx={{ color: theme.palette.text.main }}>
-            Gesamtsumme: <strong>{savingSum.toFixed(2)}€</strong>
-          </Typography>
         </Box>
       </Box>
     </TableContainer>
