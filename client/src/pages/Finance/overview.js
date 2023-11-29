@@ -292,7 +292,6 @@ function FinanceOverview({ update, handleOpenDialog, triggerUpdate }) {
     update,
     needUpdate,
     activeSorting,
-    fetchTransactions,
   ]);
 
   const [editTransaction, setEditTransaction] = useState(null);
