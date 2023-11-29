@@ -5,6 +5,7 @@ import AttachMoneyIcon from "@mui/icons-material/AttachMoney";
 import BarChartIcon from "@mui/icons-material/BarChart";
 import DarkModeOutlinedIcon from "@mui/icons-material/DarkModeOutlined";
 import LightModeOutlinedIcon from "@mui/icons-material/LightModeOutlined";
+import PaymentsIcon from "@mui/icons-material/Payments";
 import SavingsIcon from "@mui/icons-material/Savings";
 import {
   Box,
@@ -29,14 +30,11 @@ import { ColorModeContext } from "../../theme";
 import AddCategory from "./addcategory";
 import DialogPage from "./dialog";
 import EditTransactionDialog from "./edit";
-import FilterTransactions from "./filter";
 import TransactionsTable from "./table";
 function FavoritesOverview({ update, handleOpenDialog, triggerUpdate }) {
   const [favorites, setFavorites] = useState([]);
   const [categories, setCategories] = useState([]);
   const { user } = useAuth();
-  const [searchQuery, setSearchQuery] = useState("");
-  const [selectedCategory, setSelectedCategory] = useState("");
   const [sortOrder, setSortOrder] = useState("desc");
   const [sortOrderAmount, setSortOrderAmount] = useState("desc");
   const [sortedByAmountTransactions, setSortedByAmountFavorites] = useState([]);
@@ -268,7 +266,29 @@ function FavoritesOverview({ update, handleOpenDialog, triggerUpdate }) {
                       </IconButton>
                     </Tooltip>
                   </Box>
-
+                  <Box
+                    sx={{
+                      backgroundColor: theme.palette.monthly.main,
+                      borderRadius: "50%",
+                      width: "50px",
+                      height: "50px",
+                      display: "flex",
+                      justifyContent: "center",
+                      alignItems: "center",
+                      position: "relative",
+                      marginRight: 5,
+                      top: theme.spacing(2),
+                      right: theme.spacing(2),
+                    }}
+                  >
+                    <Tooltip title="Transaktionen verwalten" placement="left">
+                      <IconButton href="/finance">
+                        <PaymentsIcon
+                          sx={{ color: theme.palette.common.white }}
+                        />
+                      </IconButton>
+                    </Tooltip>
+                  </Box>
                   <Box
                     sx={{
                       backgroundColor: theme.palette.total.main,

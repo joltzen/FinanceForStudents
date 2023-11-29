@@ -20,6 +20,7 @@ function FinancePage() {
   const [update, setUpdate] = useState(false);
   const [updateNeeded, setUpdateNeeded] = useState(false);
   const [favorites, setFavorites] = useState([]);
+  
   const triggerUpdate = () => {
     setUpdateNeeded((prev) => !prev);
   };
@@ -65,6 +66,7 @@ function FinancePage() {
         transactionType,
         user_id: user.id,
         category_id: category,
+        isFavorite: false,
       });
       setTransactions((prevTransactions) => [
         ...prevTransactions,

@@ -163,8 +163,9 @@ function TransactionsTable({
                 <TableCell align="right">
                   {favorites.some(
                     (fav) =>
-                      fav.transaction_id === transaction.transaction_id &&
-                      fav.user_id === transaction.user_id
+                      (fav.transaction_id === transaction.transaction_id &&
+                        fav.user_id === transaction.user_id) ||
+                      transaction.favorites === true
                   ) ? (
                     <IconButton
                       onClick={() => handleDeleteFavorites(transaction)}

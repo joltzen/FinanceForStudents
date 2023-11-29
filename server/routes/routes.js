@@ -198,11 +198,18 @@ router.delete("/deleteTransaction", async (req, res) => {
 // POST-Anforderung, um eine neue Transaktion hinzuzufügen
 router.post("/addTransaction", async (req, res) => {
   try {
-    const { date, description, amount, transactionType, user_id, category_id } =
-      req.body;
+    const {
+      date,
+      description,
+      amount,
+      transactionType,
+      user_id,
+      category_id,
+      isFavorite,
+    } = req.body;
     const query = `
-      INSERT INTO transactions (user_id, transaction_type, amount, description, transaction_date, category_id)
-      VALUES ($1, $2, $3, $4, $5, $6)
+      INSERT INTO transactions (user_id, transaction_type, amount, description, transaction_date, category_id, favorites)
+      VALUES ($1, $2, $3, $4, $5, $6, $7)
       RETURNING *;`;
 
     const values = [
@@ -212,6 +219,7 @@ router.post("/addTransaction", async (req, res) => {
       description,
       date,
       category_id,
+      isFavorite,
     ];
 
     db.query(query, values, (err, result) => {
