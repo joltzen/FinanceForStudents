@@ -63,24 +63,24 @@ function FinanceOverview({ update, handleOpenDialog, triggerUpdate }) {
     }
   }, [user.id]);
 
-  const handleAddTransaction = () => {
-    const fetchCategories = async () => {
-      try {
-        const response = await axiosInstance.get("/getCategories", {
-          params: { user_id: user.id },
-        });
-        setCategories(response.data);
-      } catch (error) {
-        console.error("Fehler beim Laden der Kategorien:", error);
-      }
-    };
+  const fetchCategories = async () => {
+    try {
+      const response = await axiosInstance.get("/getCategories", {
+        params: { user_id: user.id },
+      });
+      setCategories(response.data);
+    } catch (error) {
+      console.error("Error loading categories:", error);
+    }
+  };
 
-    fetchCategories();
-    console.log(categories.length);
+  // Updated handleAddTransaction
+  const handleAddTransaction = async () => {
+    await fetchCategories();
     if (categories.length === 0) {
-      setIsCategoryWarningOpen(true); // Öffnet den Dialog
+      setIsCategoryWarningOpen(true);
     } else {
-      handleOpenDialog(); // Fährt fort mit dem Hinzufügen einer Transaktion
+      handleOpenDialog();
     }
   };
 
@@ -125,7 +125,6 @@ function FinanceOverview({ update, handleOpenDialog, triggerUpdate }) {
     settings,
     needUpdate,
     activeSorting,
-    favorites,
   ]);
   const toggleSortOrder = () => {
     setActiveSorting("date");
@@ -211,7 +210,6 @@ function FinanceOverview({ update, handleOpenDialog, triggerUpdate }) {
     user.id,
     update,
     needUpdate,
-    triggerUpdate,
   ]);
 
   function calculateAdjustedTotalSum() {
@@ -247,7 +245,6 @@ function FinanceOverview({ update, handleOpenDialog, triggerUpdate }) {
           (transaction) => transaction.transaction_id !== transactionId
         )
       );
-      setNeedUpdate(!needUpdate);
     } catch (error) {
       console.error("Fehler beim Löschen der Transaktion:", error);
     }
