@@ -20,7 +20,7 @@ function FinancePage() {
   const [update, setUpdate] = useState(false);
   const [updateNeeded, setUpdateNeeded] = useState(false);
   const [favorites, setFavorites] = useState([]);
-  
+
   const triggerUpdate = () => {
     setUpdateNeeded((prev) => !prev);
   };
@@ -113,7 +113,7 @@ function FinancePage() {
       }
     };
     fetchFavorites();
-  }, [user.id, update, favorites]);
+  }, [user.id, update]);
 
   return (
     <Grid item xs={12} md={8} lg={6}>
