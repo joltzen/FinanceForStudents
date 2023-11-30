@@ -1,13 +1,6 @@
 /* Copyright (c) 2023, Jason Oltzen */
 
 import Add from "@mui/icons-material/Add";
-import AttachMoneyIcon from "@mui/icons-material/AttachMoney";
-import BarChartIcon from "@mui/icons-material/BarChart";
-import DarkModeOutlinedIcon from "@mui/icons-material/DarkModeOutlined";
-import DeleteIcon from "@mui/icons-material/Delete";
-import LightModeOutlinedIcon from "@mui/icons-material/LightModeOutlined";
-import SavingsIcon from "@mui/icons-material/Savings";
-import StarIcon from "@mui/icons-material/Star";
 import {
   Box,
   Button,
@@ -29,9 +22,11 @@ import axiosInstance from "../../config/axios";
 import { useAuth } from "../../core/auth/auth";
 import { ColorModeContext } from "../../theme";
 import AddCategory from "./addcategory";
-import DialogPage from "./dialog";
+import DialogPage from "./card/dialog";
+import FavCard from "./card/favcard";
+import NavCard from "./card/navcards";
+import SaveCard from "./card/sumcard";
 import EditTransactionDialog from "./edit";
-import AddFavorites from "./favoritesdialog";
 import FilterTransactions from "./filter";
 import TransactionsTable from "./table";
 function FinanceOverview({ update, handleOpenDialog, triggerUpdate }) {
@@ -56,6 +51,7 @@ function FinanceOverview({ update, handleOpenDialog, triggerUpdate }) {
   const [activeSorting, setActiveSorting] = useState("date");
   const [isCategoryWarningOpen, setIsCategoryWarningOpen] = useState(false);
   const [favorites, setFavorites] = useState([]);
+
   const fetchFavorites = useCallback(async () => {
     try {
       const response = await axiosInstance.get("/getFavorites", {
@@ -129,6 +125,7 @@ function FinanceOverview({ update, handleOpenDialog, triggerUpdate }) {
     settings,
     needUpdate,
     activeSorting,
+    favorites,
   ]);
   const toggleSortOrder = () => {
     setActiveSorting("date");
@@ -292,6 +289,8 @@ function FinanceOverview({ update, handleOpenDialog, triggerUpdate }) {
     update,
     needUpdate,
     activeSorting,
+    favorites,
+    transactions,
   ]);
 
   const [editTransaction, setEditTransaction] = useState(null);
@@ -334,10 +333,14 @@ function FinanceOverview({ update, handleOpenDialog, triggerUpdate }) {
       console.error("Favorites failed:", error);
     }
     try {
-      await axiosInstance.patch("/setTransactionFavorite", {
+      const response = await axiosInstance.patch("/setTransactionFavorite", {
         transaction_id: transaction.transaction_id,
         isFavorite: true,
       });
+      setTransactions((prevTransactions) => [
+        ...prevTransactions,
+        response.data,
+      ]);
     } catch (error) {
       console.error("Favorites failed:", error);
     }
@@ -479,291 +482,21 @@ function FinanceOverview({ update, handleOpenDialog, triggerUpdate }) {
       <Grid item xs={12} sm={4} style={{ minHeight: "100%" }}>
         <Grid container direction="column" spacing={2}>
           <Grid item>
-            <Card
-              sx={{
-                backgroundColor: theme.palette.card.main,
-                boxShadow: theme.shadows[6],
-                "&:hover": {
-                  boxShadow: theme.shadows[10],
-                },
-                height: "100%",
-                marginRight: 4,
-                minHeight: "100px",
-                marginTop: 2,
-              }}
-            >
-              <CardContent>
-                <Box display="flex" justifyContent="center" alignItems="center">
-                  <Box
-                    sx={{
-                      backgroundColor: theme.palette.error.main,
-                      borderRadius: "50%",
-                      width: "50px",
-                      height: "50px",
-                      display: "flex",
-                      justifyContent: "center",
-                      alignItems: "center",
-                      position: "relative",
-                      marginRight: 5,
-                      marginLeft: 5,
-                      top: theme.spacing(2),
-                      right: theme.spacing(2),
-                    }}
-                  >
-                    <Tooltip title="Fixkosten verwalten" placement="left">
-                      <IconButton href="/fixed">
-                        <AttachMoneyIcon
-                          sx={{ color: theme.palette.common.white }}
-                        />
-                      </IconButton>
-                    </Tooltip>
-                  </Box>
-                  <Box
-                    sx={{
-                      backgroundColor: theme.palette.favorites.main,
-                      borderRadius: "50%",
-                      width: "50px",
-                      height: "50px",
-                      display: "flex",
-                      marginRight: 5,
-                      justifyContent: "center",
-                      alignItems: "center",
-                      position: "relative",
-                      top: theme.spacing(2),
-                      right: theme.spacing(2),
-                    }}
-                  >
-                    <Tooltip title="Favoriten" placement="left">
-                      <IconButton href="/favorites">
-                        <StarIcon sx={{ color: theme.palette.common.white }} />
-                      </IconButton>
-                    </Tooltip>
-                  </Box>
-                  <Box
-                    sx={{
-                      backgroundColor: theme.palette.total.main,
-                      borderRadius: "50%",
-                      width: "50px",
-                      height: "50px",
-                      display: "flex",
-                      marginRight: 5,
-                      justifyContent: "center",
-                      alignItems: "center",
-                      position: "relative",
-                      top: theme.spacing(2),
-                      right: theme.spacing(2),
-                    }}
-                  >
-                    <Tooltip title="Dashboard" placement="left">
-                      <IconButton href="/">
-                        <BarChartIcon
-                          sx={{ color: theme.palette.common.white }}
-                        />
-                      </IconButton>
-                    </Tooltip>
-                  </Box>
-                  <Box
-                    sx={{
-                      backgroundColor: theme.palette.task.main,
-                      borderRadius: "50%",
-                      width: "50px",
-                      height: "50px",
-                      display: "flex",
-                      marginRight: 5,
-                      justifyContent: "center",
-                      alignItems: "center",
-                      position: "relative",
-                      top: theme.spacing(2),
-                      right: theme.spacing(2),
-                    }}
-                  >
-                    <Tooltip title="Sparziele" placement="left">
-                      <IconButton href="/saving">
-                        <SavingsIcon
-                          sx={{ color: theme.palette.common.white }}
-                        />
-                      </IconButton>
-                    </Tooltip>
-                  </Box>
-                  <Box
-                    sx={{
-                      backgroundColor: theme.palette.left.main,
-                      borderRadius: "50%",
-                      width: "50px",
-                      height: "50px",
-                      display: "flex",
-                      justifyContent: "center",
-                      alignItems: "center",
-                      position: "relative",
-                      top: theme.spacing(2),
-                      right: theme.spacing(2),
-                    }}
-                  >
-                    <Tooltip title="Colormodus" placement="left">
-                      {colorMode.mode}
-                      <IconButton
-                        onClick={colorMode.toggleColorMode}
-                        color="inherit"
-                      >
-                        {theme.palette.mode === "dark" ? (
-                          <DarkModeOutlinedIcon sx={{ color: "white" }} />
-                        ) : (
-                          <LightModeOutlinedIcon sx={{ color: "black" }} />
-                        )}
-                      </IconButton>
-                    </Tooltip>
-                  </Box>
-                </Box>
-              </CardContent>
-            </Card>
+            <NavCard theme={theme} colorMode={colorMode} />
           </Grid>
           <Grid item>
-            <Card
-              sx={{
-                backgroundColor: theme.palette.card.main,
-                boxShadow: theme.shadows[6],
-                "&:hover": {
-                  boxShadow: theme.shadows[10],
-                },
-                height: "100%",
-                marginRight: 4,
-              }}
-            >
-              <CardContent>
-                <Box
-                  display="flex"
-                  justifyContent="space-between"
-                  alignItems="center"
-                >
-                  <Box>
-                    <Typography
-                      variant="h6"
-                      sx={{ color: theme.palette.text.main }}
-                    >
-                      <strong>Gesamtausgaben diesen Monat:</strong>
-                    </Typography>
-                    <Typography variant="h4" sx={{ fontWeight: "bold", mt: 2 }}>
-                      {savingSum.toFixed(2)} €
-                    </Typography>
-                  </Box>
-                </Box>
-              </CardContent>
-            </Card>
+            <SaveCard theme={theme} savingSum={savingSum} />
           </Grid>
           <Grid item>
-            <Card
-              sx={{
-                backgroundColor: theme.palette.card.main,
-                boxShadow: theme.shadows[6],
-                "&:hover": {
-                  boxShadow: theme.shadows[10],
-                },
-                height: "100%",
-                marginTop: 2,
-                marginRight: 4,
-              }}
-            >
-              <CardContent>
-                {favorites.length === 0 ? (
-                  <>
-                    <Typography variant="h6">Favoriten </Typography>
-                    <Typography variant="body1" sx={{ mt: 2 }}>
-                      Du hast derzeit noch keine Favoriten. Klicke auf den
-                      Button um neue Favoriten hinzuzufügen.
-                    </Typography>
-                    <Typography variant="body1">
-                      Mithilfe der Favoriten kannst du deine regelmäßigen
-                      Einnahmen und Ausgaben schneller hinzufügen.
-                    </Typography>
-                    <Button
-                      variant="contained"
-                      href="/favorites"
-                      sx={{ mt: 4 }}
-                    >
-                      Favoriten hinzufügen
-                    </Button>
-                  </>
-                ) : (
-                  <>
-                    <Typography variant="h6" sx={{ marginBottom: 2 }}>
-                      Favoriten
-                    </Typography>
-                    {favorites?.map((favorite, index) => {
-                      const category = categories.find(
-                        (cat) => cat.id === favorite.category_id
-                      );
-                      const categoryColor = category ? category.color : "#ccc"; // Default color if not found
-
-                      return (
-                        <Box
-                          key={index}
-                          sx={{
-                            display: "flex",
-                            alignItems: "center",
-                            justifyContent: "space-between",
-                            padding: 2,
-                            marginBottom: 1,
-                            backgroundColor: theme.palette.favlist.main,
-                            borderRadius: theme.shape.borderRadius,
-                            boxShadow: theme.shadows[1],
-                          }}
-                        >
-                          <Box sx={{ display: "flex", alignItems: "center" }}>
-                            <Box
-                              sx={{
-                                width: "15px",
-                                height: "15px",
-                                borderRadius: "50%",
-                                backgroundColor: categoryColor,
-                                marginRight: 2,
-                              }}
-                            />
-                            <Typography variant="body1">
-                              <strong>{favorite.description} </strong>
-                              <strong>{favorite.amount} €</strong>
-                            </Typography>
-                          </Box>
-                          {/* <IconButton
-                            onClick={() =>
-                              handleDeleteFavoritesById(favorite.favorites_id)
-                            }
-                            color="secondary"
-                          >
-                            <DeleteIcon />
-                          </IconButton> */}
-                          <IconButton
-                            onClick={() => handleAddFavoriteToMonth(favorite)}
-                            color="primary"
-                            aria-label="add to month"
-                          >
-                            <Add sx={{ color: theme.palette.text.main }} />
-                          </IconButton>
-                        </Box>
-                      );
-                    })}
-                  </>
-                )}
-              </CardContent>
-            </Card>
+            <FavCard
+              theme={theme}
+              favorites={favorites}
+              categories={categories}
+              handleAddFavoriteToMonth={handleAddFavoriteToMonth}
+            />
           </Grid>
           <Grid item>
-            <Card
-              sx={{
-                backgroundColor: theme.palette.card.main,
-                boxShadow: theme.shadows[6],
-                "&:hover": {
-                  boxShadow: theme.shadows[10],
-                },
-                height: "100%",
-                marginTop: 2,
-                marginRight: 4,
-                marginBottom: 5,
-              }}
-            >
-              <CardContent>
-                <DialogPage onCategoryChange={triggerUpdate} />
-              </CardContent>
-            </Card>
+            <DialogPage onCategoryChange={triggerUpdate} />
           </Grid>
         </Grid>
       </Grid>

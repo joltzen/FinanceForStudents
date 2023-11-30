@@ -24,9 +24,23 @@ function AddFavorites({
   transactionType,
   handleTransactionTypeChange,
   categories,
+  triggerUpdate,
 }) {
   const [category, setCategory] = useState("");
 
+  const onSubmit = () => {
+    // Construct favorite details object
+    const favoriteDetails = {
+      description,
+      amount,
+      transactionType,
+      category,
+    };
+
+    // Call the handler passed from FinanceOverview
+    handleSubmit(favoriteDetails);
+    handleCloseDialog();
+  };
   const getCurrentCategoryColor = () => {
     const currentCategory = categories.find((cat) => cat.id === category);
     return currentCategory ? currentCategory.color : "defaultColor";
@@ -186,7 +200,7 @@ function AddFavorites({
         >
           Abbrechen
         </Button>
-        <Button onClick={handleSubmit} color="primary" variant="contained">
+        <Button onClick={onSubmit} color="primary" variant="contained">
           Speichern
         </Button>
       </DialogActions>
