@@ -366,11 +366,10 @@ function FinanceOverview({ update, handleOpenDialog, triggerUpdate }) {
     }
   };
 
-  const handleAddFavoriteToMonth = async (favorite) => {
-    const currentDate = new Date().toISOString().slice(0, 10);
+  const handleAddFavoriteToMonth = async (favorite, selectedDate) => {
     try {
       const newTransaction = {
-        date: currentDate,
+        date: selectedDate,
         description: favorite.description,
         amount: favorite.amount,
         transactionType: favorite.transaction_type,
