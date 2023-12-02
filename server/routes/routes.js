@@ -8,6 +8,7 @@ const { map } = require("../app");
 const { v4: uuidv4 } = require("uuid");
 const nodemailer = require("nodemailer");
 
+// Get-Methods
 router.get("/getUserData", (req, res) => {
   db.query("SELECT * FROM users", (err, result) => {
     if (err) {
@@ -18,21 +19,6 @@ router.get("/getUserData", (req, res) => {
     }
   });
 });
-
-router.patch("/updateThemeMode", async (req, res) => {
-  try {
-    const { userId, themeMode } = req.body;
-    await db.query("UPDATE users SET thememode = $1 WHERE id = $2", [
-      themeMode,
-      userId,
-    ]);
-    res.status(200).json({ message: "Theme mode updated successfully." });
-  } catch (error) {
-    console.error("Error updating theme mode:", error);
-    res.status(500).json({ error: "Error updating theme mode" });
-  }
-});
-
 router.get("/getThemeMode", async (req, res) => {
   try {
     const { userId } = req.query;
@@ -48,58 +34,125 @@ router.get("/getThemeMode", async (req, res) => {
     res.status(500).json({ error: "Error retrieving theme mode" });
   }
 });
-
-router.patch("/updateUser", async (req, res) => {
+router.get("/getTransactions", async (req, res) => {
   try {
-    // Destructure the potential fields from the request body
-    const { firstname, surname, username, email, userId } = req.body;
-
-    // Start with a base query
-    let query = "UPDATE users SET";
-    const values = [];
-    let setClause = [];
-
-    // For each possible field, add to the query if it's present in the request
-    if (firstname !== undefined) {
-      values.push(firstname);
-      setClause.push(` firstname = $${values.length}`);
-    }
-    if (surname !== undefined) {
-      values.push(surname);
-      setClause.push(` surname = $${values.length}`);
-    }
-    if (username !== undefined) {
-      values.push(username);
-      setClause.push(` username = $${values.length}`);
-    }
-    if (email !== undefined) {
-      values.push(email);
-      setClause.push(` email = $${values.length}`);
-    }
-
-    // Combine the set clauses and add a where clause to target the correct user
-    query += setClause.join(",");
-    values.push(userId);
-    query += ` WHERE id = $${values.length} RETURNING *;`;
-
-    // If no fields were provided to update, send a bad request response
-    if (values.length === 1) {
-      return res.status(400).json({ error: "No fields provided for update" });
-    }
-
-    // Run the dynamically built query
-    const result = await db.query(query, values);
-    if (result.rows.length > 0) {
-      res.json(result.rows[0]);
-    } else {
-      res.status(404).json({ error: "User not found" });
-    }
+    const { month, year, user_id } = req.query;
+    const result = await db.query(
+      "SELECT * FROM transactions WHERE EXTRACT(MONTH FROM transaction_date) = $1 AND EXTRACT(YEAR FROM transaction_date) = $2 AND user_id = $3",
+      [month, year, user_id]
+    );
+    res.json(result.rows);
   } catch (error) {
-    console.error(error);
-    res.status(500).json({ error: "Error updating user" });
+    console.error("Error getting user transactions:", error);
+    res.status(500).json({ error: "Error fetching transactions" });
+  }
+});
+router.get("/getAllTransactions", async (req, res) => {
+  try {
+    const { user_id } = req.query;
+    const result = await db.query(
+      "SELECT * FROM transactions WHERE user_id = $1",
+      [user_id]
+    );
+    res.json(result.rows);
+  } catch (error) {
+    console.error("Error getting user transactions:", error);
+    res.status(500).json({ error: "Error fetching transactions" });
+  }
+});
+router.get("/getTransactionsAnnual", async (req, res) => {
+  try {
+    const { year, user_id } = req.query;
+    const result = await db.query(
+      "SELECT * FROM transactions WHERE EXTRACT(YEAR FROM transaction_date) = $1 AND user_id = $2",
+      [year, user_id]
+    );
+    res.json(result.rows);
+  } catch (error) {
+    console.error("Error getting user transactions:", error);
+    res.status(500).json({ error: "Error fetching all transactions" });
+  }
+});
+router.get("/get-saving-goals", async (req, res) => {
+  try {
+    const { userId } = req.query;
+    const result = await db.query(
+      "SELECT * FROM saving_goals WHERE user_id = $1",
+      [userId]
+    );
+
+    res.json(result.rows);
+  } catch (error) {
+    console.error("Error fetching saving goals:", error);
+    res.status(500).json({ error: "Error fetching saving goals" });
+  }
+});
+router.get("/getCategories", async (req, res) => {
+  try {
+    const { user_id } = req.query;
+    const result = await db.query(
+      "SELECT * FROM categories WHERE user_id = $1",
+      [user_id]
+    );
+    res.json(result.rows);
+  } catch (error) {
+    console.error("Error getting user transactions:", error);
+    res.status(500).json({ error: "Error fetching transactions" });
+  }
+});
+router.get("/getFavorites", async (req, res) => {
+  try {
+    const { user_id } = req.query;
+    const result = await db.query(
+      "SELECT * FROM favorites WHERE user_id = $1",
+      [user_id]
+    );
+    res.json(result.rows);
+  } catch (error) {
+    console.error("Error getting user transactions:", error);
+    res.status(500).json({ error: "Error fetching transactions" });
+  }
+});
+router.get("/getSettings", async (req, res) => {
+  try {
+    const { month, year, user_id } = req.query;
+    const result = await db.query(
+      "SELECT * FROM settings WHERE month = $1 AND year= $2 AND user_id = $3",
+      [month, year, user_id]
+    );
+    res.json(result.rows);
+  } catch (error) {
+    console.error("Error getting user settings:", error);
+    res.status(500).json({ error: "Error fetching settings" });
+  }
+});
+router.get("/getAllSettings", async (req, res) => {
+  try {
+    const { user_id } = req.query;
+    const result = await db.query("SELECT * FROM settings WHERE user_id = $1", [
+      user_id,
+    ]);
+    res.json(result.rows);
+  } catch (error) {
+    console.error("Error getting user settings:", error);
+    res.status(500).json({ error: "Error fetching settings" });
+  }
+});
+router.get("/getSettingsAnnual", async (req, res) => {
+  try {
+    const { year, user_id } = req.query;
+    const result = await db.query(
+      "SELECT * FROM settings WHERE year= $1 AND user_id = $2",
+      [year, user_id]
+    );
+    res.json(result.rows);
+  } catch (error) {
+    console.error("Error getting user settings:", error);
+    res.status(500).json({ error: "Error fetching settings" });
   }
 });
 
+//Post-Methods
 router.post("/login", async (req, res) => {
   try {
     const { identifier, password } = req.body;
@@ -143,59 +196,6 @@ router.post("/signup", async (req, res) => {
   }
 });
 
-router.get("/getTransactions", async (req, res) => {
-  try {
-    const { month, year, user_id } = req.query;
-    const result = await db.query(
-      "SELECT * FROM transactions WHERE EXTRACT(MONTH FROM transaction_date) = $1 AND EXTRACT(YEAR FROM transaction_date) = $2 AND user_id = $3",
-      [month, year, user_id]
-    );
-    res.json(result.rows);
-  } catch (error) {
-    console.error("Error getting user transactions:", error);
-    res.status(500).json({ error: "Error fetching transactions" });
-  }
-});
-router.get("/getAllTransactions", async (req, res) => {
-  try {
-    const { user_id } = req.query;
-    const result = await db.query(
-      "SELECT * FROM transactions WHERE user_id = $1",
-      [user_id]
-    );
-    res.json(result.rows);
-  } catch (error) {
-    console.error("Error getting user transactions:", error);
-    res.status(500).json({ error: "Error fetching transactions" });
-  }
-});
-router.get("/getTransactionsAnnual", async (req, res) => {
-  try {
-    const { year, user_id } = req.query;
-    const result = await db.query(
-      "SELECT * FROM transactions WHERE EXTRACT(YEAR FROM transaction_date) = $1 AND user_id = $2",
-      [year, user_id]
-    );
-    res.json(result.rows);
-  } catch (error) {
-    console.error("Error getting user transactions:", error);
-    res.status(500).json({ error: "Error fetching all transactions" });
-  }
-});
-router.delete("/deleteTransaction", async (req, res) => {
-  try {
-    const { id } = req.query;
-    const query =
-      "DELETE FROM transactions WHERE transaction_id = $1 RETURNING *;";
-    const values = [id];
-    const result = await db.query(query, values);
-    res.json(result.rows[0]);
-  } catch (error) {
-    res.status(500).json({ error: "Fehler beim Löschen der Transaction" });
-  }
-});
-
-// POST-Anforderung, um eine neue Transaktion hinzuzufügen
 router.post("/addTransaction", async (req, res) => {
   try {
     const {
@@ -238,27 +238,6 @@ router.post("/addTransaction", async (req, res) => {
   }
 });
 
-const findUserByLogin = async (login) => {
-  const result = await db.query(
-    "SELECT * FROM users WHERE username = $1 OR email = $1",
-    [login]
-  );
-  return result.rows[0];
-};
-
-router.get("/getCategories", async (req, res) => {
-  try {
-    const { user_id } = req.query;
-    const result = await db.query(
-      "SELECT * FROM categories WHERE user_id = $1",
-      [user_id]
-    );
-    res.json(result.rows);
-  } catch (error) {
-    console.error("Error getting user transactions:", error);
-    res.status(500).json({ error: "Error fetching transactions" });
-  }
-});
 router.post("/saveCategory", async (req, res) => {
   try {
     const { name, user_id, color } = req.body;
@@ -281,35 +260,6 @@ router.post("/saveCategory", async (req, res) => {
   } catch (error) {
     console.error("Fehler beim Hinzufügen der Kategorie:", error);
     res.status(500).json({ error: "Fehler beim Hinzufügen der Kategorie" });
-  }
-});
-
-router.patch("/updateCategory", async (req, res) => {
-  try {
-    const { id, name, color } = req.body;
-    const query = `
-      UPDATE categories
-      SET name = $1, color = $2
-      WHERE id = $3
-      RETURNING *;`;
-
-    const values = [name, color, id];
-    const result = await db.query(query, values);
-    res.json(result.rows[0]);
-  } catch (error) {
-    res.status(500).json({ error: "Fehler beim Aktualisieren der Kategorie" });
-  }
-});
-
-router.delete("/deleteCategory", async (req, res) => {
-  try {
-    const { id } = req.query;
-    const query = "DELETE FROM categories WHERE id = $1 RETURNING *;";
-    const values = [id];
-    const result = await db.query(query, values);
-    res.json(result.rows[0]);
-  } catch (error) {
-    res.status(500).json({ error: "Fehler beim Löschen der Kategorie" });
   }
 });
 
@@ -339,57 +289,6 @@ router.post("/addSettings", async (req, res) => {
     res.status(500).json({ error: "Fehler beim Hinzufügen der Settings" });
   }
 });
-
-router.get("/getSettings", async (req, res) => {
-  try {
-    const { month, year, user_id } = req.query;
-    const result = await db.query(
-      "SELECT * FROM settings WHERE month = $1 AND year= $2 AND user_id = $3",
-      [month, year, user_id]
-    );
-    res.json(result.rows);
-  } catch (error) {
-    console.error("Error getting user settings:", error);
-    res.status(500).json({ error: "Error fetching settings" });
-  }
-});
-router.get("/getAllSettings", async (req, res) => {
-  try {
-    const { user_id } = req.query;
-    const result = await db.query("SELECT * FROM settings WHERE user_id = $1", [
-      user_id,
-    ]);
-    res.json(result.rows);
-  } catch (error) {
-    console.error("Error getting user settings:", error);
-    res.status(500).json({ error: "Error fetching settings" });
-  }
-});
-router.get("/getSettingsAnnual", async (req, res) => {
-  try {
-    const { year, user_id } = req.query;
-    const result = await db.query(
-      "SELECT * FROM settings WHERE year= $1 AND user_id = $2",
-      [year, user_id]
-    );
-    res.json(result.rows);
-  } catch (error) {
-    console.error("Error getting user settings:", error);
-    res.status(500).json({ error: "Error fetching settings" });
-  }
-});
-router.delete("/deleteSettings", async (req, res) => {
-  try {
-    const { id } = req.query;
-    const query = "DELETE FROM settings WHERE settings_id = $1 RETURNING *;";
-    const values = [id];
-    const result = await db.query(query, values);
-    res.json(result.rows[0]);
-  } catch (error) {
-    res.status(500).json({ error: "Fehler beim Löschen der Settings" });
-  }
-});
-
 router.post("/password-reset-request", async (req, res) => {
   const { email } = req.body;
   // Überprüfe, ob die E-Mail in der Datenbank existiert
@@ -444,87 +343,6 @@ router.post("/reset-password", async (req, res) => {
     res.status(500).send("Error resetting password");
   }
 });
-
-router.delete("/delete-account", async (req, res) => {
-  const { userId } = req.query;
-
-  if (!userId) {
-    return res.status(400).send("User ID is required");
-  }
-
-  try {
-    // Start a transaction
-    await db.query("BEGIN");
-
-    // List all related tables that have a foreign key reference to the users table
-    // and delete the related data in the order that respects the foreign key constraints.
-    // The order is important: delete from the "many" side of a one-to-many relationship first.
-
-    // Example: Assuming you have `transactions` and `categories` tables that reference `users`
-    const tablesToDeleteFrom = [
-      "transactions",
-      "categories",
-      "saving_goals",
-      "settings",
-    ]; // add all related tables here
-
-    for (const tableName of tablesToDeleteFrom) {
-      await db.query(`DELETE FROM ${tableName} WHERE user_id = $1`, [userId]);
-    }
-
-    // After all related data is deleted, delete the user
-    const deleteUserResult = await db.query("DELETE FROM users WHERE id = $1", [
-      userId,
-    ]);
-
-    if (deleteUserResult.rowCount === 0) {
-      // If no user was found, roll back the transaction and return an error
-      await db.query("ROLLBACK");
-      return res.status(404).send("User not found");
-    }
-
-    // If everything went well, commit the transaction
-    await db.query("COMMIT");
-
-    res.status(204).send();
-  } catch (error) {
-    // If any error occurs, roll back the transaction
-    await db.query("ROLLBACK");
-    console.error("Error deleting account:", error);
-    res.status(500).send("Error deleting account");
-  }
-});
-async function insertSavingGoal(
-  userId,
-  monthlySaving,
-  totalAmount,
-  description,
-  startdate,
-  deadline,
-  duration
-) {
-  const query = `
-    INSERT INTO saving_goals (user_id, monthly_saving, total_amount, description, startdate,deadline, duration)
-    VALUES ($1, $2, $3, $4, $5, $6, $7)
-    RETURNING *;`;
-  const values = [
-    userId,
-    monthlySaving,
-    totalAmount,
-    description,
-    startdate,
-    deadline,
-    duration,
-  ];
-
-  try {
-    const result = await db.query(query, values);
-    return result.rows[0];
-  } catch (error) {
-    throw error;
-  }
-}
-
 router.post("/saving-goals", async (req, res) => {
   try {
     const {
@@ -551,36 +369,129 @@ router.post("/saving-goals", async (req, res) => {
     res.status(500).json({ error: "Error inserting saving goal" });
   }
 });
-
-router.get("/get-saving-goals", async (req, res) => {
+router.post("/addFavorites", async (req, res) => {
   try {
-    const { userId } = req.query;
-    const result = await db.query(
-      "SELECT * FROM saving_goals WHERE user_id = $1",
-      [userId]
-    );
+    const {
+      isOwn,
+      description,
+      amount,
+      transactionType,
+      user_id,
+      category_id,
+      transaction_id,
+    } = req.body;
+    const query = `
+      INSERT INTO favorites (user_id, transaction_type, amount, description, is_own, category_id,transaction_id)
+      VALUES ($1, $2, $3, $4, $5, $6,$7)
+      RETURNING *;`;
 
-    res.json(result.rows);
+    const values = [
+      user_id,
+      transactionType,
+      amount,
+      description,
+      isOwn,
+      category_id,
+      transaction_id,
+    ];
+
+    db.query(query, values, (err, result) => {
+      if (err) {
+        console.error("Fehler beim Einfügen der Favoriten:", err);
+        return res
+          .status(500)
+          .json({ error: "Fehler beim Einfügen der Favoriten" });
+      }
+      const insertedFavorites = result.rows[0];
+      res.status(201).json(insertedFavorites);
+    });
   } catch (error) {
-    console.error("Error fetching saving goals:", error);
-    res.status(500).json({ error: "Error fetching saving goals" });
+    console.error("Fehler beim Hinzufügen der Favoriten:", error);
+    res.status(500).json({ error: "Fehler beim Hinzufügen der Favoriten" });
   }
 });
 
-//delete saving goal
-router.delete("/delete-saving-goal", async (req, res) => {
+// Patch-Methods
+router.patch("/updateCategory", async (req, res) => {
   try {
-    const { id } = req.query;
-    const query = "DELETE FROM saving_goals WHERE id = $1 returning *;";
-    const values = [id];
+    const { id, name, color } = req.body;
+    const query = `
+      UPDATE categories
+      SET name = $1, color = $2
+      WHERE id = $3
+      RETURNING *;`;
+
+    const values = [name, color, id];
     const result = await db.query(query, values);
     res.json(result.rows[0]);
   } catch (error) {
-    res.status(500).json({ error: "Fehler beim Löschen des Sparziels" });
+    res.status(500).json({ error: "Fehler beim Aktualisieren der Kategorie" });
+  }
+});
+router.patch("/updateThemeMode", async (req, res) => {
+  try {
+    const { userId, themeMode } = req.body;
+    await db.query("UPDATE users SET thememode = $1 WHERE id = $2", [
+      themeMode,
+      userId,
+    ]);
+    res.status(200).json({ message: "Theme mode updated successfully." });
+  } catch (error) {
+    console.error("Error updating theme mode:", error);
+    res.status(500).json({ error: "Error updating theme mode" });
+  }
+});
+router.patch("/updateUser", async (req, res) => {
+  try {
+    // Destructure the potential fields from the request body
+    const { firstname, surname, username, email, userId } = req.body;
+
+    // Start with a base query
+    let query = "UPDATE users SET";
+    const values = [];
+    let setClause = [];
+
+    // For each possible field, add to the query if it's present in the request
+    if (firstname !== undefined) {
+      values.push(firstname);
+      setClause.push(` firstname = $${values.length}`);
+    }
+    if (surname !== undefined) {
+      values.push(surname);
+      setClause.push(` surname = $${values.length}`);
+    }
+    if (username !== undefined) {
+      values.push(username);
+      setClause.push(` username = $${values.length}`);
+    }
+    if (email !== undefined) {
+      values.push(email);
+      setClause.push(` email = $${values.length}`);
+    }
+
+    // Combine the set clauses and add a where clause to target the correct user
+    query += setClause.join(",");
+    values.push(userId);
+    query += ` WHERE id = $${values.length} RETURNING *;`;
+
+    // If no fields were provided to update, send a bad request response
+    if (values.length === 1) {
+      return res.status(400).json({ error: "No fields provided for update" });
+    }
+
+    // Run the dynamically built query
+    const result = await db.query(query, values);
+    if (result.rows.length > 0) {
+      res.json(result.rows[0]);
+    } else {
+      res.status(404).json({ error: "User not found" });
+    }
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: "Error updating user" });
   }
 });
 
-//edit saving goal
 router.patch("/update-saving-goal", async (req, res) => {
   try {
     const { id, monthly_saving, total_amount, description, deadline } =
@@ -657,20 +568,6 @@ router.patch("/updateSettings", async (req, res) => {
   }
 });
 
-router.get("/getFavorites", async (req, res) => {
-  try {
-    const { user_id } = req.query;
-    const result = await db.query(
-      "SELECT * FROM favorites WHERE user_id = $1",
-      [user_id]
-    );
-    res.json(result.rows);
-  } catch (error) {
-    console.error("Error getting user transactions:", error);
-    res.status(500).json({ error: "Error fetching transactions" });
-  }
-});
-
 router.patch("/updateFavorites", async (req, res) => {
   try {
     const { favorites_id, transaction_type, amount, description, category_id } =
@@ -696,73 +593,6 @@ router.patch("/updateFavorites", async (req, res) => {
     res.status(500).json({ error: "Error updating transaction" });
   }
 });
-
-router.post("/addFavorites", async (req, res) => {
-  try {
-    const {
-      isOwn,
-      description,
-      amount,
-      transactionType,
-      user_id,
-      category_id,
-      transaction_id,
-    } = req.body;
-    const query = `
-      INSERT INTO favorites (user_id, transaction_type, amount, description, is_own, category_id,transaction_id)
-      VALUES ($1, $2, $3, $4, $5, $6,$7)
-      RETURNING *;`;
-
-    const values = [
-      user_id,
-      transactionType,
-      amount,
-      description,
-      isOwn,
-      category_id,
-      transaction_id,
-    ];
-
-    db.query(query, values, (err, result) => {
-      if (err) {
-        console.error("Fehler beim Einfügen der Favoriten:", err);
-        return res
-          .status(500)
-          .json({ error: "Fehler beim Einfügen der Favoriten" });
-      }
-      const insertedFavorites = result.rows[0];
-      res.status(201).json(insertedFavorites);
-    });
-  } catch (error) {
-    console.error("Fehler beim Hinzufügen der Favoriten:", error);
-    res.status(500).json({ error: "Fehler beim Hinzufügen der Favoriten" });
-  }
-});
-
-router.delete("/deleteFavorites", async (req, res) => {
-  try {
-    const { id } = req.query;
-    const query = "DELETE FROM favorites WHERE favorites_id = $1 RETURNING *;";
-    const values = [id];
-    const result = await db.query(query, values);
-    res.json(result.rows[0]);
-  } catch (error) {
-    res.status(500).json({ error: "Fehler beim Löschen der Favoriten" });
-  }
-});
-
-router.delete("/deleteFavoritesByTransaction", async (req, res) => {
-  try {
-    const { id } = req.query;
-    const query =
-      "DELETE FROM favorites WHERE transaction_id = $1 RETURNING *;";
-    const values = [id];
-    const result = await db.query(query, values);
-    res.json(result.rows[0]);
-  } catch (error) {
-    res.status(500).json({ error: "Fehler beim Löschen der Favoriten" });
-  }
-});
 router.patch("/setTransactionFavorite", async (req, res) => {
   try {
     const { transaction_id, isFavorite } = req.body;
@@ -780,4 +610,168 @@ router.patch("/setTransactionFavorite", async (req, res) => {
     res.status(500).json({ error: "Error updating transaction" });
   }
 });
+
+// Delete-Methods
+router.delete("/deleteCategory", async (req, res) => {
+  try {
+    const { id } = req.query;
+    const query = "DELETE FROM categories WHERE id = $1 RETURNING *;";
+    const values = [id];
+    const result = await db.query(query, values);
+    res.json(result.rows[0]);
+  } catch (error) {
+    res.status(500).json({ error: "Fehler beim Löschen der Kategorie" });
+  }
+});
+
+router.delete("/deleteSettings", async (req, res) => {
+  try {
+    const { id } = req.query;
+    const query = "DELETE FROM settings WHERE settings_id = $1 RETURNING *;";
+    const values = [id];
+    const result = await db.query(query, values);
+    res.json(result.rows[0]);
+  } catch (error) {
+    res.status(500).json({ error: "Fehler beim Löschen der Settings" });
+  }
+});
+
+router.delete("/delete-account", async (req, res) => {
+  const { userId } = req.query;
+
+  if (!userId) {
+    return res.status(400).send("User ID is required");
+  }
+
+  try {
+    // Start a transaction
+    await db.query("BEGIN");
+
+    // List all related tables that have a foreign key reference to the users table
+    // and delete the related data in the order that respects the foreign key constraints.
+    // The order is important: delete from the "many" side of a one-to-many relationship first.
+
+    // Example: Assuming you have `transactions` and `categories` tables that reference `users`
+    const tablesToDeleteFrom = [
+      "transactions",
+      "categories",
+      "saving_goals",
+      "settings",
+    ]; // add all related tables here
+
+    for (const tableName of tablesToDeleteFrom) {
+      await db.query(`DELETE FROM ${tableName} WHERE user_id = $1`, [userId]);
+    }
+
+    // After all related data is deleted, delete the user
+    const deleteUserResult = await db.query("DELETE FROM users WHERE id = $1", [
+      userId,
+    ]);
+
+    if (deleteUserResult.rowCount === 0) {
+      // If no user was found, roll back the transaction and return an error
+      await db.query("ROLLBACK");
+      return res.status(404).send("User not found");
+    }
+
+    // If everything went well, commit the transaction
+    await db.query("COMMIT");
+
+    res.status(204).send();
+  } catch (error) {
+    // If any error occurs, roll back the transaction
+    await db.query("ROLLBACK");
+    console.error("Error deleting account:", error);
+    res.status(500).send("Error deleting account");
+  }
+});
+
+router.delete("/deleteTransaction", async (req, res) => {
+  try {
+    const { id } = req.query;
+    const query =
+      "DELETE FROM transactions WHERE transaction_id = $1 RETURNING *;";
+    const values = [id];
+    const result = await db.query(query, values);
+    res.json(result.rows[0]);
+  } catch (error) {
+    res.status(500).json({ error: "Fehler beim Löschen der Transaction" });
+  }
+});
+
+//delete saving goal
+router.delete("/delete-saving-goal", async (req, res) => {
+  try {
+    const { id } = req.query;
+    const query = "DELETE FROM saving_goals WHERE id = $1 returning *;";
+    const values = [id];
+    const result = await db.query(query, values);
+    res.json(result.rows[0]);
+  } catch (error) {
+    res.status(500).json({ error: "Fehler beim Löschen des Sparziels" });
+  }
+});
+router.delete("/deleteFavorites", async (req, res) => {
+  try {
+    const { id } = req.query;
+    const query = "DELETE FROM favorites WHERE favorites_id = $1 RETURNING *;";
+    const values = [id];
+    const result = await db.query(query, values);
+    res.json(result.rows[0]);
+  } catch (error) {
+    res.status(500).json({ error: "Fehler beim Löschen der Favoriten" });
+  }
+});
+router.delete("/deleteFavoritesByTransaction", async (req, res) => {
+  try {
+    const { id } = req.query;
+    const query =
+      "DELETE FROM favorites WHERE transaction_id = $1 RETURNING *;";
+    const values = [id];
+    const result = await db.query(query, values);
+    res.json(result.rows[0]);
+  } catch (error) {
+    res.status(500).json({ error: "Fehler beim Löschen der Favoriten" });
+  }
+});
+
+//Help-Functions
+const findUserByLogin = async (login) => {
+  const result = await db.query(
+    "SELECT * FROM users WHERE username = $1 OR email = $1",
+    [login]
+  );
+  return result.rows[0];
+};
+async function insertSavingGoal(
+  userId,
+  monthlySaving,
+  totalAmount,
+  description,
+  startdate,
+  deadline,
+  duration
+) {
+  const query = `
+    INSERT INTO saving_goals (user_id, monthly_saving, total_amount, description, startdate,deadline, duration)
+    VALUES ($1, $2, $3, $4, $5, $6, $7)
+    RETURNING *;`;
+  const values = [
+    userId,
+    monthlySaving,
+    totalAmount,
+    description,
+    startdate,
+    deadline,
+    duration,
+  ];
+
+  try {
+    const result = await db.query(query, values);
+    return result.rows[0];
+  } catch (error) {
+    throw error;
+  }
+}
+
 module.exports = router;

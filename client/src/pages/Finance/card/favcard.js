@@ -26,6 +26,7 @@ function FavCard({ theme, favorites, categories, handleAddFavoriteToMonth }) {
   const [openStates, setOpenStates] = useState(
     favorites.reduce((states, _, index) => ({ ...states, [index]: false }), {})
   );
+  const [showText, setShowText] = useState(false); // State to toggle text visibility
 
   const handleCollapse = (index) => {
     setOpenStates({ ...openStates, [index]: !openStates[index] });
@@ -66,15 +67,25 @@ function FavCard({ theme, favorites, categories, handleAddFavoriteToMonth }) {
       <CardContent>
         {favorites.length === 0 ? (
           <>
-            <Typography variant="h6">Favoriten </Typography>
-            <Typography variant="body1" sx={{ mt: 2 }}>
-              Du hast derzeit noch keine Favoriten. Klicke auf den Button um
-              neue Favoriten hinzuzufügen.
-            </Typography>
-            <Typography variant="body1" sx={{ mt: 2 }}>
-              Mithilfe der Favoriten kannst du deine regelmäßigen Einnahmen und
-              Ausgaben schneller hinzufügen.
-            </Typography>
+            <Typography variant="h6">Favoriten</Typography>
+            <Button
+              variant="contained"
+              onClick={() => setShowText(!showText)} // Toggle text visibility
+              sx={{ mt: 2 }}
+            >
+              {showText ? "Weniger anzeigen" : "Mehr erfahren"}
+            </Button>
+            <Collapse in={showText}>
+              {/* Collapse component to show/hide text */}
+              <Typography variant="body1" sx={{ mt: 2 }}>
+                Du hast derzeit noch keine Favoriten. Klicke auf den Button um
+                neue Favoriten hinzuzufügen.
+              </Typography>
+              <Typography variant="body1" sx={{ mt: 2 }}>
+                Mithilfe der Favoriten kannst du deine regelmäßigen Einnahmen
+                und Ausgaben schneller hinzufügen.
+              </Typography>
+            </Collapse>
             <Button variant="contained" href="/favorites" sx={{ mt: 4 }}>
               Favoriten hinzufügen
             </Button>
