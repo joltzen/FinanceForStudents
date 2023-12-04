@@ -10,7 +10,9 @@ import {
   Select,
   TextField,
 } from "@mui/material";
-import React from "react";
+import React, { useEffect, useState } from "react";
+import axiosInstance from "../../config/axios";
+import { useAuth } from "../../core/auth/auth";
 
 function AddTransaction({
   openDialog,
@@ -29,6 +31,46 @@ function AddTransaction({
   date,
   handleDateChange,
 }) {
+  const [allTransactions, setAllTransactions] = useState([]);
+  const [filteredTransactions, setFilteredTransactions] = useState([]);
+  const [sumsByCategory, setSumsByCategory] = useState({});
+  const [sumForSelectedCategory, setSumForSelectedCategory] = useState(0);
+
+  const { user } = useAuth();
+
+  const filterTransactions = (selectedDate, transactions) => {
+    const [selectedYear, selectedMonth] = selectedDate.split("-");
+
+    const fetchTransactions = async () => {
+      try {
+        const response = await axiosInstance.get("/getTransactions", {
+          params: {
+            month: selectedMonth,
+            year: selectedYear,
+            user_id: user.id,
+          },
+        });
+        setFilteredTransactions(response.data);
+      } catch (error) {
+        console.error("Fehler beim Laden der Transaktionen:", error);
+      }
+    };
+    fetchTransactions();
+  };
+
+  const calculateSumsByCategory = (transactions, categoryMap) => {
+    // We use the categoryMap here to translate category IDs to their names
+    return transactions.reduce((acc, transaction) => {
+      const categoryName =
+        categoryMap[transaction.category_id] || "Unknown Category";
+      if (!acc[categoryName]) {
+        acc[categoryName] = 0;
+      }
+      acc[categoryName] += parseFloat(transaction.amount || 0);
+      return acc;
+    }, {});
+  };
+
   const getCurrentCategoryColor = () => {
     const currentCategory = categories.find((cat) => cat.id === category);
     return currentCategory ? currentCategory.color : "defaultColor";
@@ -59,6 +101,49 @@ function AddTransaction({
 
     return (usePound ? "#" : "") + (g | (b << 8) | (r << 16)).toString(16);
   };
+  useEffect(() => {
+    const fetchTransactions = async () => {
+      try {
+        const response = await axiosInstance.get("/getTransactions", {
+          params: {
+            user_id: user.id,
+          },
+        });
+        setAllTransactions(response.data);
+      } catch (error) {
+        console.error("Fehler beim Laden der Transaktionen:", error);
+      }
+    };
+    fetchTransactions();
+    const calculateSumForSelectedCategory = () => {
+      const sum = filteredTransactions.reduce((acc, transaction) => {
+        if (transaction.category_id === category) {
+          return acc + parseFloat(transaction.amount || 0);
+        }
+        return acc;
+      }, 0);
+      setSumForSelectedCategory(sum);
+    };
+
+    calculateSumForSelectedCategory();
+  }, [filteredTransactions, category]); // Dependency array includes category to recalculate when it changes
+
+  useEffect(() => {
+    if (date) {
+      filterTransactions(date, allTransactions);
+    }
+  }, [date, allTransactions, categories]);
+
+  useEffect(() => {
+    const categoryMap = categories.reduce((acc, cat) => {
+      acc[cat.id] = cat.name;
+      return acc;
+    }, {});
+
+    setSumsByCategory(
+      calculateSumsByCategory(filteredTransactions, categoryMap)
+    );
+  }, [filteredTransactions, categories]);
 
   return (
     <Dialog open={openDialog} onClose={handleCloseDialog} fullWidth>
@@ -74,6 +159,14 @@ function AddTransaction({
       <DialogContent
         sx={{ backgroundColor: theme.palette.card.main, padding: "20px" }}
       >
+        <div>
+          <h3>Summe für ausgewählte Kategorie:</h3>
+          <div>
+            {categories.find((cat) => cat.id === category)?.name ||
+              "Unknown Category"}
+            :{sumForSelectedCategory.toFixed(2)} €
+          </div>
+        </div>
         {/* Transaktionstyp */}
         <InputLabel style={{ color: theme.palette.text.main }}>
           Transaktionstyp
@@ -96,7 +189,6 @@ function AddTransaction({
             <MenuItem value="Einnahme">Einnahme</MenuItem>
           </Select>
         </FormControl>
-
         {/* Beschreibung */}
         <InputLabel style={{ color: theme.palette.text.main }}>
           Beschreibung
@@ -116,7 +208,6 @@ function AddTransaction({
             },
           }}
         />
-
         {/* Betrag */}
         <InputLabel style={{ color: theme.palette.text.main }}>
           Betrag
@@ -136,7 +227,6 @@ function AddTransaction({
             },
           }}
         />
-
         {/* Monat */}
         <InputLabel style={{ color: theme.palette.text.main }}>
           Datum
@@ -155,7 +245,6 @@ function AddTransaction({
             marginBottom: 2,
           }}
         />
-
         {/* Jahr */}
         <InputLabel style={{ color: theme.palette.text.main }}>
           Kategorie
