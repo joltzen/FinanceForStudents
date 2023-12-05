@@ -13,6 +13,7 @@ import {
 import React, { useEffect, useState } from "react";
 import axiosInstance from "../../config/axios";
 import { useAuth } from "../../core/auth/auth";
+import BudgetWarningDialog from "./budgetdialog";
 
 function AddTransaction({
   openDialog,
@@ -38,6 +39,20 @@ function AddTransaction({
   const [showWarning, setShowWarning] = useState(false);
 
   const { user } = useAuth();
+  const [showBudgetWarningDialog, setShowBudgetWarningDialog] = useState(false);
+
+  // 2. Logik zur Überprüfung des Budgets anpassen
+  const testAmount = () => {
+    console.log("test");
+    const selectedCategory = categories.find((cat) => cat.id === category);
+    const potentialNewSum = (selectedCategory.max || 0) - amount;
+
+    if (potentialNewSum < 0) {
+      setShowBudgetWarningDialog(true);
+    } else {
+      handleSubmit({ preventDefault: () => {} }); // Mit einem synthetischen Event
+    }
+  };
 
   const filterTransactions = (selectedDate, transactions) => {
     const [selectedYear, selectedMonth] = selectedDate.split("-");
@@ -134,12 +149,13 @@ function AddTransaction({
     };
 
     calculateSumForSelectedCategory();
-  }, [filteredTransactions, category, categories]);
+  }, [date, allTransactions, filteredTransactions, category, categories]);
+
   useEffect(() => {
     if (date) {
       filterTransactions(date, allTransactions);
     }
-  }, [date, allTransactions, categories]);
+  }, []);
 
   useEffect(() => {
     const categoryMap = categories.reduce((acc, cat) => {
@@ -151,15 +167,6 @@ function AddTransaction({
       calculateSumsByCategory(filteredTransactions, categoryMap)
     );
   }, [filteredTransactions, categories]);
-
-  const testAmount = () => {
-    if (amount > sumForSelectedCategory) {
-      setShowWarning(true);
-    } else {
-      setShowWarning(false);
-    }
-    handleSubmit();
-  };
 
   return (
     <Dialog open={openDialog} onClose={handleCloseDialog} fullWidth>
@@ -294,7 +301,12 @@ function AddTransaction({
               {cat.name}
             </MenuItem>
           ))}
-        </Select>{" "}
+        </Select>
+        <BudgetWarningDialog
+          showBudgetWarningDialog={showBudgetWarningDialog}
+          setShowBudgetWarningDialog={setShowBudgetWarningDialog}
+          handleSubmit={handleSubmit}
+        />
         {showWarning && (
           <div style={{ color: "red" }}>
             Warnung: Dieser Betrag überschreitet Ihr Budget für die Kategorie.
@@ -319,7 +331,7 @@ function AddTransaction({
         >
           Abbrechen
         </Button>
-        <Button onClick={handleSubmit} color="primary" variant="contained">
+        <Button onClick={testAmount} color="primary" variant="contained">
           Speichern
         </Button>
       </DialogActions>
