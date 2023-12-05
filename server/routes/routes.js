@@ -240,13 +240,13 @@ router.post("/addTransaction", async (req, res) => {
 
 router.post("/saveCategory", async (req, res) => {
   try {
-    const { name, user_id, color } = req.body;
+    const { name, user_id, color, max_amount } = req.body;
     const query = `
-      INSERT INTO categories (name, user_id, color)
-      VALUES ($1, $2, $3)
+      INSERT INTO categories (name, user_id, color, max)
+      VALUES ($1, $2, $3, $4)
       RETURNING *;`;
 
-    const values = [name, user_id, color];
+    const values = [name, user_id, color, max_amount];
     db.query(query, values, (err, result) => {
       if (err) {
         console.error("Fehler beim Einfügen der Kategorie:", err);
@@ -414,14 +414,14 @@ router.post("/addFavorites", async (req, res) => {
 // Patch-Methods
 router.patch("/updateCategory", async (req, res) => {
   try {
-    const { id, name, color } = req.body;
+    const { id, name, color, max_amount } = req.body;
     const query = `
       UPDATE categories
-      SET name = $1, color = $2
-      WHERE id = $3
+      SET name = $1, color = $2, max = $3
+      WHERE id = $4
       RETURNING *;`;
 
-    const values = [name, color, id];
+    const values = [name, color, max_amount, id];
     const result = await db.query(query, values);
     res.json(result.rows[0]);
   } catch (error) {
