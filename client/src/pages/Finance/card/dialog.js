@@ -23,7 +23,6 @@ import {
 import { useTheme } from "@mui/material/styles";
 import Circle from "@uiw/react-color-circle";
 import React, { useEffect, useState } from "react";
-import TextComp from "../../../components/TextComp";
 import axiosInstance from "../../../config/axios";
 import { colors } from "../../../config/constants";
 import { useAuth } from "../../../core/auth/auth";

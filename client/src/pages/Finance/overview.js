@@ -51,7 +51,6 @@ function FinanceOverview({ update, handleOpenDialog, triggerUpdate }) {
   const [activeSorting, setActiveSorting] = useState("date");
   const [isCategoryWarningOpen, setIsCategoryWarningOpen] = useState(false);
   const [favorites, setFavorites] = useState([]);
-  const [categorySum, setCategorySum] = useState({});
 
   const fetchFavorites = useCallback(async () => {
     try {
