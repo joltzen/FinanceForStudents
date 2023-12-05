@@ -1,6 +1,6 @@
 {
-  "short_name": "React App",
-  "name": "Create React App Sample",
+  "short_name": "FFS",
+  "name": "FinanceForStudents",
   "icons": [
     {
       "src": "favicon.ico",
@@ -9,7 +9,7 @@
     },
     {
       "src": "logo192.png",
-      "type": "image/png",
+      "type": "image/png",‚
       "sizes": "192x192"
     },
     {

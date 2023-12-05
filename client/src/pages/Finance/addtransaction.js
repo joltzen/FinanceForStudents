@@ -35,6 +35,7 @@ function AddTransaction({
   const [filteredTransactions, setFilteredTransactions] = useState([]);
   const [sumsByCategory, setSumsByCategory] = useState({});
   const [sumForSelectedCategory, setSumForSelectedCategory] = useState(0);
+  const [showWarning, setShowWarning] = useState(false);
 
   const { user } = useAuth();
 
@@ -116,18 +117,24 @@ function AddTransaction({
     };
     fetchTransactions();
     const calculateSumForSelectedCategory = () => {
-      const sum = filteredTransactions.reduce((acc, transaction) => {
-        if (transaction.category_id === category) {
-          return acc + parseFloat(transaction.amount || 0);
-        }
-        return acc;
-      }, 0);
-      setSumForSelectedCategory(sum);
+      const selectedCategoryTransactions = filteredTransactions.filter(
+        (transaction) => transaction.category_id === category
+      );
+      const totalAmountInCategory = selectedCategoryTransactions.reduce(
+        (acc, transaction) => acc + parseFloat(transaction.amount || 0),
+        0
+      );
+      const selectedCategory = categories.find((cat) => cat.id === category);
+      if (selectedCategory && selectedCategory.max) {
+        const maxBudget = selectedCategory.max;
+        setSumForSelectedCategory(maxBudget - totalAmountInCategory);
+      } else {
+        setSumForSelectedCategory(0.0);
+      }
     };
 
     calculateSumForSelectedCategory();
-  }, [filteredTransactions, category]); // Dependency array includes category to recalculate when it changes
-
+  }, [filteredTransactions, category, categories]);
   useEffect(() => {
     if (date) {
       filterTransactions(date, allTransactions);
@@ -145,6 +152,15 @@ function AddTransaction({
     );
   }, [filteredTransactions, categories]);
 
+  const testAmount = () => {
+    if (amount > sumForSelectedCategory) {
+      setShowWarning(true);
+    } else {
+      setShowWarning(false);
+    }
+    handleSubmit();
+  };
+
   return (
     <Dialog open={openDialog} onClose={handleCloseDialog} fullWidth>
       <DialogTitle
@@ -159,14 +175,6 @@ function AddTransaction({
       <DialogContent
         sx={{ backgroundColor: theme.palette.card.main, padding: "20px" }}
       >
-        <div>
-          <h3>Summe für ausgewählte Kategorie:</h3>
-          <div>
-            {categories.find((cat) => cat.id === category)?.name ||
-              "Unknown Category"}
-            :{sumForSelectedCategory.toFixed(2)} €
-          </div>
-        </div>
         {/* Transaktionstyp */}
         <InputLabel style={{ color: theme.palette.text.main }}>
           Transaktionstyp
@@ -286,7 +294,20 @@ function AddTransaction({
               {cat.name}
             </MenuItem>
           ))}
-        </Select>
+        </Select>{" "}
+        {showWarning && (
+          <div style={{ color: "red" }}>
+            Warnung: Dieser Betrag überschreitet Ihr Budget für die Kategorie.
+          </div>
+        )}
+        <div>
+          <h3>Summe für ausgewählte Kategorie:</h3>
+          <div>
+            {categories.find((cat) => cat.id === category)?.name ||
+              "Unknown Category"}
+            :{sumForSelectedCategory.toFixed(2)} €
+          </div>
+        </div>
       </DialogContent>
       <DialogActions
         sx={{ backgroundColor: theme.palette.card.main, padding: "10px" }}
