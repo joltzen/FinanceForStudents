@@ -51,7 +51,9 @@ export default function RowMenu({
         >
           Edit
         </MenuItem>
-        <MenuItem onClick={handleClose}>Move</MenuItem>
+        <MenuItem disabled onClick={handleClose}>
+          Move
+        </MenuItem>
         <Divider />
         <MenuItem onClick={handleDeleteTransaction} style={{ color: "red" }}>
           Delete

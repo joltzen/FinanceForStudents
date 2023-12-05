@@ -2,10 +2,11 @@
 
 import DeleteIcon from "@mui/icons-material/Delete";
 import EditIcon from "@mui/icons-material/Edit";
-import InfoIcon from "@mui/icons-material/Info";
 import {
   Alert,
   Button,
+  Card,
+  CardContent,
   Dialog,
   DialogActions,
   DialogContent,
@@ -17,11 +18,9 @@ import {
   Paper,
   Snackbar,
   TextField,
-  Tooltip,
   Typography,
 } from "@mui/material";
 import { useTheme } from "@mui/material/styles";
-import { Box } from "@mui/system";
 import Circle from "@uiw/react-color-circle";
 import React, { useEffect, useState } from "react";
 import axiosInstance from "../../config/axios";
@@ -40,8 +39,8 @@ function DialogPage() {
   const [snackbarOpen, setSnackbarOpen] = useState(false);
   const [snackbarMessage, setSnackbarMessage] = useState("");
   const [snackbarSeverity, setSnackbarSeverity] = useState("success");
+  const [maxAmount, setMaxAmount] = useState(0);
   const { user } = useAuth();
-  const [maxValue, setMaxValue] = useState(0);
 
   const addCategory = () => {
     setCategories([...categories, { name: newCategory, color: categoryColor }]);
@@ -56,12 +55,18 @@ function DialogPage() {
         id: editingCategory.id,
         name: newCategory,
         color: categoryColor,
+        max_amount: maxAmount,
       });
       // Update the local state to reflect the changes
       setCategories((prevCategories) =>
         prevCategories.map((category) =>
           category.id === editingCategory.id
-            ? { ...category, name: newCategory, color: categoryColor }
+            ? {
+                ...category,
+                name: newCategory,
+                color: categoryColor,
+                max_amount: maxAmount,
+              }
             : category
         )
       );
@@ -81,6 +86,7 @@ function DialogPage() {
   const openEditDialogWithCategory = (category) => {
     setEditingCategory(category);
     setNewCategory(category.name);
+    setMaxAmount(category.max);
     setCategoryColor(category.color);
     setOpenEditDialog(true);
   };
@@ -105,6 +111,7 @@ function DialogPage() {
         name: newCategory,
         user_id: user.id,
         color: categoryColor,
+        max_amount: maxAmount,
       });
       setSnackbarMessage("Kategorie erfolgreich hinzugefügt!");
       setSnackbarSeverity("success");
@@ -177,7 +184,7 @@ function DialogPage() {
             sx={{
               backgroundColor: theme.palette.card.main,
               color: theme.palette.text.main,
-              mb: 5,
+              mb: 4,
             }}
           >
             Fügen Sie eine neue Kategorie hinzu und wählen Sie eine Farbe für
@@ -199,10 +206,27 @@ function DialogPage() {
                 height: "40px",
                 border: `1px solid ${theme.palette.text.main}`,
               },
-              mb: 3,
             }}
           />
-
+          <InputLabel style={{ color: theme.palette.text.main, mt: 4 }}>
+            Maximale Ausgabe pro Monat für die Kategorie
+          </InputLabel>
+          <TextField
+            autoFocus
+            variant="outlined"
+            fullWidth
+            type="number"
+            name="amount"
+            margin="normal"
+            value={maxAmount}
+            onChange={(e) => setMaxAmount(e.target.value)}
+            sx={{
+              ".MuiOutlinedInput-root": {
+                height: "40px",
+                border: `1px solid ${theme.palette.text.main}`,
+              },
+            }}
+          />
           <Circle
             style={{ marginTop: "50px" }}
             colors={colors}
@@ -313,6 +337,25 @@ function DialogPage() {
             margin="normal"
             value={newCategory}
             onChange={(e) => setNewCategory(e.target.value)}
+            sx={{
+              ".MuiOutlinedInput-root": {
+                height: "40px",
+                border: `1px solid ${theme.palette.text.main}`,
+              },
+            }}
+          />
+          <InputLabel style={{ color: theme.palette.text.main }}>
+            Maximale Ausgabe pro Monat
+          </InputLabel>
+          <TextField
+            autoFocus
+            variant="outlined"
+            fullWidth
+            name="maxamount"
+            type="number"
+            margin="normal"
+            value={maxAmount}
+            onChange={(e) => setMaxAmount(e.target.value)}
             sx={{
               ".MuiOutlinedInput-root": {
                 height: "40px",

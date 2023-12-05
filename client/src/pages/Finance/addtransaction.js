@@ -36,21 +36,16 @@ function AddTransaction({
   const [filteredTransactions, setFilteredTransactions] = useState([]);
   const [sumsByCategory, setSumsByCategory] = useState({});
   const [sumForSelectedCategory, setSumForSelectedCategory] = useState(0);
-  const [showWarning, setShowWarning] = useState(false);
-
   const { user } = useAuth();
   const [showBudgetWarningDialog, setShowBudgetWarningDialog] = useState(false);
 
-  // 2. Logik zur Überprüfung des Budgets anpassen
   const testAmount = () => {
-    console.log("test");
     const selectedCategory = categories.find((cat) => cat.id === category);
     const potentialNewSum = (selectedCategory.max || 0) - amount;
-
     if (potentialNewSum < 0) {
       setShowBudgetWarningDialog(true);
     } else {
-      handleSubmit({ preventDefault: () => {} }); // Mit einem synthetischen Event
+      handleSubmit({ preventDefault: () => {} });
     }
   };
 
@@ -75,7 +70,6 @@ function AddTransaction({
   };
 
   const calculateSumsByCategory = (transactions, categoryMap) => {
-    // We use the categoryMap here to translate category IDs to their names
     return transactions.reduce((acc, transaction) => {
       const categoryName =
         categoryMap[transaction.category_id] || "Unknown Category";
@@ -149,7 +143,7 @@ function AddTransaction({
     };
 
     calculateSumForSelectedCategory();
-  }, [date, allTransactions, filteredTransactions, category, categories]);
+  }, [filteredTransactions, category, categories, user.id]);
 
   useEffect(() => {
     if (date) {
@@ -166,7 +160,7 @@ function AddTransaction({
     setSumsByCategory(
       calculateSumsByCategory(filteredTransactions, categoryMap)
     );
-  }, [filteredTransactions, categories]);
+  }, [date, allTransactions, filteredTransactions, category, categories]);
 
   return (
     <Dialog open={openDialog} onClose={handleCloseDialog} fullWidth>
@@ -174,7 +168,7 @@ function AddTransaction({
         sx={{
           backgroundColor: theme.palette.card.main,
           color: theme.palette.text.main,
-          fontSize: "1.2rem", // Größere Schrift für den Titel
+          fontSize: "1.2rem",
         }}
       >
         Transaktion Hinzufügen
@@ -182,7 +176,6 @@ function AddTransaction({
       <DialogContent
         sx={{ backgroundColor: theme.palette.card.main, padding: "20px" }}
       >
-        {/* Transaktionstyp */}
         <InputLabel style={{ color: theme.palette.text.main }}>
           Transaktionstyp
         </InputLabel>
@@ -204,7 +197,6 @@ function AddTransaction({
             <MenuItem value="Einnahme">Einnahme</MenuItem>
           </Select>
         </FormControl>
-        {/* Beschreibung */}
         <InputLabel style={{ color: theme.palette.text.main }}>
           Beschreibung
         </InputLabel>
@@ -223,7 +215,6 @@ function AddTransaction({
             },
           }}
         />
-        {/* Betrag */}
         <InputLabel style={{ color: theme.palette.text.main }}>
           Betrag
         </InputLabel>
@@ -242,7 +233,6 @@ function AddTransaction({
             },
           }}
         />
-        {/* Monat */}
         <InputLabel style={{ color: theme.palette.text.main }}>
           Datum
         </InputLabel>
@@ -260,7 +250,6 @@ function AddTransaction({
             marginBottom: 2,
           }}
         />
-        {/* Jahr */}
         <InputLabel style={{ color: theme.palette.text.main }}>
           Kategorie
         </InputLabel>
@@ -289,7 +278,6 @@ function AddTransaction({
               sx={{
                 backgroundColor: cat.color,
                 "&.Mui-selected": {
-                  // This targets the selected item specifically
                   backgroundColor: cat.color,
                   fontWeight: "bold",
                 },
@@ -306,29 +294,18 @@ function AddTransaction({
           showBudgetWarningDialog={showBudgetWarningDialog}
           setShowBudgetWarningDialog={setShowBudgetWarningDialog}
           handleSubmit={handleSubmit}
+          theme={theme}
         />
-        {showWarning && (
-          <div style={{ color: "red" }}>
-            Warnung: Dieser Betrag überschreitet Ihr Budget für die Kategorie.
-          </div>
-        )}
-        <div>
-          <h3>Summe für ausgewählte Kategorie:</h3>
-          <div>
-            {categories.find((cat) => cat.id === category)?.name ||
-              "Unknown Category"}
-            :{sumForSelectedCategory.toFixed(2)} €
-          </div>
-        </div>
+
+        <h3>
+          Restbudget für die ausgewählte Kategorie:{" "}
+          {sumForSelectedCategory.toFixed(2)} €
+        </h3>
       </DialogContent>
       <DialogActions
         sx={{ backgroundColor: theme.palette.card.main, padding: "10px" }}
       >
-        <Button
-          onClick={handleCloseDialog}
-          color="secondary"
-          variant="outlined"
-        >
+        <Button onClick={handleCloseDialog} variant="contained">
           Abbrechen
         </Button>
         <Button onClick={testAmount} color="primary" variant="contained">
