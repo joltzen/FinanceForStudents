@@ -10,6 +10,7 @@ import {
   Select,
   TextField,
 } from "@mui/material";
+import { useTheme } from "@mui/material/styles";
 import React, { useEffect, useState } from "react";
 import axiosInstance from "../../config/axios";
 import { useAuth } from "../../core/auth/auth";
@@ -18,7 +19,6 @@ import BudgetWarningDialog from "./budgetdialog";
 function AddTransaction({
   openDialog,
   handleCloseDialog,
-  theme,
   handleSubmit,
   description,
   handleDescriptionChange,
@@ -38,6 +38,7 @@ function AddTransaction({
   const [sumForSelectedCategory, setSumForSelectedCategory] = useState(0);
   const { user } = useAuth();
   const [showBudgetWarningDialog, setShowBudgetWarningDialog] = useState(false);
+  const theme = useTheme();
 
   const testAmount = () => {
     const selectedCategory = categories.find((cat) => cat.id === category);
