@@ -7,32 +7,61 @@ import axiosInstance from "../../config/axios";
 import { months, years } from "../../config/constants";
 import { useAuth } from "../../core/auth/auth";
 import { ColorModeContext } from "../../theme";
+import NavigateCard from "./cards";
 import EditSettingsDialog from "./edit";
-import FilterCard from "./filtercard";
-import FixedDialog from "./fixeddialog";
-import NavigateCard from "./navcard";
+import FilterCard from "./fixed_manager";
+import FixedDialog from "./Dialog/fixeddialog";
+
 function FixedForm() {
-  const [filterMonth, setFilterMonth] = useState(new Date().getMonth() + 1);
-  const [filterYear, setFilterYear] = useState(new Date().getFullYear());
+  // Contexts and refs
+  const { user } = useAuth();
+  const theme = useTheme();
+  const colorMode = useContext(ColorModeContext);
+  const descriptionInputRef = useRef(null);
+
+  // Form states
   const [description, setDescription] = useState("");
   const [amount, setAmount] = useState("");
   const [transactionType, setTransactionType] = useState("Einnahme");
+
+  // Filter states
+  const currentYear = new Date().getFullYear();
+  const currentMonth = new Date().getMonth() + 1;
+  const [filterMonth, setFilterMonth] = useState(currentMonth);
+  const [filterYear, setFilterYear] = useState(currentYear);
+
+  // Transaction states
   const [transactions, setTransactions] = useState([]);
+  const [editSettings, setEditSettings] = useState(null);
+
+  // Dialog states
   const [openDialog, setOpenDialog] = useState(false);
-  const [selectedTab, setSelectedTab] = useState(0);
   const [openTransferDialog, setOpenTransferDialog] = useState(false);
-  const { user } = useAuth();
-  const theme = useTheme();
-  const descriptionInputRef = useRef(null);
-  const colorMode = useContext(ColorModeContext);
+
+  // Snackbar states
   const [snackbarOpen, setSnackbarOpen] = useState(false);
   const [snackbarMessage, setSnackbarMessage] = useState("");
   const [snackbarSeverity, setSnackbarSeverity] = useState("success");
-  const [startMonth, setStartMonth] = useState(filterMonth - 1);
-  const [endMonth, setEndMonth] = useState(filterMonth);
-  const [startYear, setStartYear] = useState(filterYear);
-  const [endYear, setEndYear] = useState(filterYear);
+
+  // Range states
+  const [startMonth, setStartMonth] = useState(currentMonth - 1);
+  const [endMonth, setEndMonth] = useState(currentMonth);
+  const [startYear, setStartYear] = useState(currentYear);
+  const [endYear, setEndYear] = useState(currentYear);
   const [mode, setMode] = useState("range");
+
+  // Tab states
+  const [selectedTab, setSelectedTab] = useState(0);
+
+  useEffect(() => {
+    if (openDialog) {
+      descriptionInputRef.current?.focus();
+    }
+  }, [openDialog]);
+
+  useEffect(() => {
+    fetchSettings();
+  }, [filterMonth, filterYear, user.id]);
 
   const handleTabChange = (event, newValue) => {
     setSelectedTab(newValue);
@@ -71,11 +100,7 @@ function FixedForm() {
       console.error("Error posting transactions:", error);
     }
   };
-  useEffect(() => {
-    if (openDialog) {
-      descriptionInputRef.current?.focus();
-    }
-  }, [openDialog]);
+
   const handleTransferSubmit = async (
     sourceMonth,
     sourceYear,
@@ -208,11 +233,6 @@ function FixedForm() {
       console.error("Fetching settings failed:", error);
     }
   };
-  useEffect(() => {
-    fetchSettings();
-  }, [filterMonth, filterYear, user.id]);
-
-  const [editSettings, setEditSettings] = useState(null);
 
   const handleEditSettings = async (transaction) => {
     try {
@@ -258,6 +278,7 @@ function FixedForm() {
     setFilterMonth(newMonth);
     setFilterYear(newYear);
   };
+
   return (
     <div>
       <Snackbar

@@ -8,7 +8,6 @@ import {
   MenuItem,
   Select,
 } from "@mui/material";
-import { useTheme } from "@mui/material/styles";
 import React from "react";
 
 const BudgetFilter = ({
@@ -20,7 +19,6 @@ const BudgetFilter = ({
   years,
   isAnnualView,
 }) => {
-  const theme = useTheme();
 
   const handleMonthChange = (direction) => {
     let newMonth = filterMonth + (direction === "next" ? 1 : -1);
