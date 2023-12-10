@@ -129,8 +129,13 @@ function AddTransaction({
       }
     };
     calculateSumForSelectedCategory();
-  }, [filteredTransactions, category, categories, user.id]);
-
+  }, [
+    filteredTransactions,
+    category,
+    categories,
+    sumForSelectedCategory,
+    user.id,
+  ]);
   const [prevDate, setPrevDate] = useState(date);
 
   useEffect(() => {
@@ -156,7 +161,13 @@ function AddTransaction({
     setSumsByCategory(
       calculateSumsByCategory(filteredTransactions, categoryMap)
     );
-  }, [allTransactions, filteredTransactions, category, categories]);
+  }, [
+    allTransactions,
+    filteredTransactions,
+    sumForSelectedCategory,
+    category,
+    categories,
+  ]);
 
   return (
     <Dialog open={openDialog} onClose={handleCloseDialog} fullWidth>
