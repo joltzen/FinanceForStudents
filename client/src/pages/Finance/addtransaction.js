@@ -146,11 +146,21 @@ function AddTransaction({
     calculateSumForSelectedCategory();
   }, [filteredTransactions, category, categories, user.id]);
 
+  const [prevDate, setPrevDate] = useState(date);
+
   useEffect(() => {
     if (date) {
-      filterTransactions(date, allTransactions);
+      const [year, month] = date.split("-");
+      const [prevYear, prevMonth] = prevDate
+        ? prevDate.split("-")
+        : [null, null];
+
+      if (year !== prevYear || month !== prevMonth) {
+        filterTransactions(date, allTransactions);
+        setPrevDate(date); // Update previous date
+      }
     }
-  }, [allTransactions, filteredTransactions, category, categories, user.id]);
+  }, [date, allTransactions]);
 
   useEffect(() => {
     fetchTransactions();
