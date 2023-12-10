@@ -121,6 +121,7 @@ function FinanceOverview({ update, handleOpenDialog, triggerUpdate }) {
     filterYear,
     totalSum,
     activeSorting,
+    transactions,
   ]);
   const toggleSortOrder = () => {
     setActiveSorting("date");
@@ -199,7 +200,7 @@ function FinanceOverview({ update, handleOpenDialog, triggerUpdate }) {
     } catch (error) {
       console.error("Error fetching transactions:", error);
     }
-  }, [filterMonth, filterYear, totalSum, update, needUpdate]);
+  }, [filterMonth, filterYear, totalSum, update, needUpdate, transactions]);
 
   function calculateAdjustedTotalSum() {
     let adjustedTotal = totalSum;
