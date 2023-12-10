@@ -113,7 +113,7 @@ function FinancePage() {
       }
     };
     fetchFavorites();
-  }, [user.id, update, transactions, updateNeeded]);
+  }, [user.id, update, updateNeeded]);
 
   return (
     <Grid item xs={12} md={8} lg={6}>

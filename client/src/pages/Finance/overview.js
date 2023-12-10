@@ -125,6 +125,7 @@ function FinanceOverview({ update, handleOpenDialog, triggerUpdate }) {
     settings,
     needUpdate,
     activeSorting,
+    favorites,
   ]);
   const toggleSortOrder = () => {
     setActiveSorting("date");
