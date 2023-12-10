@@ -81,6 +81,7 @@ function DialogPage() {
       setSnackbarSeverity("error");
     }
     setSnackbarOpen(true);
+    window.location.reload();
   };
 
   const openEditDialogWithCategory = (category) => {
@@ -121,6 +122,7 @@ function DialogPage() {
       setSnackbarSeverity("error");
     }
     setSnackbarOpen(true);
+    window.location.reload();
   };
 
   const handleDeleteCategory = async (categoryId) => {
@@ -139,6 +141,7 @@ function DialogPage() {
       setSnackbarSeverity("error");
     }
     setSnackbarOpen(true);
+    window.location.reload();
   };
   function isColorDark(color) {
     const rgb = parseInt(color.substring(1), 16);

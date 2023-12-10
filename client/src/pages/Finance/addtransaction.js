@@ -112,19 +112,19 @@ function AddTransaction({
 
     return (usePound ? "#" : "") + (g | (b << 8) | (r << 16)).toString(16);
   };
+  const fetchTransactions = async () => {
+    try {
+      const response = await axiosInstance.get("/getTransactions", {
+        params: {
+          user_id: user.id,
+        },
+      });
+      setAllTransactions(response.data);
+    } catch (error) {
+      console.error("Fehler beim Laden der Transaktionen:", error);
+    }
+  };
   useEffect(() => {
-    const fetchTransactions = async () => {
-      try {
-        const response = await axiosInstance.get("/getTransactions", {
-          params: {
-            user_id: user.id,
-          },
-        });
-        setAllTransactions(response.data);
-      } catch (error) {
-        console.error("Fehler beim Laden der Transaktionen:", error);
-      }
-    };
     fetchTransactions();
     const calculateSumForSelectedCategory = () => {
       const selectedCategoryTransactions = filteredTransactions.filter(
@@ -150,9 +150,10 @@ function AddTransaction({
     if (date) {
       filterTransactions(date, allTransactions);
     }
-  }, []);
+  }, [allTransactions, filteredTransactions, category, categories, user.id]);
 
   useEffect(() => {
+    fetchTransactions();
     const categoryMap = categories.reduce((acc, cat) => {
       acc[cat.id] = cat.name;
       return acc;
