@@ -98,20 +98,8 @@ function AddTransaction({
     else if (g < 0) g = 0;
     return (usePound ? "#" : "") + (g | (b << 8) | (r << 16)).toString(16);
   };
-  const fetchTransactions = async () => {
-    try {
-      const response = await axiosInstance.get("/getTransactions", {
-        params: {
-          user_id: user.id,
-        },
-      });
-      setAllTransactions(response.data);
-    } catch (error) {
-      console.error("Fehler beim Laden der Transaktionen:", error);
-    }
-  };
+
   useEffect(() => {
-    fetchTransactions();
     const calculateSumForSelectedCategory = () => {
       const selectedCategoryTransactions = filteredTransactions.filter(
         (transaction) => transaction.category_id === category
@@ -129,13 +117,7 @@ function AddTransaction({
       }
     };
     calculateSumForSelectedCategory();
-  }, [
-    filteredTransactions,
-    category,
-    categories,
-    sumForSelectedCategory,
-    user.id,
-  ]);
+  }, [filteredTransactions, category, categories, sumForSelectedCategory]);
   const [prevDate, setPrevDate] = useState(date);
 
   useEffect(() => {
@@ -152,8 +134,8 @@ function AddTransaction({
       }
     }
   }, [date, allTransactions]);
+
   useEffect(() => {
-    fetchTransactions();
     const categoryMap = categories.reduce((acc, cat) => {
       acc[cat.id] = cat.name;
       return acc;
