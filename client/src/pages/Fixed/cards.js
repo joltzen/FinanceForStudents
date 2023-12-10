@@ -13,7 +13,7 @@ import {
   Typography,
 } from "@mui/material";
 import React from "react";
-import DialogPage from "./dialog";
+import DialogPage from "./Category/category";
 
 function NavigateCard({ theme, colorMode, totalBudget }) {
   return (

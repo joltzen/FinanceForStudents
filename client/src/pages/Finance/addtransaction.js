@@ -10,12 +10,15 @@ import {
   Select,
   TextField,
 } from "@mui/material";
-import React from "react";
+import { useTheme } from "@mui/material/styles";
+import React, { useEffect, useState } from "react";
+import axiosInstance from "../../config/axios";
+import { useAuth } from "../../core/auth/auth";
+import BudgetWarningDialog from "./budgetdialog";
 
 function AddTransaction({
   openDialog,
   handleCloseDialog,
-  theme,
   handleSubmit,
   description,
   handleDescriptionChange,
@@ -29,6 +32,56 @@ function AddTransaction({
   date,
   handleDateChange,
 }) {
+  const [allTransactions, setAllTransactions] = useState([]);
+  const [filteredTransactions, setFilteredTransactions] = useState([]);
+  const [sumsByCategory, setSumsByCategory] = useState({});
+  const [sumForSelectedCategory, setSumForSelectedCategory] = useState(0);
+  const { user } = useAuth();
+  const [showBudgetWarningDialog, setShowBudgetWarningDialog] = useState(false);
+  const theme = useTheme();
+
+  const testAmount = () => {
+    const selectedCategory = categories.find((cat) => cat.id === category);
+    const potentialNewSum = (selectedCategory.max || 0) - amount;
+    if (potentialNewSum < 0) {
+      setShowBudgetWarningDialog(true);
+    } else {
+      handleSubmit({ preventDefault: () => {} });
+    }
+  };
+
+  const filterTransactions = (selectedDate, transactions) => {
+    const [selectedYear, selectedMonth] = selectedDate.split("-");
+
+    const fetchTransactions = async () => {
+      try {
+        const response = await axiosInstance.get("/getTransactions", {
+          params: {
+            month: selectedMonth,
+            year: selectedYear,
+            user_id: user.id,
+          },
+        });
+        setFilteredTransactions(response.data);
+      } catch (error) {
+        console.error("Fehler beim Laden der Transaktionen:", error);
+      }
+    };
+    fetchTransactions();
+  };
+
+  const calculateSumsByCategory = (transactions, categoryMap) => {
+    return transactions.reduce((acc, transaction) => {
+      const categoryName =
+        categoryMap[transaction.category_id] || "Unknown Category";
+      if (!acc[categoryName]) {
+        acc[categoryName] = 0;
+      }
+      acc[categoryName] += parseFloat(transaction.amount || 0);
+      return acc;
+    }, {});
+  };
+
   const getCurrentCategoryColor = () => {
     const currentCategory = categories.find((cat) => cat.id === category);
     return currentCategory ? currentCategory.color : "defaultColor";
@@ -59,6 +112,56 @@ function AddTransaction({
 
     return (usePound ? "#" : "") + (g | (b << 8) | (r << 16)).toString(16);
   };
+  useEffect(() => {
+    const fetchTransactions = async () => {
+      try {
+        const response = await axiosInstance.get("/getTransactions", {
+          params: {
+            user_id: user.id,
+          },
+        });
+        setAllTransactions(response.data);
+      } catch (error) {
+        console.error("Fehler beim Laden der Transaktionen:", error);
+      }
+    };
+    fetchTransactions();
+    const calculateSumForSelectedCategory = () => {
+      const selectedCategoryTransactions = filteredTransactions.filter(
+        (transaction) => transaction.category_id === category
+      );
+      const totalAmountInCategory = selectedCategoryTransactions.reduce(
+        (acc, transaction) => acc + parseFloat(transaction.amount || 0),
+        0
+      );
+      const selectedCategory = categories.find((cat) => cat.id === category);
+      if (selectedCategory && selectedCategory.max) {
+        const maxBudget = selectedCategory.max;
+        setSumForSelectedCategory(maxBudget - totalAmountInCategory);
+      } else {
+        setSumForSelectedCategory(0.0);
+      }
+    };
+
+    calculateSumForSelectedCategory();
+  }, [filteredTransactions, category, categories, user.id]);
+
+  useEffect(() => {
+    if (date) {
+      filterTransactions(date, allTransactions);
+    }
+  }, []);
+
+  useEffect(() => {
+    const categoryMap = categories.reduce((acc, cat) => {
+      acc[cat.id] = cat.name;
+      return acc;
+    }, {});
+
+    setSumsByCategory(
+      calculateSumsByCategory(filteredTransactions, categoryMap)
+    );
+  }, [date, allTransactions, filteredTransactions, category, categories]);
 
   return (
     <Dialog open={openDialog} onClose={handleCloseDialog} fullWidth>
@@ -66,7 +169,7 @@ function AddTransaction({
         sx={{
           backgroundColor: theme.palette.card.main,
           color: theme.palette.text.main,
-          fontSize: "1.2rem", // Größere Schrift für den Titel
+          fontSize: "1.2rem",
         }}
       >
         Transaktion Hinzufügen
@@ -74,7 +177,6 @@ function AddTransaction({
       <DialogContent
         sx={{ backgroundColor: theme.palette.card.main, padding: "20px" }}
       >
-        {/* Transaktionstyp */}
         <InputLabel style={{ color: theme.palette.text.main }}>
           Transaktionstyp
         </InputLabel>
@@ -96,8 +198,6 @@ function AddTransaction({
             <MenuItem value="Einnahme">Einnahme</MenuItem>
           </Select>
         </FormControl>
-
-        {/* Beschreibung */}
         <InputLabel style={{ color: theme.palette.text.main }}>
           Beschreibung
         </InputLabel>
@@ -116,8 +216,6 @@ function AddTransaction({
             },
           }}
         />
-
-        {/* Betrag */}
         <InputLabel style={{ color: theme.palette.text.main }}>
           Betrag
         </InputLabel>
@@ -136,8 +234,6 @@ function AddTransaction({
             },
           }}
         />
-
-        {/* Monat */}
         <InputLabel style={{ color: theme.palette.text.main }}>
           Datum
         </InputLabel>
@@ -155,8 +251,6 @@ function AddTransaction({
             marginBottom: 2,
           }}
         />
-
-        {/* Jahr */}
         <InputLabel style={{ color: theme.palette.text.main }}>
           Kategorie
         </InputLabel>
@@ -185,7 +279,6 @@ function AddTransaction({
               sx={{
                 backgroundColor: cat.color,
                 "&.Mui-selected": {
-                  // This targets the selected item specifically
                   backgroundColor: cat.color,
                   fontWeight: "bold",
                 },
@@ -198,18 +291,25 @@ function AddTransaction({
             </MenuItem>
           ))}
         </Select>
+        <BudgetWarningDialog
+          showBudgetWarningDialog={showBudgetWarningDialog}
+          setShowBudgetWarningDialog={setShowBudgetWarningDialog}
+          handleSubmit={handleSubmit}
+          theme={theme}
+        />
+
+        <h3>
+          Restbudget für die ausgewählte Kategorie:{" "}
+          {sumForSelectedCategory.toFixed(2)} €
+        </h3>
       </DialogContent>
       <DialogActions
         sx={{ backgroundColor: theme.palette.card.main, padding: "10px" }}
       >
-        <Button
-          onClick={handleCloseDialog}
-          color="secondary"
-          variant="outlined"
-        >
+        <Button onClick={handleCloseDialog} variant="contained">
           Abbrechen
         </Button>
-        <Button onClick={handleSubmit} color="primary" variant="contained">
+        <Button onClick={testAmount} color="primary" variant="contained">
           Speichern
         </Button>
       </DialogActions>

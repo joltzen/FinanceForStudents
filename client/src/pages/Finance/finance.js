@@ -57,7 +57,7 @@ function FinancePage() {
   };
 
   const handleSubmit = async (event) => {
-    event.preventDefault();
+    if (event) event.preventDefault();
     try {
       const response = await axiosInstance.post("/addTransaction", {
         date,

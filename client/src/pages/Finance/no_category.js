@@ -35,10 +35,14 @@ function AddCategory({
   const [openDialog, setOpenDialog] = useState(false);
   const [editingCategory, setEditingCategory] = useState(null);
   const [openEditDialog, setOpenEditDialog] = useState(false);
+  const [maxAmount, setMaxAmount] = useState(0);
   const { user } = useAuth();
 
   const addCategory = () => {
-    setCategories([...categories, { name: newCategory, color: categoryColor }]);
+    setCategories([
+      ...categories,
+      { name: newCategory, color: categoryColor, max_amount: maxAmount },
+    ]);
     setNewCategory("");
     setCategoryColor("#FFFFFF");
     setOpenDialog(false);
@@ -70,6 +74,7 @@ function AddCategory({
         name: newCategory,
         user_id: user.id,
         color: categoryColor,
+        max: maxAmount,
       });
       fetchCategories(); // Re-fetch categories after adding
       onCategoryAdded(); // If you need to trigger a refresh in a parent component
@@ -124,6 +129,16 @@ function AddCategory({
             Fügen Sie eine neue Kategorie hinzu und wählen Sie eine Farbe für
             sie.
           </DialogContentText>
+          <TextComp
+            autoFocus
+            margin="dense"
+            label="Kategoriename"
+            type="text"
+            fullWidth
+            variant="outlined"
+            value={newCategory}
+            onChange={(e) => setNewCategory(e.target.value)}
+          />
           <TextComp
             autoFocus
             margin="dense"

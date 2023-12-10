@@ -2,14 +2,10 @@
 
 import MoreHorizRoundedIcon from "@mui/icons-material/MoreHorizRounded";
 import { Divider, IconButton, Menu, MenuItem } from "@mui/material";
-import React from "react";
+import React, { useState } from "react";
 
-export default function RowMenu({
-  transaction,
-  handleEditButtonClick,
-  handleDeleteTransaction,
-}) {
-  const [anchorEl, setAnchorEl] = React.useState(null);
+function RowMenu({ settings, handleEditButtonClick, handleDeleteTransaction }) {
+  const [anchorEl, setAnchorEl] = useState(null);
   const open = Boolean(anchorEl);
 
   const handleClick = (event) => {
@@ -45,15 +41,13 @@ export default function RowMenu({
       >
         <MenuItem
           onClick={() => {
-            handleEditButtonClick(transaction);
+            handleEditButtonClick(settings.settings_id);
             handleClose();
           }}
         >
           Edit
         </MenuItem>
-        <MenuItem disabled onClick={handleClose}>
-          Move
-        </MenuItem>
+        <MenuItem onClick={handleClose}>Move</MenuItem>
         <Divider />
         <MenuItem onClick={handleDeleteTransaction} style={{ color: "red" }}>
           Delete
@@ -62,3 +56,5 @@ export default function RowMenu({
     </div>
   );
 }
+
+export default RowMenu;

@@ -39,7 +39,7 @@ export default function EditTransactionDialog({
       category_id: event.target.value,
     });
   };
-  // Updated handler specifically for the Select component
+
   const handleSelectChange = (event) => {
     console.log(event.target.value);
     setEditedTransaction({
@@ -84,28 +84,14 @@ export default function EditTransactionDialog({
     onSave(editedTransaction);
     onClose();
   };
-  function formatDate(dateString) {
-    const date = new Date(dateString);
-    let month = "" + (date.getMonth() + 1);
-    let day = "" + date.getDate();
-    const year = date.getFullYear();
 
-    if (month.length < 2) {
-      month = "0" + month;
-    }
-    if (day.length < 2) {
-      day = "0" + day;
-    }
-
-    return [year, month, day].join("-");
-  }
   return (
     <Dialog open={!!transaction} onClose={onClose} fullWidth>
       <DialogTitle
         sx={{
           backgroundColor: theme.palette.card.main,
           color: theme.palette.text.main,
-          fontSize: "1.2rem", // Größere Schrift für den Titel
+          fontSize: "1.2rem",
         }}
       >
         Transaktion Hinzufügen
@@ -113,7 +99,6 @@ export default function EditTransactionDialog({
       <DialogContent
         sx={{ backgroundColor: theme.palette.card.main, padding: "20px" }}
       >
-        {/* Transaktionstyp */}
         <InputLabel style={{ color: theme.palette.text.main }}>
           Transaktionstyp
         </InputLabel>
@@ -176,7 +161,6 @@ export default function EditTransactionDialog({
           }}
         />
 
-        {/* Monat */}
         <InputLabel style={{ color: theme.palette.text.main }}>
           Datum
         </InputLabel>
@@ -195,7 +179,6 @@ export default function EditTransactionDialog({
           }}
         />
 
-        {/* Jahr */}
         <InputLabel style={{ color: theme.palette.text.main }}>
           Kategorie
         </InputLabel>

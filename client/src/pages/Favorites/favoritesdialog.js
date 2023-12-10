@@ -26,8 +26,6 @@ function AddFavorites({
   categories,
   category,
   setCategory,
-  date,
-  handleDateChange,
 }) {
   const getCurrentCategoryColor = () => {
     const currentCategory = categories.find((cat) => cat.id === category);

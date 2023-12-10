@@ -21,13 +21,13 @@ import React, { useCallback, useContext, useEffect, useState } from "react";
 import axiosInstance from "../../config/axios";
 import { useAuth } from "../../core/auth/auth";
 import { ColorModeContext } from "../../theme";
-import AddCategory from "./addcategory";
 import DialogPage from "./card/dialog";
 import FavCard from "./card/favcard";
 import NavCard from "./card/navcards";
 import SaveCard from "./card/sumcard";
 import EditTransactionDialog from "./edit";
 import FilterTransactions from "./filter";
+import AddCategory from "./no_category";
 import TransactionsTable from "./table";
 function FinanceOverview({ update, handleOpenDialog, triggerUpdate }) {
   const [filterMonth, setFilterMonth] = useState(new Date().getMonth() + 1);
@@ -198,6 +198,7 @@ function FinanceOverview({ update, handleOpenDialog, triggerUpdate }) {
           }
           return acc;
         }, 0);
+
       setTotalSum(total);
     } catch (error) {
       console.error("Error fetching transactions:", error);

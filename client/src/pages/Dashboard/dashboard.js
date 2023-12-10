@@ -46,13 +46,10 @@ function DashboardPage() {
     calculateAnnualTotals,
     getCategoryTotal,
     getAnnualCategoryTotal,
-    calculateMonthlyRemainingBudgets,
     calculateMonthlySavingsDifference,
     calcMonthlyExpense,
     calculateTotalSavings,
     cyr,
-    cmr,
-    calculateYearlyTotalSavings,
   } = useCalculations(
     transactions,
     settings,
