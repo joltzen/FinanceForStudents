@@ -162,7 +162,7 @@ function AddTransaction({
     setSumsByCategory(
       calculateSumsByCategory(filteredTransactions, categoryMap)
     );
-  }, [date, allTransactions, filteredTransactions, category, categories]);
+  }, [allTransactions, filteredTransactions, category, categories]);
 
   return (
     <Dialog open={openDialog} onClose={handleCloseDialog} fullWidth>
