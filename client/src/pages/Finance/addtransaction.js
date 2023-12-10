@@ -15,7 +15,6 @@ import React, { useEffect, useState } from "react";
 import axiosInstance from "../../config/axios";
 import { useAuth } from "../../core/auth/auth";
 import BudgetWarningDialog from "./budgetdialog";
-
 function AddTransaction({
   openDialog,
   handleCloseDialog,
@@ -39,7 +38,6 @@ function AddTransaction({
   const { user } = useAuth();
   const [showBudgetWarningDialog, setShowBudgetWarningDialog] = useState(false);
   const theme = useTheme();
-
   const testAmount = () => {
     const selectedCategory = categories.find((cat) => cat.id === category);
     const potentialNewSum = (selectedCategory.max || 0) - amount;
@@ -49,10 +47,8 @@ function AddTransaction({
       handleSubmit({ preventDefault: () => {} });
     }
   };
-
   const filterTransactions = (selectedDate, transactions) => {
     const [selectedYear, selectedMonth] = selectedDate.split("-");
-
     const fetchTransactions = async () => {
       try {
         const response = await axiosInstance.get("/getTransactions", {
@@ -69,7 +65,6 @@ function AddTransaction({
     };
     fetchTransactions();
   };
-
   const calculateSumsByCategory = (transactions, categoryMap) => {
     return transactions.reduce((acc, transaction) => {
       const categoryName =
@@ -81,7 +76,6 @@ function AddTransaction({
       return acc;
     }, {});
   };
-
   const getCurrentCategoryColor = () => {
     const currentCategory = categories.find((cat) => cat.id === category);
     return currentCategory ? currentCategory.color : "defaultColor";
@@ -92,24 +86,16 @@ function AddTransaction({
       color = color.slice(1);
       usePound = true;
     }
-
     const num = parseInt(color, 16);
-
     let r = (num >> 16) + amount;
-
     if (r > 255) r = 255;
     else if (r < 0) r = 0;
-
     let b = ((num >> 8) & 0x00ff) + amount;
-
     if (b > 255) b = 255;
     else if (b < 0) b = 0;
-
     let g = (num & 0x0000ff) + amount;
-
     if (g > 255) g = 255;
     else if (g < 0) g = 0;
-
     return (usePound ? "#" : "") + (g | (b << 8) | (r << 16)).toString(16);
   };
   const fetchTransactions = async () => {
@@ -142,7 +128,6 @@ function AddTransaction({
         setSumForSelectedCategory(0.0);
       }
     };
-
     calculateSumForSelectedCategory();
   }, [filteredTransactions, category, categories, user.id]);
 
@@ -150,6 +135,7 @@ function AddTransaction({
 
   useEffect(() => {
     if (date) {
+      filterTransactions(date, allTransactions);
       const [year, month] = date.split("-");
       const [prevYear, prevMonth] = prevDate
         ? prevDate.split("-")
@@ -161,14 +147,12 @@ function AddTransaction({
       }
     }
   }, [date, allTransactions]);
-
   useEffect(() => {
     fetchTransactions();
     const categoryMap = categories.reduce((acc, cat) => {
       acc[cat.id] = cat.name;
       return acc;
     }, {});
-
     setSumsByCategory(
       calculateSumsByCategory(filteredTransactions, categoryMap)
     );
@@ -308,7 +292,6 @@ function AddTransaction({
           handleSubmit={handleSubmit}
           theme={theme}
         />
-
         <h3>
           Restbudget für die ausgewählte Kategorie:{" "}
           {sumForSelectedCategory.toFixed(2)} €
@@ -327,5 +310,4 @@ function AddTransaction({
     </Dialog>
   );
 }
-
 export default AddTransaction;
