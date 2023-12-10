@@ -120,12 +120,7 @@ function FinanceOverview({ update, handleOpenDialog, triggerUpdate }) {
     filterMonth,
     filterYear,
     totalSum,
-    user.id,
-    update,
-    settings,
-    needUpdate,
     activeSorting,
-    favorites,
   ]);
   const toggleSortOrder = () => {
     setActiveSorting("date");
@@ -204,15 +199,7 @@ function FinanceOverview({ update, handleOpenDialog, triggerUpdate }) {
     } catch (error) {
       console.error("Error fetching transactions:", error);
     }
-  }, [
-    filterMonth,
-    filterYear,
-    totalSum,
-    settings,
-    user.id,
-    update,
-    needUpdate,
-  ]);
+  }, [filterMonth, filterYear, totalSum, update, needUpdate]);
 
   function calculateAdjustedTotalSum() {
     let adjustedTotal = totalSum;
@@ -288,8 +275,6 @@ function FinanceOverview({ update, handleOpenDialog, triggerUpdate }) {
     update,
     needUpdate,
     activeSorting,
-    favorites,
-    transactions,
   ]);
 
   const [editTransaction, setEditTransaction] = useState(null);
