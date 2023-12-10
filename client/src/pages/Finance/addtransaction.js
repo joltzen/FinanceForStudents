@@ -47,6 +47,7 @@ function AddTransaction({
       handleSubmit({ preventDefault: () => {} });
     }
   };
+
   const filterTransactions = (selectedDate, transactions) => {
     const [selectedYear, selectedMonth] = selectedDate.split("-");
     const fetchTransactions = async () => {
@@ -100,6 +101,7 @@ function AddTransaction({
   };
 
   useEffect(() => {
+    filterTransactions(date);
     const calculateSumForSelectedCategory = () => {
       const selectedCategoryTransactions = filteredTransactions.filter(
         (transaction) => transaction.category_id === category
