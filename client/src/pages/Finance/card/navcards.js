@@ -17,9 +17,10 @@ function NavCard({ theme, colorMode }) {
           boxShadow: theme.shadows[10],
         },
         height: "100%",
-        marginRight: 4,
+        marginRight: 2,
         minHeight: "100px",
-        marginTop: 2,
+        marginBottom: 1,
+        borderRadius: 5,
       }}
     >
       <CardContent>

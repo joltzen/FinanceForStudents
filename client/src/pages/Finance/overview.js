@@ -1,19 +1,14 @@
 /* Copyright (c) 2023, Jason Oltzen */
 
-import Add from "@mui/icons-material/Add";
 import {
   Box,
   Button,
-  Card,
-  CardContent,
   Dialog,
   DialogActions,
   DialogContent,
   DialogContentText,
   DialogTitle,
   Grid,
-  IconButton,
-  Tooltip,
   Typography,
 } from "@mui/material";
 import { useTheme } from "@mui/system";
@@ -29,6 +24,7 @@ import EditTransactionDialog from "./edit";
 import FilterTransactions from "./filter";
 import AddCategory from "./no_category";
 import TransactionsTable from "./table";
+
 function FinanceOverview({ update, handleOpenDialog, triggerUpdate }) {
   const [filterMonth, setFilterMonth] = useState(new Date().getMonth() + 1);
   const [filterYear, setFilterYear] = useState(new Date().getFullYear());
@@ -376,92 +372,79 @@ function FinanceOverview({ update, handleOpenDialog, triggerUpdate }) {
 
   return (
     <Grid container spacing={4} style={{ minHeight: "100vh" }}>
+      <FilterTransactions
+        transactions={transactions}
+        setTransactions={transactions}
+        setFilterYear={setFilterYear}
+        setFilterMonth={setFilterMonth}
+        filterYear={filterYear}
+        filterMonth={filterMonth}
+        categories={categories}
+        selectedCategory={selectedCategory}
+        setSelectedCategory={setSelectedCategory}
+        handleCategoryChange={handleCategoryChange}
+        searchQuery={searchQuery}
+        handleSearchInputChange={handleSearchInputChange}
+      />
+
       <Grid item xs={12} sm={8} md={6} lg={8} style={{ minHeight: "100%" }}>
-        <Card
-          style={{
-            height: "100%",
-            width: "100%",
-            backgroundColor: theme.palette.left.main,
-          }}
-        >
-          <CardContent
-            style={{
-              display: "flex",
-              flexDirection: "column",
-              padding: 10,
-              height: "100%",
-            }}
+        <Box component="form" noValidate sx={{ ilwidth: "100%" }}>
+          <Box
+            display="flex"
+            justifyContent="space-between"
+            alignItems="center"
+            sx={{ ml: 3, mb: 4, width: "100%" }}
           >
-            <Box component="form" noValidate sx={{ mt: 4, width: "100%" }}>
-              <Box
-                display="flex"
-                justifyContent="space-between"
-                alignItems="center"
-                sx={{ mt: 2, mb: 4, width: "100%" }}
-              >
-                <Typography variant="h4" color={theme.palette.text.main}>
-                  Übersicht
-                </Typography>
+            <Typography
+              variant="h4"
+              color={theme.palette.text.main}
+              sx={{ fontWeight: "bold" }}
+            >
+              Übersicht
+            </Typography>
 
-                <IconButton
-                  variant="contained"
-                  onClick={handleAddTransaction}
-                  sx={{
-                    backgroundColor: theme.palette.primary.main,
+            <Button
+              variant="contained"
+              sx={{
+                backgroundColor: theme.palette.primary.main,
+                borderRadius: 5,
+                mr: 1,
+                boxShadow: 5,
+              }}
+              onClick={handleAddTransaction}
+            >
+              Hinzufügen
+            </Button>
+          </Box>
 
-                    boxShadow: 5,
-                  }}
-                >
-                  <Tooltip
-                    sx={{ color: theme.palette.text.main }}
-                    title="Transaktion hinzufügen"
-                  >
-                    <Add sx={{ color: theme.palette.common.white }} />
-                  </Tooltip>
-                </IconButton>
-              </Box>
+          <Box component="form" noValidate sx={{ width: "100%", padding: 2 }}>
+            {/* Rest des Codes bleibt gleich */}
+            <TransactionsTable
+              toggleSortOrder={toggleSortOrder}
+              toggleSortOrderAmount={toggleSortOrderAmount}
+              sortOrder={sortOrder}
+              sortOrderAmount={sortOrderAmount}
+              finalTransactions={finalTransactions}
+              categories={categories}
+              savingSum={savingSum}
+              handleEditButtonClick={handleEditButtonClick}
+              handleDeleteTransaction={handleDeleteTransaction}
+              formatDate={formatDate}
+              handleAddFavorites={handleAddFavorites}
+              handleDeleteFavorites={handleDeleteFavorites}
+              favorites={favorites}
+            />
+          </Box>
+        </Box>
 
-              <FilterTransactions
-                transactions={transactions}
-                setTransactions={transactions}
-                setFilterYear={setFilterYear}
-                setFilterMonth={setFilterMonth}
-                filterYear={filterYear}
-                filterMonth={filterMonth}
-                categories={categories}
-                selectedCategory={selectedCategory}
-                setSelectedCategory={setSelectedCategory}
-                handleCategoryChange={handleCategoryChange}
-                searchQuery={searchQuery}
-                handleSearchInputChange={handleSearchInputChange}
-              />
-              <TransactionsTable
-                toggleSortOrder={toggleSortOrder}
-                toggleSortOrderAmount={toggleSortOrderAmount}
-                sortOrder={sortOrder}
-                sortOrderAmount={sortOrderAmount}
-                finalTransactions={finalTransactions}
-                categories={categories}
-                savingSum={savingSum}
-                handleEditButtonClick={handleEditButtonClick}
-                handleDeleteTransaction={handleDeleteTransaction}
-                formatDate={formatDate}
-                handleAddFavorites={handleAddFavorites}
-                handleDeleteFavorites={handleDeleteFavorites}
-                favorites={favorites}
-              />
-            </Box>
-
-            {editTransaction && (
-              <EditTransactionDialog
-                transaction={editTransaction}
-                onClose={() => setEditTransaction(null)}
-                onSave={handleEditTransaction}
-                categories={categories}
-              />
-            )}
-          </CardContent>
-        </Card>
+        {editTransaction && (
+          <EditTransactionDialog
+            transaction={editTransaction}
+            onClose={() => setEditTransaction(null)}
+            onSave={handleEditTransaction}
+            categories={categories}
+          />
+        )}
       </Grid>
       <Grid item xs={12} sm={4} style={{ minHeight: "100%" }}>
         <Grid container direction="column" spacing={2}>
@@ -514,5 +497,4 @@ function FinanceOverview({ update, handleOpenDialog, triggerUpdate }) {
     </Grid>
   );
 }
-
 export default FinanceOverview;
