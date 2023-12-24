@@ -60,8 +60,9 @@ function FavCard({ theme, favorites, categories, handleAddFavoriteToMonth }) {
           boxShadow: theme.shadows[10],
         },
         height: "100%",
-        marginTop: 2,
-        marginRight: 4,
+        marginTop: 1,
+        marginRight: 2,
+        borderRadius: 5,
       }}
     >
       <CardContent>
@@ -71,7 +72,7 @@ function FavCard({ theme, favorites, categories, handleAddFavoriteToMonth }) {
             <Button
               variant="contained"
               onClick={() => setShowText(!showText)} // Toggle text visibility
-              sx={{ mt: 2 }}
+              sx={{ mt: 2, borderRadius: 5 }}
             >
               {showText ? "Weniger anzeigen" : "Mehr erfahren"}
             </Button>
@@ -86,7 +87,11 @@ function FavCard({ theme, favorites, categories, handleAddFavoriteToMonth }) {
                 und Ausgaben schneller hinzufügen.
               </Typography>
             </Collapse>
-            <Button variant="contained" href="/favorites" sx={{ mt: 4 }}>
+            <Button
+              variant="contained"
+              href="/favorites"
+              sx={{ mt: 4, borderRadius: 5 }}
+            >
               Favoriten hinzufügen
             </Button>
           </>

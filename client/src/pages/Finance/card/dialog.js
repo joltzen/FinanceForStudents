@@ -162,9 +162,10 @@ function DialogPage() {
           boxShadow: theme.shadows[10],
         },
         height: "100%",
-        marginTop: 2,
-        marginRight: 4,
+        marginTop: 1,
+        marginRight: 2,
         marginBottom: 5,
+        borderRadius: 5,
       }}
     >
       <CardContent>
@@ -297,6 +298,7 @@ function DialogPage() {
                   display: "flex",
                   alignItems: "center",
                   justifyContent: "space-between",
+                  borderRadius: 5,
                 }}
               >
                 <Typography
@@ -304,6 +306,7 @@ function DialogPage() {
                     color: isColorDark(category.color)
                       ? theme.palette.text.main
                       : "black",
+                    ml: 2,
                   }}
                 >
                   {category.name}
@@ -416,7 +419,7 @@ function DialogPage() {
         </Dialog>
 
         <Button
-          sx={{ marginTop: 3 }}
+          sx={{ marginTop: 3, borderRadius: 5 }}
           onClick={() => setOpenDialog(true)}
           variant="contained"
         >

@@ -6,10 +6,17 @@ import React, { useEffect, useState } from "react";
 import axiosInstance from "../../config/axios";
 import { useAuth } from "../../core/auth/auth";
 import AddTransaction from "./addtransaction";
+import FilterTransactions from "./filter";
 import FinanceOverview from "./overview";
 function FinancePage() {
   const today = new Date().toISOString().split("T")[0];
   const theme = useTheme();
+  const { user } = useAuth();
+
+  const [openDialog, setOpenDialog] = useState(false);
+  const [snackbarOpen, setSnackbarOpen] = useState(false);
+  const [snackbarMessage, setSnackbarMessage] = useState("");
+  const [snackbarSeverity, setSnackbarSeverity] = useState("success");
   const [category, setCategory] = useState("");
   const [date, setDate] = useState(today);
   const [description, setDescription] = useState("");
@@ -20,17 +27,14 @@ function FinancePage() {
   const [update, setUpdate] = useState(false);
   const [updateNeeded, setUpdateNeeded] = useState(false);
   const [favorites, setFavorites] = useState([]);
+  const [filterMonth, setFilterMonth] = useState(new Date().getMonth() + 1);
+  const [filterYear, setFilterYear] = useState(new Date().getFullYear());
+  const [selectedCategory, setSelectedCategory] = useState("");
+  const [searchQuery, setSearchQuery] = useState("");
 
   const triggerUpdate = () => {
     setUpdateNeeded((prev) => !prev);
   };
-
-  const { user } = useAuth();
-
-  const [openDialog, setOpenDialog] = useState(false);
-  const [snackbarOpen, setSnackbarOpen] = useState(false);
-  const [snackbarMessage, setSnackbarMessage] = useState("");
-  const [snackbarSeverity, setSnackbarSeverity] = useState("success"); // Can be "success", "error", "warning", or "info"
 
   const handleOpenDialog = () => {
     setOpenDialog(true);
@@ -115,6 +119,13 @@ function FinancePage() {
     fetchFavorites();
   }, [user.id, update, updateNeeded]);
 
+  const handleSearchInputChange = (event) => {
+    setSearchQuery(event.target.value.toLowerCase());
+  };
+  const handleCategoryChange = (event) => {
+    setSelectedCategory(event.target.value);
+  };
+
   return (
     <Grid item xs={12} md={8} lg={6}>
       <Snackbar
@@ -153,6 +164,8 @@ function FinancePage() {
         handleOpenDialog={handleOpenDialog}
         triggerUpdate={triggerUpdate}
         favorites={favorites}
+        handleCategoryChange={handleCategoryChange}
+        handleSearchInputChange={handleSearchInputChange}
       />
     </Grid>
   );

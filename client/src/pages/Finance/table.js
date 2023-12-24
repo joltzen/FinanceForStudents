@@ -59,7 +59,11 @@ function TransactionsTable({
   );
 
   return (
-    <TableContainer component={Paper} elevation={10}>
+    <TableContainer
+      component={Paper}
+      elevation={10}
+      sx={{ borderRadius: "15px" }}
+    >
       <Table sx={{ minWidth: 650 }}>
         <TableHead
           sx={{
@@ -122,7 +126,7 @@ function TransactionsTable({
               <TableRow key={transaction.transaction_id}>
                 <TableCell
                   sx={{
-                    borderLeft: `10px solid ${categoryColor}`,
+                    borderLeft: `3px solid ${categoryColor}`,
                     height: "10px", // Reduce height
                     color:
                       transaction.transaction_type === "Ausgabe"
