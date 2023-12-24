@@ -11,7 +11,8 @@ function SaveCard({ theme, savingSum }) {
           boxShadow: theme.shadows[10],
         },
         height: "100%",
-        marginRight: 4,
+        marginRight: 2,
+        borderRadius: 5,
       }}
     >
       <CardContent>

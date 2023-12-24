@@ -1,4 +1,3 @@
-import { Edit } from "./edit_category";
 /* Copyright (c) 2023, Jason Oltzen */
 
 import DeleteIcon from "@mui/icons-material/Delete";
@@ -26,7 +25,7 @@ import axiosInstance from "../../../config/axios";
 import { colors } from "../../../config/constants";
 import { useAuth } from "../../../core/auth/auth";
 
-function CategoryDialogPage() {
+function DialogPage() {
   const theme = useTheme();
 
   const [categories, setCategories] = useState([]);
@@ -80,6 +79,7 @@ function CategoryDialogPage() {
       setSnackbarSeverity("error");
     }
     setSnackbarOpen(true);
+    window.location.reload();
   };
 
   const openEditDialogWithCategory = (category) => {
@@ -120,6 +120,7 @@ function CategoryDialogPage() {
       setSnackbarSeverity("error");
     }
     setSnackbarOpen(true);
+    window.location.reload();
   };
 
   const handleDeleteCategory = async (categoryId) => {
@@ -138,6 +139,7 @@ function CategoryDialogPage() {
       setSnackbarSeverity("error");
     }
     setSnackbarOpen(true);
+    window.location.reload();
   };
   function isColorDark(color) {
     const rgb = parseInt(color.substring(1), 16);
@@ -150,7 +152,7 @@ function CategoryDialogPage() {
   }
 
   return (
-    <div>
+    <>
       <Snackbar
         open={snackbarOpen}
         autoHideDuration={6000}
@@ -280,6 +282,7 @@ function CategoryDialogPage() {
                 display: "flex",
                 alignItems: "center",
                 justifyContent: "space-between",
+                borderRadius: 5,
               }}
             >
               <Typography
@@ -287,6 +290,7 @@ function CategoryDialogPage() {
                   color: isColorDark(category.color)
                     ? theme.palette.text.main
                     : "black",
+                  ml: 2,
                 }}
               >
                 {category.name}
@@ -309,29 +313,104 @@ function CategoryDialogPage() {
           </Grid>
         ))}
       </Grid>
-      <Edit
-        openEditDialog={openEditDialog}
-        setOpenEditDialog={setOpenEditDialog}
-        editingCategory={editingCategory}
-        newCategory={newCategory}
-        setNewCategory={setNewCategory}
-        maxAmount={maxAmount}
-        setMaxAmount={setMaxAmount}
-        colors={colors}
-        categoryColor={categoryColor}
-        setCategoryColor={setCategoryColor}
-        handleEditCategory={handleEditCategory}
-      />
+      <Dialog open={openEditDialog} onClose={() => setOpenEditDialog(false)}>
+        <DialogContent
+          sx={{
+            backgroundColor: theme.palette.card.main,
+            color: theme.palette.text.main,
+          }}
+        >
+          <DialogContentText
+            sx={{
+              backgroundColor: theme.palette.card.main,
+              color: theme.palette.text.main,
+              mb: 4,
+            }}
+          >
+            Kategorie <strong>{editingCategory?.name}</strong> bearbeiten
+          </DialogContentText>
+          <InputLabel style={{ color: theme.palette.text.main }}>
+            Kategoriename
+          </InputLabel>
+          <TextField
+            autoFocus
+            variant="outlined"
+            fullWidth
+            name="description"
+            margin="normal"
+            value={newCategory}
+            onChange={(e) => setNewCategory(e.target.value)}
+            sx={{
+              ".MuiOutlinedInput-root": {
+                height: "40px",
+                border: `1px solid ${theme.palette.text.main}`,
+              },
+            }}
+          />
+          <InputLabel style={{ color: theme.palette.text.main }}>
+            Maximale Ausgabe pro Monat
+          </InputLabel>
+          <TextField
+            autoFocus
+            variant="outlined"
+            fullWidth
+            name="maxamount"
+            type="number"
+            margin="normal"
+            value={maxAmount}
+            onChange={(e) => setMaxAmount(e.target.value)}
+            sx={{
+              ".MuiOutlinedInput-root": {
+                height: "40px",
+                border: `1px solid ${theme.palette.text.main}`,
+              },
+            }}
+          />
+          <Circle
+            style={{ marginTop: "50px" }}
+            colors={colors}
+            color={categoryColor}
+            onChange={(color) => {
+              setCategoryColor(color.hex);
+            }}
+          />
+        </DialogContent>{" "}
+        <DialogActions
+          sx={{
+            backgroundColor: theme.palette.card.main,
+            color: theme.palette.text.main,
+          }}
+        >
+          <Button
+            sx={{
+              backgroundColor: theme.palette.card.main,
+              color: theme.palette.text.main,
+            }}
+            onClick={() => setOpenEditDialog(false)}
+          >
+            Abbrechen
+          </Button>
+          <Button
+            sx={{
+              backgroundColor: theme.palette.card.main,
+              color: theme.palette.text.main,
+            }}
+            onClick={handleEditCategory}
+          >
+            Speichern
+          </Button>
+        </DialogActions>
+      </Dialog>
 
       <Button
-        sx={{ marginTop: 3 }}
+        sx={{ marginTop: 3, borderRadius: 5 }}
         onClick={() => setOpenDialog(true)}
         variant="contained"
       >
         Kategorie hinzufügen
       </Button>
-    </div>
+    </>
   );
 }
 
-export default CategoryDialogPage;
+export default DialogPage;

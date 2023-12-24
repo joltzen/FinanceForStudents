@@ -31,6 +31,7 @@ function NavigateCard({ theme, colorMode, totalBudget }) {
               marginRight: 4,
               minHeight: "100px",
               marginTop: 2,
+              borderRadius: 5,
             }}
           >
             <CardContent>
@@ -146,6 +147,7 @@ function NavigateCard({ theme, colorMode, totalBudget }) {
               },
               height: "100%",
               marginRight: 4,
+              borderRadius: 5,
             }}
           >
             <CardContent>
@@ -181,7 +183,8 @@ function NavigateCard({ theme, colorMode, totalBudget }) {
               height: "100%",
               marginRight: 4,
               minHeight: "100px",
-              marginTop: 2,
+              marginTop: 1,
+              borderRadius: 5,
             }}
           >
             <CardContent>
