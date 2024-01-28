@@ -444,7 +444,7 @@ router.patch("/updateThemeMode", async (req, res) => {
 router.patch("/updateUser", async (req, res) => {
   try {
     // Destructure the potential fields from the request body
-    const { firstname, surname, username, email, userId } = req.body;
+    const { firstname, surname, username, email, userId, admin } = req.body;
 
     // Start with a base query
     let query = "UPDATE users SET";
@@ -467,6 +467,10 @@ router.patch("/updateUser", async (req, res) => {
     if (email !== undefined) {
       values.push(email);
       setClause.push(` email = $${values.length}`);
+    }
+    if (admin !== undefined) {
+      values.push(admin);
+      setClause.push(` admin = $${values.length}`);
     }
 
     // Combine the set clauses and add a where clause to target the correct user

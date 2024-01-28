@@ -54,6 +54,7 @@ function LoginPage() {
         firstname: response.data.firstname,
         surname: response.data.surname,
         email: response.data.email,
+        admin: response.data.admin,
       });
       console.log("Login successful:", response.data);
       navigate("/dashboard");
@@ -96,7 +97,7 @@ function LoginPage() {
                   display: "flex",
                   justifyContent: "space-between",
                   alignItems: "center",
-                  width: "100%", 
+                  width: "100%",
                   mb: 4,
                 }}
               >
