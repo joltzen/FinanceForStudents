@@ -8,6 +8,7 @@ import { AuthProvider } from "./core/auth/auth";
 import { SidebarProvider } from "./core/sidebar";
 import {
   About,
+  Admin,
   Contact,
   Dashboard,
   Favorites,
@@ -56,6 +57,7 @@ function App() {
                 <Route path="/saving" element={<Saving />} />
                 <Route path="/about" element={<About />} />
                 <Route path="/favorites" element={<Favorites />} />
+                <Route path="/admin" element={<Admin />} />
               </Routes>
             </div>
           </ThemeProvider>
