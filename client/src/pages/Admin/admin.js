@@ -121,10 +121,9 @@ function AdminPage() {
 
   useEffect(() => {
     console.log(user);
-    if (user.admin == false) {
+    if (user.admin === false) {
       navigate("/dashboard");
     }
-
     fetchUsers();
     console.log(allUsers);
   }, [user]);
