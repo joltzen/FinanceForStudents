@@ -419,6 +419,8 @@ export const useCalculations = (
     let totalSavingsFromTransactions = 0;
     let totalSavingsFromGoals = 0;
     let totalSavingsFromSettings = 0;
+    const currentMonth = new Date().getMonth() + 1; // Aktueller Monat
+    const currentYear = new Date().getFullYear(); // Aktuelles Jahr
 
     // Sum up savings from all transactions
     allTransactions.forEach((transaction) => {
@@ -452,10 +454,16 @@ export const useCalculations = (
     });
     // Sum up savings from all settingsa
     allSettings.forEach((setting) => {
-      if (setting.transaction_type === "Einnahme") {
-        totalSavingsFromSettings += parseFloat(setting.amount);
-      } else if (setting.transaction_type === "Ausgabe") {
-        totalSavingsFromSettings -= parseFloat(setting.amount);
+      if (
+        setting.year < currentYear ||
+        (setting.year === currentYear && setting.month <= currentMonth)
+      ) {
+        let amount = parseFloat(setting.amount);
+        if (setting.transaction_type === "Einnahme") {
+          totalSavingsFromSettings += amount;
+        } else if (setting.transaction_type === "Ausgabe") {
+          totalSavingsFromSettings -= amount;
+        }
       }
     });
 
