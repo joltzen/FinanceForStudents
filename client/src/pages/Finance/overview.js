@@ -118,6 +118,7 @@ function FinanceOverview({ update, handleOpenDialog, triggerUpdate }) {
     totalSum,
     activeSorting,
     transactions,
+    triggerUpdate,
   ]);
   const toggleSortOrder = () => {
     setActiveSorting("date");
@@ -271,6 +272,7 @@ function FinanceOverview({ update, handleOpenDialog, triggerUpdate }) {
     user.id,
     update,
     needUpdate,
+    triggerUpdate,
     activeSorting,
   ]);
 

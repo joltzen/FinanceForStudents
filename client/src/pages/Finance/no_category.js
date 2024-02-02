@@ -11,17 +11,17 @@ import {
   DialogTitle,
   Grid,
   IconButton,
+  InputLabel,
   Paper,
+  TextField,
   Typography,
 } from "@mui/material";
 import { useTheme } from "@mui/material/styles";
 import Circle from "@uiw/react-color-circle";
 import React, { useEffect, useState } from "react";
-import TextComp from "../../components/TextComp";
 import axiosInstance from "../../config/axios";
 import { colors } from "../../config/constants";
 import { useAuth } from "../../core/auth/auth";
-
 function AddCategory({
   isCategoryWarningOpen,
   handleCategoryAdded,
@@ -129,25 +129,42 @@ function AddCategory({
             Fügen Sie eine neue Kategorie hinzu und wählen Sie eine Farbe für
             sie.
           </DialogContentText>
-          <TextComp
+          <InputLabel style={{ color: theme.palette.text.main, mt: 4 }}>
+            Kategoriename
+          </InputLabel>
+          <TextField
             autoFocus
-            margin="dense"
-            label="Kategoriename"
-            type="text"
-            fullWidth
             variant="outlined"
+            fullWidth
+            name="description"
+            margin="normal"
             value={newCategory}
             onChange={(e) => setNewCategory(e.target.value)}
+            sx={{
+              ".MuiOutlinedInput-root": {
+                height: "40px",
+                border: `1px solid ${theme.palette.text.main}`,
+              },
+            }}
           />
-          <TextComp
+          <InputLabel style={{ color: theme.palette.text.main, mt: 4 }}>
+            Maximale Ausgabe pro Monat für die Kategorie
+          </InputLabel>
+          <TextField
             autoFocus
-            margin="dense"
-            label="Kategoriename"
-            type="text"
-            fullWidth
             variant="outlined"
-            value={newCategory}
-            onChange={(e) => setNewCategory(e.target.value)}
+            fullWidth
+            type="number"
+            name="amount"
+            margin="normal"
+            value={maxAmount}
+            onChange={(e) => setMaxAmount(e.target.value)}
+            sx={{
+              ".MuiOutlinedInput-root": {
+                height: "40px",
+                border: `1px solid ${theme.palette.text.main}`,
+              },
+            }}
           />
           <Circle
             style={{ marginTop: "50px" }}
@@ -247,15 +264,23 @@ function AddCategory({
           >
             Kategorie <strong>{editingCategory?.name}</strong> bearbeiten
           </DialogContentText>
-          <TextComp
+          <InputLabel style={{ color: theme.palette.text.main }}>
+            Kategoriename
+          </InputLabel>
+          <TextField
             autoFocus
-            margin="dense"
-            label="Kategoriename"
-            type="text"
-            fullWidth
             variant="outlined"
+            fullWidth
+            name="description"
+            margin="normal"
             value={newCategory}
             onChange={(e) => setNewCategory(e.target.value)}
+            sx={{
+              ".MuiOutlinedInput-root": {
+                height: "40px",
+                border: `1px solid ${theme.palette.text.main}`,
+              },
+            }}
           />
           <Circle
             style={{ marginTop: "50px" }}
