@@ -475,7 +475,7 @@ function FinanceOverview({ update, handleOpenDialog, triggerUpdate }) {
         aria-labelledby="category-warning-dialog-title"
       >
         <DialogTitle id="category-warning-dialog-title">
-          Kategorie erforderlich
+          Kategorie erforderlich!
         </DialogTitle>
         <DialogContent>
           <DialogContentText>
