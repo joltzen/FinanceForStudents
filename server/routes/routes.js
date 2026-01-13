@@ -505,6 +505,7 @@ router.patch("/update-saving-goal", async (req, res) => {
       SET monthly_saving = $1, total_amount = $2, description = $3, deadline = $4
       WHERE id = $5
       RETURNING *;`;
+      
 
     const values = [monthly_saving, total_amount, description, deadline, id];
     const result = await db.query(query, values);
