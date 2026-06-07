@@ -1,5 +1,6 @@
 /* Copyright (c) 2023, Jason Oltzen */
 
+import { Alert, Grid, Snackbar } from "@mui/material";
 import {
   Box,
   Button,
@@ -8,13 +9,24 @@ import {
   DialogContent,
   DialogContentText,
   DialogTitle,
-  Grid,
   Typography,
 } from "@mui/material";
 import { useTheme } from "@mui/system";
 import React, { useCallback, useContext, useEffect, useState } from "react";
-import axiosInstance from "../../config/axios";
 import { useAuth } from "../../core/auth/auth";
+import {
+  addFavorite,
+  addTransaction,
+  deleteTransaction,
+  deleteFavoritesByTransaction,
+  getCategories,
+  getFavorites,
+  getSavingGoals,
+  getSettings,
+  getTransactions,
+  setTransactionFavorite,
+  updateTransaction,
+} from "../../services/db";
 import { ColorModeContext } from "../../theme";
 import DialogPage from "./card/dialog";
 import FavCard from "./card/favcard";
@@ -41,36 +53,28 @@ function FinanceOverview({ update, handleOpenDialog, triggerUpdate }) {
   const [sortOrder, setSortOrder] = useState("desc");
   const [sortOrderAmount, setSortOrderAmount] = useState("desc");
   const [sortedByDateTransactions, setSortedByDateTransactions] = useState([]);
-  const [sortedByAmountTransactions, setSortedByAmountTransactions] = useState(
-    []
-  );
+  const [sortedByAmountTransactions, setSortedByAmountTransactions] = useState([]);
   const [activeSorting, setActiveSorting] = useState("date");
   const [isCategoryWarningOpen, setIsCategoryWarningOpen] = useState(false);
   const [favorites, setFavorites] = useState([]);
+  const [editTransaction, setEditTransaction] = useState(null);
 
   const fetchFavorites = useCallback(async () => {
     try {
-      const response = await axiosInstance.get("/getFavorites", {
-        params: { user_id: user.id },
-      });
-      setFavorites(response.data);
+      setFavorites(await getFavorites(user.id));
     } catch (error) {
       console.error("Fehler beim Abrufen der Favoriten:", error);
     }
   }, [user.id]);
 
-  const fetchCategories = async () => {
+  const fetchCategories = useCallback(async () => {
     try {
-      const response = await axiosInstance.get("/getCategories", {
-        params: { user_id: user.id },
-      });
-      setCategories(response.data);
+      setCategories(await getCategories(user.id));
     } catch (error) {
       console.error("Error loading categories:", error);
     }
-  };
+  }, [user.id]);
 
-  // Updated handleAddTransaction
   const handleAddTransaction = async () => {
     await fetchCategories();
     if (categories.length === 0) {
@@ -80,250 +84,116 @@ function FinanceOverview({ update, handleOpenDialog, triggerUpdate }) {
     }
   };
 
-  const handleCategoryAdded = () => {
-    setIsCategoryWarningOpen(false);
-  };
-
-  useEffect(() => {
-    let sortedTransactions = [...transactions];
-    if (activeSorting === "date") {
-      sortedTransactions.sort((a, b) => {
-        const dateA = new Date(a.transaction_date);
-        const dateB = new Date(b.transaction_date);
-        return sortOrder === "asc" ? dateA - dateB : dateB - dateA;
-      });
-      setSortedByDateTransactions(sortedTransactions);
-    } else if (activeSorting === "amount") {
-      sortedTransactions.sort((a, b) => {
-        const amountA = parseFloat(a.amount);
-        const amountB = parseFloat(b.amount);
-
-        const adjustedAmountA =
-          a.transaction_type === "Ausgabe" ? -amountA : amountA;
-        const adjustedAmountB =
-          b.transaction_type === "Ausgabe" ? -amountB : amountB;
-
-        return sortOrderAmount === "asc"
-          ? adjustedAmountA - adjustedAmountB
-          : adjustedAmountB - adjustedAmountA;
-      });
-      setSortedByAmountTransactions(sortedTransactions);
-    }
-    fetchFavorites();
-  }, [
-    sortOrder,
-    sortOrderAmount,
-    filterMonth,
-    filterYear,
-    totalSum,
-    activeSorting,
-    transactions,
-    triggerUpdate,
-  ]);
-  const toggleSortOrder = () => {
-    setActiveSorting("date");
-    setSortOrder(sortOrder === "asc" ? "desc" : "asc");
-  };
-
-  const toggleSortOrderAmount = () => {
-    setActiveSorting("amount");
-    setSortOrderAmount(sortOrderAmount === "asc" ? "desc" : "asc");
-  };
-
-  const displayedTransactions =
-    activeSorting === "date"
-      ? sortedByDateTransactions
-      : sortedByAmountTransactions;
-
-  const handleCategoryChange = (event) => {
-    setSelectedCategory(event.target.value);
-  };
-
-  function formatDate(dateString) {
-    const options = { year: "numeric", month: "2-digit", day: "2-digit" };
-    return new Date(dateString).toLocaleDateString("de-DE", options);
-  }
-
-  const handleSearchInputChange = (event) => {
-    setSearchQuery(event.target.value.toLowerCase());
-  };
-
   const fetchTransactions = useCallback(async () => {
     try {
-      const response = await axiosInstance.get("/getTransactions", {
-        params: {
-          month: filterMonth,
-          year: filterYear,
-          user_id: user.id,
-        },
-      });
-
-      const res = await axiosInstance.get("/getSettings", {
-        params: {
-          month: filterMonth,
-          year: filterYear,
-          user_id: user.id,
-        },
-      });
-
-      const sortedTransactions = response.data.sort((a, b) => {
-        const dateA = new Date(a.transaction_date);
-        const dateB = new Date(b.transaction_date);
-        return dateA - dateB;
-      });
-
-      setTransactions(sortedTransactions);
-      setSettings(res.data);
-      const t = sortedTransactions.reduce((acc, transaction) => {
-        if (transaction.transaction_type === "Einnahme") {
-          return acc + parseFloat(transaction.amount);
-        } else if (transaction.transaction_type === "Ausgabe") {
-          return acc - parseFloat(transaction.amount);
-        }
-        return acc;
-      }, 0);
-      const total =
-        t +
-        settings.reduce((acc, setting) => {
-          if (setting.transaction_type === "Einnahme") {
-            return acc + parseFloat(setting.amount);
-          } else if (setting.transaction_type === "Ausgabe") {
-            return acc - parseFloat(setting.amount);
-          }
-          return acc;
-        }, 0);
-
-      setTotalSum(total);
+      const [txData, settingsData] = await Promise.all([
+        getTransactions(user.id, filterMonth, filterYear),
+        getSettings(user.id, filterMonth, filterYear),
+      ]);
+      const sorted = txData.sort((a, b) => new Date(a.transaction_date) - new Date(b.transaction_date));
+      setTransactions(sorted);
+      setSettings(settingsData);
+      const txSum = sorted.reduce((acc, t) =>
+        t.transaction_type === "Einnahme" ? acc + parseFloat(t.amount) : acc - parseFloat(t.amount), 0);
+      const settingsSum = settingsData.reduce((acc, s) =>
+        s.transaction_type === "Einnahme" ? acc + parseFloat(s.amount) : acc - parseFloat(s.amount), 0);
+      setTotalSum(txSum + settingsSum);
     } catch (error) {
       console.error("Error fetching transactions:", error);
     }
-  }, [filterMonth, filterYear, totalSum, update, needUpdate, transactions]);
+  }, [filterMonth, filterYear, user.id, update, needUpdate]);
 
-  function calculateAdjustedTotalSum() {
-    let adjustedTotal = totalSum;
+  useEffect(() => {
+    let sorted = [...transactions];
+    if (activeSorting === "date") {
+      sorted.sort((a, b) => sortOrder === "asc"
+        ? new Date(a.transaction_date) - new Date(b.transaction_date)
+        : new Date(b.transaction_date) - new Date(a.transaction_date));
+      setSortedByDateTransactions(sorted);
+    } else {
+      sorted.sort((a, b) => {
+        const aA = a.transaction_type === "Ausgabe" ? -parseFloat(a.amount) : parseFloat(a.amount);
+        const aB = b.transaction_type === "Ausgabe" ? -parseFloat(b.amount) : parseFloat(b.amount);
+        return sortOrderAmount === "asc" ? aA - aB : aB - aA;
+      });
+      setSortedByAmountTransactions(sorted);
+    }
+    fetchFavorites();
+  }, [sortOrder, sortOrderAmount, filterMonth, filterYear, totalSum, activeSorting, transactions, triggerUpdate]);
 
-    savingGoal.forEach((goal) => {
-      const startMonth = new Date(goal.startdate).getMonth() + 1;
-      const startYear = new Date(goal.startdate).getFullYear();
-      const deadlineMonth = new Date(goal.deadline).getMonth() + 1;
-      const deadlineYear = new Date(goal.deadline).getFullYear();
-
-      const isWithinRange =
-        (filterYear > startYear ||
-          (filterYear === startYear && filterMonth >= startMonth)) &&
-        (filterYear < deadlineYear ||
-          (filterYear === deadlineYear && filterMonth < deadlineMonth));
-
-      if (isWithinRange) {
-        adjustedTotal -= goal.monthly_saving;
+  useEffect(() => {
+    const fetchAll = async () => {
+      await fetchTransactions();
+      await fetchCategories();
+      try {
+        setSavingGoal(await getSavingGoals(user.id));
+      } catch (e) {
+        console.error(e);
       }
-    });
+    };
+    fetchAll();
+  }, [filterMonth, filterYear, totalSum, user.id, update, needUpdate, triggerUpdate, activeSorting]);
 
-    setSavingSum(adjustedTotal);
-  }
+  useEffect(() => {
+    let adjusted = totalSum;
+    savingGoal.forEach((goal) => {
+      const sMonth = new Date(goal.startdate).getMonth() + 1;
+      const sYear = new Date(goal.startdate).getFullYear();
+      const dMonth = new Date(goal.deadline).getMonth() + 1;
+      const dYear = new Date(goal.deadline).getFullYear();
+      const inRange =
+        (filterYear > sYear || (filterYear === sYear && filterMonth >= sMonth)) &&
+        (filterYear < dYear || (filterYear === dYear && filterMonth < dMonth));
+      if (inRange) adjusted -= goal.monthly_saving;
+    });
+    setSavingSum(adjusted);
+  }, [totalSum, savingGoal, filterMonth, filterYear]);
+
+  const displayedTransactions = activeSorting === "date" ? sortedByDateTransactions : sortedByAmountTransactions;
+
+  const finalTransactions = displayedTransactions.filter((t) => {
+    const matchesSearch = t.description.toLowerCase().includes(searchQuery);
+    const matchesCategory = selectedCategory ? t.category_id === selectedCategory : true;
+    return matchesSearch && matchesCategory;
+  });
 
   const handleDeleteTransaction = async (transactionId) => {
     try {
-      await axiosInstance.delete("/deleteTransaction", {
-        params: { id: transactionId },
-      });
-      setTransactions((prevTransactions) =>
-        prevTransactions.filter(
-          (transaction) => transaction.transaction_id !== transactionId
-        )
-      );
+      await deleteTransaction(user.id, transactionId);
+      setTransactions((prev) => prev.filter((t) => t.transaction_id !== transactionId));
     } catch (error) {
-      console.error("Fehler beim Löschen der Transaktion:", error);
+      console.error("Fehler beim Löschen:", error);
     }
   };
 
-  useEffect(() => {
-    fetchTransactions();
-    const fetchCategories = async () => {
-      try {
-        const response = await axiosInstance.get("/getCategories", {
-          params: { user_id: user.id },
-        });
-        setCategories(response.data);
-      } catch (error) {
-        console.error("Fehler beim Laden der Kategorien:", error);
-      }
-    };
-
-    fetchCategories();
-    const fetchGoals = async () => {
-      try {
-        const response = await axiosInstance.get("/get-saving-goals", {
-          params: { userId: user.id },
-        });
-        setSavingGoal(response.data);
-      } catch (error) {
-        console.error("Fehler beim Abrufen der Sparziele", error);
-      }
-    };
-    fetchGoals();
-    calculateAdjustedTotalSum();
-  }, [
-    sortOrder,
-    sortOrderAmount,
-    filterMonth,
-    filterYear,
-    totalSum,
-    user.id,
-    update,
-    needUpdate,
-    triggerUpdate,
-    activeSorting,
-  ]);
-
-  const [editTransaction, setEditTransaction] = useState(null);
   const handleEditTransaction = async (transaction) => {
     try {
-      console.log(transaction);
-      await axiosInstance.patch("/updateTransaction", transaction);
+      await updateTransaction(user.id, transaction.transaction_id, {
+        amount: transaction.amount,
+        description: transaction.description,
+        transaction_date: transaction.transaction_date,
+        transaction_type: transaction.transaction_type,
+      });
       fetchTransactions();
     } catch (error) {
       console.error("Error updating transaction:", error);
     }
   };
 
-  const handleEditButtonClick = (transaction) => {
-    setEditTransaction(transaction);
-  };
-  const finalTransactions = displayedTransactions.filter((transaction) => {
-    const matchesSearch = transaction.description
-      .toLowerCase()
-      .includes(searchQuery);
-    const matchesCategory = selectedCategory
-      ? transaction.category_id === selectedCategory
-      : true;
-    return matchesSearch && matchesCategory;
-  });
-
   const handleAddFavorites = async (transaction) => {
     try {
-      const response = await axiosInstance.post("/addFavorites", {
-        user_id: transaction.user_id,
-        transactionType: transaction.transaction_type,
+      const newFav = await addFavorite(user.id, {
+        transaction_type: transaction.transaction_type,
         description: transaction.description,
         amount: transaction.amount,
         category_id: transaction.category_id,
         transaction_id: transaction.transaction_id,
-        isOwn: false,
+        is_own: false,
       });
-      setFavorites((prevFavorites) => [...prevFavorites, response.data]);
-    } catch (error) {
-      console.error("Favorites failed:", error);
-    }
-    try {
-      const response = await axiosInstance.patch("/setTransactionFavorite", {
-        transaction_id: transaction.transaction_id,
-        isFavorite: true,
-      });
-      setTransactions((prevTransactions) => [
-        ...prevTransactions,
-        response.data,
-      ]);
+      setFavorites((prev) => [...prev, newFav]);
+      await setTransactionFavorite(user.id, transaction.transaction_id, true);
+      setTransactions((prev) => prev.map((t) =>
+        t.transaction_id === transaction.transaction_id ? { ...t, favorites: true } : t));
     } catch (error) {
       console.error("Favorites failed:", error);
     }
@@ -331,46 +201,37 @@ function FinanceOverview({ update, handleOpenDialog, triggerUpdate }) {
 
   const handleDeleteFavorites = async (transaction) => {
     try {
-      await axiosInstance.delete("/deleteFavoritesByTransaction", {
-        params: { id: transaction.transaction_id },
-      });
-      setFavorites(
-        favorites.filter(
-          (fav) => fav.transaction_id !== transaction.transaction_id
-        )
-      );
+      await deleteFavoritesByTransaction(user.id, transaction.transaction_id);
+      setFavorites((prev) => prev.filter((f) => f.transaction_id !== transaction.transaction_id));
+      await setTransactionFavorite(user.id, transaction.transaction_id, false);
+      setTransactions((prev) => prev.map((t) =>
+        t.transaction_id === transaction.transaction_id ? { ...t, favorites: false } : t));
     } catch (error) {
       console.error("Fehler beim Löschen der Favoriten:", error);
-    }
-    try {
-      await axiosInstance.patch("/setTransactionFavorite", {
-        transaction_id: transaction.transaction_id,
-        isFavorite: false,
-      });
-    } catch (error) {
-      console.error("Favorites failed:", error);
     }
   };
 
   const handleAddFavoriteToMonth = async (favorite, selectedDate) => {
     try {
-      const newTransaction = {
-        date: selectedDate,
+      await addTransaction(user.id, {
+        transaction_date: selectedDate,
         description: favorite.description,
         amount: favorite.amount,
-        transactionType: favorite.transaction_type,
-        user_id: user.id,
+        transaction_type: favorite.transaction_type,
         category_id: favorite.category_id,
-        isFavorite: true,
-      };
-      await axiosInstance.post("/addTransaction", newTransaction);
+        favorites: true,
+      });
     } catch (error) {
       console.error("Error adding favorite to month:", error);
     }
   };
 
   const theme = useTheme();
-  const colorMode = useContext(ColorModeContext); // Access the color mode context
+  const colorMode = useContext(ColorModeContext);
+
+  function formatDate(dateString) {
+    return new Date(dateString).toLocaleDateString("de-DE", { year: "numeric", month: "2-digit", day: "2-digit" });
+  }
 
   return (
     <Grid container spacing={4} style={{ minHeight: "100vh" }}>
@@ -384,52 +245,30 @@ function FinanceOverview({ update, handleOpenDialog, triggerUpdate }) {
         categories={categories}
         selectedCategory={selectedCategory}
         setSelectedCategory={setSelectedCategory}
-        handleCategoryChange={handleCategoryChange}
+        handleCategoryChange={(e) => setSelectedCategory(e.target.value)}
         searchQuery={searchQuery}
-        handleSearchInputChange={handleSearchInputChange}
+        handleSearchInputChange={(e) => setSearchQuery(e.target.value.toLowerCase())}
       />
-
       <Grid item xs={12} sm={8} md={6} lg={8} style={{ minHeight: "100%" }}>
-        <Box component="form" noValidate sx={{ ilwidth: "100%" }}>
-          <Box
-            display="flex"
-            justifyContent="space-between"
-            alignItems="center"
-            sx={{ ml: 3, mb: 4, width: "100%" }}
-          >
-            <Typography
-              variant="h4"
-              color={theme.palette.text.main}
-              sx={{ fontWeight: "bold" }}
-            >
-              Übersicht
-            </Typography>
-
-            <Button
-              variant="contained"
-              sx={{
-                backgroundColor: theme.palette.primary.main,
-                borderRadius: 5,
-                mr: 1,
-                boxShadow: 5,
-              }}
-              onClick={handleAddTransaction}
-            >
+        <Box component="form" noValidate sx={{ width: "100%" }}>
+          <Box display="flex" justifyContent="space-between" alignItems="center" sx={{ ml: 3, mb: 4, width: "100%" }}>
+            <Typography variant="h4" color={theme.palette.text.main} sx={{ fontWeight: "bold" }}>Übersicht</Typography>
+            <Button variant="contained"
+              sx={{ backgroundColor: theme.palette.primary.main, borderRadius: 5, mr: 1, boxShadow: 5 }}
+              onClick={handleAddTransaction}>
               Hinzufügen
             </Button>
           </Box>
-
           <Box component="form" noValidate sx={{ width: "100%", padding: 2 }}>
-            {/* Rest des Codes bleibt gleich */}
             <TransactionsTable
-              toggleSortOrder={toggleSortOrder}
-              toggleSortOrderAmount={toggleSortOrderAmount}
+              toggleSortOrder={() => { setActiveSorting("date"); setSortOrder(sortOrder === "asc" ? "desc" : "asc"); }}
+              toggleSortOrderAmount={() => { setActiveSorting("amount"); setSortOrderAmount(sortOrderAmount === "asc" ? "desc" : "asc"); }}
               sortOrder={sortOrder}
               sortOrderAmount={sortOrderAmount}
               finalTransactions={finalTransactions}
               categories={categories}
               savingSum={savingSum}
-              handleEditButtonClick={handleEditButtonClick}
+              handleEditButtonClick={(t) => setEditTransaction(t)}
               handleDeleteTransaction={handleDeleteTransaction}
               formatDate={formatDate}
               handleAddFavorites={handleAddFavorites}
@@ -438,7 +277,6 @@ function FinanceOverview({ update, handleOpenDialog, triggerUpdate }) {
             />
           </Box>
         </Box>
-
         {editTransaction && (
           <EditTransactionDialog
             transaction={editTransaction}
@@ -450,48 +288,24 @@ function FinanceOverview({ update, handleOpenDialog, triggerUpdate }) {
       </Grid>
       <Grid item xs={12} sm={4} style={{ minHeight: "100%" }}>
         <Grid container direction="column" spacing={2}>
+          <Grid item><NavCard theme={theme} colorMode={colorMode} /></Grid>
+          <Grid item><SaveCard theme={theme} savingSum={savingSum} /></Grid>
           <Grid item>
-            <NavCard theme={theme} colorMode={colorMode} />
+            <FavCard theme={theme} favorites={favorites} categories={categories} handleAddFavoriteToMonth={handleAddFavoriteToMonth} />
           </Grid>
-          <Grid item>
-            <SaveCard theme={theme} savingSum={savingSum} />
-          </Grid>
-          <Grid item>
-            <FavCard
-              theme={theme}
-              favorites={favorites}
-              categories={categories}
-              handleAddFavoriteToMonth={handleAddFavoriteToMonth}
-            />
-          </Grid>
-          <Grid item>
-            <DialogPage onCategoryChange={triggerUpdate} />
-          </Grid>
+          <Grid item><DialogPage onCategoryChange={triggerUpdate} /></Grid>
         </Grid>
       </Grid>
-      <Dialog
-        open={isCategoryWarningOpen}
-        onClose={() => setIsCategoryWarningOpen(false)}
-        aria-labelledby="category-warning-dialog-title"
-      >
-        <DialogTitle id="category-warning-dialog-title">
-          Kategorie erforderlich
-        </DialogTitle>
+      <Dialog open={isCategoryWarningOpen} onClose={() => setIsCategoryWarningOpen(false)}>
+        <DialogTitle>Kategorie erforderlich</DialogTitle>
         <DialogContent>
-          <DialogContentText>
-            Bitte legen Sie zuerst mindestens eine Kategorie an.
-          </DialogContentText>
+          <DialogContentText>Bitte legen Sie zuerst mindestens eine Kategorie an.</DialogContentText>
         </DialogContent>
         <DialogActions>
-          <Button
-            onClick={() => setIsCategoryWarningOpen(false)}
-            variant="contained"
-          >
-            Abbrechen
-          </Button>
+          <Button onClick={() => setIsCategoryWarningOpen(false)} variant="contained">Abbrechen</Button>
           <AddCategory
             setCategoryWarningOpen={isCategoryWarningOpen}
-            handleCategoryAdded={handleCategoryAdded}
+            handleCategoryAdded={() => setIsCategoryWarningOpen(false)}
             onCategoryAdded={triggerUpdate}
           />
         </DialogActions>
@@ -499,4 +313,5 @@ function FinanceOverview({ update, handleOpenDialog, triggerUpdate }) {
     </Grid>
   );
 }
+
 export default FinanceOverview;

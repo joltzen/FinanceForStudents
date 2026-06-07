@@ -3,11 +3,12 @@
 import { Alert, Grid, Snackbar } from "@mui/material";
 import { useTheme } from "@mui/material/styles";
 import React, { useEffect, useState } from "react";
-import axiosInstance from "../../config/axios";
 import { useAuth } from "../../core/auth/auth";
+import { addTransaction, getCategories, getFavorites } from "../../services/db";
 import AddTransaction from "./addtransaction";
 import FilterTransactions from "./filter";
 import FinanceOverview from "./overview";
+
 function FinancePage() {
   const today = new Date().toISOString().split("T")[0];
   const theme = useTheme();
@@ -32,140 +33,79 @@ function FinancePage() {
   const [selectedCategory, setSelectedCategory] = useState("");
   const [searchQuery, setSearchQuery] = useState("");
 
-  const triggerUpdate = () => {
-    setUpdateNeeded((prev) => !prev);
-  };
-
-  const handleOpenDialog = () => {
-    setOpenDialog(true);
-  };
-
-  const handleCloseDialog = () => {
-    setUpdate(!update);
-    setOpenDialog(false);
-  };
-  const handleDateChange = (e) => {
-    setDate(e.target.value);
-  };
-
-  const handleDescriptionChange = (e) => {
-    setDescription(e.target.value);
-  };
-
-  const handleAmountChange = (e) => {
-    setAmount(e.target.value);
-  };
-
-  const handleTransactionTypeChange = (e) => {
-    setTransactionType(e.target.value);
-  };
+  const triggerUpdate = () => setUpdateNeeded((prev) => !prev);
 
   const handleSubmit = async (event) => {
     if (event) event.preventDefault();
     try {
-      const response = await axiosInstance.post("/addTransaction", {
+      await addTransaction(user.id, {
         date,
         description,
         amount,
-        transactionType,
-        user_id: user.id,
+        transaction_type: transactionType,
+        transaction_date: date,
         category_id: category,
-        isFavorite: false,
+        favorites: false,
       });
-      setTransactions((prevTransactions) => [
-        ...prevTransactions,
-        response.data.transaction,
-      ]);
       setAmount("");
       setDescription("");
       setDate(date);
       setTransactionType("Ausgabe");
-      setCategory(category);
       setSnackbarMessage("Transaktion erfolgreich hinzugefügt!");
       setSnackbarSeverity("success");
     } catch (error) {
       console.error("Transaction failed:", error);
-      setSnackbarMessage("Fehler beim hinzufügen der Transaktion!");
+      setSnackbarMessage("Fehler beim Hinzufügen der Transaktion!");
       setSnackbarSeverity("error");
     }
     setSnackbarOpen(true);
   };
 
   useEffect(() => {
-    const fetchCategories = async () => {
+    const fetchData = async () => {
       try {
-        const response = await axiosInstance.get("/getCategories", {
-          params: { user_id: user.id },
-        });
-        setCategories(response.data);
-        if (response.data.length > 0) {
-          setCategory(response.data[0].id);
-        }
+        const cats = await getCategories(user.id);
+        setCategories(cats);
+        if (cats.length > 0) setCategory(cats[0].id);
+        setFavorites(await getFavorites(user.id));
       } catch (error) {
-        console.error("Fehler beim Laden der Kategorien:", error);
+        console.error("Fehler beim Laden der Daten:", error);
       }
     };
-    fetchCategories();
-    const fetchFavorites = async () => {
-      try {
-        const response = await axiosInstance.get("/getFavorites", {
-          params: { user_id: user.id },
-        });
-        setFavorites(response.data);
-      } catch (error) {
-        console.error("Fehler beim Laden der Favoriten:", error);
-      }
-    };
-    fetchFavorites();
+    fetchData();
   }, [user.id, update, updateNeeded]);
-
-  const handleSearchInputChange = (event) => {
-    setSearchQuery(event.target.value.toLowerCase());
-  };
-  const handleCategoryChange = (event) => {
-    setSelectedCategory(event.target.value);
-  };
 
   return (
     <Grid item xs={12} md={8} lg={6}>
-      <Snackbar
-        open={snackbarOpen}
-        autoHideDuration={6000}
-        onClose={() => setSnackbarOpen(false)}
-      >
-        <Alert
-          onClose={() => setSnackbarOpen(false)}
-          severity={snackbarSeverity}
-          sx={{ width: "100%" }}
-        >
+      <Snackbar open={snackbarOpen} autoHideDuration={6000} onClose={() => setSnackbarOpen(false)}>
+        <Alert onClose={() => setSnackbarOpen(false)} severity={snackbarSeverity} sx={{ width: "100%" }}>
           {snackbarMessage}
         </Alert>
       </Snackbar>
       <AddTransaction
         openDialog={openDialog}
-        handleCloseDialog={handleCloseDialog}
+        handleCloseDialog={() => { setUpdate(!update); setOpenDialog(false); }}
         theme={theme}
         handleSubmit={handleSubmit}
         description={description}
-        handleDescriptionChange={handleDescriptionChange}
+        handleDescriptionChange={(e) => setDescription(e.target.value)}
         amount={amount}
-        handleAmountChange={handleAmountChange}
+        handleAmountChange={(e) => setAmount(e.target.value)}
         transactionType={transactionType}
-        handleTransactionTypeChange={handleTransactionTypeChange}
+        handleTransactionTypeChange={(e) => setTransactionType(e.target.value)}
         categories={categories}
         category={category}
         setCategory={setCategory}
         date={date}
-        handleDateChange={handleDateChange}
+        handleDateChange={(e) => setDate(e.target.value)}
       />
-
       <FinanceOverview
         update={update}
-        handleOpenDialog={handleOpenDialog}
+        handleOpenDialog={() => setOpenDialog(true)}
         triggerUpdate={triggerUpdate}
         favorites={favorites}
-        handleCategoryChange={handleCategoryChange}
-        handleSearchInputChange={handleSearchInputChange}
+        handleCategoryChange={(e) => setSelectedCategory(e.target.value)}
+        handleSearchInputChange={(e) => setSearchQuery(e.target.value.toLowerCase())}
       />
     </Grid>
   );

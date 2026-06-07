@@ -21,18 +21,14 @@ import InputAdornment from "@mui/material/InputAdornment";
 import { useTheme } from "@mui/material/styles";
 import React, { useContext, useState } from "react";
 import { useNavigate } from "react-router";
-import axiosInstance from "../../config/axios";
 import { useAuth } from "../../core/auth/auth";
 import { ColorModeContext } from "../../theme";
+
 function LoginPage() {
   const theme = useTheme();
-  const colorMode = useContext(ColorModeContext); // Access the color mode context
+  const colorMode = useContext(ColorModeContext);
   const [showPassword, setShowPassword] = useState(false);
-
-  const [credentials, setCredentials] = useState({
-    identifier: "",
-    password: "",
-  });
+  const [credentials, setCredentials] = useState({ identifier: "", password: "" });
   const { login } = useAuth();
   const navigate = useNavigate();
   const [error, setError] = useState("");
@@ -40,29 +36,16 @@ function LoginPage() {
   const handleChange = (e) => {
     setCredentials({ ...credentials, [e.target.name]: e.target.value });
   };
-  const handlePasswordVisibility = () => {
-    setShowPassword(!showPassword);
-  };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     setError("");
     try {
-      const response = await axiosInstance.post("/login", credentials);
-      login({
-        id: response.data.id,
-        username: response.data.username,
-        firstname: response.data.firstname,
-        surname: response.data.surname,
-        email: response.data.email,
-        admin: response.data.admin,
-      });
-      console.log("Login successful:", response.data);
+      await login(credentials.identifier, credentials.password);
       navigate("/dashboard");
     } catch (err) {
       console.error("Login error:", err);
-      setError(
-        err.response?.data?.message || "Failed to login. Please try again."
-      );
+      setError("Login fehlgeschlagen. Bitte E-Mail und Passwort prüfen.");
     }
   };
 
@@ -115,19 +98,19 @@ function LoginPage() {
                   )}
                 </IconButton>
               </Box>
-              <InputLabel htmlFor="identifier">Benutzername/Email</InputLabel>
+              <InputLabel htmlFor="identifier">E-Mail</InputLabel>
               <TextField
                 variant="outlined"
                 fullWidth
                 name="identifier"
                 margin="normal"
+                type="email"
                 value={credentials.identifier}
                 onChange={handleChange}
                 sx={{
                   "label + & .MuiInputBase-input": {
-                    // Adjust the styles for when the input is autofilled
                     "&:-webkit-autofill": {
-                      caretColor: "transparent", // Removes the caret if you also want to hide that
+                      caretColor: "transparent",
                       WebkitBoxShadow: `0 0 0 1000px ${theme.palette.left.main} inset`,
                       backgroundColor: theme.palette.left.main,
                       color: theme.palette.text.main,
@@ -140,7 +123,6 @@ function LoginPage() {
                   },
                 }}
               />
-
               <InputLabel htmlFor="password" sx={{ marginTop: 2 }}>
                 Password
               </InputLabel>
@@ -157,8 +139,7 @@ function LoginPage() {
                   endAdornment: (
                     <InputAdornment position="end">
                       <IconButton
-                        aria-label="toggle password visibility"
-                        onClick={handlePasswordVisibility}
+                        onClick={() => setShowPassword(!showPassword)}
                         edge="end"
                       >
                         {showPassword ? <VisibilityOff /> : <Visibility />}
@@ -182,7 +163,6 @@ function LoginPage() {
                   },
                 }}
               />
-
               <Link
                 href="/password-reset"
                 underline="hover"
@@ -208,7 +188,6 @@ function LoginPage() {
           </CardContent>
         </Card>
       </Grid>
-
       <Grid item xs={0} sm={6} style={{ height: "100%" }}>
         <Card
           style={{

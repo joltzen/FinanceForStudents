@@ -1,40 +1,31 @@
- /* Copyright (c) 2023, Jason Oltzen */
+/* Copyright (c) 2023, Jason Oltzen */
 
-import axiosInstance from "../config/axios";
+import {
+  getCategories,
+  getSavingGoals,
+  getSettings,
+  getTransactions,
+} from "../services/db";
 
-const getTransactions = async (filterMonth, filterYear, userId) => {
-  const response = await axiosInstance.get("/getTransactions", {
-    params: {
-      month: filterMonth,
-      year: filterYear,
-      user_id: userId,
-    },
-  });
-  return response.data;
+const getTransactionsData = async (filterMonth, filterYear, userId) => {
+  return await getTransactions(userId, filterMonth, filterYear);
 };
 
-const getSettings = async (filterMonth, filterYear, userId) => {
-  const response = await axiosInstance.get("/getSettings", {
-    params: {
-      month: filterMonth,
-      year: filterYear,
-      user_id: userId,
-    },
-  });
-  return response.data;
+const getSettingsData = async (filterMonth, filterYear, userId) => {
+  return await getSettings(userId, filterMonth, filterYear);
 };
 
-const getCategories = async (userId) => {
-  const response = await axiosInstance.get("/getCategories", {
-    params: { user_id: userId },
-  });
-  return response.data;
+const getCategoriesData = async (userId) => {
+  return await getCategories(userId);
 };
 
-const getSavingGoals = async (userId) => {
-  const response = await axiosInstance.get("/get-saving-goals", {
-    params: { userId: userId },
-  });
-  return response.data;
+const getSavingGoalsData = async (userId) => {
+  return await getSavingGoals(userId);
 };
-export { getCategories, getSavingGoals, getSettings, getTransactions };
+
+export {
+  getCategoriesData as getCategories,
+  getSavingGoalsData as getSavingGoals,
+  getSettingsData as getSettings,
+  getTransactionsData as getTransactions,
+};

@@ -1,17 +1,18 @@
 /* Copyright (c) 2023, Jason Oltzen */
 
 import { useCallback, useEffect, useState } from "react";
-import axiosInstance from "../config/axios";
+import {
+  addSavingGoal,
+  deleteSavingGoal,
+  getSavingGoals,
+} from "../services/db";
 
 const useSavingGoals = (userId) => {
   const [goals, setGoals] = useState([]);
 
   const fetchGoals = useCallback(async () => {
     try {
-      const response = await axiosInstance.get("/get-saving-goals", {
-        params: { userId },
-      });
-      setGoals(response.data);
+      setGoals(await getSavingGoals(userId));
     } catch (error) {
       console.error("Fehler beim Abrufen der Sparziele", error);
     }
@@ -24,25 +25,26 @@ const useSavingGoals = (userId) => {
   const addGoal = useCallback(
     async (goalData) => {
       try {
-        await axiosInstance.post("/saving-goals", goalData);
-        fetchGoals(); // Erneutes Abrufen der Ziele nach dem Hinzufügen
+        await addSavingGoal(userId, goalData);
+        fetchGoals();
       } catch (error) {
         console.error("Fehler beim Speichern des Sparziels", error);
       }
     },
-    [fetchGoals]
+    [userId, fetchGoals]
   );
 
-  const deleteGoal = useCallback(async (goalId) => {
-    try {
-      await axiosInstance.delete("/delete-saving-goal", {
-        params: { id: goalId },
-      });
-      setGoals((prevGoals) => prevGoals.filter((goal) => goal.id !== goalId));
-    } catch (error) {
-      console.error("Fehler beim Löschen des Sparziels", error);
-    }
-  }, []);
+  const deleteGoal = useCallback(
+    async (goalId) => {
+      try {
+        await deleteSavingGoal(userId, goalId);
+        setGoals((prev) => prev.filter((g) => g.id !== goalId));
+      } catch (error) {
+        console.error("Fehler beim Löschen des Sparziels", error);
+      }
+    },
+    [userId]
+  );
 
   return { goals, addGoal, deleteGoal, fetchGoals };
 };

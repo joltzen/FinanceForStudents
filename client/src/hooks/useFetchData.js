@@ -1,7 +1,16 @@
 /* Copyright (c) 2023, Jason Oltzen */
 
 import { useEffect, useState } from "react";
-import axiosInstance from "../config/axios";
+import {
+  getAllSettings,
+  getAllTransactions,
+  getCategories,
+  getSavingGoals,
+  getSettings,
+  getSettingsAnnual,
+  getTransactions,
+  getTransactionsAnnual,
+} from "../services/db";
 
 export const useFetchData = (user, isAnnualView, filterMonth, filterYear) => {
   const [transactions, setTransactions] = useState([]);
@@ -13,70 +22,43 @@ export const useFetchData = (user, isAnnualView, filterMonth, filterYear) => {
   const [allTransactions, setAllTransactions] = useState([]);
   const [allSettings, setAllSettings] = useState([]);
   const [allSaving, setAllSaving] = useState([]);
+
   useEffect(() => {
-    const fetchTransactionsAndSettings = async () => {
-      const endpointTransactions = isAnnualView
-        ? "/getTransactionsAnnual"
-        : "/getTransactions";
-      const endpointSettings = isAnnualView
-        ? "/getSettingsAnnual"
-        : "/getSettings";
-      const params = { year: filterYear, user_id: user.id };
-      if (!isAnnualView) {
-        params.month = filterMonth;
-      }
-
+    const fetchAll = async () => {
       try {
-        const [transactionsResponse, settingsResponse] = await Promise.all([
-          axiosInstance.get(endpointTransactions, { params }),
-          axiosInstance.get(endpointSettings, { params }),
+        const [txData, settingsData] = await Promise.all([
+          isAnnualView
+            ? getTransactionsAnnual(user.id, filterYear)
+            : getTransactions(user.id, filterMonth, filterYear),
+          isAnnualView
+            ? getSettingsAnnual(user.id, filterYear)
+            : getSettings(user.id, filterMonth, filterYear),
         ]);
-
-        setTransactions(transactionsResponse.data);
-        setSettings(settingsResponse.data);
+        setTransactions(txData);
+        setSettings(settingsData);
       } catch (error) {
         console.error("Error fetching transactions and settings:", error);
       }
     };
 
-    const fetchPrevoiusMonthTransactions = async () => {
+    const fetchPrevMonth = async () => {
       try {
-        const response = await axiosInstance.get("/getTransactions", {
-          params: {
-            year: filterMonth === 1 ? filterYear - 1 : filterYear,
-            month: filterMonth - 1,
-            user_id: user.id,
-          },
-        });
-
-        setPrevMonthTransactions(response.data);
+        const prevMonth = filterMonth === 1 ? 12 : filterMonth - 1;
+        const prevYear = filterMonth === 1 ? filterYear - 1 : filterYear;
+        const [txData, settingsData] = await Promise.all([
+          getTransactions(user.id, prevMonth, prevYear),
+          getSettings(user.id, prevMonth, prevYear),
+        ]);
+        setPrevMonthTransactions(txData);
+        setPrevSettings(settingsData);
       } catch (error) {
-        console.error("Error fetching previous month transactions:", error);
-      }
-    };
-
-    const fetchPrevoiusMonthSettings = async () => {
-      try {
-        const response = await axiosInstance.get("/getSettings", {
-          params: {
-            year: filterMonth === 1 ? filterYear - 1 : filterYear,
-            month: filterMonth - 1,
-            user_id: user.id,
-          },
-        });
-
-        setPrevSettings(response.data);
-      } catch (error) {
-        console.error("Error fetching previous month settings:", error);
+        console.error("Error fetching previous month data:", error);
       }
     };
 
     const fetchCategories = async () => {
       try {
-        const response = await axiosInstance.get("/getCategories", {
-          params: { user_id: user.id },
-        });
-        setCategories(response.data);
+        setCategories(await getCategories(user.id));
       } catch (error) {
         console.error("Fehler beim Laden der Kategorien:", error);
       }
@@ -84,58 +66,36 @@ export const useFetchData = (user, isAnnualView, filterMonth, filterYear) => {
 
     const fetchSavingGoals = async () => {
       try {
-        const response = await axiosInstance.get("/get-saving-goals", {
-          params: { userId: user.id },
-        });
-        setSavingsGoals(response.data);
+        const goals = await getSavingGoals(user.id);
+        setSavingsGoals(goals);
+        setAllSaving(goals);
       } catch (error) {
         console.error("Fehler beim Abrufen der Sparziele", error);
       }
     };
 
-    const fetchAllUserTransactions = async () => {
+    const fetchAllTransactions = async () => {
       try {
-        const response = await axiosInstance.get("/getAllTransactions", {
-          params: { user_id: user.id },
-        });
-
-        setAllTransactions(response.data);
+        setAllTransactions(await getAllTransactions(user.id));
       } catch (error) {
         console.error("Fehler beim Laden der Transaktionen:", error);
       }
     };
 
-    const fetchAllUserSettings = async () => {
+    const fetchAllSettings = async () => {
       try {
-        const response = await axiosInstance.get("/getAllSettings", {
-          params: { user_id: user.id },
-        });
-        setAllSettings(response.data);
+        setAllSettings(await getAllSettings(user.id));
       } catch (error) {
         console.error("Fehler beim Laden der Einstellungen:", error);
       }
     };
 
-    const fetchAllUserSaving = async () => {
-      try {
-        const response = await axiosInstance.get("/get-saving-goals", {
-          params: { userId: user.id },
-        });
-        setAllSaving(response.data);
-      } catch (error) {
-        console.error("Fehler beim Laden der Sparziele:", error);
-      }
-    };
-
-    fetchAllUserTransactions();
-    fetchTransactionsAndSettings();
-    fetchPrevoiusMonthTransactions();
-    fetchPrevoiusMonthSettings();
+    fetchAll();
+    fetchPrevMonth();
     fetchCategories();
     fetchSavingGoals();
-    fetchAllUserSettings();
-    fetchAllUserSaving();
-    fetchAllUserTransactions();
+    fetchAllTransactions();
+    fetchAllSettings();
   }, [filterMonth, filterYear, isAnnualView, user.id]);
 
   return {

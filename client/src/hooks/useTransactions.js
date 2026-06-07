@@ -1,30 +1,24 @@
 /* Copyright (c) 2023, Jason Oltzen */
 
 import { useCallback } from "react";
-import axiosInstance from "../config/axios";
+import { deleteTransaction } from "../services/db";
 
-const useTransactions = (setTransactions) => {
+const useTransactions = (userId, setTransactions) => {
   const handleDeleteTransaction = useCallback(
     async (transactionId) => {
       try {
-        await axiosInstance.delete("/deleteTransaction", {
-          params: { id: transactionId },
-        });
-        setTransactions((prevTransactions) =>
-          prevTransactions.filter(
-            (transaction) => transaction.transaction_id !== transactionId
-          )
+        await deleteTransaction(userId, transactionId);
+        setTransactions((prev) =>
+          prev.filter((t) => t.transaction_id !== transactionId)
         );
       } catch (error) {
-        console.error("Fehler beim Löschen der Settings:", error);
+        console.error("Fehler beim Löschen der Transaktion:", error);
       }
     },
-    [setTransactions]
+    [userId, setTransactions]
   );
 
-  return {
-    handleDeleteTransaction,
-  };
+  return { handleDeleteTransaction };
 };
 
 export default useTransactions;

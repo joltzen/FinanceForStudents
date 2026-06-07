@@ -8,7 +8,6 @@ import {
   DialogActions,
   DialogContent,
   DialogContentText,
-  DialogTitle,
   Grid,
   IconButton,
   Paper,
@@ -18,61 +17,36 @@ import { useTheme } from "@mui/material/styles";
 import Circle from "@uiw/react-color-circle";
 import React, { useEffect, useState } from "react";
 import TextComp from "../../components/TextComp";
-import axiosInstance from "../../config/axios";
-import { colors } from "../../config/constants";
 import { useAuth } from "../../core/auth/auth";
+import { addCategory, deleteCategory, getCategories } from "../../services/db";
+import { colors } from "../../config/constants";
 
-function AddCategory({
-  isCategoryWarningOpen,
-  handleCategoryAdded,
-  onCategoryAdded,
-}) {
+function AddCategory({ isCategoryWarningOpen, handleCategoryAdded, onCategoryAdded }) {
   const theme = useTheme();
-
+  const { user } = useAuth();
   const [categories, setCategories] = useState([]);
   const [newCategory, setNewCategory] = useState("");
   const [categoryColor, setCategoryColor] = useState("#F44E3B");
   const [openDialog, setOpenDialog] = useState(false);
-  const [editingCategory, setEditingCategory] = useState(null);
-  const [openEditDialog, setOpenEditDialog] = useState(false);
-  const { user } = useAuth();
 
-  const addCategory = () => {
-    setCategories([...categories, { name: newCategory, color: categoryColor }]);
-    setNewCategory("");
-    setCategoryColor("#FFFFFF");
-    setOpenDialog(false);
-  };
-
-  const openEditDialogWithCategory = (category) => {
-    setEditingCategory(category);
-    setNewCategory(category.name);
-    setCategoryColor(category.color);
-    setOpenEditDialog(true);
-  };
-  const fetchCategories = async () => {
+  const fetchCats = async () => {
     try {
-      const response = await axiosInstance.get("/getCategories", {
-        params: { user_id: user.id },
-      });
-      setCategories(response.data);
+      setCategories(await getCategories(user.id));
     } catch (error) {
       console.error("Fehler beim Laden der Kategorien:", error);
     }
   };
 
-  useEffect(() => {
-    fetchCategories();
-  }, [user.id]);
+  useEffect(() => { fetchCats(); }, [user.id]);
+
   const handleAddCategory = async () => {
     try {
-      await axiosInstance.post("/saveCategory", {
-        name: newCategory,
-        user_id: user.id,
-        color: categoryColor,
-      });
-      fetchCategories(); // Re-fetch categories after adding
-      onCategoryAdded(); // If you need to trigger a refresh in a parent component
+      await addCategory(user.id, { name: newCategory, color: categoryColor });
+      setNewCategory("");
+      setCategoryColor("#F44E3B");
+      setOpenDialog(false);
+      fetchCats();
+      if (onCategoryAdded) onCategoryAdded();
     } catch (error) {
       console.error("Error adding category:", error);
     }
@@ -80,136 +54,48 @@ function AddCategory({
 
   const handleDeleteCategory = async (categoryId) => {
     try {
-      await axiosInstance.delete("/deleteCategory", {
-        params: { id: categoryId },
-      });
-      fetchCategories(); // Re-fetch categories after deleting
+      await deleteCategory(user.id, categoryId);
+      fetchCats();
     } catch (error) {
       console.error("Fehler beim Löschen der Kategorie:", error);
     }
   };
+
   function isColorDark(color) {
     const rgb = parseInt(color.substring(1), 16);
-    const r = (rgb >> 16) & 0xff;
-    const g = (rgb >> 8) & 0xff;
-    const b = (rgb >> 0) & 0xff;
-
-    const brightness = (r * 299 + g * 587 + b * 114) / 1000;
-    return brightness < 128;
+    const r = (rgb >> 16) & 0xff, g = (rgb >> 8) & 0xff, b = (rgb >> 0) & 0xff;
+    return (r * 299 + g * 587 + b * 114) / 1000 < 128;
   }
+
+  const dialogBg = { backgroundColor: theme.palette.card.main, color: theme.palette.text.main };
 
   return (
     <div>
       <Dialog open={openDialog} onClose={() => setOpenDialog(false)}>
-        <DialogTitle
-          sx={{
-            backgroundColor: theme.palette.card.main,
-            color: theme.palette.text.main,
-          }}
-        >
-          Neue Kategorie hinzufügen
-        </DialogTitle>
-        <DialogContent
-          sx={{
-            backgroundColor: theme.palette.card.main,
-            color: theme.palette.text.main,
-          }}
-        >
-          <DialogContentText
-            sx={{
-              backgroundColor: theme.palette.card.main,
-              color: theme.palette.text.main,
-            }}
-          >
-            Fügen Sie eine neue Kategorie hinzu und wählen Sie eine Farbe für
-            sie.
-          </DialogContentText>
-          <TextComp
-            autoFocus
-            margin="dense"
-            label="Kategoriename"
-            type="text"
-            fullWidth
-            variant="outlined"
-            value={newCategory}
-            onChange={(e) => setNewCategory(e.target.value)}
-          />
-          <Circle
-            style={{ marginTop: "50px" }}
-            colors={colors}
-            color={categoryColor}
-            onChange={(color) => {
-              setCategoryColor(color.hex);
-            }}
-          />
+        <Typography sx={{ ...dialogBg, p: 2, fontSize: "1.1rem", fontWeight: "bold" }}>Neue Kategorie</Typography>
+        <DialogContent sx={dialogBg}>
+          <TextComp autoFocus margin="dense" label="Kategoriename" type="text" fullWidth variant="outlined"
+            value={newCategory} onChange={(e) => setNewCategory(e.target.value)} />
+          <Circle style={{ marginTop: "50px" }} colors={colors} color={categoryColor}
+            onChange={(color) => setCategoryColor(color.hex)} />
         </DialogContent>
-        <DialogActions
-          sx={{
-            backgroundColor: theme.palette.card.main,
-            color: theme.palette.text.main,
-          }}
-        >
-          <Button
-            onClick={() => {
-              setOpenDialog(false);
-            }}
-            sx={{
-              backgroundColor: theme.palette.card.main,
-              color: theme.palette.text.main,
-            }}
-          >
-            Abbrechen
-          </Button>
-          <Button
-            onClick={() => {
-              addCategory();
-              handleAddCategory();
-              handleCategoryAdded();
-            }}
-            sx={{
-              backgroundColor: theme.palette.card.main,
-              color: theme.palette.text.main,
-            }}
-          >
+        <DialogActions sx={dialogBg}>
+          <Button onClick={() => setOpenDialog(false)} sx={dialogBg}>Abbrechen</Button>
+          <Button onClick={() => { handleAddCategory(); if (handleCategoryAdded) handleCategoryAdded(); }} sx={dialogBg}>
             Hinzufügen
           </Button>
         </DialogActions>
       </Dialog>
-
       <Grid container spacing={2}>
         {categories?.map((category, index) => (
           <Grid item xs={12} sm={6} key={index}>
-            <Paper
-              key={index}
-              sx={{
-                backgroundColor: category.color,
-                padding: "10px",
-                marginTop: "10px",
-                display: "flex",
-                alignItems: "center",
-                justifyContent: "space-between",
-              }}
-            >
-              <Typography
-                sx={{
-                  color: isColorDark(category.color)
-                    ? theme.palette.text.main
-                    : "black",
-                }}
-              >
+            <Paper sx={{ backgroundColor: category.color, padding: "10px", marginTop: "10px",
+              display: "flex", alignItems: "center", justifyContent: "space-between" }}>
+              <Typography sx={{ color: isColorDark(category.color) ? theme.palette.text.main : "black" }}>
                 {category.name}
               </Typography>
               <div style={{ display: "flex" }}>
-                <IconButton
-                  onClick={() => openEditDialogWithCategory(category)}
-                  style={{ color: "black" }}
-                >
-                  <EditIcon />
-                </IconButton>
-                <IconButton
-                  onClick={() => handleDeleteCategory(category.id)}
-                  style={{ color: "black" }}
-                >
+                <IconButton onClick={() => handleDeleteCategory(category.id)} style={{ color: "black" }}>
                   <DeleteIcon />
                 </IconButton>
               </div>
@@ -217,77 +103,7 @@ function AddCategory({
           </Grid>
         ))}
       </Grid>
-      <Dialog open={openEditDialog} onClose={() => setOpenEditDialog(false)}>
-        <DialogContent
-          sx={{
-            backgroundColor: theme.palette.card.main,
-            color: theme.palette.text.main,
-          }}
-        >
-          <DialogContentText
-            sx={{
-              backgroundColor: theme.palette.card.main,
-              color: theme.palette.text.main,
-            }}
-          >
-            Kategorie <strong>{editingCategory?.name}</strong> bearbeiten
-          </DialogContentText>
-          <TextComp
-            autoFocus
-            margin="dense"
-            label="Kategoriename"
-            type="text"
-            fullWidth
-            variant="outlined"
-            value={newCategory}
-            onChange={(e) => setNewCategory(e.target.value)}
-          />
-          <Circle
-            style={{ marginTop: "50px" }}
-            colors={colors}
-            color={categoryColor}
-            onChange={(color) => {
-              setCategoryColor(color.hex);
-            }}
-          />
-        </DialogContent>{" "}
-        <DialogActions
-          sx={{
-            backgroundColor: theme.palette.card.main,
-            color: theme.palette.text.main,
-          }}
-        >
-          <Button
-            sx={{
-              backgroundColor: theme.palette.card.main,
-              color: theme.palette.text.main,
-            }}
-            onClick={() => {
-              setOpenEditDialog(false);
-              isCategoryWarningOpen(false);
-            }}
-          >
-            Abbrechen
-          </Button>
-          <Button
-            sx={{
-              backgroundColor: theme.palette.card.main,
-              color: theme.palette.text.main,
-            }}
-            onClick={() => {
-              isCategoryWarningOpen(false);
-            }}
-          >
-            Speichern
-          </Button>
-        </DialogActions>
-      </Dialog>
-
-      <Button
-        sx={{ marginTop: 2 }}
-        onClick={() => setOpenDialog(true)}
-        variant="contained"
-      >
+      <Button sx={{ marginTop: 2 }} onClick={() => setOpenDialog(true)} variant="contained">
         Kategorie hinzufügen
       </Button>
     </div>
