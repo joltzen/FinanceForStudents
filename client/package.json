@@ -48,6 +48,10 @@
       "last 1 safari version"
     ]
   },
+  "overrides": {
+    "launch-editor": "^2.9.0",
+    "@babel/plugin-transform-modules-systemjs": "^7.29.4"
+  },
   "devDependencies": {
     "@types/jest": "^30.0.0",
     "@types/node": "^25.9.2",
