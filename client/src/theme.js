@@ -3,361 +3,232 @@
 import { createTheme } from "@mui/material/styles";
 import { createContext, useEffect, useMemo, useState } from "react";
 
-// color design tokens export
 export const tokens = (mode) => {
   return {
     ...(mode === "dark"
       ? {
-          //card.main
           darkBlueishGray: "#262b3d",
-          //secondary.main
           gold: "#be9e44",
-          //text.main
           lightGray: "#e0e3e9",
-          //list.main
           darkGray: "#333740",
-          //primary.main
           slateBlue: "#3A415C",
-          //icon.main
           brass: "#c6aa60",
-          //secondary.light
           lightGold: "#cbb26a",
-          //border.main
           steelGray: "#373c47",
-          //select.main
           charcoal: "#2e2e38",
-          //tablecell.main
           indigoBlue: "#4e577b",
-          //background.default
           darkSlateGrey: "#3b3d49",
-          //not used
           brightYellow: "#FFD700",
-          //budget.main
           neonGreen: "#65C023",
-          //saving.main
           skyBlue: "#4dd0e1",
-          //pagination.main
           offWhite: "#fcfcfc",
-          //savetext.main
           dustyPink: "#afb1b2",
-          //selected.main
           silver: "#d1d1d1",
-          //pr.main
           darkCharcoal: "#2c2f36",
-          //iconlist.default
           bronzeGold: "#c6aa60",
-          //even.main
           lightCoolGray: "#d2d5dc",
           veryDark: "#333540",
           teal: "#00bfa5",
           orange: "#ffab00",
           purple: "#536dfe",
+          nav: "#1e2338",
         }
       : {
-          //card.main
           darkBlueishGray: "#d1d1d1",
-          //secondary.main
           gold: "#D4AF37",
           goldIndicator: "#be9e44",
           darkGold: "#8C6D1F",
-          //text.main
           lightGray: "#2c2f36",
-          //list.main
           darkGray: "#9E9E9E",
-          //primary.main
           slateBlue: "#4e577b",
-          //icon.main
           brass: "#B87333",
-          //secondary.light
           lightGold: "#CD7F32",
-          //border.main
           steelGray: "#A0A0A0",
-          //select.main
           charcoal: "#d1d1d1",
-          //tablecell.main
           indigoBlue: "#6A8EAE",
-          //background.default
           darkSlateGrey: "#F0F0F0",
-          //not used
           brightYellow: "#FFD700",
-          //budget.main
           neonGreen: "#65C023",
-          //saving.main
           skyBlue: "#00BFFF",
-          //pagination.main
           offWhite: "#F2F2F2",
-          //savetext.main
           dustyPink: "#afb1b2",
-          //selected.main
           silver: "#C0C0C0",
-          //pr.main
           darkCharcoal: "#9A9D9F",
-          //iconlist.default
           bronzeGold: "#D7C3A2",
-          //even.main
           lightCoolGray: "#ECEDEF",
           teal: "#00bfa5",
           orange: "#ffab00",
           purple: "#536dfe",
           darkCharcoal2: "#2c2f36",
+          nav: "#4e577b",
         }),
   };
 };
 
-// mui theme settings
 export const themeSettings = (mode) => {
   const colors = tokens(mode);
   return {
+    shape: {
+      borderRadius: 10,
+    },
+    typography: {
+      fontFamily: "'Inter', 'Roboto', 'Helvetica Neue', sans-serif",
+      h3: { fontWeight: 700 },
+      h4: { fontWeight: 700 },
+      h5: { fontWeight: 600 },
+      h6: { fontWeight: 600 },
+      button: { textTransform: "none", fontWeight: 600 },
+    },
+    components: {
+      MuiButton: {
+        styleOverrides: {
+          root: {
+            textTransform: "none",
+            fontWeight: 600,
+            borderRadius: 8,
+            boxShadow: "none",
+            "&:hover": { boxShadow: "0 2px 8px rgba(0,0,0,0.18)" },
+          },
+        },
+      },
+      MuiCard: {
+        styleOverrides: {
+          root: { borderRadius: 14, boxShadow: "0 2px 12px rgba(0,0,0,0.15)" },
+        },
+      },
+      MuiPaper: {
+        styleOverrides: {
+          root: { borderRadius: 12 },
+        },
+      },
+      MuiOutlinedInput: {
+        styleOverrides: {
+          root: { borderRadius: 8 },
+        },
+      },
+      MuiDialog: {
+        styleOverrides: {
+          paper: { borderRadius: 16 },
+        },
+      },
+      MuiTableRow: {
+        styleOverrides: {
+          root: {
+            transition: "background-color 0.15s",
+            "&:hover": {
+              backgroundColor:
+                mode === "dark"
+                  ? "rgba(255,255,255,0.04)"
+                  : "rgba(0,0,0,0.04)",
+            },
+          },
+        },
+      },
+      MuiChip: {
+        styleOverrides: {
+          root: { borderRadius: 6 },
+        },
+      },
+      MuiDivider: {
+        styleOverrides: {
+          root: { opacity: 0.6 },
+        },
+      },
+    },
     palette: {
       mode: mode,
       ...(mode === "dark"
         ? {
-            primary: {
-              main: colors.slateBlue,
-            },
-            secondary: {
-              main: colors.gold,
-              light: colors.lightGold,
-            },
-            profile: {
-              main: colors.gold,
-            },
-            budget: {
-              main: colors.neonGreen,
-            },
-            saving: {
-              main: colors.skyBlue,
-            },
-            text: {
-              main: colors.lightGray,
-            },
-            card: {
-              main: colors.darkBlueishGray,
-            },
-            right: {
-              main: colors.darkBlueishGray,
-            },
-            list: {
-              main: colors.darkSlateGrey,
-            },
-            icon: {
-              main: colors.brass,
-            },
-            indicator: {
-              main: colors.lightGold,
-            },
-            border: {
-              main: colors.steelGray,
-            },
-            select: {
-              main: colors.charcoal,
-            },
-            tablecell: {
-              main: colors.indigoBlue,
-            },
-            favlist: {
-              main: colors.slateBlue,
-            },
-            background: {
-              default: colors.darkSlateGrey,
-            },
-            pagination: {
-              main: colors.dustyPink,
-            },
-            savetext: {
-              main: colors.silver,
-            },
-            selected: {
-              main: colors.bronzeGold,
-            },
-            pr: {
-              main: colors.darkCharcoal,
-            },
-            left: {
-              main: colors.darkCharcoal,
-            },
-            even: {
-              main: colors.dustyPink,
-            },
-            uneven: {
-              main: colors.lightCoolGray,
-            },
-            iconlist: {
-              default: "#ffffff",
-            },
-            navbar: {
-              main: colors.blue,
-            },
-            table: {
-              main: "black",
-            },
-            tablehead: {
-              main: "black",
-            },
-            tabletext: {
-              main: "black",
-            },
-            selectBackground: {
-              main: colors.veryDark,
-            },
-            monthly: {
-              main: colors.teal,
-            },
-            task: {
-              main: colors.orange,
-            },
-            total: {
-              main: colors.purple,
-            },
-            favorites: {
-              main: colors.brightYellow,
-            },
-            components: {
-              MuiTableCell: {
-                styleOverrides: {
-                  root: {
-                    color: "black", // Set your desired color here
-                  },
-                },
-              },
-            },
+            primary: { main: colors.slateBlue },
+            secondary: { main: colors.gold, light: colors.lightGold },
+            profile: { main: colors.gold },
+            budget: { main: colors.neonGreen },
+            saving: { main: colors.skyBlue },
+            text: { main: colors.lightGray },
+            card: { main: colors.darkBlueishGray },
+            right: { main: colors.darkBlueishGray },
+            list: { main: colors.darkSlateGrey },
+            icon: { main: colors.brass },
+            indicator: { main: colors.lightGold },
+            border: { main: colors.steelGray },
+            select: { main: colors.charcoal },
+            tablecell: { main: colors.indigoBlue },
+            favlist: { main: colors.slateBlue },
+            background: { default: colors.darkSlateGrey },
+            pagination: { main: colors.dustyPink },
+            savetext: { main: colors.silver },
+            selected: { main: colors.bronzeGold },
+            pr: { main: colors.darkCharcoal },
+            left: { main: colors.darkCharcoal },
+            even: { main: colors.dustyPink },
+            uneven: { main: colors.lightCoolGray },
+            iconlist: { default: "#ffffff" },
+            nav: { main: colors.nav },
+            navbar: { main: colors.nav },
+            table: { main: "black" },
+            tablehead: { main: "black" },
+            tabletext: { main: "black" },
+            selectBackground: { main: colors.veryDark },
+            monthly: { main: colors.teal },
+            task: { main: colors.orange },
+            total: { main: colors.purple },
+            favorites: { main: colors.brightYellow },
             head: { main: "#cccccc" },
             content: { main: "#444444" },
             add: { main: "#252D4C" },
           }
         : {
-            add: { main: "#252D4C" },
-
+            primary: { main: colors.slateBlue },
+            secondary: { main: colors.gold, light: colors.lightGold },
+            profile: { main: colors.darkGold },
+            budget: { main: colors.neonGreen },
+            saving: { main: colors.skyBlue },
+            text: { main: colors.lightGray },
+            card: { main: colors.darkBlueishGray },
+            right: { main: colors.darkCharcoal2 },
+            list: { main: colors.darkGray },
+            icon: { main: colors.brass },
+            indicator: { main: colors.darkGold },
+            border: { main: colors.steelGray },
+            select: { main: colors.charcoal },
+            tablecell: { main: colors.indigoBlue },
+            favlist: { main: colors.steelGray },
+            background: { default: colors.darkSlateGrey },
+            pagination: { main: colors.dustyPink },
+            savetext: { main: colors.silver },
+            selected: { main: colors.bronzeGold },
+            pr: { main: colors.darkCharcoal },
+            left: { main: colors.offWhite },
+            even: { main: colors.steelGray },
+            uneven: { main: colors.lightCoolGray },
+            iconlist: { default: "#ffffff" },
+            nav: { main: colors.nav },
+            navbar: { main: colors.nav },
+            table: { main: "black" },
+            tablehead: { main: "black" },
+            tabletext: { main: "white" },
+            selectBackground: { main: colors.veryDark },
+            monthly: { main: colors.teal },
+            task: { main: colors.orange },
+            total: { main: colors.purple },
+            favorites: { main: colors.brightYellow },
             head: { main: "#444444" },
             content: { main: "#dddddd" },
-            favorites: {
-              main: colors.brightYellow,
-            },
-            primary: {
-              main: colors.slateBlue,
-            },
-            favlist: {
-              main: colors.steelGray,
-            },
-            secondary: {
-              main: colors.gold,
-              light: colors.lightGold,
-            },
-            profile: {
-              main: colors.darkGold,
-            },
-            budget: {
-              main: colors.neonGreen,
-            },
-            saving: {
-              main: colors.skyBlue,
-            },
-            text: {
-              main: colors.lightGray,
-            },
-            card: {
-              main: colors.darkBlueishGray,
-            },
-            right: {
-              main: colors.darkCharcoal2,
-            },
-            list: {
-              main: colors.darkGray,
-            },
-            icon: {
-              main: colors.brass,
-            },
-            indicator: {
-              main: colors.darkGold,
-            },
-            border: {
-              main: colors.steelGray,
-            },
-            select: {
-              main: colors.charcoal,
-            },
-            tablecell: {
-              main: colors.indigoBlue,
-            },
-            background: {
-              default: colors.darkSlateGrey,
-            },
-            pagination: {
-              main: colors.dustyPink,
-            },
-            savetext: {
-              main: colors.silver,
-            },
-            selected: {
-              main: colors.bronzeGold,
-            },
-            pr: {
-              main: colors.darkCharcoal,
-            },
-            left: {
-              main: colors.offWhite,
-            },
-            even: {
-              main: colors.steelGray,
-            },
-            uneven: {
-              main: colors.lightCoolGray,
-            },
-            iconlist: {
-              default: "#ffffff",
-            },
-            navbar: {
-              main: colors.blue,
-            },
-            table: {
-              main: "black",
-            },
-            tablehead: {
-              main: "black",
-            },
-            tabletext: {
-              main: "white",
-            },
-            selectBackground: {
-              main: colors.veryDark,
-            },
-            monthly: {
-              main: colors.teal,
-            },
-            task: {
-              main: colors.orange,
-            },
-            total: {
-              main: colors.purple,
-            },
-            components: {
-              MuiTableCell: {
-                styleOverrides: {
-                  root: {
-                    color: "black", // Set your desired color here
-                  },
-                },
-              },
-            },
+            add: { main: "#252D4C" },
           }),
     },
   };
 };
 
-// context for color mode
-export const ColorModeContext = createContext({
-  toggleColorMode: () => {},
-});
+export const ColorModeContext = createContext({ toggleColorMode: () => {} });
 
 export const useMode = () => {
   const [mode, setMode] = useState(() => {
-    // Check if theme mode is saved in local storage
     const savedMode = localStorage.getItem("themeMode");
-    return savedMode ? savedMode : "dark"; // Default to 'light' if not found
+    return savedMode ? savedMode : "dark";
   });
 
   useEffect(() => {
-    // Save the mode to local storage whenever it changes
     localStorage.setItem("themeMode", mode);
   }, [mode]);
 

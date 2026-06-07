@@ -1,49 +1,58 @@
 /* Copyright (c) 2023, Jason Oltzen */
 
 import PaymentsIcon from "@mui/icons-material/Payments";
-import { Box, Grid, IconButton, Tooltip, Typography } from "@mui/material";
+import { Box, IconButton, Tooltip, Typography } from "@mui/material";
 import { useTheme } from "@mui/material/styles";
 import React from "react";
 
 const MonthlyExpenses = ({ expenses }) => {
   const theme = useTheme();
+  const accent = theme.palette.monthly.main;
 
   return (
-    <Grid item xs={12}>
-      <Box display="flex" justifyContent="space-between" alignItems="center">
-        <Box>
-          <Typography
-            variant="subtitle1"
-            sx={{ color: theme.palette.text.main }}
-          >
-            {"MONATSAUSGABEN"}
-          </Typography>
-          <Typography variant="h4" sx={{ fontWeight: "bold", mt: 2 }}>
-            {expenses.toFixed(2)} €
-          </Typography>
-        </Box>
+    <Box sx={{ p: 0.5 }}>
+      <Box display="flex" justifyContent="space-between" alignItems="flex-start">
         <Box
           sx={{
-            backgroundColor: theme.palette.monthly.main,
-            borderRadius: "50%",
-            width: "50px",
-            height: "50px",
-            display: "flex",
-            justifyContent: "center",
+            backgroundColor: `${accent}22`,
+            borderRadius: 2,
+            px: 1.5,
+            py: 0.5,
+            display: "inline-flex",
             alignItems: "center",
-            position: "relative",
-            top: theme.spacing(2),
-            right: theme.spacing(2),
+            gap: 0.5,
           }}
         >
-          <Tooltip title="Finanzverwaltung" placement="left">
-            <IconButton href="/finance">
-              <PaymentsIcon sx={{ color: theme.palette.common.white }} />
-            </IconButton>
-          </Tooltip>
+          <PaymentsIcon sx={{ fontSize: 14, color: accent }} />
+          <Typography variant="caption" sx={{ color: accent, fontWeight: 700, letterSpacing: "0.06em" }}>
+            Monatsausgaben
+          </Typography>
         </Box>
+        <Tooltip title="Finanzverwaltung" placement="left">
+          <IconButton
+            href="/finance"
+            size="small"
+            sx={{
+              backgroundColor: `${accent}22`,
+              "&:hover": { backgroundColor: `${accent}44` },
+            }}
+          >
+            <PaymentsIcon sx={{ fontSize: 18, color: accent }} />
+          </IconButton>
+        </Tooltip>
       </Box>
-    </Grid>
+
+      <Typography
+        variant="h3"
+        sx={{ fontWeight: 700, mt: 2.5, mb: 0.5, color: theme.palette.text.main }}
+      >
+        {expenses.toFixed(2)} €
+      </Typography>
+
+      <Typography variant="body2" sx={{ color: theme.palette.text.main, opacity: 0.5 }}>
+        Aktueller Monat
+      </Typography>
+    </Box>
   );
 };
 

@@ -218,15 +218,17 @@ function DashboardPage() {
           <Card
             sx={{
               backgroundColor: theme.palette.card.main,
-              boxShadow: theme.shadows[6],
-              "&:hover": {
-                boxShadow: theme.shadows[10],
-              },
+              boxShadow: "0 4px 20px rgba(0,0,0,0.15)",
+              borderTop: `3px solid ${theme.palette.error.main}`,
+              borderRadius: 3,
+              cursor: "pointer",
+              transition: "transform 0.18s ease, box-shadow 0.18s ease",
+              "&:hover": { transform: "translateY(-3px)", boxShadow: "0 8px 28px rgba(0,0,0,0.22)" },
               height: "100%",
             }}
             onClick={() => navigate("/fixed")}
           >
-            <CardContent>
+            <CardContent sx={{ p: 2.5 }}>
               <BudgetSummary
                 isAnnualView={isAnnualView}
                 totalRemaining={remainingBudget}
@@ -239,15 +241,17 @@ function DashboardPage() {
           <Card
             sx={{
               backgroundColor: theme.palette.card.main,
-              boxShadow: theme.shadows[6],
-              "&:hover": {
-                boxShadow: theme.shadows[10],
-              },
+              boxShadow: "0 4px 20px rgba(0,0,0,0.15)",
+              borderTop: `3px solid ${theme.palette.monthly.main}`,
+              borderRadius: 3,
+              cursor: "pointer",
+              transition: "transform 0.18s ease, box-shadow 0.18s ease",
+              "&:hover": { transform: "translateY(-3px)", boxShadow: "0 8px 28px rgba(0,0,0,0.22)" },
               height: "100%",
             }}
             onClick={() => navigate("/finance")}
           >
-            <CardContent>
+            <CardContent sx={{ p: 2.5 }}>
               <MonthlyExpenses expenses={calcMonthlyExpense()} />
             </CardContent>
           </Card>
@@ -256,15 +260,17 @@ function DashboardPage() {
           <Card
             sx={{
               backgroundColor: theme.palette.card.main,
-              boxShadow: theme.shadows[6],
-              "&:hover": {
-                boxShadow: theme.shadows[10],
-              },
+              boxShadow: "0 4px 20px rgba(0,0,0,0.15)",
+              borderTop: `3px solid ${theme.palette.task.main}`,
+              borderRadius: 3,
+              cursor: "pointer",
+              transition: "transform 0.18s ease, box-shadow 0.18s ease",
+              "&:hover": { transform: "translateY(-3px)", boxShadow: "0 8px 28px rgba(0,0,0,0.22)" },
               height: "100%",
             }}
             onClick={() => navigate("/saving")}
           >
-            <CardContent>
+            <CardContent sx={{ p: 2.5 }}>
               {isAnnualView ? (
                 <YearlySaving savings={totalSavings} />
               ) : (
@@ -277,14 +283,15 @@ function DashboardPage() {
           <Card
             sx={{
               backgroundColor: theme.palette.card.main,
-              boxShadow: theme.shadows[6],
-              "&:hover": {
-                boxShadow: theme.shadows[10],
-              },
+              boxShadow: "0 4px 20px rgba(0,0,0,0.15)",
+              borderTop: `3px solid ${theme.palette.total.main}`,
+              borderRadius: 3,
+              transition: "transform 0.18s ease, box-shadow 0.18s ease",
+              "&:hover": { transform: "translateY(-3px)", boxShadow: "0 8px 28px rgba(0,0,0,0.22)" },
               height: "100%",
             }}
           >
-            <CardContent>
+            <CardContent sx={{ p: 2.5 }}>
               <TotalSavings total={calculateTotalSavings()} />
             </CardContent>
           </Card>
@@ -297,10 +304,8 @@ function DashboardPage() {
           <Card
             sx={{
               backgroundColor: theme.palette.card.main,
-              boxShadow: theme.shadows[6],
-              "&:hover": {
-                boxShadow: theme.shadows[10],
-              },
+              boxShadow: "0 4px 20px rgba(0,0,0,0.15)",
+              borderRadius: 3,
               height: "100%",
             }}
           >
@@ -363,10 +368,8 @@ function DashboardPage() {
           <Card
             sx={{
               backgroundColor: theme.palette.card.main,
-              boxShadow: theme.shadows[6],
-              "&:hover": {
-                boxShadow: theme.shadows[10],
-              },
+              boxShadow: "0 4px 20px rgba(0,0,0,0.15)",
+              borderRadius: 3,
               height: "100%",
             }}
           >

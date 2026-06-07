@@ -10,6 +10,7 @@ import InfoIcon from "@mui/icons-material/Info";
 import MenuIcon from "@mui/icons-material/Menu";
 import PersonIcon from "@mui/icons-material/Person";
 import SavingsIcon from "@mui/icons-material/Savings";
+import StarIcon from "@mui/icons-material/Star";
 import {
   AppBar,
   Divider,
@@ -17,6 +18,7 @@ import {
   IconButton,
   List,
   Toolbar,
+  Typography,
 } from "@mui/material";
 import Menu from "@mui/material/Menu";
 import MenuItem from "@mui/material/MenuItem";
@@ -29,55 +31,54 @@ import { SidebarContext } from "../core/sidebar";
 import { ColorModeContext } from "../theme";
 import StyledListItem from "./listitem";
 import NavButtons from "./navbuttons";
+
 const StyledAppBar = styled(AppBar)(({ theme }) => ({
   zIndex: 1400,
   position: "relative",
-  backgroundColor: "#323850",
+  backgroundColor: theme.palette.nav.main,
+  boxShadow: "0 2px 8px rgba(0,0,0,0.25)",
 }));
 
 const StyledDrawer = styled(Drawer)(({ theme }) => ({
   zIndex: 1200,
   "& .MuiDrawer-paper": {
-    backgroundColor: "#333740",
+    backgroundColor: theme.palette.mode === "dark" ? "#252a3d" : "#3A415C",
     color: "#e0e3e9",
+    borderRight: "none",
+    boxShadow: "4px 0 16px rgba(0,0,0,0.3)",
+    width: 240,
   },
 }));
 
-const StyledMenuItem = styled(MenuItem)(({ theme }) => ({
-  zIndex: 1200,
+const DrawerHeader = styled("div")(({ theme }) => ({
+  display: "flex",
+  alignItems: "center",
+  justifyContent: "center",
+  padding: "20px 16px 16px",
+  borderBottom: "1px solid rgba(198,170,96,0.25)",
+  marginBottom: 8,
 }));
 
 const StyledDrawerContent = styled("div")(({ theme }) => ({
-  marginTop: "70px",
-  "& .MuiDrawer-paper": {
-    backgroundColor: "#333740",
-    color: "#e0e3e9",
-  },
+  marginTop: "56px",
 }));
+
 function Navbar() {
   const theme = useTheme();
   const { isSidebarOpen, setSidebarOpen } = useContext(SidebarContext);
   const { user, logout } = useAuth();
   const [isPlusIcon, setIsPlusIcon] = useState(false);
   const [anchorEl, setAnchorEl] = useState(null);
-  const colorMode = useContext(ColorModeContext); // Access the color mode context
+  const colorMode = useContext(ColorModeContext);
 
   const toggleDrawer = () => {
     setSidebarOpen(!isSidebarOpen);
     setIsPlusIcon(!isPlusIcon);
   };
 
-  const handleLogout = () => {
-    logout();
-  };
-
-  const handleProfileMenuOpen = (event) => {
-    setAnchorEl(event.currentTarget);
-  };
-
-  const handleProfileMenuClose = () => {
-    setAnchorEl(null);
-  };
+  const handleLogout = () => logout();
+  const handleProfileMenuOpen = (e) => setAnchorEl(e.currentTarget);
+  const handleProfileMenuClose = () => setAnchorEl(null);
 
   return (
     <div>
@@ -88,10 +89,7 @@ function Navbar() {
             color="inherit"
             aria-label="menu"
             onClick={toggleDrawer}
-            sx={{
-              color: "#c6aa60",
-              fontSize: "20px",
-            }}
+            sx={{ color: "#c6aa60", fontSize: "20px" }}
           >
             {isPlusIcon ? (
               <ArrowBackIosIcon fontSize="inherit" />
@@ -100,39 +98,27 @@ function Navbar() {
             )}
           </IconButton>
 
-          <div
-            style={{ flexGrow: 1, display: "flex", justifyContent: "center" }}
-          >
-            {user ? (
-              <Link
-                to="/dashboard"
-                style={{ textDecoration: "none", color: "inherit" }}
-              >
-                <img
-                  src="/logos/Schrift.png"
-                  alt="Schrift"
-                  style={{ maxWidth: "250px", maxHeight: "100%" }}
-                />
-              </Link>
-            ) : (
-              <Link to="/" style={{ textDecoration: "none", color: "inherit" }}>
-                <img
-                  src="/logos/Schrift.png"
-                  alt="Schrift"
-                  style={{ maxWidth: "250px", maxHeight: "100%" }}
-                />
-              </Link>
-            )}
+          <div style={{ flexGrow: 1, display: "flex", justifyContent: "center" }}>
+            <Link
+              to={user ? "/dashboard" : "/"}
+              style={{ textDecoration: "none", color: "inherit" }}
+            >
+              <img
+                src="/logos/Schrift.png"
+                alt="FinanceForStudents"
+                style={{ maxWidth: "220px", maxHeight: "44px", objectFit: "contain" }}
+              />
+            </Link>
           </div>
+
           <div>
             {user ? (
               <div>
                 <IconButton
                   edge="end"
-                  aria-label="account of current user"
+                  aria-label="account"
                   aria-haspopup="true"
                   onClick={handleProfileMenuOpen}
-                  color="inherit"
                   sx={{ color: "#c6aa60", fontSize: "20px" }}
                 >
                   <AccountCircle />
@@ -144,36 +130,53 @@ function Navbar() {
                   transformOrigin={{ vertical: "top", horizontal: "right" }}
                   open={Boolean(anchorEl)}
                   onClose={handleProfileMenuClose}
-                  sx={{
-                    marginTop: 7,
+                  sx={{ marginTop: 7 }}
+                  PaperProps={{
+                    sx: {
+                      backgroundColor: theme.palette.mode === "dark" ? "#252a3d" : "#fff",
+                      borderRadius: 2,
+                      boxShadow: "0 4px 20px rgba(0,0,0,0.25)",
+                      minWidth: 160,
+                    },
                   }}
                 >
-                  <StyledMenuItem
+                  <MenuItem
                     onClick={handleProfileMenuClose}
                     component={Link}
                     to="/profile"
+                    sx={{ py: 1.5, fontWeight: 500 }}
                   >
                     {user.firstname} {user.surname}
-                  </StyledMenuItem>
-                  <StyledMenuItem
+                  </MenuItem>
+                  <Divider sx={{ my: 0.5 }} />
+                  <MenuItem
                     onClick={handleLogout}
                     component={Link}
                     to="/"
+                    sx={{ py: 1.5, color: "#e57373" }}
                   >
                     Logout
-                  </StyledMenuItem>
+                  </MenuItem>
                 </Menu>
               </div>
             ) : (
               <>
-                <NavButtons text="Signup" path="/signup"></NavButtons>
-                <NavButtons text="Login" path="/login"></NavButtons>
+                <NavButtons text="Signup" path="/signup" />
+                <NavButtons text="Login" path="/login" />
               </>
             )}
           </div>
         </Toolbar>
       </StyledAppBar>
+
       <StyledDrawer anchor="left" open={isSidebarOpen} onClose={toggleDrawer}>
+        <DrawerHeader>
+          <img
+            src="/logos/Schrift.png"
+            alt="FinanceForStudents"
+            style={{ maxWidth: "160px", filter: "brightness(1.1)" }}
+          />
+        </DrawerHeader>
         <StyledDrawerContent
           role="presentation"
           onClick={toggleDrawer}
@@ -181,49 +184,19 @@ function Navbar() {
         >
           {user ? (
             <>
-              <StyledListItem
-                href="/dashboard"
-                primary="Dashboard"
-                icon={<BarChartIcon />}
-              />
-              <StyledListItem
-                href="/finance"
-                primary="Finanzverwaltung"
-                icon={<AccountBalanceWalletIcon />}
-              />
-              <StyledListItem
-                href="/fixed"
-                primary="Fixkosten"
-                icon={<AttachMoneyIcon />}
-              />
-              <StyledListItem
-                href="/saving"
-                primary="Sparziele"
-                icon={<SavingsIcon />}
-              />
-              <StyledListItem
-                href="/profile"
-                primary="Profil"
-                icon={<PersonIcon />}
-              />
-              <Divider
-                sx={{
-                  mt: 1,
-                  backgroundColor: "#be9e44",
-                }}
-              />
+              <StyledListItem href="/dashboard" primary="Dashboard" icon={<BarChartIcon />} />
+              <StyledListItem href="/finance" primary="Finanzen" icon={<AccountBalanceWalletIcon />} />
+              <StyledListItem href="/fixed" primary="Fixkosten" icon={<AttachMoneyIcon />} />
+              <StyledListItem href="/saving" primary="Sparziele" icon={<SavingsIcon />} />
+              <StyledListItem href="/favorites" primary="Favoriten" icon={<StarIcon />} />
+              <StyledListItem href="/profile" primary="Profil" icon={<PersonIcon />} />
+              <Divider sx={{ mt: 1, backgroundColor: "rgba(198,170,96,0.3)" }} />
             </>
           ) : (
             <StyledListItem href="/" primary="Home" icon={<HomeIcon />} />
           )}
           <List>
-            <StyledListItem
-              href="/impressum"
-              primary="Impressum"
-              icon={<InfoIcon />}
-            />
-            {/* Additional items here */}
-            <Divider />
+            <StyledListItem href="/impressum" primary="Impressum" icon={<InfoIcon />} />
           </List>
         </StyledDrawerContent>
       </StyledDrawer>

@@ -29,12 +29,12 @@ function App() {
 
   return (
     <ColorModeContext.Provider value={colorMode}>
-      <AuthProvider>
-        <Router>
-          <SidebarProvider>
-            <Navbar></Navbar>
-          </SidebarProvider>
-          <ThemeProvider theme={theme}>
+      <ThemeProvider theme={theme}>
+        <AuthProvider>
+          <Router>
+            <SidebarProvider>
+              <Navbar></Navbar>
+            </SidebarProvider>
             <div
               style={{
                 backgroundColor: theme.palette.background.default,
@@ -60,9 +60,9 @@ function App() {
                 <Route path="/admin" element={<Admin />} />
               </Routes>
             </div>
-          </ThemeProvider>
-        </Router>
-      </AuthProvider>
+          </Router>
+        </AuthProvider>
+      </ThemeProvider>
     </ColorModeContext.Provider>
   );
 }

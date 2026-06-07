@@ -7,7 +7,6 @@ import {
   Card,
   CardContent,
   Grid,
-  InputLabel,
   TextField,
   Typography,
 } from "@mui/material";
@@ -44,93 +43,181 @@ function SignUpForm() {
       await signup(email, password, { username, firstname, surname, email });
       navigate("/login");
     } catch (err) {
-      console.error("Sign up failed:", err);
       setError(err.message || "Registrierung fehlgeschlagen. Bitte erneut versuchen.");
     }
   };
 
-  const fieldStyles = {
-    "label + & .MuiInputBase-input": {
-      "&:-webkit-autofill": {
-        caretColor: "transparent",
-        WebkitBoxShadow: `0 0 0 1000px ${theme.palette.left.main} inset`,
-        backgroundColor: theme.palette.left.main,
-        color: theme.palette.text.main,
-        height: "2px",
-      },
+  const autofillBg = theme.palette.left.main;
+  const fieldSx = {
+    "& .MuiOutlinedInput-root": {
+      "& fieldset": { borderColor: "rgba(198,170,96,0.4)" },
+      "&:hover fieldset": { borderColor: "rgba(198,170,96,0.7)" },
+      "&.Mui-focused fieldset": { borderColor: "#c6aa60" },
     },
-    ".MuiOutlinedInput-root": {
-      height: "40px",
-      border: `1px solid ${theme.palette.text.main}`,
+    "& .MuiInputLabel-root": { color: "rgba(198,170,96,0.7)" },
+    "& .MuiInputLabel-root.Mui-focused": { color: "#c6aa60" },
+    "& .MuiInputBase-input": {
+      color: theme.palette.text.main,
+      "&:-webkit-autofill": {
+        WebkitBoxShadow: `0 0 0 1000px ${autofillBg} inset`,
+        WebkitTextFillColor: theme.palette.text.main,
+      },
     },
   };
 
   return (
     <Grid container style={{ height: "100vh" }}>
       <Grid item xs={12} sm={6} style={{ height: "100%" }}>
-        <Card style={{ height: "100%", width: "100%", backgroundColor: theme.palette.left.main }}>
+        <Card
+          style={{
+            height: "100%",
+            width: "100%",
+            backgroundColor: theme.palette.left.main,
+            borderRadius: 0,
+            overflowY: "auto",
+          }}
+          elevation={0}
+        >
           <CardContent
             style={{
               display: "flex",
               flexDirection: "column",
               justifyContent: "center",
               alignItems: "center",
-              height: "100%",
+              minHeight: "100%",
+              padding: "32px 24px",
             }}
           >
-            {error && <Alert severity="error">{error}</Alert>}
-            <Box component="form" onSubmit={handleSignUp} noValidate sx={{ mt: 1, width: "70%" }}>
-              <Typography variant="h4" sx={{ color: theme.palette.text.main, fontWeight: "bold" }}>
-                Signup
+            <Box
+              component="form"
+              onSubmit={handleSignUp}
+              noValidate
+              sx={{ width: { xs: "85%", sm: "75%", md: "60%" } }}
+            >
+              <Typography variant="h3" sx={{ color: theme.palette.text.main, mb: 1 }}>
+                Registrieren
               </Typography>
-              <Grid container spacing={2} alignItems="center">
-                <Grid item xs={4}><InputLabel>Vorname</InputLabel></Grid>
-                <Grid item xs={8}>
-                  <TextField variant="outlined" fullWidth margin="normal" value={firstname}
-                    onChange={(e) => setFirstname(e.target.value)} sx={fieldStyles} />
+              <Typography variant="body2" sx={{ color: theme.palette.text.main, opacity: 0.5, mb: 4 }}>
+                Erstelle dein FinanceForStudents-Konto
+              </Typography>
+
+              {error && <Alert severity="error" sx={{ mb: 2, borderRadius: 2 }}>{error}</Alert>}
+
+              <Grid container spacing={2}>
+                <Grid item xs={6}>
+                  <TextField
+                    label="Vorname"
+                    variant="outlined"
+                    fullWidth
+                    value={firstname}
+                    onChange={(e) => setFirstname(e.target.value)}
+                    sx={fieldSx}
+                  />
                 </Grid>
-                <Grid item xs={4}><InputLabel>Nachname</InputLabel></Grid>
-                <Grid item xs={8}>
-                  <TextField variant="outlined" fullWidth margin="normal" value={surname}
-                    onChange={(e) => setSurname(e.target.value)} sx={fieldStyles} />
+                <Grid item xs={6}>
+                  <TextField
+                    label="Nachname"
+                    variant="outlined"
+                    fullWidth
+                    value={surname}
+                    onChange={(e) => setSurname(e.target.value)}
+                    sx={fieldSx}
+                  />
                 </Grid>
-                <Grid item xs={4}><InputLabel>Benutzername</InputLabel></Grid>
-                <Grid item xs={8}>
-                  <TextField variant="outlined" fullWidth margin="normal" value={username}
-                    onChange={(e) => setUsername(e.target.value)} sx={fieldStyles} />
+                <Grid item xs={12}>
+                  <TextField
+                    label="Benutzername"
+                    variant="outlined"
+                    fullWidth
+                    value={username}
+                    onChange={(e) => setUsername(e.target.value)}
+                    sx={fieldSx}
+                  />
                 </Grid>
-                <Grid item xs={4}><InputLabel>Email</InputLabel></Grid>
-                <Grid item xs={8}>
-                  <TextField variant="outlined" fullWidth margin="normal" type="email" value={email}
-                    onChange={(e) => setEmail(e.target.value)} sx={fieldStyles} />
+                <Grid item xs={12}>
+                  <TextField
+                    label="E-Mail"
+                    variant="outlined"
+                    fullWidth
+                    type="email"
+                    value={email}
+                    onChange={(e) => setEmail(e.target.value)}
+                    sx={fieldSx}
+                  />
                 </Grid>
-                <Grid item xs={4}><InputLabel>Passwort</InputLabel></Grid>
-                <Grid item xs={8}>
-                  <TextField variant="outlined" fullWidth margin="normal" type="password" value={password}
-                    onChange={(e) => setPassword(e.target.value)} sx={fieldStyles} />
+                <Grid item xs={12}>
+                  <TextField
+                    label="Passwort"
+                    variant="outlined"
+                    fullWidth
+                    type="password"
+                    value={password}
+                    onChange={(e) => setPassword(e.target.value)}
+                    sx={fieldSx}
+                  />
                 </Grid>
-                <Grid item xs={4}><InputLabel>Passwort bestätigen</InputLabel></Grid>
-                <Grid item xs={8}>
-                  <TextField variant="outlined" fullWidth margin="normal" type="password"
-                    value={passwordConfirmation} onChange={(e) => setPasswordConfirmation(e.target.value)}
-                    sx={fieldStyles} />
+                <Grid item xs={12}>
+                  <TextField
+                    label="Passwort bestätigen"
+                    variant="outlined"
+                    fullWidth
+                    type="password"
+                    value={passwordConfirmation}
+                    onChange={(e) => setPasswordConfirmation(e.target.value)}
+                    sx={fieldSx}
+                  />
                 </Grid>
-                <Button type="submit" fullWidth variant="contained"
-                  sx={{ mt: 3, mb: 2, color: theme.palette.text.main, fontSize: "1.1rem" }}>
-                  Signup
-                </Button>
+                <Grid item xs={12}>
+                  <Button
+                    type="submit"
+                    fullWidth
+                    variant="contained"
+                    size="large"
+                    sx={{
+                      mt: 1,
+                      backgroundColor: "#c6aa60",
+                      color: "#1a1e2e",
+                      fontWeight: 700,
+                      fontSize: "1rem",
+                      py: 1.4,
+                      "&:hover": {
+                        backgroundColor: "#b99a50",
+                        boxShadow: "0 4px 12px rgba(198,170,96,0.4)",
+                      },
+                    }}
+                  >
+                    Konto erstellen
+                  </Button>
+                </Grid>
               </Grid>
+
+              <Box sx={{ textAlign: "center", mt: 3 }}>
+                <Typography variant="body2" sx={{ color: theme.palette.text.main, opacity: 0.6 }}>
+                  Bereits registriert?{" "}
+                  <a href="/login" style={{ color: "#c6aa60", fontWeight: 600, textDecoration: "none" }}>
+                    Einloggen
+                  </a>
+                </Typography>
+              </Box>
             </Box>
           </CardContent>
         </Card>
       </Grid>
       <Grid item xs={0} sm={6} style={{ height: "100%" }}>
-        <Card style={{
-          height: "100%", width: "100%", display: "flex",
-          backgroundColor: theme.palette.right.main,
-          flexDirection: "column", alignItems: "center", justifyContent: "center",
-        }}>
-          <img src="/logos/logo.png" alt="Schrift" style={{ maxWidth: "50%", maxHeight: "50%" }} />
+        <Card
+          style={{
+            height: "100%",
+            width: "100%",
+            backgroundColor: theme.palette.right.main,
+            display: "flex",
+            flexDirection: "column",
+            alignItems: "center",
+            justifyContent: "center",
+            borderRadius: 0,
+          }}
+          elevation={0}
+        >
+          <img src="/logos/logo.png" alt="Logo" style={{ maxWidth: "45%", maxHeight: "45%", opacity: 0.92 }} />
         </Card>
       </Grid>
     </Grid>

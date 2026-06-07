@@ -5,19 +5,18 @@ import LightModeOutlinedIcon from "@mui/icons-material/LightModeOutlined";
 import Visibility from "@mui/icons-material/Visibility";
 import VisibilityOff from "@mui/icons-material/VisibilityOff";
 import {
+  Alert,
+  Box,
+  Button,
   Card,
   CardContent,
   Grid,
   IconButton,
-  InputLabel,
+  InputAdornment,
   Link,
   TextField,
   Typography,
 } from "@mui/material";
-import Alert from "@mui/material/Alert";
-import Box from "@mui/material/Box";
-import Button from "@mui/material/Button";
-import InputAdornment from "@mui/material/InputAdornment";
 import { useTheme } from "@mui/material/styles";
 import React, { useContext, useState } from "react";
 import { useNavigate } from "react-router";
@@ -44,9 +43,28 @@ function LoginPage() {
       await login(credentials.identifier, credentials.password);
       navigate("/dashboard");
     } catch (err) {
-      console.error("Login error:", err);
       setError("Login fehlgeschlagen. Bitte E-Mail und Passwort prüfen.");
     }
+  };
+
+  const isDark = theme.palette.mode === "dark";
+  const autofillBg = theme.palette.left.main;
+
+  const fieldSx = {
+    "& .MuiOutlinedInput-root": {
+      "& fieldset": { borderColor: "rgba(198,170,96,0.4)" },
+      "&:hover fieldset": { borderColor: "rgba(198,170,96,0.7)" },
+      "&.Mui-focused fieldset": { borderColor: "#c6aa60" },
+    },
+    "& .MuiInputLabel-root": { color: "rgba(198,170,96,0.7)" },
+    "& .MuiInputLabel-root.Mui-focused": { color: "#c6aa60" },
+    "& .MuiInputBase-input": {
+      color: theme.palette.text.main,
+      "&:-webkit-autofill": {
+        WebkitBoxShadow: `0 0 0 1000px ${autofillBg} inset`,
+        WebkitTextFillColor: theme.palette.text.main,
+      },
+    },
   };
 
   return (
@@ -57,7 +75,9 @@ function LoginPage() {
             height: "100%",
             width: "100%",
             backgroundColor: theme.palette.left.main,
+            borderRadius: 0,
           }}
+          elevation={0}
         >
           <CardContent
             style={{
@@ -68,69 +88,34 @@ function LoginPage() {
               height: "100%",
             }}
           >
-            {error && <Alert severity="error">{error}</Alert>}
-            <Box
-              component="form"
-              onSubmit={handleSubmit}
-              noValidate
-              sx={{ mt: 1, width: "50%" }}
-            >
-              <Box
-                sx={{
-                  display: "flex",
-                  justifyContent: "space-between",
-                  alignItems: "center",
-                  width: "100%",
-                  mb: 4,
-                }}
-              >
-                <Typography
-                  variant="h3"
-                  sx={{ color: theme.palette.text.main, fontWeight: "bold" }}
-                >
+            <Box component="form" onSubmit={handleSubmit} noValidate sx={{ width: { xs: "85%", sm: "70%", md: "55%" } }}>
+              <Box sx={{ display: "flex", justifyContent: "space-between", alignItems: "center", mb: 4 }}>
+                <Typography variant="h3" sx={{ color: theme.palette.text.main }}>
                   Login
                 </Typography>
-                <IconButton onClick={colorMode.toggleColorMode} color="inherit">
-                  {theme.palette.mode === "dark" ? (
-                    <DarkModeOutlinedIcon sx={{ color: "white" }} />
-                  ) : (
-                    <LightModeOutlinedIcon sx={{ color: "black" }} />
-                  )}
+                <IconButton onClick={colorMode.toggleColorMode} size="small"
+                  sx={{ color: isDark ? "#c6aa60" : theme.palette.text.main }}>
+                  {isDark ? <DarkModeOutlinedIcon /> : <LightModeOutlinedIcon />}
                 </IconButton>
               </Box>
-              <InputLabel htmlFor="identifier">E-Mail</InputLabel>
+
+              {error && <Alert severity="error" sx={{ mb: 2, borderRadius: 2 }}>{error}</Alert>}
+
               <TextField
+                label="E-Mail"
                 variant="outlined"
                 fullWidth
                 name="identifier"
-                margin="normal"
                 type="email"
                 value={credentials.identifier}
                 onChange={handleChange}
-                sx={{
-                  "label + & .MuiInputBase-input": {
-                    "&:-webkit-autofill": {
-                      caretColor: "transparent",
-                      WebkitBoxShadow: `0 0 0 1000px ${theme.palette.left.main} inset`,
-                      backgroundColor: theme.palette.left.main,
-                      color: theme.palette.text.main,
-                      height: "2px",
-                    },
-                  },
-                  ".MuiOutlinedInput-root": {
-                    height: "40px",
-                    border: `1px solid ${theme.palette.text.main}`,
-                  },
-                }}
+                sx={{ ...fieldSx, mb: 2 }}
               />
-              <InputLabel htmlFor="password" sx={{ marginTop: 2 }}>
-                Password
-              </InputLabel>
               <TextField
+                label="Passwort"
                 variant="outlined"
                 fullWidth
                 name="password"
-                margin="normal"
                 type={showPassword ? "text" : "password"}
                 autoComplete="current-password"
                 value={credentials.password}
@@ -141,49 +126,48 @@ function LoginPage() {
                       <IconButton
                         onClick={() => setShowPassword(!showPassword)}
                         edge="end"
+                        sx={{ color: "rgba(198,170,96,0.7)" }}
                       >
                         {showPassword ? <VisibilityOff /> : <Visibility />}
                       </IconButton>
                     </InputAdornment>
                   ),
                 }}
-                sx={{
-                  "label + & .MuiInputBase-input": {
-                    "&:-webkit-autofill": {
-                      caretColor: "transparent",
-                      WebkitBoxShadow: `0 0 0 1000px ${theme.palette.left.main} inset`,
-                      backgroundColor: theme.palette.left.main,
-                      color: theme.palette.text.main,
-                      height: "2px",
-                    },
-                  },
-                  ".MuiOutlinedInput-root": {
-                    height: "40px",
-                    border: `1px solid ${theme.palette.text.main}`,
-                  },
-                }}
+                sx={fieldSx}
               />
-              <Link
-                href="/password-reset"
-                underline="hover"
-                sx={{ color: theme.palette.text.main, marginTop: 2 }}
-              >
-                {"Passwort vergessen?"}
-              </Link>
+
+              <Box sx={{ display: "flex", justifyContent: "flex-end", mt: 1, mb: 3 }}>
+                <Link href="/password-reset" underline="hover"
+                  sx={{ color: "rgba(198,170,96,0.8)", fontSize: "0.85rem" }}>
+                  Passwort vergessen?
+                </Link>
+              </Box>
+
               <Button
                 type="submit"
                 fullWidth
                 variant="contained"
+                size="large"
                 sx={{
-                  mt: 3,
-                  mb: 2,
-                  backgroundColor: "button",
+                  backgroundColor: "#c6aa60",
+                  color: "#1a1e2e",
+                  fontWeight: 700,
                   fontSize: "1rem",
-                  boxShadow: "0 2px 4px rgba(0, 0, 0, 0.1)",
+                  py: 1.4,
+                  "&:hover": { backgroundColor: "#b99a50", boxShadow: "0 4px 12px rgba(198,170,96,0.4)" },
                 }}
               >
-                Login
+                Einloggen
               </Button>
+
+              <Box sx={{ textAlign: "center", mt: 3 }}>
+                <Typography variant="body2" sx={{ color: theme.palette.text.main, opacity: 0.6 }}>
+                  Noch kein Konto?{" "}
+                  <Link href="/signup" underline="hover" sx={{ color: "#c6aa60", fontWeight: 600 }}>
+                    Registrieren
+                  </Link>
+                </Typography>
+              </Box>
             </Box>
           </CardContent>
         </Card>
@@ -198,13 +182,11 @@ function LoginPage() {
             flexDirection: "column",
             alignItems: "center",
             justifyContent: "center",
+            borderRadius: 0,
           }}
+          elevation={0}
         >
-          <img
-            src="/logos/logo.png"
-            alt="Schrift"
-            style={{ maxWidth: "50%", maxHeight: "50%" }}
-          />
+          <img src="/logos/logo.png" alt="Logo" style={{ maxWidth: "45%", maxHeight: "45%", opacity: 0.92 }} />
         </Card>
       </Grid>
     </Grid>

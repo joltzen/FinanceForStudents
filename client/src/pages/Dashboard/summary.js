@@ -3,73 +3,73 @@
 import ArrowDownwardIcon from "@mui/icons-material/ArrowDownward";
 import ArrowUpwardIcon from "@mui/icons-material/ArrowUpward";
 import AttachMoneyIcon from "@mui/icons-material/AttachMoney";
-import { Box, Grid, IconButton, Tooltip, Typography } from "@mui/material";
+import { Box, IconButton, Tooltip, Typography } from "@mui/material";
 import { useTheme } from "@mui/material/styles";
 import React from "react";
 
 const BudgetSummary = ({ isAnnualView, totalRemaining, percentageChange }) => {
   const theme = useTheme();
+  const accent = theme.palette.error.main;
 
   return (
-    <Grid item xs={12}>
-      <Box display="flex" justifyContent="space-between" alignItems="center">
-        <Box>
-          <Typography
-            variant="subtitle1"
-            sx={{ color: theme.palette.text.main }}
-          >
-            {isAnnualView ? "JAHRESBUDET" : "MONATSBUDGET"}
-          </Typography>
-          <Typography variant="h4" sx={{ fontWeight: "bold", mt: 2 }}>
-            {totalRemaining.toFixed(2)} €
-          </Typography>
-          {isAnnualView ? (
-            <></>
-          ) : (
-            <Box
-              display="flex"
-              alignItems="center"
-              color={
-                percentageChange < 0
-                  ? theme.palette.error.main
-                  : theme.palette.success.main
-              }
-              sx={{ mt: 2 }}
-            >
-              {percentageChange < 0 ? (
-                <ArrowDownwardIcon fontSize="medium" />
-              ) : (
-                <ArrowUpwardIcon fontSize="medium" />
-              )}
-              <Typography variant="subtitle2" sx={{ ml: 0.5 }}>
-                <strong>
-                  {percentageChange.toFixed(2)}% Seit letztem Monat
-                </strong>
-              </Typography>
-            </Box>
-          )}
-        </Box>
+    <Box sx={{ p: 0.5 }}>
+      <Box display="flex" justifyContent="space-between" alignItems="flex-start">
         <Box
           sx={{
-            backgroundColor: theme.palette.error.main,
-            borderRadius: "50%",
-            width: "50px",
-            height: "50px",
-            display: "flex",
-            justifyContent: "center",
+            backgroundColor: `${accent}22`,
+            borderRadius: 2,
+            px: 1.5,
+            py: 0.5,
+            display: "inline-flex",
             alignItems: "center",
-            top: theme.spacing(2),
-            right: theme.spacing(2),
+            gap: 0.5,
           }}
         >
-          <Tooltip title="Fixkosten verwalten" placement="left">
-            <IconButton href="/fixed">
-              <AttachMoneyIcon sx={{ color: theme.palette.common.white }} />
-            </IconButton>
-          </Tooltip>
+          <AttachMoneyIcon sx={{ fontSize: 14, color: accent }} />
+          <Typography variant="caption" sx={{ color: accent, fontWeight: 700, letterSpacing: "0.06em" }}>
+            {isAnnualView ? "Jahresbudget" : "Monatsbudget"}
+          </Typography>
         </Box>
+        <Tooltip title="Fixkosten verwalten" placement="left">
+          <IconButton
+            href="/fixed"
+            size="small"
+            sx={{
+              backgroundColor: `${accent}22`,
+              "&:hover": { backgroundColor: `${accent}44` },
+            }}
+          >
+            <AttachMoneyIcon sx={{ fontSize: 18, color: accent }} />
+          </IconButton>
+        </Tooltip>
       </Box>
-    </Grid>
+
+      <Typography
+        variant="h3"
+        sx={{ fontWeight: 700, mt: 2.5, mb: 0.5, color: theme.palette.text.main }}
+      >
+        {totalRemaining.toFixed(2)} €
+      </Typography>
+
+      {!isAnnualView && (
+        <Box display="flex" alignItems="center" gap={0.5} sx={{ mt: 0.5 }}>
+          {percentageChange < 0 ? (
+            <ArrowDownwardIcon sx={{ fontSize: 16, color: theme.palette.error.main }} />
+          ) : (
+            <ArrowUpwardIcon sx={{ fontSize: 16, color: theme.palette.success.main }} />
+          )}
+          <Typography
+            variant="body2"
+            sx={{
+              color: percentageChange < 0 ? theme.palette.error.main : theme.palette.success.main,
+              fontWeight: 600,
+            }}
+          >
+            {percentageChange.toFixed(1)}% seit letztem Monat
+          </Typography>
+        </Box>
+      )}
+    </Box>
   );
 };
 

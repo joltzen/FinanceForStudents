@@ -233,33 +233,62 @@ function FinanceOverview({ update, handleOpenDialog, triggerUpdate }) {
     return new Date(dateString).toLocaleDateString("de-DE", { year: "numeric", month: "2-digit", day: "2-digit" });
   }
 
+  const isDark = theme.palette.mode === "dark";
+  const cardBg = isDark ? "#262b3d" : "#ffffff";
+
   return (
-    <Grid container spacing={4} style={{ minHeight: "100vh" }}>
-      <FilterTransactions
-        transactions={transactions}
-        setTransactions={transactions}
-        setFilterYear={setFilterYear}
-        setFilterMonth={setFilterMonth}
-        filterYear={filterYear}
-        filterMonth={filterMonth}
-        categories={categories}
-        selectedCategory={selectedCategory}
-        setSelectedCategory={setSelectedCategory}
-        handleCategoryChange={(e) => setSelectedCategory(e.target.value)}
-        searchQuery={searchQuery}
-        handleSearchInputChange={(e) => setSearchQuery(e.target.value.toLowerCase())}
-      />
-      <Grid item xs={12} sm={8} md={6} lg={8} style={{ minHeight: "100%" }}>
-        <Box component="form" noValidate sx={{ width: "100%" }}>
-          <Box display="flex" justifyContent="space-between" alignItems="center" sx={{ ml: 3, mb: 4, width: "100%" }}>
-            <Typography variant="h4" color={theme.palette.text.main} sx={{ fontWeight: "bold" }}>Übersicht</Typography>
-            <Button variant="contained"
-              sx={{ backgroundColor: theme.palette.primary.main, borderRadius: 5, mr: 1, boxShadow: 5 }}
-              onClick={handleAddTransaction}>
-              Hinzufügen
+    <Grid container spacing={3} sx={{ p: { xs: 1, sm: 2 } }}>
+      {/* Main content */}
+      <Grid item xs={12} lg={8}>
+        <Box sx={{
+          backgroundColor: cardBg,
+          borderRadius: 3,
+          border: `1px solid ${isDark ? "rgba(255,255,255,0.07)" : "rgba(0,0,0,0.07)"}`,
+          overflow: "hidden",
+          boxShadow: "0 4px 20px rgba(0,0,0,0.12)",
+        }}>
+          {/* Card header */}
+          <Box sx={{
+            display: "flex", justifyContent: "space-between", alignItems: "center",
+            px: 3, py: 2,
+            borderBottom: `1px solid ${isDark ? "rgba(255,255,255,0.07)" : "rgba(0,0,0,0.07)"}`,
+          }}>
+            <Box>
+              <Typography variant="h5" sx={{ color: theme.palette.text.main, fontWeight: 700 }}>Transaktionen</Typography>
+              <Typography variant="caption" sx={{ color: theme.palette.text.main, opacity: 0.4 }}>
+                {finalTransactions.length} Einträge
+              </Typography>
+            </Box>
+            <Button
+              variant="contained"
+              onClick={handleAddTransaction}
+              sx={{
+                backgroundColor: "#c6aa60", color: "#1a1e2e", fontWeight: 700, borderRadius: 2, px: 2.5,
+                "&:hover": { backgroundColor: "#b99a50", boxShadow: "0 4px 12px rgba(198,170,96,0.35)" },
+              }}
+            >
+              + Hinzufügen
             </Button>
           </Box>
-          <Box component="form" noValidate sx={{ width: "100%", padding: 2 }}>
+
+          {/* Filters */}
+          <FilterTransactions
+            transactions={transactions}
+            setTransactions={transactions}
+            setFilterYear={setFilterYear}
+            setFilterMonth={setFilterMonth}
+            filterYear={filterYear}
+            filterMonth={filterMonth}
+            categories={categories}
+            selectedCategory={selectedCategory}
+            setSelectedCategory={setSelectedCategory}
+            handleCategoryChange={(e) => setSelectedCategory(e.target.value)}
+            searchQuery={searchQuery}
+            handleSearchInputChange={(e) => setSearchQuery(e.target.value.toLowerCase())}
+          />
+
+          {/* Table */}
+          <Box sx={{ p: 2.5 }}>
             <TransactionsTable
               toggleSortOrder={() => { setActiveSorting("date"); setSortOrder(sortOrder === "asc" ? "desc" : "asc"); }}
               toggleSortOrderAmount={() => { setActiveSorting("amount"); setSortOrderAmount(sortOrderAmount === "asc" ? "desc" : "asc"); }}
@@ -277,6 +306,7 @@ function FinanceOverview({ update, handleOpenDialog, triggerUpdate }) {
             />
           </Box>
         </Box>
+
         {editTransaction && (
           <EditTransactionDialog
             transaction={editTransaction}
@@ -286,7 +316,9 @@ function FinanceOverview({ update, handleOpenDialog, triggerUpdate }) {
           />
         )}
       </Grid>
-      <Grid item xs={12} sm={4} style={{ minHeight: "100%" }}>
+
+      {/* Sidebar */}
+      <Grid item xs={12} lg={4}>
         <Grid container direction="column" spacing={2}>
           <Grid item><NavCard theme={theme} colorMode={colorMode} /></Grid>
           <Grid item><SaveCard theme={theme} savingSum={savingSum} /></Grid>
@@ -296,13 +328,20 @@ function FinanceOverview({ update, handleOpenDialog, triggerUpdate }) {
           <Grid item><DialogPage onCategoryChange={triggerUpdate} /></Grid>
         </Grid>
       </Grid>
-      <Dialog open={isCategoryWarningOpen} onClose={() => setIsCategoryWarningOpen(false)}>
-        <DialogTitle>Kategorie erforderlich</DialogTitle>
+
+      <Dialog open={isCategoryWarningOpen} onClose={() => setIsCategoryWarningOpen(false)}
+        PaperProps={{ sx: { borderRadius: 3, backgroundColor: cardBg } }}>
+        <DialogTitle sx={{ color: theme.palette.text.main, fontWeight: 700 }}>Kategorie erforderlich</DialogTitle>
         <DialogContent>
-          <DialogContentText>Bitte legen Sie zuerst mindestens eine Kategorie an.</DialogContentText>
+          <DialogContentText sx={{ color: theme.palette.text.main, opacity: 0.6 }}>
+            Bitte lege zuerst mindestens eine Kategorie an.
+          </DialogContentText>
         </DialogContent>
-        <DialogActions>
-          <Button onClick={() => setIsCategoryWarningOpen(false)} variant="contained">Abbrechen</Button>
+        <DialogActions sx={{ px: 3, pb: 2.5, gap: 1 }}>
+          <Button onClick={() => setIsCategoryWarningOpen(false)} variant="outlined"
+            sx={{ borderColor: isDark ? "rgba(255,255,255,0.15)" : "rgba(0,0,0,0.15)", color: theme.palette.text.main, borderRadius: 2 }}>
+            Abbrechen
+          </Button>
           <AddCategory
             setCategoryWarningOpen={isCategoryWarningOpen}
             handleCategoryAdded={() => setIsCategoryWarningOpen(false)}
