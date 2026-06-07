@@ -4,9 +4,10 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "start": "node app.js",
-    "test": "echo \"Error: no test specified\" && exit 1",
-    "build": "echo \"No build process required for server\""
+    "start": "node dist/app.js",
+    "dev": "ts-node app.ts",
+    "build": "tsc",
+    "test": "echo \"Error: no test specified\" && exit 1"
   },
   "keywords": [],
   "author": "",
@@ -20,5 +21,14 @@
     "nodemailer": "^6.9.7",
     "pg": "^8.11.3",
     "uuidv4": "^6.2.13"
+  },
+  "devDependencies": {
+    "@types/bcrypt": "^6.0.0",
+    "@types/cors": "^2.8.19",
+    "@types/express": "^5.0.6",
+    "@types/node": "^25.9.2",
+    "@types/nodemailer": "^8.0.0",
+    "ts-node": "^10.9.2",
+    "typescript": "^6.0.3"
   }
 }
