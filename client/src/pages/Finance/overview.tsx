@@ -1,6 +1,6 @@
 /* Copyright (c) 2026, Jason Oltzen */
 
-import { Alert, Grid, Snackbar } from "@mui/material";
+import { Grid } from "@mui/material";
 import {
   Box,
   Button,
@@ -44,10 +44,8 @@ function FinanceOverview({ update, handleOpenDialog, triggerUpdate }) {
   const [totalSum, setTotalSum] = useState(0);
   const [savingSum, setSavingSum] = useState(0);
   const [categories, setCategories] = useState([]);
-  const [settings, setSettings] = useState([]);
   const { user } = useAuth();
   const [savingGoal, setSavingGoal] = useState([]);
-  const [needUpdate, setNeedUpdate] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
   const [selectedCategory, setSelectedCategory] = useState("");
   const [sortOrder, setSortOrder] = useState("desc");
@@ -96,7 +94,6 @@ function FinanceOverview({ update, handleOpenDialog, triggerUpdate }) {
         (a, b) => new Date(a.transaction_date).getTime() - new Date(b.transaction_date).getTime(),
       );
       setTransactions(sorted);
-      setSettings(settingsData);
       const txSum = sorted.reduce(
         (acc, t) =>
           t.transaction_type === "Einnahme"
@@ -115,7 +112,7 @@ function FinanceOverview({ update, handleOpenDialog, triggerUpdate }) {
     } catch (error) {
       console.error("Error fetching transactions:", error);
     }
-  }, [filterMonth, filterYear, user.id, update, needUpdate]);
+  }, [filterMonth, filterYear, user.id]);
 
   useEffect(() => {
     let sorted = [...transactions];
@@ -141,6 +138,7 @@ function FinanceOverview({ update, handleOpenDialog, triggerUpdate }) {
       setSortedByAmountTransactions(sorted);
     }
     fetchFavorites();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [
     sortOrder,
     sortOrderAmount,
@@ -163,13 +161,13 @@ function FinanceOverview({ update, handleOpenDialog, triggerUpdate }) {
       }
     };
     fetchAll();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [
     filterMonth,
     filterYear,
     totalSum,
     user.id,
     update,
-    needUpdate,
     triggerUpdate,
     activeSorting,
   ]);

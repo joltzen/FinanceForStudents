@@ -37,39 +37,6 @@ export const useCalculations = (
     return totalSavings;
   };
 
-  const calculateAnnualSavingGoalsTotal = () => {
-    let totalSavings = 0;
-
-    savingsGoals.forEach((goal) => {
-      const goalStart = new Date(goal.startdate);
-      const goalEnd = goal.deadline
-        ? new Date(goal.deadline)
-        : new Date(goalStart.getFullYear() + 1, 0, 1);
-
-      const startMonth =
-        goalStart.getFullYear() === filterYear ? goalStart.getMonth() + 1 : 1;
-      const endMonth =
-        goalEnd.getFullYear() === filterYear ? goalEnd.getMonth() + 1 : 12;
-
-      if (
-        filterYear >= goalStart.getFullYear() &&
-        filterYear <= goalEnd.getFullYear()
-      ) {
-        let monthsInYear = endMonth - startMonth;
-        if (
-          goalStart.getFullYear() === goalEnd.getFullYear() &&
-          goalStart.getMonth() === goalEnd.getMonth()
-        ) {
-          monthsInYear -= 1;
-        }
-
-        totalSavings += parseFloat(goal.monthly_saving) * monthsInYear;
-      }
-    });
-
-    return totalSavings;
-  };
-
   const calculateCategoryTotals = () => {
     const categoryTotals = {};
 

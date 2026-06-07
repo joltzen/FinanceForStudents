@@ -12,10 +12,8 @@ import {
   DialogContentText,
   Grid,
   IconButton,
-  InputLabel,
   Paper,
   Snackbar,
-  TextField,
   Typography,
 } from "@mui/material";
 import { useTheme } from "@mui/material/styles";
@@ -54,6 +52,7 @@ function DialogPage({ onCategoryChange }) {
 
   useEffect(() => {
     fetchCats();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [user.id]);
 
   const handleAddCategory = async () => {

@@ -42,7 +42,6 @@ function FavoritesOverview({ update, handleOpenDialog, triggerUpdate }) {
   const [categories, setCategories] = useState([]);
   const { user } = useAuth();
   const [sortOrderAmount, setSortOrderAmount] = useState("desc");
-  const [sortedByAmountFavorites, setSortedByAmountFavorites] = useState([]);
   const [activeSorting, setActiveSorting] = useState("date");
   const [isCategoryWarningOpen, setIsCategoryWarningOpen] = useState(false);
   const [editFavorites, setEditFavorites] = useState(null);
@@ -73,25 +72,9 @@ function FavoritesOverview({ update, handleOpenDialog, triggerUpdate }) {
   };
 
   useEffect(() => {
-    if (activeSorting === "amount") {
-      const sorted = [...favorites].sort((a, b) => {
-        const aA =
-          a.transaction_type === "Ausgabe"
-            ? -parseFloat(a.amount)
-            : parseFloat(a.amount);
-        const aB =
-          b.transaction_type === "Ausgabe"
-            ? -parseFloat(b.amount)
-            : parseFloat(b.amount);
-        return sortOrderAmount === "asc" ? aA - aB : aB - aA;
-      });
-      setSortedByAmountFavorites(sorted);
-    }
-  }, [sortOrderAmount, favorites, activeSorting]);
-
-  useEffect(() => {
     fetchFavorites();
     fetchCategories();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [user.id, update, activeSorting]);
 
   const handleDeleteFavorites = async (favoritesId) => {

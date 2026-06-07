@@ -54,6 +54,7 @@ function DialogPage({ onCategoryChange }) {
 
   useEffect(() => {
     fetchCats();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [user.id]);
 
   const handleAddCategory = async () => {

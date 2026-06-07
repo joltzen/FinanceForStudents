@@ -2,14 +2,12 @@
 
 import AddCircleOutlineIcon from "@mui/icons-material/AddCircleOutline";
 import AddIcon from "@mui/icons-material/Add";
-import AutoAwesomeIcon from "@mui/icons-material/AutoAwesome";
 import ChevronRightIcon from "@mui/icons-material/ChevronRight";
 import TuneIcon from "@mui/icons-material/Tune";
 import {
   Box,
   Card,
   CardContent,
-  Chip,
   Fab,
   Grid,
   Typography,

@@ -15,8 +15,7 @@ import {
   Typography,
 } from "@mui/material";
 import { useTheme } from "@mui/material/styles";
-import { useEffect, useState } from "react";
-import { useNavigate } from "react-router-dom";
+import React from "react";
 import Heading from "../../components/heading";
 import Heading2 from "../../components/heading2";
 import Page from "../../components/page";
@@ -89,8 +88,6 @@ const faqs = [
 
 function HomePage() {
   const theme = useTheme();
-  const [users, setUsers] = useState(null);
-  const navigate = useNavigate();
   const { user } = useAuth();
 
   return (

@@ -47,6 +47,7 @@ function SavingPage() {
 
   useEffect(() => {
     fetchGoals();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [user.id]);
 
   const handleChange = (e) => {
@@ -125,13 +126,9 @@ function SavingPage() {
   function calculateSavingsProgress(goal) {
     const today = new Date();
     const startdate = new Date(goal.startdate);
-    const deadline = new Date(goal.deadline);
     if (today < startdate) return 0;
     const elapsed = Math.ceil(
       Math.abs(today.getTime() - startdate.getTime()) / (1000 * 60 * 60 * 24 * 30),
-    );
-    const total = Math.ceil(
-      Math.abs(deadline.getTime() - startdate.getTime()) / (1000 * 60 * 60 * 24 * 30),
     );
     const saved = elapsed * parseFloat(goal.monthly_saving);
     return Math.min((saved / parseFloat(goal.total_amount)) * 100, 100);

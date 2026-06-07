@@ -10,7 +10,6 @@ import AddFavorites from "./favoritesdialog";
 import FavoritesOverview from "./overview";
 
 function FavoritesPage() {
-  const today = new Date().toISOString().split("T")[0];
   const theme = useTheme();
   const { user } = useAuth();
 
@@ -20,14 +19,13 @@ function FavoritesPage() {
   const [transactionType, setTransactionType] = useState("Ausgabe");
   const [categories, setCategories] = useState([]);
   const [update, setUpdate] = useState(false);
-  const [updateNeeded, setUpdateNeeded] = useState(false);
-  const [isOwn, setIsOwn] = useState(true);
+  const [isOwn] = useState(true);
   const [openDialog, setOpenDialog] = useState(false);
   const [snackbarOpen, setSnackbarOpen] = useState(false);
   const [snackbarMessage, setSnackbarMessage] = useState("");
   const [snackbarSeverity, setSnackbarSeverity] = useState<AlertColor>("success");
 
-  const triggerUpdate = () => setUpdateNeeded((prev) => !prev);
+  const triggerUpdate = () => setUpdate((prev) => !prev);
 
   const handleSubmit = async (event) => {
     event.preventDefault();

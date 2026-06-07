@@ -6,11 +6,9 @@ import {
   ListItemText,
   Typography,
 } from "@mui/material";
-import { useTheme } from "@mui/material/styles";
 import React from "react";
 
 function StyledListItem(props) {
-  const theme = useTheme();
   const isActive = window.location.pathname === props.href;
 
   return (

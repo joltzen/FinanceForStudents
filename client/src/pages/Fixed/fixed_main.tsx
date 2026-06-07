@@ -53,6 +53,7 @@ function FixedForm() {
 
   useEffect(() => {
     fetchSettings();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [filterMonth, filterYear, user.id]);
 
   const fetchSettings = async () => {

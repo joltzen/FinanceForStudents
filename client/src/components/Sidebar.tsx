@@ -8,7 +8,7 @@ import LogoutIcon from "@mui/icons-material/Logout";
 import PersonIcon from "@mui/icons-material/Person";
 import SavingsIcon from "@mui/icons-material/Savings";
 import StarIcon from "@mui/icons-material/Star";
-import { Box, Divider, IconButton, Tooltip, Typography } from "@mui/material";
+import { Box, Divider, Tooltip, Typography } from "@mui/material";
 import { useTheme } from "@mui/material/styles";
 import React, { useContext } from "react";
 import { useNavigate } from "react-router-dom";

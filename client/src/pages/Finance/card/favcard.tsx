@@ -49,6 +49,7 @@ function FavCard({ theme, favorites, categories, handleAddFavoriteToMonth }) {
         {}
       )
     );
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [favorites.length]);
 
   return (

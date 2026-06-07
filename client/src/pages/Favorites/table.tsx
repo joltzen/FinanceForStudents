@@ -31,7 +31,6 @@ function TransactionsTable({
   const theme = useTheme();
   const [page, setPage] = React.useState(1);
   const [rowsPerPage, setRowsPerPage] = React.useState(10);
-  const favoritesPerPage = 10;
   const handlePageChange = (event, value) => {
     setPage(value);
   };

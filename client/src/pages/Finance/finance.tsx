@@ -1,7 +1,6 @@
 /* Copyright (c) 2026, Jason Oltzen */
 
 import { Alert, AlertColor, Grid, Snackbar } from "@mui/material";
-import { useTheme } from "@mui/material/styles";
 import React, { useEffect, useState } from "react";
 import { useAuth } from "../../core/auth/auth";
 import { addTransaction, getCategories } from "../../services/db";
@@ -10,7 +9,6 @@ import FinanceOverview from "./overview";
 
 function FinancePage() {
   const today = new Date().toISOString().split("T")[0];
-  const theme = useTheme();
   const { user } = useAuth();
 
   const [openDialog, setOpenDialog] = useState(false);
@@ -22,7 +20,6 @@ function FinancePage() {
   const [description, setDescription] = useState("");
   const [amount, setAmount] = useState("");
   const [transactionType, setTransactionType] = useState("Ausgabe");
-  const [transactions, setTransactions] = useState([]);
   const [categories, setCategories] = useState([]);
   const [update, setUpdate] = useState(false);
   const [updateNeeded, setUpdateNeeded] = useState(false);

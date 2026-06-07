@@ -1,13 +1,11 @@
 /* Copyright (c) 2026, Jason Oltzen */
 
 import DeleteIcon from "@mui/icons-material/Delete";
-import EditIcon from "@mui/icons-material/Edit";
 import {
   Button,
   Dialog,
   DialogActions,
   DialogContent,
-  DialogContentText,
   Grid,
   IconButton,
   Paper,
@@ -43,6 +41,7 @@ function AddCategory({
 
   useEffect(() => {
     fetchCats();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [user.id]);
 
   const handleAddCategory = async () => {
