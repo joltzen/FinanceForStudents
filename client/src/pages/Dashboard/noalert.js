@@ -1,7 +1,7 @@
 /* Copyright (c) 2026, Jason Oltzen */
 
 import BarChartIcon from "@mui/icons-material/BarChart";
-import { Box, Button, Typography } from "@mui/material";
+import { Box, Typography } from "@mui/material";
 import { useTheme } from "@mui/material/styles";
 import React from "react";
 
@@ -18,89 +18,46 @@ const NoDataAlert = () => {
         justifyContent: "center",
         py: 6,
         px: 2,
+        borderRadius: 3,
+        backgroundColor: isDark ? "rgba(0,0,0,0.25)" : "rgba(0,0,0,0.04)",
       }}
     >
       <Box
         sx={{
-          width: 64,
-          height: 64,
+          width: 56,
+          height: 56,
           borderRadius: "50%",
           display: "flex",
           alignItems: "center",
           justifyContent: "center",
           mb: 2,
-          backgroundColor: isDark
-            ? "rgba(198,170,96,0.1)"
-            : "rgba(78,87,123,0.08)",
+          backgroundColor: isDark ? "rgba(198,170,96,0.1)" : "rgba(78,87,123,0.08)",
         }}
       >
         <BarChartIcon
           sx={{
-            fontSize: 32,
+            fontSize: 28,
             color: isDark ? "rgba(198,170,96,0.5)" : "rgba(78,87,123,0.4)",
           }}
         />
       </Box>
       <Typography
         variant="body1"
-        sx={{
-          color: theme.palette.text.main,
-          fontWeight: 600,
-          mb: 0.5,
-          textAlign: "center",
-        }}
+        sx={{ color: theme.palette.text.primary, fontWeight: 600, mb: 0.5, textAlign: "center" }}
       >
-        Keine Daten vorhanden
+        Keine aktuellen Daten
       </Typography>
       <Typography
         variant="body2"
         sx={{
-          color: theme.palette.text.main,
+          color: theme.palette.text.primary,
           opacity: 0.45,
-          mb: 3,
           textAlign: "center",
           maxWidth: 280,
         }}
       >
-        Für den ausgewählten Zeitraum sind keine Budgetdaten vorhanden.
+        Verknüpfe dein Bankkonto oder füge Transaktionen manuell hinzu, um Trends zu sehen.
       </Typography>
-      <Box
-        sx={{
-          display: "flex",
-          gap: 1.5,
-          flexWrap: "wrap",
-          justifyContent: "center",
-        }}
-      >
-        <Button
-          href="/fixed"
-          size="small"
-          variant="outlined"
-          sx={{
-            borderColor: isDark
-              ? "rgba(198,170,96,0.4)"
-              : "rgba(78,87,123,0.3)",
-            color: isDark ? "#c6aa60" : theme.palette.primary.main,
-            borderRadius: 2,
-          }}
-        >
-          Fixkosten verwalten
-        </Button>
-        <Button
-          href="/finance"
-          size="small"
-          variant="outlined"
-          sx={{
-            borderColor: isDark
-              ? "rgba(198,170,96,0.4)"
-              : "rgba(78,87,123,0.3)",
-            color: isDark ? "#c6aa60" : theme.palette.primary.main,
-            borderRadius: 2,
-          }}
-        >
-          Transaktionen hinzufügen
-        </Button>
-      </Box>
     </Box>
   );
 };

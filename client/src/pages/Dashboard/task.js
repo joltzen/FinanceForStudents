@@ -1,28 +1,21 @@
 /* Copyright (c) 2026, Jason Oltzen */
 
-import SavingsIcon from "@mui/icons-material/Savings";
-import { Box, IconButton, Tooltip, Typography } from "@mui/material";
+import CheckCircleOutlineIcon from "@mui/icons-material/CheckCircleOutline";
+import PercentIcon from "@mui/icons-material/Percent";
+import { Box, Chip, IconButton, Tooltip, Typography } from "@mui/material";
 import { useTheme } from "@mui/material/styles";
 import React from "react";
 
 const MONTH_NAMES = [
-  "Januar",
-  "Februar",
-  "März",
-  "April",
-  "Mai",
-  "Juni",
-  "Juli",
-  "August",
-  "September",
-  "Oktober",
-  "November",
-  "Dezember",
+  "Januar","Februar","März","April","Mai","Juni",
+  "Juli","August","September","Oktober","November","Dezember",
 ];
 
-const MonthlySaving = ({ savings, month }) => {
+const MonthlySaving = ({ savings, month, savingsRate }) => {
   const theme = useTheme();
   const accent = theme.palette.task.main;
+  const text = theme.palette.text.main;
+  const goalMet = savingsRate !== undefined && savingsRate >= 20;
 
   return (
     <Box sx={{ p: 0.5 }}>
@@ -33,7 +26,6 @@ const MonthlySaving = ({ savings, month }) => {
       >
         <Box
           sx={{
-            backgroundColor: `${accent}22`,
             borderRadius: 2,
             px: 1.5,
             py: 0.5,
@@ -42,12 +34,11 @@ const MonthlySaving = ({ savings, month }) => {
             gap: 0.5,
           }}
         >
-          <SavingsIcon sx={{ fontSize: 14, color: accent }} />
           <Typography
             variant="caption"
-            sx={{ color: accent, fontWeight: 700, letterSpacing: "0.06em" }}
+            sx={{ color: text, fontWeight: 700, letterSpacing: "0.06em" }}
           >
-            Sparquote
+            SPARQUOTE
           </Typography>
         </Box>
         <Tooltip title="Sparziele" placement="left">
@@ -59,7 +50,7 @@ const MonthlySaving = ({ savings, month }) => {
               "&:hover": { backgroundColor: `${accent}44` },
             }}
           >
-            <SavingsIcon sx={{ fontSize: 18, color: accent }} />
+            <PercentIcon sx={{ fontSize: 25, color: accent }} />
           </IconButton>
         </Tooltip>
       </Box>
@@ -68,20 +59,37 @@ const MonthlySaving = ({ savings, month }) => {
         variant="h3"
         sx={{
           fontWeight: 700,
-          mt: 2.5,
-          mb: 0.5,
+          mt: 2,
+          mb: 0.75,
           color: theme.palette.text.main,
         }}
       >
-        {savings.toFixed(2)} €
+        {savingsRate !== undefined
+          ? `${savingsRate.toFixed(1)}%`
+          : `${savings.toFixed(2)} €`}
       </Typography>
 
-      <Typography
-        variant="body2"
-        sx={{ color: theme.palette.text.main, opacity: 0.5 }}
-      >
-        {MONTH_NAMES[month - 1]}
-      </Typography>
+      {goalMet ? (
+        <Chip
+          icon={<CheckCircleOutlineIcon sx={{ fontSize: "14px !important" }} />}
+          label="Ziel erreicht"
+          size="small"
+          sx={{
+            backgroundColor: `${theme.palette.success.main}22`,
+            color: theme.palette.success.main,
+            fontWeight: 600,
+            fontSize: "0.75rem",
+            height: 22,
+          }}
+        />
+      ) : (
+        <Typography
+          variant="body2"
+          sx={{ color: theme.palette.text.main, opacity: 0.5 }}
+        >
+          {MONTH_NAMES[(month ?? 1) - 1]}
+        </Typography>
+      )}
     </Box>
   );
 };

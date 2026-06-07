@@ -7,7 +7,7 @@ export const tokens = (mode) => {
   return {
     ...(mode === "dark"
       ? {
-          darkBlueishGray: "#262b3d",
+          darkBlueishGray: "#1b2030",
           gold: "#be9e44",
           lightGray: "#e0e3e9",
           darkGray: "#333740",
@@ -157,7 +157,7 @@ export const themeSettings = (mode) => {
             select: { main: colors.charcoal },
             tablecell: { main: colors.indigoBlue },
             favlist: { main: colors.slateBlue },
-            background: { default: colors.darkSlateGrey },
+            background: { default: "#0f1322" },
             pagination: { main: colors.dustyPink },
             savetext: { main: colors.silver },
             selected: { main: colors.bronzeGold },

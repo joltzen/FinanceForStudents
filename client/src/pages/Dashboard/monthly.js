@@ -1,13 +1,21 @@
 /* Copyright (c) 2026, Jason Oltzen */
 
-import PaymentsIcon from "@mui/icons-material/Payments";
-import { Box, IconButton, Tooltip, Typography } from "@mui/material";
+import ShoppingCartOutlinedIcon from "@mui/icons-material/ShoppingCartOutlined";
+import {
+  Box,
+  IconButton,
+  LinearProgress,
+  Tooltip,
+  Typography,
+} from "@mui/material";
 import { useTheme } from "@mui/material/styles";
 import React from "react";
 
-const MonthlyExpenses = ({ expenses }) => {
+const MonthlyExpenses = ({ expenses, budgetTotal }) => {
   const theme = useTheme();
-  const accent = theme.palette.monthly.main;
+  const accent = theme.palette.error.main;
+  const text = theme.palette.text.main;
+  const percentUsed = budgetTotal > 0 ? Math.min((expenses / budgetTotal) * 100, 100) : 0;
 
   return (
     <Box sx={{ p: 0.5 }}>
@@ -18,7 +26,6 @@ const MonthlyExpenses = ({ expenses }) => {
       >
         <Box
           sx={{
-            backgroundColor: `${accent}22`,
             borderRadius: 2,
             px: 1.5,
             py: 0.5,
@@ -27,12 +34,11 @@ const MonthlyExpenses = ({ expenses }) => {
             gap: 0.5,
           }}
         >
-          <PaymentsIcon sx={{ fontSize: 14, color: accent }} />
           <Typography
             variant="caption"
-            sx={{ color: accent, fontWeight: 700, letterSpacing: "0.06em" }}
+            sx={{ color: text, fontWeight: 700, letterSpacing: "0.06em" }}
           >
-            Monatsausgaben
+            MONATSAUSGABEN
           </Typography>
         </Box>
         <Tooltip title="Finanzverwaltung" placement="left">
@@ -44,29 +50,50 @@ const MonthlyExpenses = ({ expenses }) => {
               "&:hover": { backgroundColor: `${accent}44` },
             }}
           >
-            <PaymentsIcon sx={{ fontSize: 18, color: accent }} />
+            <ShoppingCartOutlinedIcon sx={{ fontSize: 25, color: accent }} />
           </IconButton>
         </Tooltip>
       </Box>
 
       <Typography
         variant="h3"
-        sx={{
-          fontWeight: 700,
-          mt: 2.5,
-          mb: 0.5,
-          color: theme.palette.text.main,
-        }}
+        sx={{ fontWeight: 700, mt: 2, mb: 1, color: theme.palette.text.main }}
       >
-        {expenses.toFixed(2)} €
+        € {expenses.toFixed(2)}
       </Typography>
 
-      <Typography
-        variant="body2"
-        sx={{ color: theme.palette.text.main, opacity: 0.5 }}
-      >
-        Aktueller Monat
-      </Typography>
+      {budgetTotal > 0 ? (
+        <Box>
+          <LinearProgress
+            variant="determinate"
+            value={percentUsed}
+            sx={{
+              height: 4,
+              borderRadius: 2,
+              mb: 0.75,
+              backgroundColor: `${accent}22`,
+              "& .MuiLinearProgress-bar": {
+                backgroundColor:
+                  percentUsed > 90 ? theme.palette.error.main : accent,
+                borderRadius: 2,
+              },
+            }}
+          />
+          <Typography
+            variant="body2"
+            sx={{ color: theme.palette.text.main, opacity: 0.5 }}
+          >
+            {percentUsed.toFixed(0)}% des Budgets verbraucht
+          </Typography>
+        </Box>
+      ) : (
+        <Typography
+          variant="body2"
+          sx={{ color: theme.palette.text.main, opacity: 0.5 }}
+        >
+          Aktueller Monat
+        </Typography>
+      )}
     </Box>
   );
 };
