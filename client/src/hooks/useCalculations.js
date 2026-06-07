@@ -1,4 +1,4 @@
-/* Copyright (c) 2023, Jason Oltzen */
+/* Copyright (c) 2026, Jason Oltzen */
 
 export const useCalculations = (
   transactions,
@@ -12,7 +12,7 @@ export const useCalculations = (
   prevSettings,
   allTransactions,
   allSettings,
-  allSaving
+  allSaving,
 ) => {
   const calculateSavingGoalsTotal = () => {
     let totalSavings = 0;
@@ -79,11 +79,11 @@ export const useCalculations = (
       }
       if (transaction.transaction_type === "Einnahme")
         categoryTotals[transaction.category_id] += parseFloat(
-          transaction.amount
+          transaction.amount,
         );
       else
         categoryTotals[transaction.category_id] -= parseFloat(
-          transaction.amount
+          transaction.amount,
         );
     });
 
@@ -98,7 +98,7 @@ export const useCalculations = (
 
     const usedBudget = Object.values(categoryTotals).reduce(
       (acc, num) => acc + num,
-      0
+      0,
     );
 
     categoryTotals["remaining"] = totalBudget + usedBudget - totalSavingGoals;
@@ -126,7 +126,7 @@ export const useCalculations = (
 
     const usedBudget = Object.values(categoryTotals).reduce(
       (acc, num) => acc + num,
-      0
+      0,
     );
     categoryTotals["remaining"] = totalBudget - usedBudget - totalSavingGoals;
     return categoryTotals;
@@ -253,7 +253,7 @@ export const useCalculations = (
         monthlyBudgets[transaction.month - 1] += parseFloat(transaction.amount);
       } else if (transaction.transaction_type === "Ausgabe") {
         monthlyExpenses[transaction.month - 1] -= parseFloat(
-          transaction.amount
+          transaction.amount,
         );
       }
     });
@@ -299,7 +299,7 @@ export const useCalculations = (
         }
         return acc;
       },
-      0
+      0,
     );
 
     settings?.forEach((setting) => {
@@ -384,7 +384,7 @@ export const useCalculations = (
   const calculateMonthlySavingsDifference = () => {
     var previousMonthRemainingBudget = calculatePreviousMonthRemainingBudget();
     var thisMonthRemainingBudget = calculateMonthlyRemainingBudgets().filter(
-      (budget) => budget !== 0
+      (budget) => budget !== 0,
     )[0];
 
     if (thisMonthRemainingBudget === undefined) {

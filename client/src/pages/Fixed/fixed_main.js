@@ -1,4 +1,4 @@
-/* Copyright (c) 2023, Jason Oltzen */
+/* Copyright (c) 2026, Jason Oltzen */
 
 import { Alert, Grid, Snackbar } from "@mui/material";
 import { useTheme } from "@mui/material/styles";
@@ -51,7 +51,9 @@ function FixedForm() {
     if (openDialog) descriptionInputRef.current?.focus();
   }, [openDialog]);
 
-  useEffect(() => { fetchSettings(); }, [filterMonth, filterYear, user.id]);
+  useEffect(() => {
+    fetchSettings();
+  }, [filterMonth, filterYear, user.id]);
 
   const fetchSettings = async () => {
     try {
@@ -69,11 +71,23 @@ function FixedForm() {
           const startM = year === startYear ? startMonth : 1;
           const endM = year === endYear ? endMonth : 12;
           for (let month = startM; month <= endM; month++) {
-            await addSettings(user.id, { transaction_type: transactionType, amount, description, month, year });
+            await addSettings(user.id, {
+              transaction_type: transactionType,
+              amount,
+              description,
+              month,
+              year,
+            });
           }
         }
       } else {
-        await addSettings(user.id, { transaction_type: transactionType, amount, description, month: filterMonth, year: filterYear });
+        await addSettings(user.id, {
+          transaction_type: transactionType,
+          amount,
+          description,
+          month: filterMonth,
+          year: filterYear,
+        });
       }
       setSnackbarMessage("Fixkosten wurden erfolgreich hinzugefügt!");
       setSnackbarSeverity("success");
@@ -91,7 +105,9 @@ function FixedForm() {
   const handleDeleteSettings = async (settingsId) => {
     try {
       await deleteSettings(user.id, settingsId);
-      setTransactions((prev) => prev.filter((t) => t.settings_id !== settingsId));
+      setTransactions((prev) =>
+        prev.filter((t) => t.settings_id !== settingsId),
+      );
       setSnackbarMessage("Fixkosten wurden erfolgreich gelöscht!");
       setSnackbarSeverity("success");
     } catch (error) {
@@ -120,19 +136,32 @@ function FixedForm() {
     setSnackbarOpen(true);
   };
 
-  const handleTransferSubmit = async (sourceMonth, sourceYear, targetMonth, targetYear) => {
+  const handleTransferSubmit = async (
+    sourceMonth,
+    sourceYear,
+    targetMonth,
+    targetYear,
+  ) => {
     try {
       const [sourceData, targetData] = await Promise.all([
         getSettings(user.id, sourceMonth, sourceYear),
         getSettings(user.id, targetMonth, targetYear),
       ]);
-      const toTransfer = sourceData.filter((s) =>
-        !targetData.some((t) =>
-          t.description === s.description && t.amount === s.amount && t.transaction_type === s.transaction_type
-        )
+      const toTransfer = sourceData.filter(
+        (s) =>
+          !targetData.some(
+            (t) =>
+              t.description === s.description &&
+              t.amount === s.amount &&
+              t.transaction_type === s.transaction_type,
+          ),
       );
       for (const t of toTransfer) {
-        await addSettings(user.id, { ...t, month: targetMonth, year: targetYear });
+        await addSettings(user.id, {
+          ...t,
+          month: targetMonth,
+          year: targetYear,
+        });
       }
       setOpenTransferDialog(false);
       fetchSettings();
@@ -142,25 +171,39 @@ function FixedForm() {
   };
 
   const totalBudget = transactions?.reduce(
-    (total, t) => t?.transaction_type === "Einnahme"
-      ? total + parseFloat(t?.amount)
-      : total - parseFloat(t?.amount),
-    0
+    (total, t) =>
+      t?.transaction_type === "Einnahme"
+        ? total + parseFloat(t?.amount)
+        : total - parseFloat(t?.amount),
+    0,
   );
 
   const handleMonthChange = (direction) => {
     let newMonth = filterMonth + (direction === "next" ? 1 : -1);
     let newYear = filterYear;
-    if (newMonth > 12) { newMonth = 1; newYear++; }
-    else if (newMonth < 1) { newMonth = 12; newYear--; }
+    if (newMonth > 12) {
+      newMonth = 1;
+      newYear++;
+    } else if (newMonth < 1) {
+      newMonth = 12;
+      newYear--;
+    }
     setFilterMonth(newMonth);
     setFilterYear(newYear);
   };
 
   return (
     <div>
-      <Snackbar open={snackbarOpen} autoHideDuration={6000} onClose={() => setSnackbarOpen(false)}>
-        <Alert onClose={() => setSnackbarOpen(false)} severity={snackbarSeverity} sx={{ width: "100%" }}>
+      <Snackbar
+        open={snackbarOpen}
+        autoHideDuration={6000}
+        onClose={() => setSnackbarOpen(false)}
+      >
+        <Alert
+          onClose={() => setSnackbarOpen(false)}
+          severity={snackbarSeverity}
+          sx={{ width: "100%" }}
+        >
           {snackbarMessage}
         </Alert>
       </Snackbar>
@@ -214,7 +257,11 @@ function FixedForm() {
             if (t) setEditSettings(t);
           }}
         />
-        <NavigateCard theme={theme} colorMode={colorMode} totalBudget={totalBudget} />
+        <NavigateCard
+          theme={theme}
+          colorMode={colorMode}
+          totalBudget={totalBudget}
+        />
       </Grid>
       {editSettings && (
         <EditSettingsDialog

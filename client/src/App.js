@@ -1,9 +1,10 @@
-/* Copyright (c) 2023, Jason Oltzen */
+/* Copyright (c) 2026, Jason Oltzen */
 
-import { ThemeProvider } from "@mui/material";
+import { Box, ThemeProvider } from "@mui/material";
 import React from "react";
 import { Route, BrowserRouter as Router, Routes } from "react-router-dom";
 import Navbar from "./components/navbar";
+import AppSidebar from "./components/Sidebar";
 import { AuthProvider } from "./core/auth/auth";
 import { SidebarProvider } from "./core/sidebar";
 import {
@@ -33,33 +34,51 @@ function App() {
         <AuthProvider>
           <Router>
             <SidebarProvider>
-              <Navbar></Navbar>
+              <Box
+                sx={{
+                  display: "flex",
+                  flexDirection: "column",
+                  minHeight: "100vh",
+                }}
+              >
+                {/* Top bar */}
+                <Navbar />
+
+                {/* Body: sidebar + content */}
+                <Box sx={{ display: "flex", flex: 1 }}>
+                  <AppSidebar />
+
+                  {/* Main content */}
+                  <Box
+                    component="main"
+                    sx={{
+                      flex: 1,
+                      minWidth: 0,
+                      backgroundColor: theme.palette.background.default,
+                      color: theme.palette.text.primary,
+                      overflowX: "hidden",
+                    }}
+                  >
+                    <Routes>
+                      <Route path="/" element={<Home />} />
+                      <Route path="/impressum" element={<Impressum />} />
+                      <Route path="/contact" element={<Contact />} />
+                      <Route path="/signup" element={<Signup />} />
+                      <Route path="/login" element={<Login />} />
+                      <Route path="/profile" element={<Profile />} />
+                      <Route path="/finance" element={<FinancePage />} />
+                      <Route path="/dashboard" element={<Dashboard />} />
+                      <Route path="/fixed" element={<Fixed />} />
+                      <Route path="/password-reset" element={<Reset />} />
+                      <Route path="/saving" element={<Saving />} />
+                      <Route path="/about" element={<About />} />
+                      <Route path="/favorites" element={<Favorites />} />
+                      <Route path="/admin" element={<Admin />} />
+                    </Routes>
+                  </Box>
+                </Box>
+              </Box>
             </SidebarProvider>
-            <div
-              style={{
-                backgroundColor: theme.palette.background.default,
-                color: theme.palette.text.primary,
-                minHeight: "98vh",
-                minWidth: "98vw",
-              }}
-            >
-              <Routes>
-                <Route path="/" element={<Home />} />
-                <Route path="/impressum" element={<Impressum />} />
-                <Route path="/contact" element={<Contact />} />
-                <Route path="/signup" element={<Signup />} />
-                <Route path="/login" element={<Login />} />
-                <Route path="/profile" element={<Profile />} />
-                <Route path="/finance" element={<FinancePage />} />
-                <Route path="/dashboard" element={<Dashboard />} />
-                <Route path="/fixed" element={<Fixed />} />
-                <Route path="/password-reset" element={<Reset />} />
-                <Route path="/saving" element={<Saving />} />
-                <Route path="/about" element={<About />} />
-                <Route path="/favorites" element={<Favorites />} />
-                <Route path="/admin" element={<Admin />} />
-              </Routes>
-            </div>
           </Router>
         </AuthProvider>
       </ThemeProvider>

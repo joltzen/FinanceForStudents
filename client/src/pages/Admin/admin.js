@@ -1,4 +1,4 @@
-/* Copyright (c) 2023, Jason Oltzen */
+/* Copyright (c) 2026, Jason Oltzen */
 
 import DeleteIcon from "@mui/icons-material/Delete";
 import EditIcon from "@mui/icons-material/Edit";
@@ -50,15 +50,21 @@ function AdminPage() {
         getAllTransactions(searchUserId),
         getCategories(searchUserId),
       ]);
-      const categoryMap = cats.reduce((acc, c) => { acc[c.id] = c.name; return acc; }, {});
+      const categoryMap = cats.reduce((acc, c) => {
+        acc[c.id] = c.name;
+        return acc;
+      }, {});
       setTransactions(
         fetchedTransactions.map((t) => ({
           ...t,
           category_name: categoryMap[t.category_id] || "Unbekannt",
-        }))
+        })),
       );
     } catch (error) {
-      console.error("Fehler beim Laden der Transaktionen oder Kategorien:", error);
+      console.error(
+        "Fehler beim Laden der Transaktionen oder Kategorien:",
+        error,
+      );
     }
   };
 
@@ -116,14 +122,40 @@ function AdminPage() {
               <Table sx={{ minWidth: 650 }}>
                 <TableHead sx={{ backgroundColor: theme.palette.head.main }}>
                   <TableRow>
-                    <TableCell sx={{ width: "20px", color: theme.palette.tabletext.main }}>ID</TableCell>
-                    <TableCell sx={{ width: "20px", color: theme.palette.tabletext.main }}>Benutzername</TableCell>
-                    <TableCell sx={{ color: theme.palette.tabletext.main }}>E-Mail</TableCell>
-                    <TableCell sx={{ color: theme.palette.tabletext.main }}>Vorname</TableCell>
-                    <TableCell sx={{ color: theme.palette.tabletext.main }}>Nachname</TableCell>
-                    <TableCell sx={{ color: theme.palette.tabletext.main }}>Admin</TableCell>
-                    <TableCell sx={{ color: theme.palette.tabletext.main }}></TableCell>
-                    <TableCell sx={{ color: theme.palette.tabletext.main }}></TableCell>
+                    <TableCell
+                      sx={{
+                        width: "20px",
+                        color: theme.palette.tabletext.main,
+                      }}
+                    >
+                      ID
+                    </TableCell>
+                    <TableCell
+                      sx={{
+                        width: "20px",
+                        color: theme.palette.tabletext.main,
+                      }}
+                    >
+                      Benutzername
+                    </TableCell>
+                    <TableCell sx={{ color: theme.palette.tabletext.main }}>
+                      E-Mail
+                    </TableCell>
+                    <TableCell sx={{ color: theme.palette.tabletext.main }}>
+                      Vorname
+                    </TableCell>
+                    <TableCell sx={{ color: theme.palette.tabletext.main }}>
+                      Nachname
+                    </TableCell>
+                    <TableCell sx={{ color: theme.palette.tabletext.main }}>
+                      Admin
+                    </TableCell>
+                    <TableCell
+                      sx={{ color: theme.palette.tabletext.main }}
+                    ></TableCell>
+                    <TableCell
+                      sx={{ color: theme.palette.tabletext.main }}
+                    ></TableCell>
                   </TableRow>
                 </TableHead>
                 <TableBody sx={{ backgroundColor: theme.palette.content.main }}>
@@ -136,12 +168,18 @@ function AdminPage() {
                       <TableCell>{u.surname}</TableCell>
                       <TableCell>{u.admin ? "Ja" : "Nein"}</TableCell>
                       <TableCell>
-                        <IconButton onClick={() => handleDeleteAccount(u.id)} style={{ color: "red" }}>
+                        <IconButton
+                          onClick={() => handleDeleteAccount(u.id)}
+                          style={{ color: "red" }}
+                        >
                           <DeleteIcon />
                         </IconButton>
                       </TableCell>
                       <TableCell>
-                        <IconButton onClick={() => handleEditClick(u)} style={{ color: "white" }}>
+                        <IconButton
+                          onClick={() => handleEditClick(u)}
+                          style={{ color: "white" }}
+                        >
                           <EditIcon />
                         </IconButton>
                       </TableCell>
@@ -154,7 +192,12 @@ function AdminPage() {
         )}
       </Container>
       <Container maxWidth="md">
-        <Typography sx={{ mt: 4, mb: 2, mr: 4 }} variant="h5" component="h2" gutterBottom>
+        <Typography
+          sx={{ mt: 4, mb: 2, mr: 4 }}
+          variant="h5"
+          component="h2"
+          gutterBottom
+        >
           Transaktionen eines Benutzers
         </Typography>
         <TextField
@@ -164,20 +207,42 @@ function AdminPage() {
           onChange={(e) => setSearchUserId(e.target.value)}
           sx={{ mt: 2, mb: 4, mr: 4 }}
         />
-        <Button sx={{ mt: 2, mb: 4, mr: 4 }} variant="contained" onClick={fetchTransactions}>
+        <Button
+          sx={{ mt: 2, mb: 4, mr: 4 }}
+          variant="contained"
+          onClick={fetchTransactions}
+        >
           Transaktionen suchen
         </Button>
         <TableContainer component={Paper} elevation={10}>
           <Table>
             <TableHead sx={{ backgroundColor: theme.palette.head.main }}>
               <TableRow>
-                <TableCell sx={{ width: "20px", color: theme.palette.tabletext.main }}>ID</TableCell>
-                <TableCell sx={{ width: "20px", color: theme.palette.tabletext.main }}>Benutzer ID</TableCell>
-                <TableCell sx={{ color: theme.palette.tabletext.main }}>Transaktionstyp</TableCell>
-                <TableCell sx={{ color: theme.palette.tabletext.main }}>Betrag</TableCell>
-                <TableCell sx={{ color: theme.palette.tabletext.main }}>Beschreibung</TableCell>
-                <TableCell sx={{ color: theme.palette.tabletext.main }}>Datum</TableCell>
-                <TableCell sx={{ color: theme.palette.tabletext.main }}>Kategorie</TableCell>
+                <TableCell
+                  sx={{ width: "20px", color: theme.palette.tabletext.main }}
+                >
+                  ID
+                </TableCell>
+                <TableCell
+                  sx={{ width: "20px", color: theme.palette.tabletext.main }}
+                >
+                  Benutzer ID
+                </TableCell>
+                <TableCell sx={{ color: theme.palette.tabletext.main }}>
+                  Transaktionstyp
+                </TableCell>
+                <TableCell sx={{ color: theme.palette.tabletext.main }}>
+                  Betrag
+                </TableCell>
+                <TableCell sx={{ color: theme.palette.tabletext.main }}>
+                  Beschreibung
+                </TableCell>
+                <TableCell sx={{ color: theme.palette.tabletext.main }}>
+                  Datum
+                </TableCell>
+                <TableCell sx={{ color: theme.palette.tabletext.main }}>
+                  Kategorie
+                </TableCell>
               </TableRow>
             </TableHead>
             <TableBody>
@@ -197,7 +262,11 @@ function AdminPage() {
         </TableContainer>
       </Container>
       {editingUser && (
-        <EditUserForm user={editingUser} onSubmit={handleEditSubmit} onCancel={handleCancelEdit} />
+        <EditUserForm
+          user={editingUser}
+          onSubmit={handleEditSubmit}
+          onCancel={handleCancelEdit}
+        />
       )}
     </div>
   );

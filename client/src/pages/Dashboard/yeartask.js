@@ -1,4 +1,4 @@
-/* Copyright (c) 2023, Jason Oltzen */
+/* Copyright (c) 2026, Jason Oltzen */
 
 import SavingsIcon from "@mui/icons-material/Savings";
 import { Box, Grid, IconButton, Tooltip, Typography } from "@mui/material";

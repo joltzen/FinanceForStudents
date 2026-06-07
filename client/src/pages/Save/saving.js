@@ -1,4 +1,4 @@
-/* Copyright (c) 2023, Jason Oltzen */
+/* Copyright (c) 2026, Jason Oltzen */
 
 import Add from "@mui/icons-material/Add";
 import { Alert, Button, Card, Grid, Snackbar, Typography } from "@mui/material";
@@ -22,8 +22,12 @@ function SavingPage() {
   const [open, setOpen] = useState(false);
   const [goals, setGoals] = useState([]);
   const [savingGoal, setSavingGoal] = useState({
-    monthly_saving: "", total_amount: "", description: "",
-    startdate: today, deadline: "", duration: "",
+    monthly_saving: "",
+    total_amount: "",
+    description: "",
+    startdate: today,
+    deadline: "",
+    duration: "",
   });
   const [alert, setAlert] = useState(false);
   const [alertDuration, setAlertDuration] = useState(false);
@@ -41,7 +45,9 @@ function SavingPage() {
     }
   };
 
-  useEffect(() => { fetchGoals(); }, [user.id]);
+  useEffect(() => {
+    fetchGoals();
+  }, [user.id]);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -73,13 +79,23 @@ function SavingPage() {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    if (savingGoal.deadline && new Date(savingGoal.deadline) < new Date(savingGoal.startdate)) {
+    if (
+      savingGoal.deadline &&
+      new Date(savingGoal.deadline) < new Date(savingGoal.startdate)
+    ) {
       setAlert(true);
       return;
     }
     try {
       await addSavingGoal(user.id, { ...savingGoal, user_id: user.id });
-      setSavingGoal({ monthly_saving: "", total_amount: "", description: "", startdate: today, deadline: "", duration: "" });
+      setSavingGoal({
+        monthly_saving: "",
+        total_amount: "",
+        description: "",
+        startdate: today,
+        deadline: "",
+        duration: "",
+      });
       setOpen(false);
       setSnackbarMessage("Sparziel erfolgreich hinzugefügt!");
       setSnackbarSeverity("success");
@@ -111,45 +127,107 @@ function SavingPage() {
     const startdate = new Date(goal.startdate);
     const deadline = new Date(goal.deadline);
     if (today < startdate) return 0;
-    const elapsed = Math.ceil(Math.abs(today - startdate) / (1000 * 60 * 60 * 24 * 30));
-    const total = Math.ceil(Math.abs(deadline - startdate) / (1000 * 60 * 60 * 24 * 30));
+    const elapsed = Math.ceil(
+      Math.abs(today - startdate) / (1000 * 60 * 60 * 24 * 30),
+    );
+    const total = Math.ceil(
+      Math.abs(deadline - startdate) / (1000 * 60 * 60 * 24 * 30),
+    );
     const saved = elapsed * parseFloat(goal.monthly_saving);
     return Math.min((saved / parseFloat(goal.total_amount)) * 100, 100);
   }
 
   return (
     <Grid container>
-      <Snackbar open={snackbarOpen} autoHideDuration={6000} onClose={() => setSnackbarOpen(false)}>
-        <Alert onClose={() => setSnackbarOpen(false)} severity={snackbarSeverity} sx={{ width: "100%" }}>
+      <Snackbar
+        open={snackbarOpen}
+        autoHideDuration={6000}
+        onClose={() => setSnackbarOpen(false)}
+      >
+        <Alert
+          onClose={() => setSnackbarOpen(false)}
+          severity={snackbarSeverity}
+          sx={{ width: "100%" }}
+        >
           {snackbarMessage}
         </Alert>
       </Snackbar>
-      {goals.length > 0
-        ? <AddButton variant="contained" onClick={() => setOpen(!open)} startIcon={<Add />}>Sparziel hinzufügen</AddButton>
-        : null}
-      {goals.length > 0
-        ? goals.map((goal, index) => (
+      {goals.length > 0 ? (
+        <AddButton
+          variant="contained"
+          onClick={() => setOpen(!open)}
+          startIcon={<Add />}
+        >
+          Sparziel hinzufügen
+        </AddButton>
+      ) : null}
+      {goals.length > 0 ? (
+        goals.map((goal, index) => (
           <Grid item xs={12} md={6} lg={3} key={goal.id || index}>
-            <Card sx={{ backgroundColor: theme.palette.card.main, margin: 2, borderRadius: 5 }}>
-              <SavingCards goal={goal} handleDelete={(id) => { setDeletingGoalId(id); setOpenConfirmDialog(true); }}
-                calculateSavingsProgress={calculateSavingsProgress} theme={theme} />
+            <Card
+              sx={{
+                backgroundColor: theme.palette.card.main,
+                margin: 2,
+                borderRadius: 5,
+              }}
+            >
+              <SavingCards
+                goal={goal}
+                handleDelete={(id) => {
+                  setDeletingGoalId(id);
+                  setOpenConfirmDialog(true);
+                }}
+                calculateSavingsProgress={calculateSavingsProgress}
+                theme={theme}
+              />
             </Card>
           </Grid>
         ))
-        : (
-          <Grid item xs={12}>
-            <Card sx={{ backgroundColor: theme.palette.card.main, margin: 2, borderRadius: 5, padding: 2, textAlign: "center" }}>
-              <Typography variant="h6">Es sind noch keine Sparziele vorhanden!</Typography>
-              <Typography variant="subtitle1" sx={{ mt: 2 }}>Fügen ein neues Sparziel hinzu, um loszulegen!</Typography>
-              <Button variant="contained" onClick={() => setOpen(!open)} sx={{ mt: 10 }}>Sparziel hinzufügen</Button>
-            </Card>
-          </Grid>
-        )}
-      <SavingDialog open={open} handleOpen={() => setOpen(!open)} handleSubmit={handleSubmit}
-        alter={alert} alterDuaation={alertDuration} savingGoal={savingGoal} handleChange={handleChange} />
-      <DeleteDialog openConfirmDialog={openConfirmDialog} setOpenConfirmDialog={setOpenConfirmDialog}
-        confirmDelete={async () => { setOpenConfirmDialog(false); await deleteSaving(deletingGoalId); }}
-        deletingGoalId={deletingGoalId} />
+      ) : (
+        <Grid item xs={12}>
+          <Card
+            sx={{
+              backgroundColor: theme.palette.card.main,
+              margin: 2,
+              borderRadius: 5,
+              padding: 2,
+              textAlign: "center",
+            }}
+          >
+            <Typography variant="h6">
+              Es sind noch keine Sparziele vorhanden!
+            </Typography>
+            <Typography variant="subtitle1" sx={{ mt: 2 }}>
+              Fügen ein neues Sparziel hinzu, um loszulegen!
+            </Typography>
+            <Button
+              variant="contained"
+              onClick={() => setOpen(!open)}
+              sx={{ mt: 10 }}
+            >
+              Sparziel hinzufügen
+            </Button>
+          </Card>
+        </Grid>
+      )}
+      <SavingDialog
+        open={open}
+        handleOpen={() => setOpen(!open)}
+        handleSubmit={handleSubmit}
+        alter={alert}
+        alterDuaation={alertDuration}
+        savingGoal={savingGoal}
+        handleChange={handleChange}
+      />
+      <DeleteDialog
+        openConfirmDialog={openConfirmDialog}
+        setOpenConfirmDialog={setOpenConfirmDialog}
+        confirmDelete={async () => {
+          setOpenConfirmDialog(false);
+          await deleteSaving(deletingGoalId);
+        }}
+        deletingGoalId={deletingGoalId}
+      />
     </Grid>
   );
 }

@@ -1,4 +1,4 @@
-/* Copyright (c) 2023, Jason Oltzen */
+/* Copyright (c) 2026, Jason Oltzen */
 
 import { Alert, Grid, Snackbar } from "@mui/material";
 import { useTheme } from "@mui/material/styles";
@@ -77,14 +77,25 @@ function FinancePage() {
 
   return (
     <Grid item xs={12} md={8} lg={6}>
-      <Snackbar open={snackbarOpen} autoHideDuration={6000} onClose={() => setSnackbarOpen(false)}>
-        <Alert onClose={() => setSnackbarOpen(false)} severity={snackbarSeverity} sx={{ width: "100%" }}>
+      <Snackbar
+        open={snackbarOpen}
+        autoHideDuration={6000}
+        onClose={() => setSnackbarOpen(false)}
+      >
+        <Alert
+          onClose={() => setSnackbarOpen(false)}
+          severity={snackbarSeverity}
+          sx={{ width: "100%" }}
+        >
           {snackbarMessage}
         </Alert>
       </Snackbar>
       <AddTransaction
         openDialog={openDialog}
-        handleCloseDialog={() => { setUpdate(!update); setOpenDialog(false); }}
+        handleCloseDialog={() => {
+          setUpdate(!update);
+          setOpenDialog(false);
+        }}
         theme={theme}
         handleSubmit={handleSubmit}
         description={description}
@@ -105,7 +116,9 @@ function FinancePage() {
         triggerUpdate={triggerUpdate}
         favorites={favorites}
         handleCategoryChange={(e) => setSelectedCategory(e.target.value)}
-        handleSearchInputChange={(e) => setSearchQuery(e.target.value.toLowerCase())}
+        handleSearchInputChange={(e) =>
+          setSearchQuery(e.target.value.toLowerCase())
+        }
       />
     </Grid>
   );

@@ -1,4 +1,4 @@
-/* Copyright (c) 2023, Jason Oltzen */
+/* Copyright (c) 2026, Jason Oltzen */
 
 import { createTheme } from "@mui/material/styles";
 import { createContext, useEffect, useMemo, useState } from "react";
@@ -101,6 +101,11 @@ export const themeSettings = (mode) => {
           root: { borderRadius: 12 },
         },
       },
+      MuiAppBar: {
+        styleOverrides: {
+          root: { borderRadius: 0 },
+        },
+      },
       MuiOutlinedInput: {
         styleOverrides: {
           root: { borderRadius: 8 },
@@ -117,9 +122,7 @@ export const themeSettings = (mode) => {
             transition: "background-color 0.15s",
             "&:hover": {
               backgroundColor:
-                mode === "dark"
-                  ? "rgba(255,255,255,0.04)"
-                  : "rgba(0,0,0,0.04)",
+                mode === "dark" ? "rgba(255,255,255,0.04)" : "rgba(0,0,0,0.04)",
             },
           },
         },
@@ -238,7 +241,7 @@ export const useMode = () => {
         setMode((prevMode) => (prevMode === "dark" ? "light" : "dark"));
       },
     }),
-    []
+    [],
   );
 
   const theme = useMemo(() => createTheme(themeSettings(mode)), [mode]);

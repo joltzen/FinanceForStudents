@@ -1,10 +1,9 @@
-/* Copyright (c) 2023, Jason Oltzen */
+/* Copyright (c) 2026, Jason Oltzen */
 
 import Button from "@mui/material/Button";
 import React from "react";
 
 function NavButtons(props) {
-
   return (
     <Button
       color="inherit"

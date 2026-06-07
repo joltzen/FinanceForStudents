@@ -1,4 +1,4 @@
-/* Copyright (c) 2023, Jason Oltzen */
+/* Copyright (c) 2026, Jason Oltzen */
 
 import ArrowDownwardIcon from "@mui/icons-material/ArrowDownward";
 import ArrowUpwardIcon from "@mui/icons-material/ArrowUpward";
@@ -13,7 +13,11 @@ const BudgetSummary = ({ isAnnualView, totalRemaining, percentageChange }) => {
 
   return (
     <Box sx={{ p: 0.5 }}>
-      <Box display="flex" justifyContent="space-between" alignItems="flex-start">
+      <Box
+        display="flex"
+        justifyContent="space-between"
+        alignItems="flex-start"
+      >
         <Box
           sx={{
             backgroundColor: `${accent}22`,
@@ -26,7 +30,10 @@ const BudgetSummary = ({ isAnnualView, totalRemaining, percentageChange }) => {
           }}
         >
           <AttachMoneyIcon sx={{ fontSize: 14, color: accent }} />
-          <Typography variant="caption" sx={{ color: accent, fontWeight: 700, letterSpacing: "0.06em" }}>
+          <Typography
+            variant="caption"
+            sx={{ color: accent, fontWeight: 700, letterSpacing: "0.06em" }}
+          >
             {isAnnualView ? "Jahresbudget" : "Monatsbudget"}
           </Typography>
         </Box>
@@ -46,7 +53,12 @@ const BudgetSummary = ({ isAnnualView, totalRemaining, percentageChange }) => {
 
       <Typography
         variant="h3"
-        sx={{ fontWeight: 700, mt: 2.5, mb: 0.5, color: theme.palette.text.main }}
+        sx={{
+          fontWeight: 700,
+          mt: 2.5,
+          mb: 0.5,
+          color: theme.palette.text.main,
+        }}
       >
         {totalRemaining.toFixed(2)} €
       </Typography>
@@ -54,14 +66,21 @@ const BudgetSummary = ({ isAnnualView, totalRemaining, percentageChange }) => {
       {!isAnnualView && (
         <Box display="flex" alignItems="center" gap={0.5} sx={{ mt: 0.5 }}>
           {percentageChange < 0 ? (
-            <ArrowDownwardIcon sx={{ fontSize: 16, color: theme.palette.error.main }} />
+            <ArrowDownwardIcon
+              sx={{ fontSize: 16, color: theme.palette.error.main }}
+            />
           ) : (
-            <ArrowUpwardIcon sx={{ fontSize: 16, color: theme.palette.success.main }} />
+            <ArrowUpwardIcon
+              sx={{ fontSize: 16, color: theme.palette.success.main }}
+            />
           )}
           <Typography
             variant="body2"
             sx={{
-              color: percentageChange < 0 ? theme.palette.error.main : theme.palette.success.main,
+              color:
+                percentageChange < 0
+                  ? theme.palette.error.main
+                  : theme.palette.success.main,
               fontWeight: 600,
             }}
           >

@@ -1,4 +1,4 @@
-/* Copyright (c) 2023, Jason Oltzen */
+/* Copyright (c) 2026, Jason Oltzen */
 
 import {
   Paper,
@@ -47,7 +47,7 @@ function TransactionSection({
               (t) =>
                 t?.transaction_type === transactionType &&
                 t?.month === filterMonth &&
-                t?.year === filterYear
+                t?.year === filterYear,
             )
             ?.map((item) => (
               <TableRow key={item.settings_id}>

@@ -1,4 +1,4 @@
-/* Copyright (c) 2023, Jason Oltzen */
+/* Copyright (c) 2026, Jason Oltzen */
 
 import DeleteIcon from "@mui/icons-material/Delete";
 import EditIcon from "@mui/icons-material/Edit";
@@ -21,7 +21,12 @@ import { useTheme } from "@mui/material/styles";
 import Circle from "@uiw/react-color-circle";
 import React, { useEffect, useState } from "react";
 import { useAuth } from "../../../core/auth/auth";
-import { addCategory, deleteCategory, getCategories, updateCategory } from "../../../services/db";
+import {
+  addCategory,
+  deleteCategory,
+  getCategories,
+  updateCategory,
+} from "../../../services/db";
 import { colors } from "../../../config/constants";
 
 function DialogPage({ onCategoryChange }) {
@@ -46,11 +51,17 @@ function DialogPage({ onCategoryChange }) {
     }
   };
 
-  useEffect(() => { fetchCats(); }, [user.id]);
+  useEffect(() => {
+    fetchCats();
+  }, [user.id]);
 
   const handleAddCategory = async () => {
     try {
-      await addCategory(user.id, { name: newCategory, color: categoryColor, max: Number(maxAmount) });
+      await addCategory(user.id, {
+        name: newCategory,
+        color: categoryColor,
+        max: Number(maxAmount),
+      });
       setSnackbarMessage("Kategorie erfolgreich hinzugefügt!");
       setSnackbarSeverity("success");
       setOpenDialog(false);
@@ -67,7 +78,9 @@ function DialogPage({ onCategoryChange }) {
   const handleEditCategory = async () => {
     try {
       await updateCategory(user.id, editingCategory.id, {
-        name: newCategory, color: categoryColor, max: Number(maxAmount),
+        name: newCategory,
+        color: categoryColor,
+        max: Number(maxAmount),
       });
       setSnackbarMessage("Kategorie erfolgreich gespeichert!");
       setSnackbarSeverity("success");
@@ -104,38 +117,90 @@ function DialogPage({ onCategoryChange }) {
 
   function isColorDark(color) {
     const rgb = parseInt(color.substring(1), 16);
-    const r = (rgb >> 16) & 0xff, g = (rgb >> 8) & 0xff, b = (rgb >> 0) & 0xff;
+    const r = (rgb >> 16) & 0xff,
+      g = (rgb >> 8) & 0xff,
+      b = (rgb >> 0) & 0xff;
     return (r * 299 + g * 587 + b * 114) / 1000 < 128;
   }
 
-  const dialogBg = { backgroundColor: theme.palette.card.main, color: theme.palette.text.main };
+  const dialogBg = {
+    backgroundColor: theme.palette.card.main,
+    color: theme.palette.text.main,
+  };
 
   return (
     <>
-      <Snackbar open={snackbarOpen} autoHideDuration={6000} onClose={() => setSnackbarOpen(false)}>
-        <Alert onClose={() => setSnackbarOpen(false)} severity={snackbarSeverity} sx={{ width: "100%" }}>
+      <Snackbar
+        open={snackbarOpen}
+        autoHideDuration={6000}
+        onClose={() => setSnackbarOpen(false)}
+      >
+        <Alert
+          onClose={() => setSnackbarOpen(false)}
+          severity={snackbarSeverity}
+          sx={{ width: "100%" }}
+        >
           {snackbarMessage}
         </Alert>
       </Snackbar>
       <Dialog open={openDialog} onClose={() => setOpenDialog(false)}>
-        <Typography sx={{ ...dialogBg, p: 2, fontSize: "1.1rem", fontWeight: "bold" }}>
+        <Typography
+          sx={{ ...dialogBg, p: 2, fontSize: "1.1rem", fontWeight: "bold" }}
+        >
           Neue Kategorie hinzufügen
         </Typography>
         <DialogContent sx={dialogBg}>
-          <InputLabel style={{ color: theme.palette.text.main, marginTop: 8 }}>Kategoriename</InputLabel>
-          <TextField autoFocus variant="outlined" fullWidth name="description" margin="normal"
-            value={newCategory} onChange={(e) => setNewCategory(e.target.value)}
-            sx={{ ".MuiOutlinedInput-root": { height: "40px", border: `1px solid ${theme.palette.text.main}` } }} />
-          <InputLabel style={{ color: theme.palette.text.main, marginTop: 8 }}>Maximale Ausgabe pro Monat</InputLabel>
-          <TextField autoFocus variant="outlined" fullWidth type="number" name="amount" margin="normal"
-            value={maxAmount} onChange={(e) => setMaxAmount(e.target.value)}
-            sx={{ ".MuiOutlinedInput-root": { height: "40px", border: `1px solid ${theme.palette.text.main}` } }} />
-          <Circle style={{ marginTop: "50px" }} colors={colors} color={categoryColor}
-            onChange={(color) => setCategoryColor(color.hex)} />
+          <InputLabel style={{ color: theme.palette.text.main, marginTop: 8 }}>
+            Kategoriename
+          </InputLabel>
+          <TextField
+            autoFocus
+            variant="outlined"
+            fullWidth
+            name="description"
+            margin="normal"
+            value={newCategory}
+            onChange={(e) => setNewCategory(e.target.value)}
+            sx={{
+              ".MuiOutlinedInput-root": {
+                height: "40px",
+                border: `1px solid ${theme.palette.text.main}`,
+              },
+            }}
+          />
+          <InputLabel style={{ color: theme.palette.text.main, marginTop: 8 }}>
+            Maximale Ausgabe pro Monat
+          </InputLabel>
+          <TextField
+            autoFocus
+            variant="outlined"
+            fullWidth
+            type="number"
+            name="amount"
+            margin="normal"
+            value={maxAmount}
+            onChange={(e) => setMaxAmount(e.target.value)}
+            sx={{
+              ".MuiOutlinedInput-root": {
+                height: "40px",
+                border: `1px solid ${theme.palette.text.main}`,
+              },
+            }}
+          />
+          <Circle
+            style={{ marginTop: "50px" }}
+            colors={colors}
+            color={categoryColor}
+            onChange={(color) => setCategoryColor(color.hex)}
+          />
         </DialogContent>
         <DialogActions sx={dialogBg}>
-          <Button sx={dialogBg} onClick={() => setOpenDialog(false)}>Abbrechen</Button>
-          <Button sx={dialogBg} onClick={handleAddCategory}>Hinzufügen</Button>
+          <Button sx={dialogBg} onClick={() => setOpenDialog(false)}>
+            Abbrechen
+          </Button>
+          <Button sx={dialogBg} onClick={handleAddCategory}>
+            Hinzufügen
+          </Button>
         </DialogActions>
       </Dialog>
       <Typography variant="h6" sx={{ mt: 2, color: theme.palette.text.main }}>
@@ -144,16 +209,38 @@ function DialogPage({ onCategoryChange }) {
       <Grid container spacing={2}>
         {categories?.map((category, index) => (
           <Grid item xs={12} sm={6} key={index}>
-            <Paper sx={{ backgroundColor: category.color, padding: "10px", marginTop: "10px",
-              display: "flex", alignItems: "center", justifyContent: "space-between", borderRadius: 5 }}>
-              <Typography sx={{ color: isColorDark(category.color) ? theme.palette.text.main : "black", ml: 2 }}>
+            <Paper
+              sx={{
+                backgroundColor: category.color,
+                padding: "10px",
+                marginTop: "10px",
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "space-between",
+                borderRadius: 5,
+              }}
+            >
+              <Typography
+                sx={{
+                  color: isColorDark(category.color)
+                    ? theme.palette.text.main
+                    : "black",
+                  ml: 2,
+                }}
+              >
                 {category.name}
               </Typography>
               <div style={{ display: "flex" }}>
-                <IconButton onClick={() => openEditDialogWithCategory(category)} style={{ color: "black" }}>
+                <IconButton
+                  onClick={() => openEditDialogWithCategory(category)}
+                  style={{ color: "black" }}
+                >
                   <EditIcon />
                 </IconButton>
-                <IconButton onClick={() => handleDeleteCategory(category.id)} style={{ color: "black" }}>
+                <IconButton
+                  onClick={() => handleDeleteCategory(category.id)}
+                  style={{ color: "black" }}
+                >
                   <DeleteIcon />
                 </IconButton>
               </div>
@@ -166,23 +253,64 @@ function DialogPage({ onCategoryChange }) {
           <DialogContentText sx={{ ...dialogBg, mb: 4 }}>
             Kategorie <strong>{editingCategory?.name}</strong> bearbeiten
           </DialogContentText>
-          <InputLabel style={{ color: theme.palette.text.main }}>Kategoriename</InputLabel>
-          <TextField autoFocus variant="outlined" fullWidth name="description" margin="normal"
-            value={newCategory} onChange={(e) => setNewCategory(e.target.value)}
-            sx={{ ".MuiOutlinedInput-root": { height: "40px", border: `1px solid ${theme.palette.text.main}` } }} />
-          <InputLabel style={{ color: theme.palette.text.main }}>Maximale Ausgabe pro Monat</InputLabel>
-          <TextField autoFocus variant="outlined" fullWidth name="maxamount" type="number" margin="normal"
-            value={maxAmount} onChange={(e) => setMaxAmount(e.target.value)}
-            sx={{ ".MuiOutlinedInput-root": { height: "40px", border: `1px solid ${theme.palette.text.main}` } }} />
-          <Circle style={{ marginTop: "50px" }} colors={colors} color={categoryColor}
-            onChange={(color) => setCategoryColor(color.hex)} />
+          <InputLabel style={{ color: theme.palette.text.main }}>
+            Kategoriename
+          </InputLabel>
+          <TextField
+            autoFocus
+            variant="outlined"
+            fullWidth
+            name="description"
+            margin="normal"
+            value={newCategory}
+            onChange={(e) => setNewCategory(e.target.value)}
+            sx={{
+              ".MuiOutlinedInput-root": {
+                height: "40px",
+                border: `1px solid ${theme.palette.text.main}`,
+              },
+            }}
+          />
+          <InputLabel style={{ color: theme.palette.text.main }}>
+            Maximale Ausgabe pro Monat
+          </InputLabel>
+          <TextField
+            autoFocus
+            variant="outlined"
+            fullWidth
+            name="maxamount"
+            type="number"
+            margin="normal"
+            value={maxAmount}
+            onChange={(e) => setMaxAmount(e.target.value)}
+            sx={{
+              ".MuiOutlinedInput-root": {
+                height: "40px",
+                border: `1px solid ${theme.palette.text.main}`,
+              },
+            }}
+          />
+          <Circle
+            style={{ marginTop: "50px" }}
+            colors={colors}
+            color={categoryColor}
+            onChange={(color) => setCategoryColor(color.hex)}
+          />
         </DialogContent>
         <DialogActions sx={dialogBg}>
-          <Button sx={dialogBg} onClick={() => setOpenEditDialog(false)}>Abbrechen</Button>
-          <Button sx={dialogBg} onClick={handleEditCategory}>Speichern</Button>
+          <Button sx={dialogBg} onClick={() => setOpenEditDialog(false)}>
+            Abbrechen
+          </Button>
+          <Button sx={dialogBg} onClick={handleEditCategory}>
+            Speichern
+          </Button>
         </DialogActions>
       </Dialog>
-      <Button sx={{ marginTop: 3, borderRadius: 5 }} onClick={() => setOpenDialog(true)} variant="contained">
+      <Button
+        sx={{ marginTop: 3, borderRadius: 5 }}
+        onClick={() => setOpenDialog(true)}
+        variant="contained"
+      >
         Kategorie hinzufügen
       </Button>
     </>

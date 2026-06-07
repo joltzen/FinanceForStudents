@@ -1,4 +1,4 @@
-/* Copyright (c) 2023, Jason Oltzen */
+/* Copyright (c) 2026, Jason Oltzen */
 
 import ArrowUpwardIcon from "@mui/icons-material/ArrowUpward";
 import StarIcon from "@mui/icons-material/Star";
@@ -51,7 +51,10 @@ function TransactionsTable({
   };
 
   const pageCount = Math.ceil(finalTransactions.length / rowsPerPage);
-  const displayed = finalTransactions.slice((page - 1) * rowsPerPage, page * rowsPerPage);
+  const displayed = finalTransactions.slice(
+    (page - 1) * rowsPerPage,
+    page * rowsPerPage,
+  );
 
   const headCellSx = {
     color: isDark ? "rgba(224,227,233,0.55)" : "rgba(44,47,54,0.55)",
@@ -66,7 +69,13 @@ function TransactionsTable({
 
   return (
     <Box>
-      <TableContainer sx={{ borderRadius: 3, border: `1px solid ${isDark ? "rgba(255,255,255,0.07)" : "rgba(0,0,0,0.07)"}`, overflow: "hidden" }}>
+      <TableContainer
+        sx={{
+          borderRadius: 3,
+          border: `1px solid ${isDark ? "rgba(255,255,255,0.07)" : "rgba(0,0,0,0.07)"}`,
+          overflow: "hidden",
+        }}
+      >
         <Table size="small">
           <TableHead>
             <TableRow>
@@ -74,18 +83,47 @@ function TransactionsTable({
               <TableCell sx={headCellSx}>
                 <Box sx={{ display: "flex", alignItems: "center", gap: 0.5 }}>
                   Datum
-                  <IconButton onClick={toggleSortOrder} size="small" sx={{ color: "inherit", opacity: 0.7, p: 0.25 }}>
-                    <ArrowUpwardIcon sx={{ fontSize: 13, transform: sortOrder === "asc" ? "none" : "rotate(180deg)", transition: "transform 0.2s" }} />
+                  <IconButton
+                    onClick={toggleSortOrder}
+                    size="small"
+                    sx={{ color: "inherit", opacity: 0.7, p: 0.25 }}
+                  >
+                    <ArrowUpwardIcon
+                      sx={{
+                        fontSize: 13,
+                        transform:
+                          sortOrder === "asc" ? "none" : "rotate(180deg)",
+                        transition: "transform 0.2s",
+                      }}
+                    />
                   </IconButton>
                 </Box>
               </TableCell>
               <TableCell sx={headCellSx}>Beschreibung</TableCell>
               <TableCell sx={headCellSx}>Kategorie</TableCell>
               <TableCell sx={{ ...headCellSx, textAlign: "right" }}>
-                <Box sx={{ display: "flex", alignItems: "center", justifyContent: "flex-end", gap: 0.5 }}>
+                <Box
+                  sx={{
+                    display: "flex",
+                    alignItems: "center",
+                    justifyContent: "flex-end",
+                    gap: 0.5,
+                  }}
+                >
                   Betrag
-                  <IconButton onClick={toggleSortOrderAmount} size="small" sx={{ color: "inherit", opacity: 0.7, p: 0.25 }}>
-                    <ArrowUpwardIcon sx={{ fontSize: 13, transform: sortOrderAmount === "asc" ? "none" : "rotate(180deg)", transition: "transform 0.2s" }} />
+                  <IconButton
+                    onClick={toggleSortOrderAmount}
+                    size="small"
+                    sx={{ color: "inherit", opacity: 0.7, p: 0.25 }}
+                  >
+                    <ArrowUpwardIcon
+                      sx={{
+                        fontSize: 13,
+                        transform:
+                          sortOrderAmount === "asc" ? "none" : "rotate(180deg)",
+                        transition: "transform 0.2s",
+                      }}
+                    />
                   </IconButton>
                 </Box>
               </TableCell>
@@ -95,10 +133,15 @@ function TransactionsTable({
           </TableHead>
           <TableBody>
             {displayed.map((transaction) => {
-              const cat = categories.find((c) => c.id === transaction.category_id);
+              const cat = categories.find(
+                (c) => c.id === transaction.category_id,
+              );
               const isAusgabe = transaction.transaction_type === "Ausgabe";
               const isFav = favorites.some(
-                (f) => (f.transaction_id === transaction.transaction_id && f.user_id === transaction.user_id) || transaction.favorites === true
+                (f) =>
+                  (f.transaction_id === transaction.transaction_id &&
+                    f.user_id === transaction.user_id) ||
+                  transaction.favorites === true,
               );
               const rowBg = isDark ? "rgba(38,43,61,1)" : "#ffffff";
 
@@ -107,19 +150,45 @@ function TransactionsTable({
                   key={transaction.transaction_id}
                   sx={{
                     backgroundColor: rowBg,
-                    "&:hover": { backgroundColor: isDark ? "rgba(50,56,78,0.8)" : "rgba(78,87,123,0.04)" },
+                    "&:hover": {
+                      backgroundColor: isDark
+                        ? "rgba(50,56,78,0.8)"
+                        : "rgba(78,87,123,0.04)",
+                    },
                     transition: "background-color 0.12s",
                     "&:last-child td": { border: 0 },
                   }}
                 >
                   <TableCell sx={{ pl: 2, pr: 0, py: 1.5 }}>
-                    <Box sx={{ width: 3, height: 28, borderRadius: 4, backgroundColor: cat?.color || (isAusgabe ? theme.palette.error.main : theme.palette.success.main) }} />
+                    <Box
+                      sx={{
+                        width: 3,
+                        height: 28,
+                        borderRadius: 4,
+                        backgroundColor:
+                          cat?.color ||
+                          (isAusgabe
+                            ? theme.palette.error.main
+                            : theme.palette.success.main),
+                      }}
+                    />
                   </TableCell>
-                  <TableCell sx={{ py: 1.5, whiteSpace: "nowrap", fontSize: "0.83rem", color: isDark ? "#b0b6c8" : "#666" }}>
+                  <TableCell
+                    sx={{
+                      py: 1.5,
+                      whiteSpace: "nowrap",
+                      fontSize: "0.83rem",
+                      color: isDark ? "#b0b6c8" : "#666",
+                    }}
+                  >
                     {formatDate(transaction.transaction_date)}
                   </TableCell>
                   <TableCell sx={{ py: 1.5, maxWidth: 240 }}>
-                    <Typography variant="body2" noWrap sx={{ color: theme.palette.text.main, fontWeight: 500 }}>
+                    <Typography
+                      variant="body2"
+                      noWrap
+                      sx={{ color: theme.palette.text.main, fontWeight: 500 }}
+                    >
                       {transaction.description}
                     </Typography>
                   </TableCell>
@@ -141,7 +210,9 @@ function TransactionsTable({
                       />
                     )}
                   </TableCell>
-                  <TableCell sx={{ py: 1.5, textAlign: "right", whiteSpace: "nowrap" }}>
+                  <TableCell
+                    sx={{ py: 1.5, textAlign: "right", whiteSpace: "nowrap" }}
+                  >
                     <Typography
                       variant="body2"
                       sx={{
@@ -151,24 +222,44 @@ function TransactionsTable({
                         fontFeatureSettings: '"tnum"',
                       }}
                     >
-                      {isAusgabe ? "−" : "+"} {parseFloat(transaction.amount).toFixed(2)} €
+                      {isAusgabe ? "−" : "+"}{" "}
+                      {parseFloat(transaction.amount).toFixed(2)} €
                     </Typography>
                   </TableCell>
                   <TableCell sx={{ py: 1, px: 0.5 }}>
                     <RowMenu
                       transaction={transaction}
                       handleEditButtonClick={handleEditButtonClick}
-                      handleDeleteTransaction={() => handleDeleteTransaction(transaction.transaction_id)}
+                      handleDeleteTransaction={() =>
+                        handleDeleteTransaction(transaction.transaction_id)
+                      }
                     />
                   </TableCell>
                   <TableCell sx={{ py: 1, px: 0.5 }}>
-                    <Tooltip title={isFav ? "Favorit entfernen" : "Als Favorit merken"}>
+                    <Tooltip
+                      title={isFav ? "Favorit entfernen" : "Als Favorit merken"}
+                    >
                       <IconButton
                         size="small"
-                        onClick={() => isFav ? handleDeleteFavorites(transaction) : handleAddFavorites(transaction)}
-                        sx={{ color: isFav ? "#c6aa60" : (isDark ? "rgba(255,255,255,0.25)" : "rgba(0,0,0,0.2)"), transition: "color 0.15s" }}
+                        onClick={() =>
+                          isFav
+                            ? handleDeleteFavorites(transaction)
+                            : handleAddFavorites(transaction)
+                        }
+                        sx={{
+                          color: isFav
+                            ? "#c6aa60"
+                            : isDark
+                              ? "rgba(255,255,255,0.25)"
+                              : "rgba(0,0,0,0.2)",
+                          transition: "color 0.15s",
+                        }}
                       >
-                        {isFav ? <StarIcon sx={{ fontSize: 17 }} /> : <StarBorderOutlinedIcon sx={{ fontSize: 17 }} />}
+                        {isFav ? (
+                          <StarIcon sx={{ fontSize: 17 }} />
+                        ) : (
+                          <StarBorderOutlinedIcon sx={{ fontSize: 17 }} />
+                        )}
                       </IconButton>
                     </Tooltip>
                   </TableCell>
@@ -177,7 +268,16 @@ function TransactionsTable({
             })}
             {displayed.length === 0 && (
               <TableRow>
-                <TableCell colSpan={7} sx={{ textAlign: "center", py: 8, color: theme.palette.text.main, opacity: 0.35, fontSize: "0.9rem" }}>
+                <TableCell
+                  colSpan={7}
+                  sx={{
+                    textAlign: "center",
+                    py: 8,
+                    color: theme.palette.text.main,
+                    opacity: 0.35,
+                    fontSize: "0.9rem",
+                  }}
+                >
                   Keine Transaktionen für diesen Zeitraum
                 </TableCell>
               </TableRow>
@@ -186,21 +286,74 @@ function TransactionsTable({
         </Table>
       </TableContainer>
 
-      <Box sx={{ display: "flex", alignItems: "center", justifyContent: "space-between", mt: 2, px: 0.5, flexWrap: "wrap", gap: 1 }}>
+      <Box
+        sx={{
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "space-between",
+          mt: 2,
+          px: 0.5,
+          flexWrap: "wrap",
+          gap: 1,
+        }}
+      >
         <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
-          <Typography variant="caption" sx={{ color: theme.palette.text.main, opacity: 0.45 }}>Zeilen:</Typography>
-          <Select value={rowsPerPage} onChange={handleChangeRowsPerPage} variant="standard" size="small"
-            sx={{ fontSize: "0.8rem", color: theme.palette.text.main, minWidth: 44 }}>
-            {[5, 10, 15, 20].map((r) => <MenuItem key={r} value={r}>{r}</MenuItem>)}
+          <Typography
+            variant="caption"
+            sx={{ color: theme.palette.text.main, opacity: 0.45 }}
+          >
+            Zeilen:
+          </Typography>
+          <Select
+            value={rowsPerPage}
+            onChange={handleChangeRowsPerPage}
+            variant="standard"
+            size="small"
+            sx={{
+              fontSize: "0.8rem",
+              color: theme.palette.text.main,
+              minWidth: 44,
+            }}
+          >
+            {[5, 10, 15, 20].map((r) => (
+              <MenuItem key={r} value={r}>
+                {r}
+              </MenuItem>
+            ))}
             <MenuItem value="all">Alle</MenuItem>
           </Select>
         </Box>
-        <Pagination count={pageCount} page={page} onChange={handlePageChange} size="small"
-          sx={{ "& .Mui-selected": { backgroundColor: `${theme.palette.primary.main} !important`, color: "#fff" } }} />
+        <Pagination
+          count={pageCount}
+          page={page}
+          onChange={handlePageChange}
+          size="small"
+          sx={{
+            "& .Mui-selected": {
+              backgroundColor: `${theme.palette.primary.main} !important`,
+              color: "#fff",
+            },
+          }}
+        />
         <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
-          <Typography variant="caption" sx={{ color: isDark ? "rgba(224,227,233,0.45)" : "rgba(44,47,54,0.45)" }}>Saldo</Typography>
-          <Typography variant="body2" sx={{ fontWeight: 700, color: savingSum >= 0 ? "#66bb6a" : "#ef5350", fontFeatureSettings: '"tnum"' }}>
-            {savingSum >= 0 ? "+" : ""}{savingSum.toFixed(2)} €
+          <Typography
+            variant="caption"
+            sx={{
+              color: isDark ? "rgba(224,227,233,0.45)" : "rgba(44,47,54,0.45)",
+            }}
+          >
+            Saldo
+          </Typography>
+          <Typography
+            variant="body2"
+            sx={{
+              fontWeight: 700,
+              color: savingSum >= 0 ? "#66bb6a" : "#ef5350",
+              fontFeatureSettings: '"tnum"',
+            }}
+          >
+            {savingSum >= 0 ? "+" : ""}
+            {savingSum.toFixed(2)} €
           </Typography>
         </Box>
       </Box>

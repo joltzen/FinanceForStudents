@@ -1,4 +1,4 @@
-/* Copyright (c) 2023, Jason Oltzen */
+/* Copyright (c) 2026, Jason Oltzen */
 
 import PaymentsIcon from "@mui/icons-material/Payments";
 import { Box, IconButton, Tooltip, Typography } from "@mui/material";
@@ -11,7 +11,11 @@ const MonthlyExpenses = ({ expenses }) => {
 
   return (
     <Box sx={{ p: 0.5 }}>
-      <Box display="flex" justifyContent="space-between" alignItems="flex-start">
+      <Box
+        display="flex"
+        justifyContent="space-between"
+        alignItems="flex-start"
+      >
         <Box
           sx={{
             backgroundColor: `${accent}22`,
@@ -24,7 +28,10 @@ const MonthlyExpenses = ({ expenses }) => {
           }}
         >
           <PaymentsIcon sx={{ fontSize: 14, color: accent }} />
-          <Typography variant="caption" sx={{ color: accent, fontWeight: 700, letterSpacing: "0.06em" }}>
+          <Typography
+            variant="caption"
+            sx={{ color: accent, fontWeight: 700, letterSpacing: "0.06em" }}
+          >
             Monatsausgaben
           </Typography>
         </Box>
@@ -44,12 +51,20 @@ const MonthlyExpenses = ({ expenses }) => {
 
       <Typography
         variant="h3"
-        sx={{ fontWeight: 700, mt: 2.5, mb: 0.5, color: theme.palette.text.main }}
+        sx={{
+          fontWeight: 700,
+          mt: 2.5,
+          mb: 0.5,
+          color: theme.palette.text.main,
+        }}
       >
         {expenses.toFixed(2)} €
       </Typography>
 
-      <Typography variant="body2" sx={{ color: theme.palette.text.main, opacity: 0.5 }}>
+      <Typography
+        variant="body2"
+        sx={{ color: theme.palette.text.main, opacity: 0.5 }}
+      >
         Aktueller Monat
       </Typography>
     </Box>

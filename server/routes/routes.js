@@ -1,4 +1,4 @@
-/* Copyright (c) 2023, Jason Oltzen */
+/* Copyright (c) 2026, Jason Oltzen */
 
 const express = require("express");
 const router = express.Router();
@@ -39,7 +39,7 @@ router.get("/getTransactions", async (req, res) => {
     const { month, year, user_id } = req.query;
     const result = await db.query(
       "SELECT * FROM transactions WHERE EXTRACT(MONTH FROM transaction_date) = $1 AND EXTRACT(YEAR FROM transaction_date) = $2 AND user_id = $3",
-      [month, year, user_id]
+      [month, year, user_id],
     );
     res.json(result.rows);
   } catch (error) {
@@ -52,7 +52,7 @@ router.get("/getAllTransactions", async (req, res) => {
     const { user_id } = req.query;
     const result = await db.query(
       "SELECT * FROM transactions WHERE user_id = $1",
-      [user_id]
+      [user_id],
     );
     res.json(result.rows);
   } catch (error) {
@@ -65,7 +65,7 @@ router.get("/getTransactionsAnnual", async (req, res) => {
     const { year, user_id } = req.query;
     const result = await db.query(
       "SELECT * FROM transactions WHERE EXTRACT(YEAR FROM transaction_date) = $1 AND user_id = $2",
-      [year, user_id]
+      [year, user_id],
     );
     res.json(result.rows);
   } catch (error) {
@@ -78,7 +78,7 @@ router.get("/get-saving-goals", async (req, res) => {
     const { userId } = req.query;
     const result = await db.query(
       "SELECT * FROM saving_goals WHERE user_id = $1",
-      [userId]
+      [userId],
     );
 
     res.json(result.rows);
@@ -92,7 +92,7 @@ router.get("/getCategories", async (req, res) => {
     const { user_id } = req.query;
     const result = await db.query(
       "SELECT * FROM categories WHERE user_id = $1",
-      [user_id]
+      [user_id],
     );
     res.json(result.rows);
   } catch (error) {
@@ -105,7 +105,7 @@ router.get("/getFavorites", async (req, res) => {
     const { user_id } = req.query;
     const result = await db.query(
       "SELECT * FROM favorites WHERE user_id = $1",
-      [user_id]
+      [user_id],
     );
     res.json(result.rows);
   } catch (error) {
@@ -118,7 +118,7 @@ router.get("/getSettings", async (req, res) => {
     const { month, year, user_id } = req.query;
     const result = await db.query(
       "SELECT * FROM settings WHERE month = $1 AND year= $2 AND user_id = $3",
-      [month, year, user_id]
+      [month, year, user_id],
     );
     res.json(result.rows);
   } catch (error) {
@@ -143,7 +143,7 @@ router.get("/getSettingsAnnual", async (req, res) => {
     const { year, user_id } = req.query;
     const result = await db.query(
       "SELECT * FROM settings WHERE year= $1 AND user_id = $2",
-      [year, user_id]
+      [year, user_id],
     );
     res.json(result.rows);
   } catch (error) {
@@ -188,7 +188,7 @@ router.post("/signup", async (req, res) => {
           return res.status(500).json({ error: "Error creating user" });
         }
         res.status(201).send("User created successfully");
-      }
+      },
     );
   } catch (error) {
     console.error("Error in signup process:", error);
@@ -324,7 +324,7 @@ router.post("/reset-password", async (req, res) => {
   try {
     const user = await db.query(
       "SELECT user_id FROM password_reset WHERE token = $1",
-      [token]
+      [token],
     );
 
     if (user.rows.length === 0) {
@@ -361,7 +361,7 @@ router.post("/saving-goals", async (req, res) => {
       description,
       startdate,
       deadline,
-      duration
+      duration,
     );
     res.status(201).json(newSavingGoal);
   } catch (error) {
@@ -743,7 +743,7 @@ router.delete("/deleteFavoritesByTransaction", async (req, res) => {
 const findUserByLogin = async (login) => {
   const result = await db.query(
     "SELECT * FROM users WHERE username = $1 OR email = $1",
-    [login]
+    [login],
   );
   return result.rows[0];
 };
@@ -754,7 +754,7 @@ async function insertSavingGoal(
   description,
   startdate,
   deadline,
-  duration
+  duration,
 ) {
   const query = `
     INSERT INTO saving_goals (user_id, monthly_saving, total_amount, description, startdate,deadline, duration)

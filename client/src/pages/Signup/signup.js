@@ -1,4 +1,4 @@
-/* Copyright (c) 2023, Jason Oltzen */
+/* Copyright (c) 2026, Jason Oltzen */
 
 import {
   Alert,
@@ -43,7 +43,9 @@ function SignUpForm() {
       await signup(email, password, { username, firstname, surname, email });
       navigate("/login");
     } catch (err) {
-      setError(err.message || "Registrierung fehlgeschlagen. Bitte erneut versuchen.");
+      setError(
+        err.message || "Registrierung fehlgeschlagen. Bitte erneut versuchen.",
+      );
     }
   };
 
@@ -94,14 +96,24 @@ function SignUpForm() {
               noValidate
               sx={{ width: { xs: "85%", sm: "75%", md: "60%" } }}
             >
-              <Typography variant="h3" sx={{ color: theme.palette.text.main, mb: 1 }}>
+              <Typography
+                variant="h3"
+                sx={{ color: theme.palette.text.main, mb: 1 }}
+              >
                 Registrieren
               </Typography>
-              <Typography variant="body2" sx={{ color: theme.palette.text.main, opacity: 0.5, mb: 4 }}>
+              <Typography
+                variant="body2"
+                sx={{ color: theme.palette.text.main, opacity: 0.5, mb: 4 }}
+              >
                 Erstelle dein FinanceForStudents-Konto
               </Typography>
 
-              {error && <Alert severity="error" sx={{ mb: 2, borderRadius: 2 }}>{error}</Alert>}
+              {error && (
+                <Alert severity="error" sx={{ mb: 2, borderRadius: 2 }}>
+                  {error}
+                </Alert>
+              )}
 
               <Grid container spacing={2}>
                 <Grid item xs={6}>
@@ -192,9 +204,19 @@ function SignUpForm() {
               </Grid>
 
               <Box sx={{ textAlign: "center", mt: 3 }}>
-                <Typography variant="body2" sx={{ color: theme.palette.text.main, opacity: 0.6 }}>
+                <Typography
+                  variant="body2"
+                  sx={{ color: theme.palette.text.main, opacity: 0.6 }}
+                >
                   Bereits registriert?{" "}
-                  <a href="/login" style={{ color: "#c6aa60", fontWeight: 600, textDecoration: "none" }}>
+                  <a
+                    href="/login"
+                    style={{
+                      color: "#c6aa60",
+                      fontWeight: 600,
+                      textDecoration: "none",
+                    }}
+                  >
                     Einloggen
                   </a>
                 </Typography>
@@ -217,7 +239,11 @@ function SignUpForm() {
           }}
           elevation={0}
         >
-          <img src="/logos/logo.png" alt="Logo" style={{ maxWidth: "45%", maxHeight: "45%", opacity: 0.92 }} />
+          <img
+            src="/logos/logo.png"
+            alt="Logo"
+            style={{ maxWidth: "45%", maxHeight: "45%", opacity: 0.92 }}
+          />
         </Card>
       </Grid>
     </Grid>

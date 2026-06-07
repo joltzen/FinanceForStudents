@@ -1,4 +1,4 @@
-/* Copyright (c) 2023, Jason Oltzen */
+/* Copyright (c) 2026, Jason Oltzen */
 
 import { useCallback } from "react";
 import { deleteSettings } from "../services/db";
@@ -9,13 +9,13 @@ const useSettings = (userId, setTransactions) => {
       try {
         await deleteSettings(userId, settingsId);
         setTransactions((prev) =>
-          prev.filter((t) => t.settings_id !== settingsId)
+          prev.filter((t) => t.settings_id !== settingsId),
         );
       } catch (error) {
         console.error("Fehler beim Löschen der Settings:", error);
       }
     },
-    [userId, setTransactions]
+    [userId, setTransactions],
   );
 
   return { handleDeleteSettings };

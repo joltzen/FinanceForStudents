@@ -1,4 +1,4 @@
-/* Copyright (c) 2023, Jason Oltzen */
+/* Copyright (c) 2026, Jason Oltzen */
 
 import { initializeApp } from "firebase/app";
 import { getAuth } from "firebase/auth";

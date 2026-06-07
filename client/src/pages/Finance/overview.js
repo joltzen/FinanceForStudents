@@ -1,4 +1,4 @@
-/* Copyright (c) 2023, Jason Oltzen */
+/* Copyright (c) 2026, Jason Oltzen */
 
 import { Alert, Grid, Snackbar } from "@mui/material";
 import {
@@ -53,7 +53,9 @@ function FinanceOverview({ update, handleOpenDialog, triggerUpdate }) {
   const [sortOrder, setSortOrder] = useState("desc");
   const [sortOrderAmount, setSortOrderAmount] = useState("desc");
   const [sortedByDateTransactions, setSortedByDateTransactions] = useState([]);
-  const [sortedByAmountTransactions, setSortedByAmountTransactions] = useState([]);
+  const [sortedByAmountTransactions, setSortedByAmountTransactions] = useState(
+    [],
+  );
   const [activeSorting, setActiveSorting] = useState("date");
   const [isCategoryWarningOpen, setIsCategoryWarningOpen] = useState(false);
   const [favorites, setFavorites] = useState([]);
@@ -90,13 +92,25 @@ function FinanceOverview({ update, handleOpenDialog, triggerUpdate }) {
         getTransactions(user.id, filterMonth, filterYear),
         getSettings(user.id, filterMonth, filterYear),
       ]);
-      const sorted = txData.sort((a, b) => new Date(a.transaction_date) - new Date(b.transaction_date));
+      const sorted = txData.sort(
+        (a, b) => new Date(a.transaction_date) - new Date(b.transaction_date),
+      );
       setTransactions(sorted);
       setSettings(settingsData);
-      const txSum = sorted.reduce((acc, t) =>
-        t.transaction_type === "Einnahme" ? acc + parseFloat(t.amount) : acc - parseFloat(t.amount), 0);
-      const settingsSum = settingsData.reduce((acc, s) =>
-        s.transaction_type === "Einnahme" ? acc + parseFloat(s.amount) : acc - parseFloat(s.amount), 0);
+      const txSum = sorted.reduce(
+        (acc, t) =>
+          t.transaction_type === "Einnahme"
+            ? acc + parseFloat(t.amount)
+            : acc - parseFloat(t.amount),
+        0,
+      );
+      const settingsSum = settingsData.reduce(
+        (acc, s) =>
+          s.transaction_type === "Einnahme"
+            ? acc + parseFloat(s.amount)
+            : acc - parseFloat(s.amount),
+        0,
+      );
       setTotalSum(txSum + settingsSum);
     } catch (error) {
       console.error("Error fetching transactions:", error);
@@ -106,20 +120,37 @@ function FinanceOverview({ update, handleOpenDialog, triggerUpdate }) {
   useEffect(() => {
     let sorted = [...transactions];
     if (activeSorting === "date") {
-      sorted.sort((a, b) => sortOrder === "asc"
-        ? new Date(a.transaction_date) - new Date(b.transaction_date)
-        : new Date(b.transaction_date) - new Date(a.transaction_date));
+      sorted.sort((a, b) =>
+        sortOrder === "asc"
+          ? new Date(a.transaction_date) - new Date(b.transaction_date)
+          : new Date(b.transaction_date) - new Date(a.transaction_date),
+      );
       setSortedByDateTransactions(sorted);
     } else {
       sorted.sort((a, b) => {
-        const aA = a.transaction_type === "Ausgabe" ? -parseFloat(a.amount) : parseFloat(a.amount);
-        const aB = b.transaction_type === "Ausgabe" ? -parseFloat(b.amount) : parseFloat(b.amount);
+        const aA =
+          a.transaction_type === "Ausgabe"
+            ? -parseFloat(a.amount)
+            : parseFloat(a.amount);
+        const aB =
+          b.transaction_type === "Ausgabe"
+            ? -parseFloat(b.amount)
+            : parseFloat(b.amount);
         return sortOrderAmount === "asc" ? aA - aB : aB - aA;
       });
       setSortedByAmountTransactions(sorted);
     }
     fetchFavorites();
-  }, [sortOrder, sortOrderAmount, filterMonth, filterYear, totalSum, activeSorting, transactions, triggerUpdate]);
+  }, [
+    sortOrder,
+    sortOrderAmount,
+    filterMonth,
+    filterYear,
+    totalSum,
+    activeSorting,
+    transactions,
+    triggerUpdate,
+  ]);
 
   useEffect(() => {
     const fetchAll = async () => {
@@ -132,7 +163,16 @@ function FinanceOverview({ update, handleOpenDialog, triggerUpdate }) {
       }
     };
     fetchAll();
-  }, [filterMonth, filterYear, totalSum, user.id, update, needUpdate, triggerUpdate, activeSorting]);
+  }, [
+    filterMonth,
+    filterYear,
+    totalSum,
+    user.id,
+    update,
+    needUpdate,
+    triggerUpdate,
+    activeSorting,
+  ]);
 
   useEffect(() => {
     let adjusted = totalSum;
@@ -142,25 +182,33 @@ function FinanceOverview({ update, handleOpenDialog, triggerUpdate }) {
       const dMonth = new Date(goal.deadline).getMonth() + 1;
       const dYear = new Date(goal.deadline).getFullYear();
       const inRange =
-        (filterYear > sYear || (filterYear === sYear && filterMonth >= sMonth)) &&
+        (filterYear > sYear ||
+          (filterYear === sYear && filterMonth >= sMonth)) &&
         (filterYear < dYear || (filterYear === dYear && filterMonth < dMonth));
       if (inRange) adjusted -= goal.monthly_saving;
     });
     setSavingSum(adjusted);
   }, [totalSum, savingGoal, filterMonth, filterYear]);
 
-  const displayedTransactions = activeSorting === "date" ? sortedByDateTransactions : sortedByAmountTransactions;
+  const displayedTransactions =
+    activeSorting === "date"
+      ? sortedByDateTransactions
+      : sortedByAmountTransactions;
 
   const finalTransactions = displayedTransactions.filter((t) => {
     const matchesSearch = t.description.toLowerCase().includes(searchQuery);
-    const matchesCategory = selectedCategory ? t.category_id === selectedCategory : true;
+    const matchesCategory = selectedCategory
+      ? t.category_id === selectedCategory
+      : true;
     return matchesSearch && matchesCategory;
   });
 
   const handleDeleteTransaction = async (transactionId) => {
     try {
       await deleteTransaction(user.id, transactionId);
-      setTransactions((prev) => prev.filter((t) => t.transaction_id !== transactionId));
+      setTransactions((prev) =>
+        prev.filter((t) => t.transaction_id !== transactionId),
+      );
     } catch (error) {
       console.error("Fehler beim Löschen:", error);
     }
@@ -192,8 +240,13 @@ function FinanceOverview({ update, handleOpenDialog, triggerUpdate }) {
       });
       setFavorites((prev) => [...prev, newFav]);
       await setTransactionFavorite(user.id, transaction.transaction_id, true);
-      setTransactions((prev) => prev.map((t) =>
-        t.transaction_id === transaction.transaction_id ? { ...t, favorites: true } : t));
+      setTransactions((prev) =>
+        prev.map((t) =>
+          t.transaction_id === transaction.transaction_id
+            ? { ...t, favorites: true }
+            : t,
+        ),
+      );
     } catch (error) {
       console.error("Favorites failed:", error);
     }
@@ -202,10 +255,17 @@ function FinanceOverview({ update, handleOpenDialog, triggerUpdate }) {
   const handleDeleteFavorites = async (transaction) => {
     try {
       await deleteFavoritesByTransaction(user.id, transaction.transaction_id);
-      setFavorites((prev) => prev.filter((f) => f.transaction_id !== transaction.transaction_id));
+      setFavorites((prev) =>
+        prev.filter((f) => f.transaction_id !== transaction.transaction_id),
+      );
       await setTransactionFavorite(user.id, transaction.transaction_id, false);
-      setTransactions((prev) => prev.map((t) =>
-        t.transaction_id === transaction.transaction_id ? { ...t, favorites: false } : t));
+      setTransactions((prev) =>
+        prev.map((t) =>
+          t.transaction_id === transaction.transaction_id
+            ? { ...t, favorites: false }
+            : t,
+        ),
+      );
     } catch (error) {
       console.error("Fehler beim Löschen der Favoriten:", error);
     }
@@ -230,7 +290,11 @@ function FinanceOverview({ update, handleOpenDialog, triggerUpdate }) {
   const colorMode = useContext(ColorModeContext);
 
   function formatDate(dateString) {
-    return new Date(dateString).toLocaleDateString("de-DE", { year: "numeric", month: "2-digit", day: "2-digit" });
+    return new Date(dateString).toLocaleDateString("de-DE", {
+      year: "numeric",
+      month: "2-digit",
+      day: "2-digit",
+    });
   }
 
   const isDark = theme.palette.mode === "dark";
@@ -240,22 +304,37 @@ function FinanceOverview({ update, handleOpenDialog, triggerUpdate }) {
     <Grid container spacing={3} sx={{ p: { xs: 1, sm: 2 } }}>
       {/* Main content */}
       <Grid item xs={12} lg={8}>
-        <Box sx={{
-          backgroundColor: cardBg,
-          borderRadius: 3,
-          border: `1px solid ${isDark ? "rgba(255,255,255,0.07)" : "rgba(0,0,0,0.07)"}`,
-          overflow: "hidden",
-          boxShadow: "0 4px 20px rgba(0,0,0,0.12)",
-        }}>
+        <Box
+          sx={{
+            backgroundColor: cardBg,
+            borderRadius: 3,
+            border: `1px solid ${isDark ? "rgba(255,255,255,0.07)" : "rgba(0,0,0,0.07)"}`,
+            overflow: "hidden",
+            boxShadow: "0 4px 20px rgba(0,0,0,0.12)",
+          }}
+        >
           {/* Card header */}
-          <Box sx={{
-            display: "flex", justifyContent: "space-between", alignItems: "center",
-            px: 3, py: 2,
-            borderBottom: `1px solid ${isDark ? "rgba(255,255,255,0.07)" : "rgba(0,0,0,0.07)"}`,
-          }}>
+          <Box
+            sx={{
+              display: "flex",
+              justifyContent: "space-between",
+              alignItems: "center",
+              px: 3,
+              py: 2,
+              borderBottom: `1px solid ${isDark ? "rgba(255,255,255,0.07)" : "rgba(0,0,0,0.07)"}`,
+            }}
+          >
             <Box>
-              <Typography variant="h5" sx={{ color: theme.palette.text.main, fontWeight: 700 }}>Transaktionen</Typography>
-              <Typography variant="caption" sx={{ color: theme.palette.text.main, opacity: 0.4 }}>
+              <Typography
+                variant="h5"
+                sx={{ color: theme.palette.text.main, fontWeight: 700 }}
+              >
+                Transaktionen
+              </Typography>
+              <Typography
+                variant="caption"
+                sx={{ color: theme.palette.text.main, opacity: 0.4 }}
+              >
                 {finalTransactions.length} Einträge
               </Typography>
             </Box>
@@ -263,8 +342,15 @@ function FinanceOverview({ update, handleOpenDialog, triggerUpdate }) {
               variant="contained"
               onClick={handleAddTransaction}
               sx={{
-                backgroundColor: "#c6aa60", color: "#1a1e2e", fontWeight: 700, borderRadius: 2, px: 2.5,
-                "&:hover": { backgroundColor: "#b99a50", boxShadow: "0 4px 12px rgba(198,170,96,0.35)" },
+                backgroundColor: "#c6aa60",
+                color: "#1a1e2e",
+                fontWeight: 700,
+                borderRadius: 2,
+                px: 2.5,
+                "&:hover": {
+                  backgroundColor: "#b99a50",
+                  boxShadow: "0 4px 12px rgba(198,170,96,0.35)",
+                },
               }}
             >
               + Hinzufügen
@@ -284,14 +370,22 @@ function FinanceOverview({ update, handleOpenDialog, triggerUpdate }) {
             setSelectedCategory={setSelectedCategory}
             handleCategoryChange={(e) => setSelectedCategory(e.target.value)}
             searchQuery={searchQuery}
-            handleSearchInputChange={(e) => setSearchQuery(e.target.value.toLowerCase())}
+            handleSearchInputChange={(e) =>
+              setSearchQuery(e.target.value.toLowerCase())
+            }
           />
 
           {/* Table */}
           <Box sx={{ p: 2.5 }}>
             <TransactionsTable
-              toggleSortOrder={() => { setActiveSorting("date"); setSortOrder(sortOrder === "asc" ? "desc" : "asc"); }}
-              toggleSortOrderAmount={() => { setActiveSorting("amount"); setSortOrderAmount(sortOrderAmount === "asc" ? "desc" : "asc"); }}
+              toggleSortOrder={() => {
+                setActiveSorting("date");
+                setSortOrder(sortOrder === "asc" ? "desc" : "asc");
+              }}
+              toggleSortOrderAmount={() => {
+                setActiveSorting("amount");
+                setSortOrderAmount(sortOrderAmount === "asc" ? "desc" : "asc");
+              }}
               sortOrder={sortOrder}
               sortOrderAmount={sortOrderAmount}
               finalTransactions={finalTransactions}
@@ -320,26 +414,53 @@ function FinanceOverview({ update, handleOpenDialog, triggerUpdate }) {
       {/* Sidebar */}
       <Grid item xs={12} lg={4}>
         <Grid container direction="column" spacing={2}>
-          <Grid item><NavCard theme={theme} colorMode={colorMode} /></Grid>
-          <Grid item><SaveCard theme={theme} savingSum={savingSum} /></Grid>
           <Grid item>
-            <FavCard theme={theme} favorites={favorites} categories={categories} handleAddFavoriteToMonth={handleAddFavoriteToMonth} />
+            <NavCard theme={theme} colorMode={colorMode} />
           </Grid>
-          <Grid item><DialogPage onCategoryChange={triggerUpdate} /></Grid>
+          <Grid item>
+            <SaveCard theme={theme} savingSum={savingSum} />
+          </Grid>
+          <Grid item>
+            <FavCard
+              theme={theme}
+              favorites={favorites}
+              categories={categories}
+              handleAddFavoriteToMonth={handleAddFavoriteToMonth}
+            />
+          </Grid>
+          <Grid item>
+            <DialogPage onCategoryChange={triggerUpdate} />
+          </Grid>
         </Grid>
       </Grid>
 
-      <Dialog open={isCategoryWarningOpen} onClose={() => setIsCategoryWarningOpen(false)}
-        PaperProps={{ sx: { borderRadius: 3, backgroundColor: cardBg } }}>
-        <DialogTitle sx={{ color: theme.palette.text.main, fontWeight: 700 }}>Kategorie erforderlich</DialogTitle>
+      <Dialog
+        open={isCategoryWarningOpen}
+        onClose={() => setIsCategoryWarningOpen(false)}
+        PaperProps={{ sx: { borderRadius: 3, backgroundColor: cardBg } }}
+      >
+        <DialogTitle sx={{ color: theme.palette.text.main, fontWeight: 700 }}>
+          Kategorie erforderlich
+        </DialogTitle>
         <DialogContent>
-          <DialogContentText sx={{ color: theme.palette.text.main, opacity: 0.6 }}>
+          <DialogContentText
+            sx={{ color: theme.palette.text.main, opacity: 0.6 }}
+          >
             Bitte lege zuerst mindestens eine Kategorie an.
           </DialogContentText>
         </DialogContent>
         <DialogActions sx={{ px: 3, pb: 2.5, gap: 1 }}>
-          <Button onClick={() => setIsCategoryWarningOpen(false)} variant="outlined"
-            sx={{ borderColor: isDark ? "rgba(255,255,255,0.15)" : "rgba(0,0,0,0.15)", color: theme.palette.text.main, borderRadius: 2 }}>
+          <Button
+            onClick={() => setIsCategoryWarningOpen(false)}
+            variant="outlined"
+            sx={{
+              borderColor: isDark
+                ? "rgba(255,255,255,0.15)"
+                : "rgba(0,0,0,0.15)",
+              color: theme.palette.text.main,
+              borderRadius: 2,
+            }}
+          >
             Abbrechen
           </Button>
           <AddCategory

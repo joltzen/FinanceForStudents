@@ -1,4 +1,4 @@
-/* Copyright (c) 2023, Jason Oltzen */
+/* Copyright (c) 2026, Jason Oltzen */
 
 import {
   createUserWithEmailAndPassword,
@@ -23,7 +23,11 @@ export const AuthProvider = ({ children }) => {
       if (firebaseUser) {
         const profile = await getUserProfile(firebaseUser.uid);
         if (profile) {
-          setUser({ id: firebaseUser.uid, email: firebaseUser.email, ...profile });
+          setUser({
+            id: firebaseUser.uid,
+            email: firebaseUser.email,
+            ...profile,
+          });
         }
       } else {
         setUser(null);
@@ -62,7 +66,11 @@ export const AuthProvider = ({ children }) => {
     if (!auth.currentUser) return;
     const profile = await getUserProfile(auth.currentUser.uid);
     if (profile) {
-      setUser({ id: auth.currentUser.uid, email: auth.currentUser.email, ...profile });
+      setUser({
+        id: auth.currentUser.uid,
+        email: auth.currentUser.email,
+        ...profile,
+      });
     }
   };
 
@@ -72,7 +80,10 @@ export const AuthProvider = ({ children }) => {
     if (email && email !== auth.currentUser.email) {
       await updateEmail(auth.currentUser, email);
     }
-    await updateUserProfile(user.id, { ...profileData, ...(email ? { email } : {}) });
+    await updateUserProfile(user.id, {
+      ...profileData,
+      ...(email ? { email } : {}),
+    });
     await refreshUser();
   };
 
@@ -83,7 +94,17 @@ export const AuthProvider = ({ children }) => {
   if (loading) return null;
 
   return (
-    <AuthContext.Provider value={{ user, login, logout, signup, updateUser, resetPassword, refreshUser }}>
+    <AuthContext.Provider
+      value={{
+        user,
+        login,
+        logout,
+        signup,
+        updateUser,
+        resetPassword,
+        refreshUser,
+      }}
+    >
       {children}
     </AuthContext.Provider>
   );

@@ -1,6 +1,11 @@
-/* Copyright (c) 2023, Jason Oltzen */
+/* Copyright (c) 2026, Jason Oltzen */
 
-import { ListItem, ListItemIcon, ListItemText, Typography } from "@mui/material";
+import {
+  ListItem,
+  ListItemIcon,
+  ListItemText,
+  Typography,
+} from "@mui/material";
 import { useTheme } from "@mui/material/styles";
 import React from "react";
 
@@ -28,7 +33,10 @@ function StyledListItem(props) {
     >
       {props.icon && (
         <ListItemIcon
-          sx={{ color: isActive ? "#c6aa60" : "rgba(224,227,233,0.75)", minWidth: 40 }}
+          sx={{
+            color: isActive ? "#c6aa60" : "rgba(224,227,233,0.75)",
+            minWidth: 40,
+          }}
         >
           {props.icon}
         </ListItemIcon>

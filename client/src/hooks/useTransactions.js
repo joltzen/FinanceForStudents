@@ -1,4 +1,4 @@
-/* Copyright (c) 2023, Jason Oltzen */
+/* Copyright (c) 2026, Jason Oltzen */
 
 import { useCallback } from "react";
 import { deleteTransaction } from "../services/db";
@@ -9,13 +9,13 @@ const useTransactions = (userId, setTransactions) => {
       try {
         await deleteTransaction(userId, transactionId);
         setTransactions((prev) =>
-          prev.filter((t) => t.transaction_id !== transactionId)
+          prev.filter((t) => t.transaction_id !== transactionId),
         );
       } catch (error) {
         console.error("Fehler beim Löschen der Transaktion:", error);
       }
     },
-    [userId, setTransactions]
+    [userId, setTransactions],
   );
 
   return { handleDeleteTransaction };

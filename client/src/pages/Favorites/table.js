@@ -1,4 +1,4 @@
-/* Copyright (c) 2023, Jason Oltzen */
+/* Copyright (c) 2026, Jason Oltzen */
 
 import ArrowUpward from "@mui/icons-material/ArrowUpward";
 import {
@@ -39,14 +39,14 @@ function TransactionsTable({
   const handleChangeRowsPerPage = (event) => {
     const value = event.target.value;
     setRowsPerPage(
-      value === "all" ? finalFavorites.length : parseInt(value, 10)
+      value === "all" ? finalFavorites.length : parseInt(value, 10),
     );
     setPage(1);
   };
   const pageCount = Math.ceil(finalFavorites.length / rowsPerPage);
   const displayedFavorites = finalFavorites.slice(
     (page - 1) * rowsPerPage,
-    page * rowsPerPage
+    page * rowsPerPage,
   );
 
   return (
@@ -87,7 +87,7 @@ function TransactionsTable({
         <TableBody sx={{ backgroundColor: theme.palette.content.main }}>
           {displayedFavorites.map((favorites) => {
             const category = categories.find(
-              (c) => c.id === favorites.category_id
+              (c) => c.id === favorites.category_id,
             );
             const categoryColor = category
               ? category.color

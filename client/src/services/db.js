@@ -1,4 +1,4 @@
-/* Copyright (c) 2023, Jason Oltzen */
+/* Copyright (c) 2026, Jason Oltzen */
 
 import {
   addDoc,
@@ -21,7 +21,7 @@ export const getTransactions = async (userId, month, year) => {
   const q = query(
     collection(db, "users", userId, "transactions"),
     where("transaction_date", ">=", start),
-    where("transaction_date", "<=", end)
+    where("transaction_date", "<=", end),
   );
   const snap = await getDocs(q);
   return snap.docs.map((d) => ({ transaction_id: d.id, ...d.data() }));
@@ -33,7 +33,7 @@ export const getTransactionsAnnual = async (userId, year) => {
   const q = query(
     collection(db, "users", userId, "transactions"),
     where("transaction_date", ">=", start),
-    where("transaction_date", "<=", end)
+    where("transaction_date", "<=", end),
   );
   const snap = await getDocs(q);
   return snap.docs.map((d) => ({ transaction_id: d.id, ...d.data() }));
@@ -47,7 +47,7 @@ export const getAllTransactions = async (userId) => {
 export const addTransaction = async (userId, data) => {
   const docRef = await addDoc(
     collection(db, "users", userId, "transactions"),
-    data
+    data,
   );
   return { transaction_id: docRef.id, ...data };
 };
@@ -55,7 +55,7 @@ export const addTransaction = async (userId, data) => {
 export const updateTransaction = async (userId, transactionId, data) => {
   await updateDoc(
     doc(db, "users", userId, "transactions", transactionId),
-    data
+    data,
   );
 };
 
@@ -66,7 +66,7 @@ export const deleteTransaction = async (userId, transactionId) => {
 export const setTransactionFavorite = async (
   userId,
   transactionId,
-  isFavorite
+  isFavorite,
 ) => {
   await updateDoc(doc(db, "users", userId, "transactions", transactionId), {
     favorites: isFavorite,
@@ -83,7 +83,7 @@ export const getCategories = async (userId) => {
 export const addCategory = async (userId, data) => {
   const docRef = await addDoc(
     collection(db, "users", userId, "categories"),
-    data
+    data,
   );
   return { id: docRef.id, ...data };
 };
@@ -102,7 +102,7 @@ export const getSettings = async (userId, month, year) => {
   const q = query(
     collection(db, "users", userId, "settings"),
     where("month", "==", Number(month)),
-    where("year", "==", Number(year))
+    where("year", "==", Number(year)),
   );
   const snap = await getDocs(q);
   return snap.docs.map((d) => ({ settings_id: d.id, ...d.data() }));
@@ -111,7 +111,7 @@ export const getSettings = async (userId, month, year) => {
 export const getSettingsAnnual = async (userId, year) => {
   const q = query(
     collection(db, "users", userId, "settings"),
-    where("year", "==", Number(year))
+    where("year", "==", Number(year)),
   );
   const snap = await getDocs(q);
   return snap.docs.map((d) => ({ settings_id: d.id, ...d.data() }));
@@ -123,10 +123,14 @@ export const getAllSettings = async (userId) => {
 };
 
 export const addSettings = async (userId, data) => {
-  const payload = { ...data, month: Number(data.month), year: Number(data.year) };
+  const payload = {
+    ...data,
+    month: Number(data.month),
+    year: Number(data.year),
+  };
   const docRef = await addDoc(
     collection(db, "users", userId, "settings"),
-    payload
+    payload,
   );
   return { settings_id: docRef.id, ...payload };
 };
@@ -149,7 +153,7 @@ export const getSavingGoals = async (userId) => {
 export const addSavingGoal = async (userId, data) => {
   const docRef = await addDoc(
     collection(db, "users", userId, "savingGoals"),
-    data
+    data,
   );
   return { id: docRef.id, ...data };
 };
@@ -172,7 +176,7 @@ export const getFavorites = async (userId) => {
 export const addFavorite = async (userId, data) => {
   const docRef = await addDoc(
     collection(db, "users", userId, "favorites"),
-    data
+    data,
   );
   return { favorites_id: docRef.id, ...data };
 };
@@ -188,7 +192,7 @@ export const deleteFavorite = async (userId, favoriteId) => {
 export const deleteFavoritesByTransaction = async (userId, transactionId) => {
   const q = query(
     collection(db, "users", userId, "favorites"),
-    where("transaction_id", "==", transactionId)
+    where("transaction_id", "==", transactionId),
   );
   const snap = await getDocs(q);
   await Promise.all(snap.docs.map((d) => deleteDoc(d.ref)));

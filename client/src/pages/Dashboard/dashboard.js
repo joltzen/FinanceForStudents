@@ -1,4 +1,4 @@
-/* Copyright (c) 2023, Jason Oltzen */
+/* Copyright (c) 2026, Jason Oltzen */
 
 import { Box, Card, CardContent, FormControlLabel, Grid } from "@mui/material";
 import { useTheme } from "@mui/material/styles";
@@ -62,7 +62,7 @@ function DashboardPage() {
     prevSettings,
     allTransactions,
     allSettings,
-    allSaving
+    allSaving,
   );
 
   useEffect(() => {
@@ -130,14 +130,14 @@ function DashboardPage() {
         label: "Budgetverteilung",
         data: isAnnualView
           ? categories.map(
-              (category) => getAnnualCategoryTotal(category.id) || 0
+              (category) => getAnnualCategoryTotal(category.id) || 0,
             )
           : categories.map((category) => getCategoryTotal(category.id)),
         backgroundColor: categories.map(
-          (category) => category.color || theme.palette.budget.main
+          (category) => category.color || theme.palette.budget.main,
         ),
         hoverBackgroundColor: categories.map(
-          (category) => category.color || theme.palette.budget.main
+          (category) => category.color || theme.palette.budget.main,
         ),
       },
     ],
@@ -223,7 +223,10 @@ function DashboardPage() {
               borderRadius: 3,
               cursor: "pointer",
               transition: "transform 0.18s ease, box-shadow 0.18s ease",
-              "&:hover": { transform: "translateY(-3px)", boxShadow: "0 8px 28px rgba(0,0,0,0.22)" },
+              "&:hover": {
+                transform: "translateY(-3px)",
+                boxShadow: "0 8px 28px rgba(0,0,0,0.22)",
+              },
               height: "100%",
             }}
             onClick={() => navigate("/fixed")}
@@ -246,7 +249,10 @@ function DashboardPage() {
               borderRadius: 3,
               cursor: "pointer",
               transition: "transform 0.18s ease, box-shadow 0.18s ease",
-              "&:hover": { transform: "translateY(-3px)", boxShadow: "0 8px 28px rgba(0,0,0,0.22)" },
+              "&:hover": {
+                transform: "translateY(-3px)",
+                boxShadow: "0 8px 28px rgba(0,0,0,0.22)",
+              },
               height: "100%",
             }}
             onClick={() => navigate("/finance")}
@@ -265,7 +271,10 @@ function DashboardPage() {
               borderRadius: 3,
               cursor: "pointer",
               transition: "transform 0.18s ease, box-shadow 0.18s ease",
-              "&:hover": { transform: "translateY(-3px)", boxShadow: "0 8px 28px rgba(0,0,0,0.22)" },
+              "&:hover": {
+                transform: "translateY(-3px)",
+                boxShadow: "0 8px 28px rgba(0,0,0,0.22)",
+              },
               height: "100%",
             }}
             onClick={() => navigate("/saving")}
@@ -287,7 +296,10 @@ function DashboardPage() {
               borderTop: `3px solid ${theme.palette.total.main}`,
               borderRadius: 3,
               transition: "transform 0.18s ease, box-shadow 0.18s ease",
-              "&:hover": { transform: "translateY(-3px)", boxShadow: "0 8px 28px rgba(0,0,0,0.22)" },
+              "&:hover": {
+                transform: "translateY(-3px)",
+                boxShadow: "0 8px 28px rgba(0,0,0,0.22)",
+              },
               height: "100%",
             }}
           >

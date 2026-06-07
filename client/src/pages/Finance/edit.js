@@ -1,4 +1,4 @@
-/* Copyright (c) 2023, Jason Oltzen */
+/* Copyright (c) 2026, Jason Oltzen */
 
 import {
   Button,
@@ -49,7 +49,7 @@ export default function EditTransactionDialog({
   };
   const getCurrentCategoryColor = () => {
     const currentCategory = categories.find(
-      (cat) => cat.id === editedTransaction.category_id
+      (cat) => cat.id === editedTransaction.category_id,
     );
     return currentCategory ? currentCategory.color : "defaultColor";
   };

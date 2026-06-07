@@ -1,4 +1,4 @@
-/* Copyright (c) 2023, Jason Oltzen */
+/* Copyright (c) 2026, Jason Oltzen */
 
 import { useCallback, useEffect, useState } from "react";
 import {
@@ -31,7 +31,7 @@ const useSavingGoals = (userId) => {
         console.error("Fehler beim Speichern des Sparziels", error);
       }
     },
-    [userId, fetchGoals]
+    [userId, fetchGoals],
   );
 
   const deleteGoal = useCallback(
@@ -43,7 +43,7 @@ const useSavingGoals = (userId) => {
         console.error("Fehler beim Löschen des Sparziels", error);
       }
     },
-    [userId]
+    [userId],
   );
 
   return { goals, addGoal, deleteGoal, fetchGoals };
